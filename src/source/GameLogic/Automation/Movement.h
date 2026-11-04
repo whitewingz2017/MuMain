@@ -40,5 +40,5 @@ inline constexpr float ArrivalTolerance = 1.5f;
 
 // Walks towards the map tile, one path per call, exactly as a click there
 // would. Call again on later frames until it reports Arrived.
-MoveResult WalkTo(int tileX, int tileY);
+MoveResult WalkTo(int tileX, int tileY, float arrivalTolerance = ArrivalTolerance);
 } // namespace GameLogic::Automation

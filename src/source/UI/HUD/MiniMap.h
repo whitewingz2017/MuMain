@@ -25,6 +25,7 @@ class CMiniMap : public CObject
 {
 public:
     bool m_bSuccess;
+    Rml::String GetMobileMapSource() const;
 
     CMiniMap();
     virtual ~CMiniMap();
@@ -67,6 +68,7 @@ private:
         [this](Rml::DataModelConstructor& c, MiniMapRmlModel& model) { BindRmlModel(c, model); },
         {{"Data/Interface/RmlUi/mini_map.rml"}}};
     bool m_PendingClose = false;
+    float m_MobileZoom = UI::MiniMap::MobileMaxZoom;
     // The screen the border tiles' matrices were built for (SyncScreen()).
     UI::MiniMap::Screen m_SideLinesScreen;
 };

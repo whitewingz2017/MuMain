@@ -1,5 +1,6 @@
-﻿
+
 #include "stdafx.h"
+#include "GameLogic/Mobile/TouchInputRules.h"
 #include "UI/Inventory/MyInventory.h"
 #include "UI/Core/WindowSystem.h"
 #include "I18N/All.h"
@@ -29,6 +30,9 @@ extern bool SelectFlag;
 #endif // CSK_FIX_BLUELUCKYBAG_MOVECOMMAND
 #include "GameLogic/Items/ChangeRingManager.h"
 #include "GameLogic/Items/EquipmentRestrictions.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "UI/Inventory/SkinShop.h"
+#include "UI/Inventory/SkinInventoryWindow.h"
 #include "GameLogic/Social/MonkSystem.h"
 #include "Character/CharacterManager.h"
 #include "GameLogic/Items/ItemCategories.h"
@@ -53,6 +57,7 @@ extern bool SelectFlag;
 #include "UI/Tooltip/LegacyTextListTooltip.h"
 #include "UI/Inventory/ItemOptionTooltipModel.h"
 #include "Core/Utilities/StringUtils.h"
+#include "Render/Text/CUIRenderText.h"
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <cmath>
@@ -145,7 +150,23 @@ void CMyInventory::BindRmlModel(Rml::DataModelConstructor& c, MyInventoryRmlMode
     model.textPx = UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Normal);
     c.Bind("text_px", &model.textPx);
 
+    c.Bind("mobile_actions_visible", &model.mobileActionsVisible);
+    c.Bind("mobile_sell_enabled", &model.mobileSellEnabled);
+    c.Bind("mobile_loose_item", &model.mobileLooseItem);
+    c.BindEventCallback("inventory_mobile_action", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList& args) {
+        if (args.size() == 1) m_PendingMobileAction = args[0].Get<int>(-1);
+    });
     c.Bind("title", &model.title);
+    c.Bind("skin_page", &model.skinPage);
+    c.BindEventCallback("my_inventory_skin_storage", [](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) {
+        if (g_pSkinInventoryWindow) g_pSkinInventoryWindow->Open();
+    });
+    c.BindEventCallback("my_inventory_skin_shop", [](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) {
+        UI::Inventory::SkinShop::Open();
+    });
+    c.BindEventCallback("my_inventory_page", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) {
+        ToggleEquipmentPage();
+    });
     c.Bind("gold_text", &model.goldText);
     c.Bind("gold_tier", &model.goldTier);
 
@@ -164,6 +185,7 @@ void CMyInventory::BindRmlModel(Rml::DataModelConstructor& c, MyInventoryRmlMode
     c.Bind("socket_option_label", &model.socketOptionLabel);
     c.Bind("set_option_active", &model.setOptionActive);
     c.Bind("socket_option_active", &model.socketOptionActive);
+    c.Bind("option_labels_fit", &model.optionLabelsFit);
     c.RegisterArray<std::vector<Rml::String>>();
     c.Bind("slot_states", &model.slotStates);
     UI::Items::RegisterItemGridCells(c);
@@ -347,7 +369,7 @@ void CMyInventory::UnequipAllItems()
 
 bool CMyInventory::IsEquipable(int iIndex, ITEM* pItem) const
 {
-    if (pItem == nullptr)
+    if (!GameLogic::Items::CanEquipInMainInventory(pItem))
         return false;
 
     const ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
@@ -623,6 +645,12 @@ void CMyInventory::SetRepairMode(bool bRepair)
 
 bool CMyInventory::UpdateMouseEvent()
 {
+    // An item released with the finger on a skin slot goes to that slot. The bag below the slots
+    // takes a drop wherever the dragged item's picture overlaps it, so it used to keep 2x2 skins
+    // (sets, weapons, pets) and wings that were dropped on their slot.
+    if (m_SkinPage && m_iPointedSlot >= 0 && CInventoryCtrl::GetPickedItem() && IsRelease(VK_LBUTTON))
+        return !ProcessSkinSlots();
+
     if (m_pNewInventoryCtrl && !m_pNewInventoryCtrl->UpdateMouseEvent())
         return false;
 
@@ -647,7 +675,6 @@ bool CMyInventory::UpdateMouseEvent()
         {
             // Not a ground-drop -- one of these other windows is the real target, and dispatched
             // after us, so `true` (not `false`) lets CManager keep going instead of eating its drop.
-            ResetMouseLButton();
             return true;
         }
 
@@ -835,6 +862,8 @@ bool CMyInventory::UpdateKeyEvent()
 
 bool CMyInventory::Update()
 {
+    GameLogic::Cosmetics::Update();
+    UpdateMobileActions();
     if (m_pNewInventoryCtrl && false == m_pNewInventoryCtrl->Update())
     {
         return false;
@@ -862,6 +891,31 @@ bool CMyInventory::Update()
 
     SyncRmlModel();
     return true;
+}
+
+// The "[Set option] [Socket option]" header is one line across the frame: on a phone's larger
+// text it ran past the frame's edge, so it is shrunk to the frame's inside instead.
+void CMyInventory::SyncOptionLabelsFit(const wchar_t* setOptionLabel, const wchar_t* socketOptionLabel)
+{
+    constexpr float OptionLabelsWidth = 176.f; // the 190 px frame less its edges
+    std::wstring line = setOptionLabel;
+    line += L"  "; // the 0.3em gap between the two labels (my_inventory.rcss), rounded up
+    line += socketOptionLabel;
+    if (line == m_measuredOptionLabels)
+        return;
+    m_measuredOptionLabels = line;
+
+    g_pRenderText->SetFont(g_hFontBold);
+    const float measured =
+        static_cast<float>(g_pRenderText->MeasureText(line.c_str(), static_cast<int>(line.size())).cx);
+    const float fit = measured > OptionLabelsWidth ? OptionLabelsWidth / measured : 1.f;
+
+    auto& model = m_RmlView.GetModel();
+    if (model.optionLabelsFit != fit)
+    {
+        model.optionLabelsFit = fit;
+        m_RmlView.MarkDirty("option_labels_fit");
+    }
 }
 
 void CMyInventory::SyncRmlModel()
@@ -892,7 +946,8 @@ void CMyInventory::SyncRmlModel()
         syncText(field, boundName, StringUtils::WideToNarrow(text));
     };
 
-    syncWide(&MyInventoryRmlModel::title, "title", I18N::Game::Inventory);
+    syncWide(&MyInventoryRmlModel::title, "title", m_SkinPage ? L"Skin" : L"Gear");
+    syncBool(&MyInventoryRmlModel::skinPage, "skin_page", m_SkinPage);
 
     const DWORD dwZen = CharacterMachine->Gold;
     wchar_t goldBuf[256] = { 0, };
@@ -934,6 +989,7 @@ void CMyInventory::SyncRmlModel()
     mu_swprintf(socketOptionLabelBuf, L"[%ls]", I18N::Game::SocketOption);
     syncWide(&MyInventoryRmlModel::socketOptionLabel, "socket_option_label", socketOptionLabelBuf);
     syncBool(&MyInventoryRmlModel::socketOptionActive, "socket_option_active", g_SocketItemMgr.IsSocketSetOptionEnabled());
+    SyncOptionLabelsFit(setOptionLabelBuf, socketOptionLabelBuf);
 
     // Shared tooltip -- only one of setOptionHovered/socketOptionHovered is ever true at a time.
     // BuildXxxTooltipModel() reuses the same content resolution as the old native-drawing code,
@@ -1024,7 +1080,9 @@ void CMyInventory::Render3D()
     const float scale = panel != nullptr ? UI::RmlBridge::DrawnScale(*panel) : 1.f;
     for (int i = 0; i < MAX_EQUIPMENT_INDEX; i++)
     {
-        const ITEM* pEquippedItem = &CharacterMachine->Equipment[i];
+        ITEM skinItem{};
+        skinItem.Type = static_cast<short>(GameLogic::Cosmetics::EquippedArmor(GameLogic::Cosmetics::SkinPartForEquipment(i)));
+        const ITEM* pEquippedItem = m_SkinPage ? &skinItem : &CharacterMachine->Equipment[i];
         if (pEquippedItem->Type >= 0)
         {
             float y = 0.f;
@@ -1095,6 +1153,7 @@ void CMyInventory::OpenningProcess()
 
 void CMyInventory::ClosingProcess()
 {
+    m_MobileSelectedIndex = m_PendingMobileAction = -1;
     m_pNewInventoryCtrl->BackupPickedItem();
     RepairEnable = 0;
     SetRepairMode(false);
@@ -1223,7 +1282,7 @@ void CMyInventory::CreateEquippingEffect(ITEM* pItem)
     OBJECT* pHeroObject = &Hero->Object;
     if (false == gMapManager.InChaosCastle())
     {
-        switch (pItem->Type)
+        switch (GameLogic::Cosmetics::HelperBehaviorItem(pItem->Type))
         {
         case ITEM_HELPER:
             CreateMount(MODEL_HELPER, pHeroObject->Position, pHeroObject);
@@ -1399,7 +1458,11 @@ void CMyInventory::SyncSlotStates()
     {
         const char* state = "";
         const int baseClass = gCharacterManager.GetBaseClass(Hero->Class);
-        if ((i == EQUIPMENT_HELM && baseClass == CLASS_DARK) || (i == EQUIPMENT_GLOVES && baseClass == CLASS_RAGEFIGHTER))
+        if (m_SkinPage)
+        {
+            state = GameLogic::Cosmetics::SkinPartForEquipment(i) >= 0 ? "skin-slot" : "no-art";
+        }
+        else if ((i == EQUIPMENT_HELM && baseClass == CLASS_DARK) || (i == EQUIPMENT_GLOVES && baseClass == CLASS_RAGEFIGHTER))
         {
             state = "no-art";
         }
@@ -1426,7 +1489,7 @@ void CMyInventory::SyncSlotStates()
         }
 
         Rml::String value = state;
-        if (i == m_iPointedSlot && CInventoryCtrl::GetPickedItem())
+        if (!m_SkinPage && i == m_iPointedSlot && CInventoryCtrl::GetPickedItem())
         {
             ITEM* pItemObj = CInventoryCtrl::GetPickedItem()->GetItem();
             const ITEM* pEquipmentItemSlot = &CharacterMachine->Equipment[i];
@@ -1451,8 +1514,46 @@ void CMyInventory::SyncSlotStates()
 
 }
 
+void CMyInventory::ToggleEquipmentPage()
+{
+    if (CInventoryCtrl::GetPickedItem() || EquipmentItem)
+        return;
+    m_SkinPage = !m_SkinPage;
+    m_iPointedSlot = -1;
+    m_MobileSelectedIndex = -1;
+    m_RmlView.GetModel().setOptionHovered = false;
+    m_RmlView.GetModel().socketOptionHovered = false;
+    SetRepairMode(false);
+    if (m_SkinPage)
+        GameLogic::Cosmetics::Request(0);
+}
+
+bool CMyInventory::ProcessSkinSlots()
+{
+    if (m_iPointedSlot < 0 || !IsRelease(VK_LBUTTON))
+        return false;
+    const int part = GameLogic::Cosmetics::SkinPartForEquipment(m_iPointedSlot);
+    if (part < 0 || part >= GameLogic::Cosmetics::SkinSlotCount)
+        return true;
+    if (auto* picked = CInventoryCtrl::GetPickedItem())
+    {
+        if (picked->GetSourceStorageType() == STORAGE_TYPE::INVENTORY
+            && GameLogic::Cosmetics::FitsPart(picked->GetItem()->Type, part)
+            && (!GameLogic::Cosmetics::IsFemaleArmor(picked->GetItem()->Type)
+                || gCharacterManager.GetBaseClass(Hero->Class) == CLASS_ELF
+                || gCharacterManager.GetBaseClass(Hero->Class) == CLASS_SUMMONER))
+            GameLogic::Cosmetics::Request(1, picked->GetSourceLinealPos(), part);
+        CInventoryCtrl::BackupPickedItem();
+    }
+    else if (GameLogic::Cosmetics::EquippedArmor(part) >= 0)
+        GameLogic::Cosmetics::Request(2, 0, part);
+    return true;
+}
+
 bool CMyInventory::EquipmentWindowProcess()
 {
+    if (m_SkinPage)
+        return ProcessSkinSlots();
     if (m_iPointedSlot != -1 && IsRelease(VK_LBUTTON))
     {
         if (CPickedItem* pPickedItem = CInventoryCtrl::GetPickedItem())
@@ -1560,26 +1661,92 @@ bool CMyInventory::EquipmentWindowProcess()
 
             if (pEquippedItem->Type >= 0 && CheckTakeOff(iSourceIndex))
             {
-                const int emptySlotIndex = FindEmptySlot(pEquippedItem);
-
-                // Simulates picking the item up and putting it into the free
-                // inventory slot. Without the pick-up nothing is sent, so the
-                // server and the local equipment stay the same.
-                if (emptySlotIndex != -1 && CInventoryCtrl::CreatePickedItem(nullptr, pEquippedItem))
-                {
-                    CPickedItem* pPickedItem = CInventoryCtrl::GetPickedItem();
-                    UnequipItem(iSourceIndex);
-                    pPickedItem->HidePickedItem();
-                    // UnequipItem cleared the slot; the picked item has the item's data.
-                    SendRequestEquipmentItem(STORAGE_TYPE::INVENTORY, iSourceIndex, pPickedItem->GetItem(),
-                                             STORAGE_TYPE::INVENTORY, emptySlotIndex);
-                    return true;
-                }
+                return UnequipToInventory(iSourceIndex);
             }
         }
     }
 
     return false;
+}
+
+bool CMyInventory::UnequipToInventory(int slot)
+{
+    if (slot < 0 || slot >= MAX_EQUIPMENT_INDEX || EquipmentItem || CInventoryCtrl::GetPickedItem() || !CheckTakeOff(slot)) return false;
+    auto* item = &CharacterMachine->Equipment[slot];
+    if (item->Type < 0) return false;
+    const int target = FindEmptySlotIncludingExtensions(item);
+    if (target < 0 || !CInventoryCtrl::CreatePickedItem(nullptr, item)) return false;
+    auto* picked = CInventoryCtrl::GetPickedItem();
+    UnequipItem(slot);
+    picked->HidePickedItem();
+    if (SendRequestEquipmentItem(STORAGE_TYPE::INVENTORY, slot, picked->GetItem(), STORAGE_TYPE::INVENTORY, target)) return true;
+    CInventoryCtrl::BackupPickedItem();
+    return false;
+}
+
+bool CMyInventory::ReleaseMobileItemTap(CInventoryCtrl* control, ITEM* item, int index)
+{
+    const bool actionsShown = m_MobileHoldShown;
+    m_MobileHoldStarted = 0; m_MobileHoldShown = false;
+    m_MobileHoldIndex = -1; m_MobileHoldOwner = nullptr;
+    const auto now = GetTickCount64();
+    const bool secondTap = item && index >= 0 && GameLogic::Mobile::IsItemSecondTap(now - m_MobileTappedAt,
+        m_MobileTappedIndex == index && m_MobileTappedOwner == control && m_MobileTappedKey == item->Key);
+    m_MobileTappedOwner = control;
+    m_MobileTappedIndex = actionsShown || secondTap ? -1 : index;
+    m_MobileTappedKey = item ? item->Key : 0;
+    m_MobileTappedAt = now;
+    return actionsShown || !secondTap;
+}
+
+bool CMyInventory::SelectMobileItem(CInventoryCtrl* control, ITEM* item, int equipmentSlot)
+{
+    return false;
+}
+
+CInventoryCtrl* CMyInventory::MobileSelectedControl() const
+{
+    if (m_MobileSelectedIndex < MAX_EQUIPMENT_INDEX) return nullptr;
+    auto* extension = g_pMyInventoryExt ? g_pMyInventoryExt->TryGetExtensionByInventoryIndex(m_MobileSelectedIndex) : nullptr;
+    return extension ? extension : m_pNewInventoryCtrl;
+}
+
+ITEM* CMyInventory::MobileSelectedItem() const
+{
+    if (m_MobileSelectedIndex < 0) return nullptr;
+    auto* control = MobileSelectedControl();
+    auto* item = control ? control->FindItem(m_MobileSelectedIndex) : &CharacterMachine->Equipment[m_MobileSelectedIndex];
+    return item && item->Type >= 0 && item->Key == m_MobileSelectedKey ? item : nullptr;
+}
+
+void CMyInventory::UpdateMobileActions()
+{
+    auto* item = IsVisible() && !CInventoryCtrl::GetPickedItem() ? MobileSelectedItem() : nullptr;
+    const int action = m_PendingMobileAction;
+    m_PendingMobileAction = -1;
+    if (item && action >= 0)
+    {
+        auto* control = MobileSelectedControl();
+        if (action == 0)
+        {
+            if (control) m_ActionController.UseSelectedItem(control, m_MobileSelectedKey);
+            else UnequipToInventory(m_MobileSelectedIndex);
+        }
+        else if (action == 1 && control) m_ActionController.DropSelectedItem(control, m_MobileSelectedKey);
+        else if (action == 2 && control) m_ActionController.SellSelectedItem(control, m_MobileSelectedKey);
+        m_MobileSelectedIndex = -1;
+        item = nullptr;
+    }
+    if (!item) m_MobileSelectedIndex = -1;
+    auto& model = m_RmlView.GetModel();
+    const bool visible = item != nullptr;
+    const bool loose = visible && MobileSelectedControl();
+    const bool sell = loose && g_pNewUISystem->IsVisible(INTERFACE_NPCSHOP) && !g_pNPCShop->IsSellingItem();
+    if (model.mobileActionsVisible != visible || model.mobileSellEnabled != sell || model.mobileLooseItem != loose)
+    {
+        model.mobileActionsVisible = visible; model.mobileSellEnabled = sell; model.mobileLooseItem = loose;
+        m_RmlView.MarkDirty("mobile_actions_visible"); m_RmlView.MarkDirty("mobile_sell_enabled"); m_RmlView.MarkDirty("mobile_loose_item");
+    }
 }
 
 bool CMyInventory::CheckTakeOff(int equipmentSlot) const
@@ -1627,6 +1794,19 @@ bool CMyInventory::WindowProcess()
 
 void CMyInventory::RenderItemToolTip(int iSlotIndex) const
 {
+    if (m_SkinPage)
+    {
+        const int part = GameLogic::Cosmetics::SkinPartForEquipment(iSlotIndex);
+        const int type = GameLogic::Cosmetics::EquippedArmor(part);
+        if (type < 0) return;
+        ITEM item{};
+        item.Type = static_cast<short>(type);
+        item.Durability = 1;
+        item.ExcellentFlags = GameLogic::Cosmetics::EquippedFlags(part);
+        SetItemAttributes(&item);
+        RenderItemInfoAtPx(m_EquipmentSlots[iSlotIndex].x, m_EquipmentSlots[iSlotIndex].y, &item, false);
+        return;
+    }
     if (m_iPointedSlot != -1)
     {
         ITEM* pEquipmentItemSlot = &CharacterMachine->Equipment[iSlotIndex];

@@ -30,8 +30,10 @@ BYTE m_AltarState[5] = { 2,2,2,2,2 };
 
 
 bool	View_Bal = false;
-char	Suc_Or_Fail = -1;
-char	View_Suc_Or_Fail = -1;
+// signed: these are -1/0/1 states, and plain char is unsigned on ARM (Android, iOS), where -1
+// read back as 255 and the result screen showed on every entry to Crywolf and never left.
+signed char Suc_Or_Fail = -1;
+signed char View_Suc_Or_Fail = -1;
 float Deco_Insert = 0.f;
 char Message_Box = 0;
 wchar_t   Box_String[2][200] = {};
@@ -109,6 +111,9 @@ void M34CryWolf1st::CheckCryWolf1stMVP(BYTE btOccupationState, BYTE btCrywolfSta
     if (m_OccupationState == btOccupationState && m_CrywolfState == btCrywolfState)
         return;
 
+    // The result belongs to an event this client saw running, not to a server that is still in
+    // its end state when the player walks into Crywolf afterwards.
+    const bool sawEventEnd = m_CrywolfState == CRYWOLF_STATE_START && btCrywolfState == CRYWOLF_STATE_END;
     m_CrywolfState = btCrywolfState;
 
     if (m_CrywolfState >= CRYWOLF_STATE_READY && m_CrywolfState < CRYWOLF_STATE_ENDCYCLE)
@@ -126,7 +131,7 @@ void M34CryWolf1st::CheckCryWolf1stMVP(BYTE btOccupationState, BYTE btCrywolfSta
     if (m_CrywolfState != CRYWOLF_STATE_START)
         View_Bal = false;
 
-    if (m_CrywolfState == CRYWOLF_STATE_END)
+    if (sawEventEnd)
     {
         for (int i = 0; i < 5; i++)
             HeroScore[i] = -1;

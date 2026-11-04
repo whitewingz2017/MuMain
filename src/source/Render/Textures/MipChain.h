@@ -19,6 +19,13 @@ struct MipLevel
 // floor(log2(max(width, height))) + 1, or 0 for an empty image.
 [[nodiscard]] std::uint32_t CountMipLevels(std::uint32_t width, std::uint32_t height);
 
+// The bundled Vulkan mip blitter can reach zero on the shorter axis. Android also
+// uses CPU levels to avoid device-specific runtime mip generation failures.
+[[nodiscard]] constexpr bool CanGenerateGpuMipmaps(std::uint32_t width, std::uint32_t height, bool hasAlpha)
+{
+    return !hasAlpha && width > 0 && width == height && (width & (width - 1)) == 0;
+}
+
 // Halves an RGBA8 image with a box filter. Each axis becomes max(1, size / 2),
 // the size rule the GPU uses for mip levels; when a size is odd, the last
 // texel of that axis also averages the leftover row or column.

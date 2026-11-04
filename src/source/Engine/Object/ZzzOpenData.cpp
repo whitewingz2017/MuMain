@@ -1,5 +1,8 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "Render/Models/ZzzBMD.h"
+#include "Render/Models/CosmeticArmor.h"
+#include "UI/Inventory/SkinShop.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -562,6 +565,8 @@ static void OpenItemEffectTextures()
 
     LoadBitmap(L"Item\\rgb_mix.jpg", BITMAP_RGB_MIX, GL_LINEAR, GL_REPEAT);
     LoadBitmap(L"Item\\PhoenixSoul_render.JPG", BITMAP_PHOENIXSOULWING, GL_LINEAR, GL_REPEAT);
+    LoadBitmap(L"Effect\\pin_star.jpg", BITMAP_PIN_STAR, GL_LINEAR, GL_REPEAT);
+    LoadBitmap(L"Effect\\bluewave0001_R.jpg", BITMAP_ENERGY_FIELD, GL_LINEAR, GL_CLAMP_TO_EDGE);
 
     LoadBitmap(L"Player\\LuckyItem\\65\\InvenArmorMale40_luck.tga", BITMAP_INVEN_ARMOR + 6);
     LoadBitmap(L"Player\\LuckyItem\\65\\InvenPantsMale40_luck.tga", BITMAP_INVEN_PANTS + 6);
@@ -4472,6 +4477,9 @@ void OpenBasicData(HDC hDC)
 
 void ReleaseMainData()
 {
+    UI::Inventory::SkinShop::Reset();
+    GameLogic::Cosmetics::FenrirMounts::Reset();
+    Render::Models::CosmeticArmor::Release();
     gMapManager.DeleteObjects();
     DeleteNpcs();
     DeleteMonsters();

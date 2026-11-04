@@ -94,6 +94,8 @@ namespace mu::ui::window
         void SyncTarget();
         void PressCommandButton(int command);
         void RunCommand();
+        CHARACTER* ResolveCommandTarget(int& index);
+        void ExecuteSelectedCommand(CHARACTER* target, int index);
     };
 };
 

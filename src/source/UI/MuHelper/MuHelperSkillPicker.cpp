@@ -101,7 +101,7 @@ void CMuHelperSkillPicker::FilterByBuffSkills()
 
 void CMuHelperSkillPicker::PrepareSkillsToRender()
 {
-    m_aiSkillsToRender.clear();
+    m_aiSkillsToRender = {0};
 
     if (CharacterAttribute->SkillNumber > 0)
     {
@@ -142,6 +142,7 @@ void CMuHelperSkillPicker::BindRmlModel(Rml::DataModelConstructor& c, MuHelperSk
     c.Bind("attack", &model.attack);
 
     auto entry = c.RegisterStruct<MuHelperSkillPickerEntry>();
+    entry.RegisterMember("clear", &MuHelperSkillPickerEntry::clear);
     entry.RegisterMember("decorator", &MuHelperSkillPickerEntry::decorator);
     c.RegisterArray<std::vector<MuHelperSkillPickerEntry>>();
     c.Bind("entries", &model.entries);
@@ -179,7 +180,7 @@ void CMuHelperSkillPicker::SyncRmlModel()
     model.entries.clear();
     model.entries.reserve(m_aiSkillsToRender.size());
     for (const int skillType : m_aiSkillsToRender)
-        model.entries.push_back({UI::MuHelper::SkillIconDecorator(skillType)});
+        model.entries.push_back({skillType == 0, skillType == 0 ? Rml::String{} : UI::MuHelper::SkillIconDecorator(skillType)});
     m_RmlView.MarkDirty("entries");
 }
 

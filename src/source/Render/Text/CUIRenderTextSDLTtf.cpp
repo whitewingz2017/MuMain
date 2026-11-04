@@ -15,6 +15,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <cmath>
+#include <optional>
 #include <vector>
 
 namespace
@@ -291,6 +292,10 @@ void CUIRenderTextSDLTtf::RenderText(int x, int y, const wchar_t* text, int boxW
         return;
     }
 
+    std::optional<FrameProfiler::Scope> labelTiming;
+    if (Render::Renderer::ActiveOverlay2DRecorder() != nullptr)
+        labelTiming.emplace(FrameProfiler::Pass::LabelText);
+
     mu_wchar_to_utf8(text, m_utf8Scratch);
     if (m_utf8Scratch.empty())
     {
@@ -315,6 +320,8 @@ void CUIRenderTextSDLTtf::RenderText(int x, int y, const wchar_t* text, int boxW
     if (Render::Renderer::IOverlay2DRecorder* recorder = Render::Renderer::ActiveOverlay2DRecorder())
     {
         Render::Renderer::RecordedText record;
+        record.autoWidth = boxWidth == 0;
+        record.horizontalAnchor = sort == RT3_WRITE_CENTER ? 0.5f : (sort == RT3_WRITE_RIGHT_TO_LEFT ? 1.0f : 0.0f);
         record.boxX = layout.renderX;
         record.boxY = layout.screenY;
         record.boxWidth = layout.boxWidth;
@@ -327,7 +334,10 @@ void CUIRenderTextSDLTtf::RenderText(int x, int y, const wchar_t* text, int boxW
         record.bold = m_activeRole == UI::Scaling::FontRole::Bold;
         record.textColor = m_textColor;
         record.utf8 = m_utf8Scratch;
-        recorder->RecordText(record);
+        {
+            FRAME_PROFILE(LabelRecord);
+            recorder->RecordText(record);
+        }
         return;
     }
 

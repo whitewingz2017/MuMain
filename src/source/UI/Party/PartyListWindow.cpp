@@ -3,6 +3,7 @@
 #include "UI/Chat/Chat.h"
 
 #include "UI/Party/PartyListWindow.h"
+#include "World/MapInfra/MapManager.h"
 #include "UI/Core/WindowSystem.h"
 
 #include "Engine/Object/ZzzInventory.h"

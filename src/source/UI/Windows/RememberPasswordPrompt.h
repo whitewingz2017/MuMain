@@ -13,7 +13,7 @@ namespace UI::Login
     };
 
     // Opens the confirmation dialog and marks the choice Pending.
-    void OpenRememberPasswordPrompt();
+    void OpenRememberPasswordPrompt(bool accountOnly = false);
 
     // The current answer. The caller applies it and then clears it.
     RememberPasswordChoice RememberPasswordChoiceState();

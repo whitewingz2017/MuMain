@@ -9,6 +9,7 @@ void LetterReadModel::Bind(Rml::DataModelConstructor& c)
     line.RegisterMember("text", &Line::text);
     c.RegisterArray<std::vector<Line>>();
 
+    c.Bind("can_claim", &canClaim);
     c.Bind("lines", &lines);
     c.Bind("title", &title);
     c.Bind("header", &header);

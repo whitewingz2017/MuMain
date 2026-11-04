@@ -54,7 +54,9 @@ using namespace M34CryWolf1st;
 
 extern BYTE m_AltarState[];
 extern bool	View_Bal;
-extern char Suc_Or_Fail, Message_Box;
+// signed: a -1/0/1 state; plain char is unsigned on ARM (GMCrywolf1st.cpp).
+extern signed char Suc_Or_Fail;
+extern char Message_Box;
 extern int m_StatueHP, Val_Hp, Dark_elf_Num;
 extern bool View_End_Result;
 

@@ -83,6 +83,7 @@ namespace mu::ui::window
 
             bool showRecipe = false;
             Rml::String recipeLine1, recipeLine2;
+            float recipeLine1Fit = 1.f, recipeLine2Fit = 1.f; // MixLine::fit (the 160 recipe box)
             bool showRecipeLine2 = false;
             bool recipeReady = false; // IsReadyToMix(); the theme colours the recipe name
 
@@ -95,6 +96,7 @@ namespace mu::ui::window
 
             bool showPrediction = false;
             Rml::String predictionText;
+            float predictionFit = 1.f; // MixLine::fit; source lines carry their own
 
             std::vector<MixLine> sourceLines;
             std::vector<MixLine> statusLines;
@@ -133,7 +135,7 @@ namespace mu::ui::window
         void Release();
 
         bool InsertItem(int iIndex, std::span<const BYTE> pbyItemPacket);
-        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr);
+        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr, ITEM* selectedItem = nullptr);
         bool ProcessMixItemAutoMoveToInventory();
         void DeleteItem(int iIndex);
         void DeleteAllItems();
@@ -168,7 +170,7 @@ namespace mu::ui::window
         bool AcceptsHeldItem(CPickedItem* pPickedItem);
 
         bool AutoMoveItem(CInventoryCtrl* srcCtrl, STORAGE_TYPE srcType,
-            CInventoryCtrl* dstCtrl, STORAGE_TYPE dstType, bool requireMixSource);
+            CInventoryCtrl* dstCtrl, STORAGE_TYPE dstType, bool requireMixSource, ITEM* selectedItem = nullptr);
 
         // Former RenderFrame()/RenderMixDescriptions() native text -- see its own comment
         // (MixInventory.cpp) for the full per-field translation.

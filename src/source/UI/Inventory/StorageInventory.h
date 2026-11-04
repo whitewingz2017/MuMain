@@ -108,7 +108,7 @@ namespace mu::ui::window
 
         void SetBackupTakeZen(int nZen);
 
-        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr);
+        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr, ITEM* selectedItem = nullptr);
 
         void SendRequestItemToMyInven(ITEM* pItemObj, int nStorageIndex, int nInvenIndex);
 

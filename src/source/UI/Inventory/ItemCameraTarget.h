@@ -32,6 +32,8 @@ public:
     // target. Null or disabled stops the drawing; the image is invisible while it has no frame.
     void Sync(Rml::Element* image, bool enabled);
     void Disable() { m_target.SetEnabled(false); }
+    void SetContinuous(bool continuous) { m_target.SetContinuous(continuous); }
+    void Invalidate() { m_target.Invalidate(); }
     // The camera's vertical field of view, in degrees: the item camera's 1 unless a window drew
     // its items through another.
     void SetFieldOfView(float degrees) { m_fieldOfView = degrees; }

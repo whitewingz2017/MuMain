@@ -3,6 +3,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -23,7 +24,7 @@ public:
         TextOwner transient{nullptr, TTF_DestroyText};
     };
 
-    // ponytail: 256 retained labels; raise only if post-warmup layout profiling still shows churn.
+    // Retain recently used labels up to the configured capacity.
     explicit SdlTtfTextCache(TTF_TextEngine* engine = nullptr, std::size_t capacity = 256);
     ~SdlTtfTextCache();
 
@@ -40,10 +41,14 @@ private:
         TextOwner text{nullptr, TTF_DestroyText};
         int width = 0;
         int height = 0;
+        std::uint64_t lastUsed = 0;
     };
+
+    PreparedText Retain(TTF_Font* font, std::string_view utf8, TextOwner text, int width, int height);
 
     TTF_TextEngine* m_engine = nullptr;
     std::size_t m_capacity = 0;
     std::vector<Entry> m_entries;
+    std::uint64_t m_useCounter = 0;
 };
 }

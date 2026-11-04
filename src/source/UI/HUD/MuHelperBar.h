@@ -58,9 +58,6 @@ namespace mu::ui::window
         {
             Rml::String positionText;   // "MapName (x, y)"
             bool muHelperActive = false; // drives which of Start/Stop is shown
-            Rml::String configHint;
-            Rml::String startHint;
-            Rml::String stopHint;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, MuHelperBarRmlModel& model);
         void OnRmlReloaded();
@@ -70,8 +67,6 @@ namespace mu::ui::window
 
         bool m_bRmlConfigClicked = false;
         bool m_bRmlToggleClicked = false;
-
-        // The hovered button's hint (0 config, 1 start, 2 stop), in the shared tooltip.
 
         void SyncRmlModel();
         void BuildRmlUi();

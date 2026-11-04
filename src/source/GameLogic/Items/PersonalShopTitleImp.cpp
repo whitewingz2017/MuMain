@@ -586,6 +586,7 @@ void CPersonalShopTitleImp::CShopTitleDrawObj::SeparateShopTitle(const std::wstr
 
     topTitle = pszTopTitle;
     bottomTitle = pszBottomTitle;
+    // bottomTitle.clear();
 }
 void CPersonalShopTitleImp::CShopTitleDrawObj::CalculateBooleanSize(IN const std::wstring& name, IN const std::wstring& topTitle, IN const std::wstring& bottomTitle, OUT SIZE& size)
 {

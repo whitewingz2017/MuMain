@@ -57,6 +57,7 @@ namespace mu::ui::window
         // Whether the cursor is on a part of the HUD that takes the pointer, wherever the theme
         // placed it -- so world clicks there don't go through.
         bool IsMouseOverHud() const;
+        Rml::Element* GetHealthHudAnchor() const;
 
 
         float GetLayerDepth();		// 10.2f
@@ -67,6 +68,7 @@ namespace mu::ui::window
         int GetItemHotKeyLevel(int iHotKey);
         //void RenderHotKeyItems();
         void UpdateItemHotKey();
+        void UseItemHotKey(int slot) { m_ItemHotKey.UseSlot(slot); }
 
         void ResetSkillHotKey();
         void SetSkillHotKey(int iHotKey, int iSkillType);
@@ -91,6 +93,8 @@ namespace mu::ui::window
 
     private:
         void SyncRmlModel();
+        void SyncMobileProfile();
+        void SyncExperience();
         void BuildRmlUi();
 
     public:
@@ -112,6 +116,8 @@ namespace mu::ui::window
 
         struct MainFrameRmlModel
         {
+            bool mobileCustomColumns = false;
+            bool panelCollapsed = false;
             float hpFraction = 0.f, mpFraction = 0.f, agFraction = 0.f, sdFraction = 0.f;
             Rml::String hpText, mpText, agText, sdText;
 
@@ -125,6 +131,8 @@ namespace mu::ui::window
             // expFraction is progress within the current 10%-of-level decile (0..1), not overall
             // level progress; expDigit (0-9) is that decile number.
             float expFraction = 0.f;
+            float mobileExpFraction = 0.f;
+            Rml::String mobileExpText;
             Rml::String expDigit;
             Rml::String expTooltip;
 
@@ -135,6 +143,8 @@ namespace mu::ui::window
             // Alert-blink dots: bound boolean + CSS dot, computed each frame from the same state
             // the legacy blink read.
             bool chaInfoAlert = false, friendAlert = false;
+            bool mobileStatPoints = false;
+            Rml::String mobileProfileLevel, mobileProfileLocation;
 
             // Which of #skill_slot_0..4 shows the active skill (see
             // CSkillList::IsHotKeySlotCurrentSkill()). 5 named fields, not an array -- RmlUi's

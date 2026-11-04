@@ -6,9 +6,9 @@
       "number": 0,
       "name": {
         "en": "Skull Staff",
-        "de": "Schädelstab",
-        "es": "Báculo Calavera",
-        "pt": "Bastão da caveira"
+        "de": "Sch\u00e4delstab",
+        "es": "B\u00e1culo Calavera",
+        "pt": "Bast\u00e3o da caveira"
       },
       "width": 1,
       "height": 3,
@@ -36,8 +36,8 @@
       "name": {
         "en": "Angelic Staff",
         "de": "Engelsstab",
-        "es": "Báculo Angelical",
-        "pt": "Bastão angelical"
+        "es": "B\u00e1culo Angelical",
+        "pt": "Bast\u00e3o angelical"
       },
       "width": 2,
       "height": 3,
@@ -65,8 +65,8 @@
       "name": {
         "en": "Serpent Staff",
         "de": "Schlangenstab",
-        "es": "Báculo Serpiente",
-        "pt": "Bastão da serpente"
+        "es": "B\u00e1culo Serpiente",
+        "pt": "Bast\u00e3o da serpente"
       },
       "width": 2,
       "height": 3,
@@ -94,8 +94,8 @@
       "name": {
         "en": "Thunder Staff",
         "de": "Donnerstab",
-        "es": "Báculo Trueno",
-        "pt": "Bastão do trovão"
+        "es": "B\u00e1culo Trueno",
+        "pt": "Bast\u00e3o do trov\u00e3o"
       },
       "width": 2,
       "height": 4,
@@ -124,8 +124,8 @@
       "name": {
         "en": "Gorgon Staff",
         "de": "Gorgonenstab",
-        "es": "Báculo Gorgon",
-        "pt": "Bastão da górgone"
+        "es": "B\u00e1culo Gorgon",
+        "pt": "Bast\u00e3o da g\u00f3rgone"
       },
       "width": 2,
       "height": 4,
@@ -152,9 +152,9 @@
       "number": 5,
       "name": {
         "en": "Legendary Staff",
-        "de": "Legendärer Stab",
-        "es": "Báculo Legendario",
-        "pt": "Bastão lendário"
+        "de": "Legend\u00e4rer Stab",
+        "es": "B\u00e1culo Legendario",
+        "pt": "Bast\u00e3o lend\u00e1rio"
       },
       "width": 1,
       "height": 4,
@@ -181,8 +181,8 @@
       "name": {
         "en": "Staff of Resurrection",
         "de": "Stab der Auferstehung",
-        "es": "Báculo de la Resurrección",
-        "pt": "Bastão da ressurreição"
+        "es": "B\u00e1culo de la Resurrecci\u00f3n",
+        "pt": "Bast\u00e3o da ressurrei\u00e7\u00e3o"
       },
       "width": 1,
       "height": 4,
@@ -210,8 +210,8 @@
       "name": {
         "en": "Chaos Lighting Staff",
         "de": "Chaos-Blitzstab",
-        "es": "Báculo Relámpago de Caos",
-        "pt": "Bastão do relâmpago do caos"
+        "es": "B\u00e1culo Rel\u00e1mpago de Caos",
+        "pt": "Bast\u00e3o do rel\u00e2mpago do caos"
       },
       "width": 2,
       "height": 4,
@@ -239,9 +239,9 @@
       "number": 8,
       "name": {
         "en": "Staff of Destruction",
-        "de": "Stab der Zerstörung",
-        "es": "Báculo de la Destrucción",
-        "pt": "Bastão da destruição"
+        "de": "Stab der Zerst\u00f6rung",
+        "es": "B\u00e1culo de la Destrucci\u00f3n",
+        "pt": "Bast\u00e3o da destrui\u00e7\u00e3o"
       },
       "width": 2,
       "height": 4,
@@ -270,8 +270,8 @@
       "name": {
         "en": "Dragon Soul Staff",
         "de": "Drachenseelenstab",
-        "es": "Báculo Alma de Dragón",
-        "pt": "Bastão da alma do dragão"
+        "es": "B\u00e1culo Alma de Drag\u00f3n",
+        "pt": "Bast\u00e3o da alma do drag\u00e3o"
       },
       "width": 1,
       "height": 4,
@@ -297,11 +297,14 @@
       "number": 10,
       "name": {
         "en": "Divine Staff of Archangel",
-        "de": "Göttlicher Stab des Erzengels",
-        "es": "Báculo Divino de Arcángel",
-        "pt": "Bastão divino do arcanjo"
+        "de": "G\u00f6ttlicher Stab des Erzengels",
+        "es": "B\u00e1culo Divino de Arc\u00e1ngel",
+        "pt": "Bast\u00e3o divino do arcanjo"
       },
-      "tags": ["divineArchangelWeapon", "valuable"],
+      "tags": [
+        "divineArchangelWeapon",
+        "valuable"
+      ],
       "width": 1,
       "height": 4,
       "slot": "mainHand",
@@ -327,8 +330,8 @@
       "name": {
         "en": "Staff of Kundun",
         "de": "Stab von Kundun",
-        "es": "Báculo de Kundun",
-        "pt": "Bastão de Kundun"
+        "es": "B\u00e1culo de Kundun",
+        "pt": "Bast\u00e3o de Kundun"
       },
       "width": 1,
       "height": 4,
@@ -354,9 +357,9 @@
       "number": 12,
       "name": {
         "en": "Grand Viper Staff",
-        "de": "Großvipernstab",
-        "es": "Gran Báculo Víbora",
-        "pt": "Grande bastão da víbora"
+        "de": "Gro\u00dfvipernstab",
+        "es": "Gran B\u00e1culo V\u00edbora",
+        "pt": "Grande bast\u00e3o da v\u00edbora"
       },
       "width": 1,
       "height": 4,
@@ -384,8 +387,8 @@
       "name": {
         "en": "Platina Staff",
         "de": "Platinstab",
-        "es": "Báculo Platina",
-        "pt": "Bastão de platina"
+        "es": "B\u00e1culo Platina",
+        "pt": "Bast\u00e3o de platina"
       },
       "width": 1,
       "height": 4,
@@ -518,9 +521,9 @@
       "number": 18,
       "name": {
         "en": "Demonic Stick",
-        "de": "Dämonischer Stock",
-        "es": "Vara Demoníaca",
-        "pt": "Cajado demoníaco"
+        "de": "D\u00e4monischer Stock",
+        "es": "Vara Demon\u00edaca",
+        "pt": "Cajado demon\u00edaco"
       },
       "width": 1,
       "height": 4,
@@ -546,8 +549,8 @@
       "name": {
         "en": "Storm Blitz Stick",
         "de": "Sturmblitzstock",
-        "es": "Vara Ráfaga Tormentosa",
-        "pt": "Caj. Relâmpago de Tempestade"
+        "es": "Vara R\u00e1faga Tormentosa",
+        "pt": "Caj. Rel\u00e2mpago de Tempestade"
       },
       "width": 1,
       "height": 4,
@@ -606,7 +609,9 @@
         "es": "Libro de Samut",
         "pt": "Livro de Samut"
       },
-      "tags": ["summonerBook"],
+      "tags": [
+        "summonerBook"
+      ],
       "width": 1,
       "height": 2,
       "slot": "offHand",
@@ -633,7 +638,9 @@
         "es": "Libro de Neil",
         "pt": "Livro de Neil"
       },
-      "tags": ["summonerBook"],
+      "tags": [
+        "summonerBook"
+      ],
       "width": 1,
       "height": 2,
       "slot": "offHand",
@@ -660,7 +667,9 @@
         "es": "Libro de Lagle",
         "pt": "Livro de Lagle"
       },
-      "tags": ["summonerBook"],
+      "tags": [
+        "summonerBook"
+      ],
       "width": 1,
       "height": 2,
       "slot": "offHand",
@@ -684,8 +693,8 @@
       "name": {
         "en": "Deadly Staff",
         "de": "Todesstab",
-        "es": "Báculo Mortal",
-        "pt": "Bastão letal"
+        "es": "B\u00e1culo Mortal",
+        "pt": "Bast\u00e3o letal"
       },
       "width": 1,
       "height": 4,
@@ -713,8 +722,8 @@
       "name": {
         "en": "Inberial Staff",
         "de": "Kaiserlicher Stab",
-        "es": "Báculo Inberial",
-        "pt": "Bastão inberial"
+        "es": "B\u00e1culo Inberial",
+        "pt": "Bast\u00e3o inberial"
       },
       "width": 1,
       "height": 4,
@@ -741,8 +750,8 @@
       "name": {
         "en": "Chromatic Staff",
         "de": "Chromatischer Stab",
-        "es": "Báculo Cromático",
-        "pt": "Bastão cromático"
+        "es": "B\u00e1culo Crom\u00e1tico",
+        "pt": "Bast\u00e3o crom\u00e1tico"
       },
       "width": 1,
       "height": 4,
@@ -795,11 +804,14 @@
       "number": 36,
       "name": {
         "en": "Divine Stick of the Archangel",
-        "de": "Göttlicher Stock des Erzengels",
-        "es": "Bastón Divino de Arcángel",
-        "pt": "Bastão Divino do Arcanjo"
+        "de": "G\u00f6ttlicher Stock des Erzengels",
+        "es": "Bast\u00f3n Divino de Arc\u00e1ngel",
+        "pt": "Bast\u00e3o Divino do Arcanjo"
       },
-      "tags": ["divineArchangelWeapon", "valuable"],
+      "tags": [
+        "divineArchangelWeapon",
+        "valuable"
+      ],
       "width": 1,
       "height": 4,
       "slot": "mainHand",
@@ -818,6 +830,456 @@
       "classRequirements": {
         "summoner": 1
       }
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Staff Skin"
+      },
+      "width": 1,
+      "height": 4,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "darkWizard": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Summoner Book Skin"
+      },
+      "width": 1,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "summoner": 1
+      }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mythical Miracle Staff Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Mythical Spite Staff Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Mythical Summon Spirit Stick Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "summoner": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Legendary Virtus Staff Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Legendary Invincible Stick Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "summoner": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Immortal Book of Goodness Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "summoner": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Immortal Staff of Oblivion Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Immortal Staff of Reckoning Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Immortal Mercy Stick Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "summoner": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Final Inferno Staff Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Final Infinity Staff Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "summoner": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 311,
+      "name": {
+        "en": "Staff Skin 1 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 312,
+      "name": {
+        "en": "Staff Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 313,
+      "name": {
+        "en": "Staff Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 314,
+      "name": {
+        "en": "Staff Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 315,
+      "name": {
+        "en": "Staff Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,7 @@
 #include "UI/HUD/MiniMapLayout.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace
 {
@@ -24,6 +25,22 @@ UI::MiniMap::Point FromCentre(const UI::MiniMap::Screen& screen, UI::MiniMap::Po
     return {p.x + screen.width / 2.f, screen.height - (p.y + screen.height / 2.f)};
 }
 } // namespace
+
+UI::MiniMap::Screen UI::MiniMap::AspectFitScreen(float width, float height)
+{
+    const float scale = std::min(width / 640.f, height / 480.f);
+    return {width, height, scale, scale, (width - 640.f * scale) / 2.f, (height - 480.f * scale) / 2.f};
+}
+
+UI::MiniMap::Screen UI::MiniMap::MobileScreen(float width, float height)
+{
+    auto screen = AspectFitScreen(width, height);
+    screen.scaleX *= MobileMapScale;
+    screen.scaleY *= MobileMapScale;
+    screen.offsetX = (width - 640.f * screen.scaleX) / 2.f;
+    screen.offsetY = (height - 480.f * screen.scaleY) / 2.f;
+    return screen;
+}
 
 UI::MiniMap::CssMatrix UI::MiniMap::ElementToQuad(const Quad& quad, float elementWidth, float elementHeight)
 {

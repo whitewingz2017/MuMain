@@ -48,12 +48,12 @@ bool SendHeldItemMove(const HeldItemMove& move)
 }
 
 bool AutoMoveItemAtCursor(CInventoryCtrl* source, STORAGE_TYPE sourceType, CInventoryCtrl* target,
-                          STORAGE_TYPE targetType, const std::function<bool(ITEM*)>& accepts)
+                          STORAGE_TYPE targetType, const std::function<bool(ITEM*)>& accepts, ITEM* selectedItem)
 {
     if (CInventoryCtrl::GetPickedItem() != nullptr || source == nullptr || target == nullptr)
         return false;
 
-    ITEM* item = source->FindItemAtPointer();
+    ITEM* item = selectedItem ? selectedItem : source->FindItemAtPointer();
     if (item == nullptr || !accepts(item))
         return false;
 

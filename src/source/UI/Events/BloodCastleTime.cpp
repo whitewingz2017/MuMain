@@ -118,7 +118,8 @@ void CBloodCastle::SyncView()
         }
     }
     // the theme's colours, the time turning imminent under five minutes.
-    m_View.Sync(shown, {kills, "normal"}, {I18N::Game::TimeLeft, "normal"},
+    const bool timerVisible = shown;
+    m_View.Sync(timerVisible, {kills, "normal"}, {I18N::Game::TimeLeft, "normal"},
                 {m_szTime, m_iTimeState == BC_TIME_STATE_IMMINENCE ? "imminent" : "normal"});
 }
 

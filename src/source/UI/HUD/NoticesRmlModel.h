@@ -1,25 +1,27 @@
 #pragma once
 
+#include "UI/HUD/NoticeHistory.h"
 #include <RmlUi/Core/Types.h>
 
 #include <vector>
 
 namespace UI::Notices
 {
-// One notice row: its text and its colour class. An empty row keeps its place in the stack.
+// Stable rows let RCSS transition from each message's previous position in the history.
 struct NoticeLineEntry
 {
     Rml::String text;
-    Rml::String kind; // "gold", "gold-dim" (the blink's half-alpha phase), "green", or "" when empty
+    Rml::String kind;
+    Rml::String stage = "empty";
 
     bool operator==(const NoticeLineEntry& other) const = default;
 };
 
 struct NoticesRmlModel
 {
-    // The native bold text size and line height, physical px.
-    float textPx = 0.f;
-    float lineHeightPx = 0.f;
-    std::vector<NoticeLineEntry> lines;
+    std::vector<NoticeLineEntry> lines = std::vector<NoticeLineEntry>(NoticeHistory::Capacity);
+    Rml::String outgoingText;
+    Rml::String outgoingKind;
+    Rml::String outgoingStage = "empty";
 };
 } // namespace UI::Notices

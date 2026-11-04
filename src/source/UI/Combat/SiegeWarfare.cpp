@@ -17,10 +17,18 @@
 #include "UI/RmlBridge/RmlTheme.h"
 #include "UI/Scaling/UITransform.h"
 
+#include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/ElementDocument.h>
+
+#include <string>
 
 using namespace SEASON3B;
 using namespace mu::ui::window;
+
+namespace
+{
+void PlaceInMapCorner(Rml::ElementDocument*) {}
+}
 
 mu::ui::window::CSiegeWarfare::CSiegeWarfare()
 {
@@ -237,6 +245,7 @@ void mu::ui::window::CSiegeWarfare::SyncRmlModel()
     if (!shown)
         return;
 
+    PlaceInMapCorner(m_RmlView.Document());
     SiegeWarfareRmlModel& next = m_NextRmlModel;
     m_pSiegeWarUI->SetDocument(m_RmlView.Document());
     next.boldTextPx = UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Bold);

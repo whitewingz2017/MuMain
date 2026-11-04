@@ -40,10 +40,11 @@ void ApplyNativeTextSize(Rml::ElementDocument* document)
         const float rootPx = sceneWindow ? UI::Scaling::SceneWindowScale(window.x, window.y)
                                          : UI::Scaling::SceneBarScale(window.x, window.y);
         document->SetProperty(Rml::PropertyId::FontSize, Rml::Property(rootPx, Rml::Unit::PX));
+        const float sceneTextPx = textPx;
         Rml::ElementList textElements;
         document->GetElementsByClassName(textElements, kNativeTextClass);
         for (Rml::Element* element : textElements)
-            element->SetProperty(Rml::PropertyId::FontSize, Rml::Property(textPx, Rml::Unit::PX));
+            element->SetProperty(Rml::PropertyId::FontSize, Rml::Property(sceneTextPx, Rml::Unit::PX));
         return;
     }
 

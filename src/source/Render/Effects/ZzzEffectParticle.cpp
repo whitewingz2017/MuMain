@@ -25,6 +25,21 @@
 vec3_t g_vParticleWind = { 0.0f, 0.0f, 0.0f };
 vec3_t g_vParticleWindVelo = { 0.0f, 0.0f, 0.0f };
 
+namespace
+{
+void InitializeMagicParticle(PARTICLE* particle, float scale)
+{
+    if (particle->SubType == 0)
+    {
+        constexpr int MagicLifetime = 10;
+        particle->LifeTime = MagicLifetime;
+        particle->Scale = scale;
+    }
+    // FinalMU subtype one keeps the common two-frame lifetime and supplied scale.
+    particle->Alpha = 1.0f;
+}
+}
+
 void HandPosition(PARTICLE* o)
 {
     OBJECT* Owner = o->Target;
@@ -389,6 +404,8 @@ int CreateParticle(int Type, vec3_t Position, vec3_t Angle, vec3_t Light, int Su
             case BITMAP_FIRE + 2:
             case BITMAP_FIRE + 3:
             {
+                // Subtype two is a stationary two-frame highlight with a signed source scale.
+                if (o->SubType == 2) o->Alpha = 1.0f;
                 switch (o->SubType)
                 {
                 case 0:
@@ -756,11 +773,7 @@ int CreateParticle(int Type, vec3_t Position, vec3_t Angle, vec3_t Light, int Su
                 break;
             case BITMAP_MAGIC:
             {
-                if (o->SubType == 0)
-                {
-                    o->LifeTime = 10;
-                    o->Scale = Scale;
-                }
+                InitializeMagicParticle(o, Scale);
             }
             break;
             case BITMAP_FLARE:  //

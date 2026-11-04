@@ -31,8 +31,8 @@
 #include <string>
 
 extern bool	View_Bal;
-extern char	Suc_Or_Fail;
-extern char	View_Suc_Or_Fail;
+extern signed char Suc_Or_Fail;
+extern signed char View_Suc_Or_Fail;
 extern float Deco_Insert;
 extern char Message_Box;
 extern wchar_t   Box_String[2][200];
@@ -67,6 +67,28 @@ extern int m_StatueHP;
 
 using namespace SEASON3B;
 using namespace mu::ui::window;
+
+namespace
+{
+// The result was counted in frames of the original's 25 fps; counting real frames made it stay
+// up for half a minute and more on a slow device. It now advances by elapsed 25 fps frames.
+constexpr DWORD ResultFrameMs = 40;
+constexpr DWORD ResultResumeGapMs = 1000;
+DWORD resultTick = 0;
+
+int ElapsedResultFrames()
+{
+    const DWORD now = GetTickCount();
+    if (resultTick == 0 || now - resultTick > ResultResumeGapMs)
+    {
+        resultTick = now;
+        return 1;
+    }
+    const int frames = static_cast<int>((now - resultTick) / ResultFrameMs);
+    resultTick += static_cast<DWORD>(frames) * ResultFrameMs;
+    return frames;
+}
+}
 
 mu::ui::window::CCryWolf::CCryWolf()
 {
@@ -229,10 +251,11 @@ void mu::ui::window::CCryWolf::BuildRmlUi()
 void mu::ui::window::CCryWolf::SyncResult(CryWolfRmlModel& updated)
 {
     constexpr int TotDelay = 400;
+    const int frames = ElapsedResultFrames();
 
     if (Suc_Or_Fail == 1)
     {
-        Delay++;
+        Delay += frames;
         if (Delay >= TotDelay)
         {
             Delay = 0;
@@ -250,10 +273,7 @@ void mu::ui::window::CCryWolf::SyncResult(CryWolfRmlModel& updated)
     else
         A_Value = 0.3f + (static_cast<float>(aa) * 0.01f);
 
-    if (Delay_Add_inter <= 0)
-        Delay_Add_inter = 0;
-    else
-        Delay_Add_inter -= 15;
+    Delay_Add_inter = std::max(0, Delay_Add_inter - 15 * frames);
 
     updated.resultVisible = true;
     updated.bannerSrc = InterfaceImage(Add_Num == 11 ? "icon_success.tga" : "icon_failure.tga");
@@ -266,7 +286,7 @@ void mu::ui::window::CCryWolf::SyncResult(CryWolfRmlModel& updated)
     {
         updated.bannerLeft = static_cast<float>(150 + (Delay * 15));
 
-        Delay++;
+        Delay += frames;
         if ((Delay * 15) > 479)
         {
             Delay = 0;

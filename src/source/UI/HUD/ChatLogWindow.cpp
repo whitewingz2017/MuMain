@@ -1,9 +1,10 @@
 #include "stdafx.h"
+#include "UI/Chat/SystemMessageAnimation.h"
+#include "UI/Chat/MessagePresentation.h"
 #include "I18N/All.h"
 
-#include "Render/Text/CUIRenderTextSDLTtf.h"
-#include "UI/RmlBridge/RmlNativeTextSize.h"
 #include "UI/HUD/ChatLogWindow.h"
+#include "Data/GameConfig/GameConfig.h"
 #include "UI/Core/WindowManager.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Core/WindowGeometry.h"
@@ -17,12 +18,14 @@
 #include "UI/RmlBridge/RmlTheme.h"
 #include "UI/RmlBridge/RmlDocumentVisibility.h"
 #include "UI/RmlBridge/RmlWorkspaceParticipant.h"
+#include "UI/RmlBridge/RmlElementStack.h"
 #include "UI/Placement/WindowPlacement.h"
 #include "UI/Scaling/UITransform.h"
 #include "Core/Utilities/StringUtils.h"
 #include "Render/Text/CUIRenderText.h"
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Element.h>
+#include <RmlUi/Core/ElementUtilities.h>
 
 using namespace SEASON3B;
 using namespace mu::ui::window;
@@ -66,21 +69,8 @@ bool mu::ui::window::CChatLogWindow::Create(CManager* pNewUIMng, int nShowingLin
     m_pNewUIMng->AddUIObj(mu::ui::window::INTERFACE_CHATLOGWINDOW, this);
     SetNumberOfShowingLines(nShowingLines);
 
-    // A theme slot moves the log; the resize bands measure from its bottom edge, at its scale.
-    // Without a slot the log stands on the HUD.
-    UI::RmlBridge::WorkspaceDocumentOptions options;
-    options.measure = [this] { return UI::Placement::PlacementParticipant::Size{WND_WIDTH, static_cast<float>(m_WndSize.cy)}; };
-    options.placed = [this](const UI::Placement::PlacementParticipant::Box* box)
-    {
-        const float hudScale = UI::Scaling::BottomHudScale(WindowWidth, WindowHeight);
-        m_PanelScale = box != nullptr ? box->scale : hudScale;
-        UI::Placement::PlacementParticipant::Box hud;
-        if (box != nullptr)
-            m_PanelBottomPx = box->top + box->height;
-        else
-            m_PanelBottomPx = UI::Placement::SlotBox("main_hud", hud) ? hud.top : static_cast<float>(WindowHeight);
-    };
-    UI::RmlBridge::RegisterWorkspaceDocument("chat_log", [this] { return m_RmlView.Document(); }, "panel", std::move(options));
+    // Measure the styled box so compact typography keeps its bottom-left workspace anchor.
+    UI::RmlBridge::RegisterWorkspaceDocument("chat_log", [this] { return m_RmlView.Document(); }, "panel");
     // No LoadImages() any more: every sprite this window used is referenced by chat_log.rcss and
     // loaded through RmlUi's own exclusive-slot path instead. CGuildInfoWindow/CGuardWindow alias
     // this class's IMAGE_LIST values but load their own copies, so nothing depended on it -- the
@@ -143,6 +133,7 @@ void mu::ui::window::CChatLogWindow::AddText(const type_string& strID, const typ
     }
 }
 
+
 void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, const type_string& strText, MESSAGE_TYPE MsgType, MESSAGE_TYPE ErrMsgType)
 {
     m_bLinesDirty = true;
@@ -153,6 +144,8 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
         return;
     }
 
+    // Keep the world-channel color on continuation rows after native text splitting.
+    const bool globalPost = !UI::Chat::PresentMessage(strID, strText, MsgType).prefix.empty();
     int nScrollLines = 0;
     if (strText.size() >= 20)
     {
@@ -161,7 +154,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
         if (!strText1.empty())
         {
             const auto pMsgText = new CMessageText;
-            if (!pMsgText->Create(strID, strText, MsgType))
+            if (!pMsgText->Create(strID, strText, MsgType, globalPost))
                 delete pMsgText;
             else
             {
@@ -169,7 +162,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
             }
 
             const auto pAllMsgText = new CMessageText;
-            if (!pAllMsgText->Create(strID, strText1, MsgType))
+            if (!pAllMsgText->Create(strID, strText1, MsgType, globalPost))
             {
                 delete pAllMsgText;
             }
@@ -188,7 +181,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
                 }
 
                 const auto pErrMsgText = new CMessageText;
-                if (!pErrMsgText->Create(strID, strText1, MsgType))
+                if (!pErrMsgText->Create(strID, strText1, MsgType, globalPost))
                     delete pErrMsgText;
                 else
                 {
@@ -204,7 +197,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
         if (!strText2.empty())
         {
             const auto pMsgText = new CMessageText;
-            if (!pMsgText->Create(L"", strText2, MsgType))
+            if (!pMsgText->Create(L"", strText2, MsgType, globalPost))
                 delete pMsgText;
             else
             {
@@ -212,7 +205,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
             }
 
             const auto pAllMsgText = new CMessageText;
-            if (!pAllMsgText->Create(L"", strText2, MsgType))
+            if (!pAllMsgText->Create(L"", strText2, MsgType, globalPost))
                 delete pAllMsgText;
             else
             {
@@ -229,7 +222,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
                 }
 
                 const auto pErrMsgText = new CMessageText;
-                if (!pErrMsgText->Create(L"", strText2, MsgType))
+                if (!pErrMsgText->Create(L"", strText2, MsgType, globalPost))
                     delete pErrMsgText;
                 else
                 {
@@ -246,7 +239,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
     else
     {
         const auto pMsgText = new CMessageText;
-        if (!pMsgText->Create(strID, strText, MsgType))
+        if (!pMsgText->Create(strID, strText, MsgType, globalPost))
             delete pMsgText;
         else
         {
@@ -254,7 +247,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
         }
 
         const auto pAllMsgText = new CMessageText;
-        if (!pAllMsgText->Create(strID, strText, MsgType))
+        if (!pAllMsgText->Create(strID, strText, MsgType, globalPost))
             delete pAllMsgText;
         else
         {
@@ -272,7 +265,7 @@ void mu::ui::window::CChatLogWindow::ProcessAddText(const type_string& strID, co
             }
 
             const auto pErrMsgText = new CMessageText;
-            if (!pErrMsgText->Create(strID, strText, MsgType))
+            if (!pErrMsgText->Create(strID, strText, MsgType, globalPost))
                 delete pErrMsgText;
             else
             {
@@ -518,47 +511,25 @@ bool mu::ui::window::CChatLogWindow::UpdateMouseEvent()
 
 void mu::ui::window::CChatLogWindow::ResizeToPointer(float pointerYPx)
 {
-    if (!m_bShowFrame)
+    auto* document = m_RmlView.Document();
+    auto* well = document ? document->GetElementById("lines") : nullptr;
+    if (!m_bShowFrame || !well || m_nShowingLines <= 0)
         return;
 
-    // Native's own stepping, unchanged: the screen is divided into 3-line bands above and below
-    // the handle's resting position, and the pointer's band picks the new line count. The bands
-    // span the whole screen, so only the pointer's height counts; both are in the log's own units.
-    const float scale = m_PanelScale > 0.f ? m_PanelScale : 1.f;
-    const float bottom = m_PanelBottomPx / scale;
-    const float pointerY = pointerYPx / scale;
-    const auto inBand = [pointerY](float top, float height) { return pointerY >= top && pointerY < top + height; };
-    const float resizeTop = bottom - static_cast<float>(m_WndSize.cy) - RESIZING_BTN_HEIGHT;
-    const int nTopSections = (15 - (int)GetNumberOfShowingLines()) / 3;
-    const int nBottomSections = ((int)GetNumberOfShowingLines() - 3) / 3;
-
-    for (int i = 0; i < nTopSections; i++)
-    {
-        if (inBand(resizeTop - RESIZING_BTN_HEIGHT - ((i + 1) * SCROLL_MIDDLE_PART_HEIGHT * 3 * 2),
-                   SCROLL_MIDDLE_PART_HEIGHT * 3 + RESIZING_BTN_HEIGHT))
-        {
-            SetNumberOfShowingLines((int)GetNumberOfShowingLines() + (i + 1) * 3);
-            return;
-        }
-    }
-    for (int i = 0; i < nBottomSections; i++)
-    {
-        if (inBand(resizeTop + RESIZING_BTN_HEIGHT + ((i + 1) * SCROLL_MIDDLE_PART_HEIGHT * 3),
-                   RESIZING_BTN_HEIGHT + SCROLL_MIDDLE_PART_HEIGHT * 3))
-        {
-            SetNumberOfShowingLines((int)GetNumberOfShowingLines() - (i + 1) * 3);
-            return;
-        }
-    }
-    if (inBand(0.f, bottom - (SCROLL_MIDDLE_PART_HEIGHT * 15 + RESIZING_BTN_HEIGHT + SCROLL_TOP_BOTTOM_PART_HEIGHT * 2)))
-    {
-        SetNumberOfShowingLines(15);
-    }
-    if (inBand(bottom - (SCROLL_MIDDLE_PART_HEIGHT * 3 + SCROLL_TOP_BOTTOM_PART_HEIGHT * 2),
-               SCROLL_MIDDLE_PART_HEIGHT * 3 + SCROLL_TOP_BOTTOM_PART_HEIGHT * 2))
-    {
-        SetNumberOfShowingLines(3);
-    }
+    Rml::Rectanglef bounds;
+    if (!Rml::ElementUtilities::GetBoundingBox(bounds, well, Rml::BoxArea::Content))
+        return;
+    const float contentHeight = well->GetBox().GetSize(Rml::BoxArea::Content).y;
+    if (contentHeight <= 0.f)
+        return;
+    const float rowHeight = well->GetLineHeight() * bounds.Size().y / contentHeight;
+    if (rowHeight <= 0.f)
+        return;
+    constexpr int MinLines = 3, MaxLines = 15;
+    int lines = static_cast<int>((bounds.BottomRight().y - pointerYPx) / rowHeight + 0.5f);
+    constexpr int DesktopStep = 3;
+    lines = ((lines + DesktopStep / 2) / DesktopStep) * DesktopStep;
+    SetNumberOfShowingLines(std::clamp(lines, MinLines, MaxLines));
 }
 
 bool mu::ui::window::CChatLogWindow::UpdateKeyEvent()
@@ -568,24 +539,45 @@ bool mu::ui::window::CChatLogWindow::UpdateKeyEvent()
 
 namespace
 {
-    // Lowercase slug per message type -- the RCSS builds .chat-line--<slug> from it. Types native
-    // refuses to draw at all never reach the model; they become empty placeholder entries so a
-    // line's array index keeps matching its index in the message vector.
-    const char* MessageTypeSlug(mu::ui::window::MESSAGE_TYPE type)
+    void BindChatLine(Rml::DataModelConstructor& constructor)
     {
-        switch (type)
-        {
-        case mu::ui::window::TYPE_CHAT_MESSAGE:    return "chat";
-        case mu::ui::window::TYPE_WHISPER_MESSAGE: return "whisper";
-        case mu::ui::window::TYPE_SYSTEM_MESSAGE:  return "system";
-        case mu::ui::window::TYPE_ERROR_MESSAGE:   return "error";
-        case mu::ui::window::TYPE_PARTY_MESSAGE:   return "party";
-        case mu::ui::window::TYPE_GUILD_MESSAGE:   return "guild";
-        case mu::ui::window::TYPE_UNION_MESSAGE:   return "union";
-        case mu::ui::window::TYPE_GENS_MESSAGE:    return "gens";
-        case mu::ui::window::TYPE_GM_MESSAGE:      return "gm";
-        default:                                   return nullptr;
-        }
+        auto line = constructor.RegisterStruct<ChatLogLineEntry>();
+        line.RegisterMember("text", &ChatLogLineEntry::text);
+        line.RegisterMember("sender", &ChatLogLineEntry::sender);
+        line.RegisterMember("prefix", &ChatLogLineEntry::prefix);
+        line.RegisterMember("kind", &ChatLogLineEntry::kind);
+        line.RegisterMember("has_id", &ChatLogLineEntry::hasId);
+        line.RegisterMember("opacity", &ChatLogLineEntry::opacity);
+        line.RegisterMember("entry_progress", &ChatLogLineEntry::entryProgress);
+        line.RegisterMember("exit_progress", &ChatLogLineEntry::exitProgress);
+        constructor.RegisterArray<Rml::Vector<ChatLogLineEntry>>();
+    }
+
+    ChatLogLineEntry BuildChatLine(const CMessageText& message)
+    {
+        const auto presentation = UI::Chat::PresentMessage(message.GetID(), message.GetText(), message.GetType());
+        ChatLogLineEntry entry;
+        entry.kind = presentation.kind ? presentation.kind : "system";
+        if (message.IsGlobalPost())
+            entry.kind = "world";
+        entry.sender = StringUtils::WideToNarrow(std::wstring(presentation.sender).c_str());
+        entry.prefix = StringUtils::WideToNarrow(std::wstring(presentation.prefix).c_str());
+        entry.text = StringUtils::WideToNarrow(std::wstring(presentation.text).c_str());
+        entry.hasId = !message.GetID().empty();
+        return entry;
+    }
+
+    bool SyncLineAnimation(ChatLogLineEntry& line, const CMessageText& message, std::uint64_t now, bool expires)
+    {
+        const auto created = message.GetCreatedMs();
+        const auto age = now >= created ? now - created : 0;
+        const auto state = expires ? UI::Chat::AnimateSystemMessage(age) : UI::Chat::AnimateChatMessage(age);
+        if (line.opacity == state.opacity && line.entryProgress == state.entryProgress && line.exitProgress == state.exitProgress)
+            return false;
+        line.opacity = state.opacity;
+        line.entryProgress = state.entryProgress;
+        line.exitProgress = state.exitProgress;
+        return true;
     }
 }
 
@@ -608,21 +600,14 @@ void mu::ui::window::CChatLogWindow::BindRmlModel(Rml::DataModelConstructor& c, 
 {
     // Must re-run in full on every call, including on a theme switch -- same reason
     // CCharMakeWin::BindRmlModel() documents, so no guard here.
-    auto line = c.RegisterStruct<ChatLogLineEntry>();
-    line.RegisterMember("text", &ChatLogLineEntry::text);
-    line.RegisterMember("kind", &ChatLogLineEntry::kind);
-    line.RegisterMember("has_id", &ChatLogLineEntry::hasId);
-    c.RegisterArray<Rml::Vector<ChatLogLineEntry>>();
+    BindChatLine(c);
 
     c.Bind("lines", &model.lines);
-    c.Bind("panel_height", &model.panelHeight);
-    c.Bind("client_height", &model.clientHeight);
+    c.Bind("text_scale", &model.textScale);
+    c.Bind("visible_lines", &model.visibleLines);
     c.Bind("back_alpha", &model.backAlpha);
     c.Bind("show_frame", &model.showFrame);
     c.Bind("pointed_index", &model.pointedIndex);
-    c.Bind("text_px", &model.textPx);
-    c.Bind("line_px", &model.linePx);
-    c.Bind("row_px", &model.rowPx);
 
     // RmlUi drag events supply the pointer directly; legacy button flags do not see panel presses.
     c.BindEventCallback("chat_resize_drag",
@@ -656,20 +641,8 @@ void mu::ui::window::CChatLogWindow::SyncRmlModel()
 
     ChatLogRmlModel& model = m_RmlView.GetModel();
 
-    // Native's own UpdateWndSize(): 15 per line, plus the 3+3 scroll caps and the 2+2 edges.
-    const float clientHeight = SCROLL_MIDDLE_PART_HEIGHT * static_cast<float>(m_nShowingLines);
-    const float panelHeight = clientHeight + SCROLL_TOP_BOTTOM_PART_HEIGHT * 2.0f
-                            + WND_TOP_BOTTOM_EDGE * 2.0f;
-    if (model.clientHeight != clientHeight)
-    {
-        model.clientHeight = clientHeight;
-        m_RmlView.MarkDirty("client_height");
-    }
-    if (model.panelHeight != panelHeight)
-    {
-        model.panelHeight = panelHeight;
-        m_RmlView.MarkDirty("panel_height");
-    }
+    SyncField(m_RmlView.Binder(), &ChatLogRmlModel::textScale, "text_scale", GameConfig::GetInstance().GetChatTextScalePercent() / 100.f);
+    SyncField(m_RmlView.Binder(), &ChatLogRmlModel::visibleLines, "visible_lines", m_nShowingLines);
     if (model.showFrame != m_bShowFrame)
     {
         model.showFrame = m_bShowFrame;
@@ -685,7 +658,6 @@ void mu::ui::window::CChatLogWindow::SyncRmlModel()
         m_RmlView.MarkDirty("back_alpha");
     }
 
-    SyncNativeLineGeometry();
 
     if (m_bLinesDirty)
     {
@@ -708,7 +680,24 @@ void mu::ui::window::CChatLogWindow::SyncRmlModel()
         m_bScrollPending = true;
     }
 
+    UpdateLineAnimation();
     UpdatePointedLine();
+}
+
+void mu::ui::window::CChatLogWindow::AnchorAboveInput(Rml::Context* context)
+{
+    auto* panel = m_RmlView.Document()->GetElementById("panel");
+    if (!panel)
+        return;
+    for (int index = 0; index < context->GetNumDocuments(); ++index)
+    {
+        auto* input = context->GetDocument(index);
+        if (!input->IsVisible() || !input->GetSourceURL().ends_with("/chat_input.rml"))
+            continue;
+        if (auto* inputPanel = input->GetElementById("panel"))
+            UI::RmlBridge::StackAbove(*panel, *inputPanel);
+        return;
+    }
 }
 
 void mu::ui::window::CChatLogWindow::AfterRmlLayout(Rml::Context* context)
@@ -716,6 +705,17 @@ void mu::ui::window::CChatLogWindow::AfterRmlLayout(Rml::Context* context)
     auto* document = m_RmlView.Document();
     if (!document || document->GetContext() != context || !document->IsVisible())
         return;
+
+
+    auto* panel = document->GetElementById("panel");
+    if (!panel)
+        return;
+    const float panelHeight = panel->GetBox().GetSize().y;
+    if (panelHeight != m_LastPanelHeight)
+    {
+        m_LastPanelHeight = panelHeight;
+        UI::Placement::Invalidate();
+    }
 
     if (m_bScrollPending)
     {
@@ -733,27 +733,6 @@ void mu::ui::window::CChatLogWindow::AfterRmlLayout(Rml::Context* context)
     SyncLogicalScrollFromView();
 }
 
-// Native's RenderMessages(): each line drawn with RenderText() at the native text size, its
-// background as tall as the text's line height, one line every
-// SCROLL_MIDDLE_PART_HEIGHT; the row pitch follows the well, which is sized in dp.
-void mu::ui::window::CChatLogWindow::SyncNativeLineGeometry()
-{
-    const float dpRatio = RmlUiRuntime::Instance().GetContext()->GetDensityIndependentPixelRatio();
-
-    ChatLogRmlModel& model = m_RmlView.GetModel();
-    auto syncFloat = [&](float ChatLogRmlModel::* field, const char* name, float value)
-    {
-        if (model.*field != value)
-        {
-            model.*field = value;
-            m_RmlView.MarkDirty(name);
-        }
-    };
-    syncFloat(&ChatLogRmlModel::textPx, "text_px", UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Normal));
-    syncFloat(&ChatLogRmlModel::linePx, "line_px", CUIRenderTextSDLTtf::LineHeightPx(UI::Scaling::FontRole::Normal));
-    syncFloat(&ChatLogRmlModel::rowPx, "row_px", SCROLL_MIDDLE_PART_HEIGHT * dpRatio);
-}
-
 void mu::ui::window::CChatLogWindow::RebuildLineModel()
 {
     ChatLogRmlModel& model = m_RmlView.GetModel();
@@ -766,7 +745,7 @@ void mu::ui::window::CChatLogWindow::RebuildLineModel()
     model.lines.reserve(pvecMsgs->size());
     for (const CMessageText* pMsgText : *pvecMsgs)
     {
-        const char* slug = pMsgText ? MessageTypeSlug(pMsgText->GetType()) : nullptr;
+        const char* slug = pMsgText ? UI::Chat::MessageKind(pMsgText->GetType()) : nullptr;
         if (slug == nullptr || pMsgText->GetText().empty())
         {
             // Native skipped drawing these (bRenderMessage stayed false), but an entry still has
@@ -776,15 +755,27 @@ void mu::ui::window::CChatLogWindow::RebuildLineModel()
             continue;
         }
 
-        ChatLogLineEntry entry;
-        entry.kind = slug;
-        entry.hasId = !pMsgText->GetID().empty();
-        const type_string composed = entry.hasId
-            ? pMsgText->GetID() + L" : " + pMsgText->GetText()
-            : pMsgText->GetText();
-        entry.text = StringUtils::WideToNarrow(composed.c_str());
+        auto entry = BuildChatLine(*pMsgText);
         model.lines.push_back(std::move(entry));
     }
+}
+
+void mu::ui::window::CChatLogWindow::UpdateLineAnimation()
+{
+    auto* messages = GetMsgs(GetCurrentMsgType());
+    if (!messages)
+        return;
+    auto& lines = m_RmlView.GetModel().lines;
+    const auto now = GetTickCount64();
+    bool changed = false;
+    for (std::size_t index = 0; index < messages->size() && index < lines.size(); ++index)
+    {
+        const auto* message = (*messages)[index];
+        if (message && SyncLineAnimation(lines[index], *message, now, false))
+            changed = true;
+    }
+    if (changed)
+        m_RmlView.MarkDirty("lines");
 }
 
 bool mu::ui::window::CChatLogWindow::IsScrolledToBottom() const
@@ -1034,6 +1025,10 @@ mu::ui::window::CChatLogWindow::type_vector_msgs* mu::ui::window::CChatLogWindow
         return &m_vecWhisperMsgs;
     case TYPE_SYSTEM_MESSAGE:
         return &m_VecSystemMsgs;
+    case TYPE_LOOT_MESSAGE:
+        return &m_vecLootMsgs;
+    case TYPE_EXPERIENCE_MESSAGE:
+        return &m_vecExperienceMsgs;
     case TYPE_ERROR_MESSAGE:
         return &m_vecErrorMsgs;
     case TYPE_PARTY_MESSAGE:
@@ -1169,6 +1164,7 @@ void mu::ui::window::CSystemLogWindow::AddText(const type_string& strText, MESSA
     pvecMsgs->push_back(pMsgText);
 
     m_iCurrentRenderEndLine = pvecMsgs->size() - 1;
+
 }
 
 void mu::ui::window::CSystemLogWindow::RemoveFrontLine()
@@ -1217,18 +1213,11 @@ void mu::ui::window::CSystemLogWindow::BindRmlModel(Rml::DataModelConstructor& c
     // CCharMakeWin::BindRmlModel() documents. Registering ChatLogLineEntry here as well as
     // in the chat log's own model is fine: each RmlModelBinder owns its own
     // DataTypeRegister.
-    auto line = c.RegisterStruct<ChatLogLineEntry>();
-    line.RegisterMember("text", &ChatLogLineEntry::text);
-    line.RegisterMember("kind", &ChatLogLineEntry::kind);
-    line.RegisterMember("has_id", &ChatLogLineEntry::hasId);
-    c.RegisterArray<Rml::Vector<ChatLogLineEntry>>();
+    BindChatLine(c);
 
     model.lines.resize(MAX_NUMBER_OF_LINES);
     c.Bind("lines", &model.lines);
     c.Bind("back_alpha", &model.backAlpha);
-    c.Bind("row_px", &model.rowPx);
-    c.Bind("line_px", &model.linePx);
-    c.Bind("text_px", &model.textPx);
 }
 
 void mu::ui::window::CSystemLogWindow::OnRmlBuilt()
@@ -1252,6 +1241,19 @@ void mu::ui::window::CSystemLogWindow::SyncDocVisibility(bool sceneAllowsShow)
     UI::RmlBridge::SyncDocumentVisibility(m_RmlView.Document(), IsVisible() && m_bShowMessages && sceneAllowsShow);
 }
 
+void mu::ui::window::CSystemLogWindow::UpdateLineAnimation()
+{
+    auto& lines = m_RmlView.GetModel().lines;
+    const auto now = GetTickCount64();
+    bool changed = false;
+    for (size_t i = 0; i < m_vecAllMsgs.size() && i < lines.size(); ++i)
+    {
+        if (m_vecAllMsgs[i] && SyncLineAnimation(lines[i], *m_vecAllMsgs[i], now, true))
+            changed = true;
+    }
+    if (changed) m_RmlView.MarkDirty("lines");
+}
+
 void mu::ui::window::CSystemLogWindow::SyncRmlModel()
 {
     if (!m_RmlView.Document()) return;
@@ -1265,7 +1267,6 @@ void mu::ui::window::CSystemLogWindow::SyncRmlModel()
     SyncField(m_RmlView.Binder(), &SystemLogRmlModel::backAlpha, "back_alpha",
               std::clamp(m_fBackAlpha, 0.0f, 1.0f));
 
-    SyncNativeGeometry();
 
     if (m_bLinesDirty)
     {
@@ -1273,6 +1274,7 @@ void mu::ui::window::CSystemLogWindow::SyncRmlModel()
         RebuildLineModel();
         m_RmlView.MarkDirty("lines");
     }
+    UpdateLineAnimation();
 }
 
 void mu::ui::window::CSystemLogWindow::TrackPanelSize()
@@ -1288,33 +1290,6 @@ void mu::ui::window::CSystemLogWindow::TrackPanelSize()
     }
 }
 
-// Retain the legacy font metrics; the workspace now owns the message area's origin.
-void mu::ui::window::CSystemLogWindow::SyncNativeGeometry()
-{
-    // Measured in window pixels.
-    float textHeight = 0.f;
-    {
-        const UI::Scaling::ScopedWindowPixels pixels(static_cast<int>(WindowWidth), static_cast<int>(WindowHeight));
-        g_pRenderText->SetFont(g_hFont);
-        textHeight = static_cast<float>(g_pRenderText->MeasureText(L"Q", 1).cy);
-    }
-    const float rowHeight = std::max(1.f, textHeight * 1.2f);
-
-    SystemLogRmlModel& model = m_RmlView.GetModel();
-    auto syncFloat = [&](float SystemLogRmlModel::* field, const char* name, float value)
-    {
-        if (model.*field != value)
-        {
-            model.*field = value;
-            m_RmlView.MarkDirty(name);
-            UI::Placement::Invalidate();
-        }
-    };
-    syncFloat(&SystemLogRmlModel::rowPx, "row_px", rowHeight);
-    syncFloat(&SystemLogRmlModel::linePx, "line_px", textHeight);
-    syncFloat(&SystemLogRmlModel::textPx, "text_px", UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Normal));
-}
-
 void mu::ui::window::CSystemLogWindow::RebuildLineModel()
 {
     SystemLogRmlModel& model = m_RmlView.GetModel();
@@ -1326,11 +1301,10 @@ void mu::ui::window::CSystemLogWindow::RebuildLineModel()
         if (pMsgText == nullptr)
             continue;
 
-        ChatLogLineEntry entry;
-        // Native's own two-way split: system messages blue, EVERYTHING else the error red -- not a
-        // per-type mapping like the chat log's.
-        entry.kind = (pMsgText->GetType() == TYPE_SYSTEM_MESSAGE) ? "system" : "error";
-        entry.text = StringUtils::WideToNarrow(pMsgText->GetText().c_str());
+        auto entry = BuildChatLine(*pMsgText);
+        const auto& text = pMsgText->GetText();
+        if (text.starts_with(L"Congratulations,") && text.find(L"Level") != std::wstring::npos)
+            entry.kind = "level-up";
         model.lines.push_back(std::move(entry));
     }
     // Empty rows preserve the six-line workspace reservation without drawing a backdrop.

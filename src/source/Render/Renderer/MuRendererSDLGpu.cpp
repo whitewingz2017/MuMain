@@ -1,3 +1,4 @@
+#include "Core/Platform/WindowCoordinates.h"
 // MuRendererSDLGpu.cpp: SDL_gpu backend implementation of IMuRenderer.
 //
 // MuRendererSDLGpu replaces the OpenGL immediate-mode backend (MuRendererGL)
@@ -40,11 +41,13 @@
 #include "SdlGpuPixelFormat.h"
 #include "SdlGpuPostProcessing.h"
 #include "SdlGpuReplayState.h"
+#include "SdlGpuScaledScene.h"
 #include "SdlGpuValidation.h"
 #include "SingleSampleTwins.h"
 #include "WorldPipelineSet.h"
 #include "Core/Utilities/FrameProfiler.h"
 #include "Core/Utilities/Log/MuLogger.h"
+#include "Render/Lighting/SkinnedLightingTransforms.h"
 #include "Render/PostProcessing/BloomSource.h"
 #include "Render/PostProcessing/SceneBoundary.h"
 #include "Render/Terrain/TerrainHeightGrid.h"
@@ -153,6 +156,11 @@ static_assert(sizeof(ShadowVertexUniforms) == 32, "ShadowVertexUniforms must be 
 
 namespace mu
 {
+static SDL_GPUDevice* CreateRenderDevice(const char* driver)
+{
+    return SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
+                               Render::kGpuValidationEnabled, driver);
+}
 
 // ---------------------------------------------------------------------------
 // Fog uniform buffer struct — in mu:: namespace so that
@@ -602,6 +610,8 @@ static mu::DynamicLightsUniform s_dynamicLightsUniform{};
 // Post-processing of the 3D scene: with it on, a frame whose scene marked its end
 // (EndSceneGeometry) is replayed in separate scene, bloom and UI passes, see EndFrame.
 static mu::SdlGpuPostProcessing s_postProcessing;
+static mu::SdlGpuScaledScene s_scaledScene;
+static float s_sceneResolutionScale = 1.f;
 static bool s_postProcessingEnabled = false;
 static mu::PostProcessingLook s_postProcessingLook{};
 static mu::PostProcessingView s_postProcessingView = mu::PostProcessingView::Scene;
@@ -1774,17 +1784,13 @@ public:
         mu::log::Get("render")->info("SDL_gpu -- validation: {}, requested backend: {}",
                                      Render::kGpuValidationEnabled ? "enabled" : "disabled",
                                      requestedDriverName ? requestedDriverName : "(SDL auto-pick)");
-        s_device =
-            SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
-                                Render::kGpuValidationEnabled, requestedDriverName);
+        s_device = CreateRenderDevice(requestedDriverName);
 
         if (!s_device && requestedDriverName != nullptr)
         {
             mu::log::Get("render")->warn("SDL_gpu -- '{}' device creation failed ({}), falling back to "
                                          "SDL's own auto-picked driver", requestedDriverName, SDL_GetError());
-            s_device = SDL_CreateGPUDevice(
-                SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
-                Render::kGpuValidationEnabled, nullptr);
+            s_device = CreateRenderDevice(nullptr);
         }
 
         if (!s_device)
@@ -2064,6 +2070,7 @@ public:
         DestroyPipelines();
         ReleaseShaders();
         s_postProcessing.Release();
+        s_scaledScene.Release();
 
         SDL_ReleaseWindowFromGPUDevice(s_device, s_window);
         SDL_DestroyGPUDevice(s_device);
@@ -2119,7 +2126,7 @@ public:
         }
 
         // F-7 fix: Cache window dimensions once per frame for text Y-flip.
-        SDL_GetWindowSize(s_window, &s_cachedWinW, &s_cachedWinH);
+        Core::Platform::GameWindowSize(s_window, &s_cachedWinW, &s_cachedWinH);
 
         // Reset vertex scratch offset, deferred command list, and per-frame diagnostics.
         // Texture uploads may be queued by legacy asset loading before BeginFrame,
@@ -2133,6 +2140,7 @@ public:
         s_shadowUniforms.clear();
         s_previousDrawCommands.fill(kNoDrawCommand);
         s_sceneBoundary.Reset();
+        s_sceneResolutionScale = 1.f;
         if (s_bloomExclusionDepth != 0)
         {
             mu::log::Get("render")->warn("SDL_gpu -- {} bloom exclusion scope(s) left open; reset",
@@ -2246,6 +2254,8 @@ public:
     {
         SDL_GPUViewport viewport;
         SDL_Rect scissor;
+        float scaleX = 1.f;
+        float scaleY = 1.f;
     };
 
     enum class ReplaySelection : std::uint8_t
@@ -2304,10 +2314,12 @@ public:
         // Track explicit state. Pipeline changes re-apply the active scissor because
         // SDL GPU backends may discard it while binding a new pipeline.
         Render::SdlGpuReplayState replayState;
-        if (replayState.SelectViewport(view.viewport))
-            SDL_SetGPUViewport(s_renderPass, &view.viewport);
-        if (replayState.SelectScissor(view.scissor))
-            SDL_SetGPUScissor(s_renderPass, &view.scissor);
+        auto viewport = mu::ScaleSceneViewport(view.viewport, view.scaleX, view.scaleY);
+        auto scissor = mu::ScaleSceneScissor(view.scissor, view.scaleX, view.scaleY);
+        if (replayState.SelectViewport(viewport))
+            SDL_SetGPUViewport(s_renderPass, &viewport);
+        if (replayState.SelectScissor(scissor))
+            SDL_SetGPUScissor(s_renderPass, &scissor);
 
         const bool bloomSourcesOnly = selection == ReplaySelection::BloomSources;
         for (std::size_t index = begin; index < end; ++index)
@@ -2333,16 +2345,18 @@ public:
             case RenderCmdType::SetViewport:
             {
                 view.viewport = cmd.viewport;
-                if (replayState.SelectViewport(view.viewport))
-                    SDL_SetGPUViewport(s_renderPass, &view.viewport);
+                viewport = mu::ScaleSceneViewport(view.viewport, view.scaleX, view.scaleY);
+                if (replayState.SelectViewport(viewport))
+                    SDL_SetGPUViewport(s_renderPass, &viewport);
                 break;
             }
 
             case RenderCmdType::SetScissor:
             {
                 view.scissor = cmd.scissor;
-                if (replayState.SelectScissor(view.scissor))
-                    SDL_SetGPUScissor(s_renderPass, &view.scissor);
+                scissor = mu::ScaleSceneScissor(view.scissor, view.scaleX, view.scaleY);
+                if (replayState.SelectScissor(scissor))
+                    SDL_SetGPUScissor(s_renderPass, &scissor);
                 break;
             }
 
@@ -2356,7 +2370,7 @@ public:
                 SDL_GPUGraphicsPipeline* pipeline = bloomSourcesOnly ? GetBloomSourcePipeline(cmd) : cmd.pipeline;
                 if (pipeline)
                 {
-                    ReplayDrawCommand(cmd, pipeline, boneDataReady, view.scissor, replayState);
+                    ReplayDrawCommand(cmd, pipeline, boneDataReady, scissor, replayState);
                 }
                 break;
             }
@@ -2428,6 +2442,47 @@ public:
         }
         ReplayView view = FullFrameView();
         ReplayCommands(0u, s_renderCmds.size(), boneDataReady, ReplaySelection::AllCommands, view);
+        EndReplayPass();
+        return true;
+    }
+
+    // Depth stays with the small world; UI starts with its own cleared, native-size depth.
+    [[nodiscard]] static bool ReplayScaledScene(SDL_GPUTexture* destination, std::size_t sceneEnd,
+                                               bool boneDataReady)
+    {
+        const auto size = s_scaledScene.Size();
+        SDL_GPUColorTargetInfo color = CycledTarget(
+            mu::GetSdlGpuFrameColorTarget({s_scaledScene.Color(), nullptr}, s_clearColor));
+        auto depth = MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, SDL_GPU_STOREOP_DONT_CARE);
+        depth.texture = s_scaledScene.Depth();
+        if (!BeginReplayPass(color, depth))
+            return ReplayFrame(destination, boneDataReady);
+
+        ReplayView world = FullFrameView();
+        world.scaleX = static_cast<float>(size.width) / s_swapW;
+        world.scaleY = static_cast<float>(size.height) / s_swapH;
+        ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::AllCommands, world);
+        EndReplayPass();
+
+        SDL_GPUBlitInfo blit{};
+        blit.source.texture = s_scaledScene.Color();
+        blit.source.w = size.width;
+        blit.source.h = size.height;
+        blit.destination.texture = destination;
+        blit.destination.w = s_swapW;
+        blit.destination.h = s_swapH;
+        blit.load_op = SDL_GPU_LOADOP_DONT_CARE;
+        blit.filter = SDL_GPU_FILTER_LINEAR;
+        SDL_BlitGPUTexture(s_cmdBuf, &blit);
+
+        color = mu::GetSdlGpuFrameColorTarget({destination, nullptr}, s_clearColor);
+        color.load_op = SDL_GPU_LOADOP_LOAD;
+        depth = MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, SDL_GPU_STOREOP_STORE);
+        if (!BeginReplayPass(color, depth))
+            return false;
+        // Preserve the scene's last viewport/scissor, expressed again in full-resolution pixels.
+        world.scaleX = world.scaleY = 1.f;
+        ReplayCommands(sceneEnd, s_renderCmds.size(), boneDataReady, ReplaySelection::AllCommands, world);
         EndReplayPass();
         return true;
     }
@@ -2937,11 +2992,21 @@ public:
         std::optional<FrameProfiler::Scope> replayScope(std::in_place, FrameProfiler::Pass::RendererReplay);
         const Render::PostProcessing::FrameSplit split =
             s_sceneBoundary.Split(s_renderCmds.size(), IsPostProcessingActive());
+        const bool scaleScene = s_sceneResolutionScale < 1.f && s_sceneBoundary.IsMarked() &&
+            !IsPostProcessingActive() && !IsMultisampled() && !s_mainColorPassOpenedThisFrame;
+        if (!scaleScene)
+            s_scaledScene.Release();
         if (s_mainColorPassOpenedThisFrame && frameColorTexture == FrameColorTexture())
         {
             // FlushRenderCommands already drew part of this frame into its target with one
             // sample: the rest follows the same way, without multisampling or post-processing.
             renderPassCompleted = ContinueFlushedFrame(frameColorTexture, boneDataReady);
+        }
+        else if (scaleScene && s_scaledScene.Ensure(s_device, SDL_GetGPUSwapchainTextureFormat(s_device, s_window),
+                                                   {s_swapW, s_swapH}, s_sceneResolutionScale))
+        {
+            renderPassCompleted = ReplayScaledScene(frameColorTexture,
+                s_sceneBoundary.Split(s_renderCmds.size(), true).sceneEnd, boneDataReady);
         }
         else if (split.postProcessed && s_postProcessing.EnsureTargets({s_swapW, s_swapH}))
         {
@@ -3127,7 +3192,8 @@ public:
         if (s_cmdBuf)
         {
             FRAME_PROFILE(RendererSubmit);
-            SDL_SubmitGPUCommandBuffer(s_cmdBuf);
+            const bool submitted = SDL_SubmitGPUCommandBuffer(s_cmdBuf);
+            (void)submitted;
             s_cmdBuf = nullptr;
         }
 
@@ -3558,12 +3624,14 @@ public:
         return s_drawReorderingEnabled;
     }
 
-    void EndSceneGeometry() override
+    void EndSceneGeometry(float resolutionScale = 1.f) override
     {
         if (!s_frameActive)
         {
             return;
         }
+        if (!s_sceneBoundary.IsMarked())
+            s_sceneResolutionScale = std::isfinite(resolutionScale) ? std::clamp(resolutionScale, 0.5f, 1.f) : 1.f;
         s_sceneBoundary.Mark(s_renderCmds.size());
     }
 
@@ -4470,9 +4538,15 @@ public:
     }
 
     // World position and normal of Enhanced-lit skinned vertices, for the frame's point lights.
-    void PackVertexToWorldRows(SkinningVertexUniforms& uniforms) const
+    void PackSkinnedLightingTransforms(SkinningVertexUniforms& uniforms, float specularStrength)
     {
-        const glm::mat4 vertexToWorld = m_worldFromViewMatrix * m_modelViewMatrix;
+        m_skinnedLightingTransforms.Update(m_modelViewMatrix, m_worldFromViewMatrix);
+        const glm::vec4& eyePosition = m_skinnedLightingTransforms.EyePosition();
+        uniforms.eyePositionAndSpecular[0] = eyePosition.x;
+        uniforms.eyePositionAndSpecular[1] = eyePosition.y;
+        uniforms.eyePositionAndSpecular[2] = eyePosition.z;
+        uniforms.eyePositionAndSpecular[3] = specularStrength;
+        const glm::mat4& vertexToWorld = m_skinnedLightingTransforms.VertexToWorld();
         for (int row = 0; row < 3; ++row)
         {
             for (int column = 0; column < 4; ++column)
@@ -5074,12 +5148,7 @@ private:
         skinningVu.textureCoordinateParameters[2] = parameters.chromeTimeTerm;
         if (enhancedLit)
         {
-            const glm::vec4 eyePosition = glm::inverse(m_modelViewMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            skinningVu.eyePositionAndSpecular[0] = eyePosition.x;
-            skinningVu.eyePositionAndSpecular[1] = eyePosition.y;
-            skinningVu.eyePositionAndSpecular[2] = eyePosition.z;
-            skinningVu.eyePositionAndSpecular[3] = parameters.specularStrength;
-            PackVertexToWorldRows(skinningVu);
+            PackSkinnedLightingTransforms(skinningVu, parameters.specularStrength);
         }
         if (shadow)
         {
@@ -5165,6 +5234,7 @@ private:
     glm::mat4 m_modelViewMatrix{1.0f};
     // Inverse of the scene's view matrix, captured by SetSceneLighting().
     glm::mat4 m_worldFromViewMatrix{1.0f};
+    Render::Lighting::SkinnedLightingTransforms m_skinnedLightingTransforms;
     glm::mat4 m_projStack[k_MatrixStackDepth]{};
     glm::mat4 m_mvStack[k_MatrixStackDepth]{};
     int m_projStackTop = 0;

@@ -95,13 +95,10 @@ namespace MUHelper
 		bool bPickExtraItems = false;
 		std::set<std::wstring> aExtraItems;
 
-		// Client-local settings (byte index 33, bits 0-3).
-		// The server (OpenMU) stores MuHelperConfiguration as byte[] echoed
-		// unchanged. It does not parse or enforce these bits. Adding new bits
-		// in unused positions is safe. However, changing existing bits will
-		// break offline leveling bots, since the server side bot relies on the
-		// same packet layout.
+		// Shared helper flags; the server owns the paid PvP expiry in reserved bytes.
 		bool bUseSelfDefense = false;
+		bool bPvpCostConfirmed = false;
+		std::uint64_t pvpPaidUntilUnix = 0;
 		bool bAutoAcceptFriend = false;
 		bool bAutoAcceptGuild = false;
 		bool bFallbackBasicAttack = true;

@@ -10,6 +10,7 @@
 
 #include "Render/RmlUi/RmlPremultiply.h"
 #include "Render/Textures/MipChain.h"
+#include "Render/Textures/LowWorldTexture.h"
 #include "Render/Textures/OztFile.h"
 #include "Render/Textures/TextureFiltering.h"
 #include "Render/Textures/TexturePack.h"
@@ -279,9 +280,7 @@ std::vector<Render::Textures::MipLevel> BuildBitmapMipChain(const std::uint8_t* 
     return chain;
 }
 
-// Upscaled art, and world textures while texture filtering is on, get every mip
-// level. The GPU builds them for an opaque image, box filtered as the CPU would;
-// an image with alpha keeps its alpha-test coverage at every level on the CPU.
+// CPU levels also cover rectangular textures and Android driver compatibility.
 MipLevels PlanMipLevels(bool mipmapped, const std::uint8_t* rgba, int width, int height, bool hasAlpha,
                         double& seconds)
 {
@@ -289,19 +288,29 @@ MipLevels PlanMipLevels(bool mipmapped, const std::uint8_t* rgba, int width, int
     {
         return {};
     }
-    if (!hasAlpha)
+    if (Render::Textures::CanGenerateGpuMipmaps(width, height, hasAlpha))
     {
         return {{}, true};
     }
-    return {BuildBitmapMipChain(rgba, width, height, true, seconds), false};
+    return {BuildBitmapMipChain(rgba, width, height, hasAlpha, seconds), false};
+}
+
+void ReduceBitmapPixels(BITMAP_t& bitmap, std::vector<std::uint8_t>& pixels, int& width, int& height)
+{
+    auto reduced = Render::Textures::ReduceWorldTexture(pixels, width, height, bitmap.scale, bitmap.Components == 4);
+    pixels = std::move(reduced.rgba);
+    width = static_cast<int>(reduced.width);
+    height = static_cast<int>(reduced.height);
+    bitmap.textureReduction = bitmap.scale * 2;
+    bitmap.lowWorldTexture = true;
 }
 
 // GPU bytes of a bitmap's RGBA8 texture, all of its mip levels included.
 
 std::uint64_t GpuTextureBytes(const BITMAP_t& bitmap)
 {
-    auto width = static_cast<std::uint32_t>(bitmap.Width) * bitmap.scale;
-    auto height = static_cast<std::uint32_t>(bitmap.Height) * bitmap.scale;
+    auto width = std::max(1u, static_cast<std::uint32_t>(bitmap.Width) * bitmap.scale / bitmap.textureReduction);
+    auto height = std::max(1u, static_cast<std::uint32_t>(bitmap.Height) * bitmap.scale / bitmap.textureReduction);
     std::uint64_t bytes = 0;
     for (std::uint32_t level = 0; level < bitmap.mipLevels; ++level)
     {
@@ -464,6 +473,7 @@ void CGlobalBitmap::UnloadAllImages()
 {
     if (m_mapBitmap.empty())
     {
+        m_textureQualityRequests.clear();
         // The bitmaps may have been unloaded one by one; the shared Enhanced
         // samplers outlive them.
         ReleaseFilteredSamplers();
@@ -499,6 +509,7 @@ void CGlobalBitmap::UnloadAllImages()
     }
     ReleaseFilteredSamplers();
     m_mipChainRequests.clear();
+    m_textureQualityRequests.clear();
 
     for ([[maybe_unused]] auto& pair : m_mapBitmap)
     {
@@ -653,10 +664,16 @@ bool CGlobalBitmap::LoadJpegFile(GLuint uiBitmapIndex, const std::wstring& filen
     pNewBitmap->wrapRepeat = uiWrapMode == GL_REPEAT;
     pNewBitmap->scale = static_cast<std::uint8_t>(upscaled ? scale : 1);
     pNewBitmap->fromTexturePack = file.fromTexturePack;
+    pNewBitmap->linearFilter = MapGLFilterToSDL(uiFilter) == SDL_GPU_FILTER_LINEAR;
+    pNewBitmap->lowQualityEligible = worldTexture && padToPowerOfTwo && !keepPixels;
     std::vector<std::uint8_t> rgbaData = PadRGBToRGBA(pNewBitmap->Buffer, uploadWidth, uploadHeight);
-    const MipLevels mips = PlanMipLevels(upscaled || (worldTexture && m_textureFilteringEnabled), rgbaData.data(),
+    const bool low = m_lowWorldTextures && pNewBitmap->lowQualityEligible;
+    if (low)
+        ReduceBitmapPixels(*pNewBitmap, rgbaData, uploadWidth, uploadHeight);
+    const MipLevels mips = PlanMipLevels(!low && (upscaled || (worldTexture && m_textureFilteringEnabled)), rgbaData.data(),
                                          uploadWidth, uploadHeight, false, m_mipChainSeconds);
-    if (!UploadTextureSDLGpu(pNewBitmap.get(), rgbaData, uploadWidth, uploadHeight, MapGLFilterToSDL(uiFilter),
+    if (!UploadTextureSDLGpu(pNewBitmap.get(), rgbaData, uploadWidth, uploadHeight,
+                             low ? SDL_GPU_FILTER_NEAREST : MapGLFilterToSDL(uiFilter),
                              MapGLWrapToSDL(uiWrapMode), mips))
     {
         return false;
@@ -749,10 +766,21 @@ bool CGlobalBitmap::LoadTgaFile(GLuint uiBitmapIndex, const std::wstring& filena
     pNewBitmap->wrapRepeat = uiWrapMode == GL_REPEAT;
     pNewBitmap->scale = static_cast<std::uint8_t>(upscaled ? scale : 1);
     pNewBitmap->fromTexturePack = file.fromTexturePack;
-    const MipLevels mips = PlanMipLevels(upscaled || (worldTexture && m_textureFilteringEnabled), pNewBitmap->Buffer,
+    pNewBitmap->linearFilter = MapGLFilterToSDL(uiFilter) == SDL_GPU_FILTER_LINEAR;
+    pNewBitmap->lowQualityEligible = worldTexture && padToPowerOfTwo && !premultiplyAlpha && !keepPixels;
+    const bool low = m_lowWorldTextures && pNewBitmap->lowQualityEligible;
+    std::vector<std::uint8_t> reducedPixels;
+    if (low)
+    {
+        reducedPixels = pNewBitmap->BufferStorage;
+        ReduceBitmapPixels(*pNewBitmap, reducedPixels, uploadWidth, uploadHeight);
+    }
+    const auto pixels = low ? std::span<const std::uint8_t>(reducedPixels)
+                            : std::span<const std::uint8_t>(pNewBitmap->BufferStorage);
+    const MipLevels mips = PlanMipLevels(!low && (upscaled || (worldTexture && m_textureFilteringEnabled)), pixels.data(),
                                          uploadWidth, uploadHeight, true, m_mipChainSeconds);
-    if (!UploadTextureSDLGpu(pNewBitmap.get(), pNewBitmap->BufferStorage, uploadWidth, uploadHeight,
-                             MapGLFilterToSDL(uiFilter), MapGLWrapToSDL(uiWrapMode), mips))
+    if (!UploadTextureSDLGpu(pNewBitmap.get(), pixels, uploadWidth, uploadHeight,
+                             low ? SDL_GPU_FILTER_NEAREST : MapGLFilterToSDL(uiFilter), MapGLWrapToSDL(uiWrapMode), mips))
     {
         return false;
     }
@@ -780,6 +808,17 @@ void CGlobalBitmap::SetTextureFiltering(bool enabled, int anisotropy)
     m_textureFilteringRequested = enabled;
     m_requestedAnisotropy = anisotropy;
     m_textureFilteringSwitchPending = true;
+}
+
+void CGlobalBitmap::SetLowWorldTextures(bool enabled)
+{
+    if (m_lowWorldTextures == enabled)
+        return;
+    m_lowWorldTextures = enabled;
+    m_textureQualityRequests.clear();
+    for (const auto& [index, bitmap] : m_mapBitmap)
+        if (bitmap->lowQualityEligible)
+            m_textureQualityRequests.push_back(index);
 }
 
 void CGlobalBitmap::SetTexturePack(const std::wstring& pack)
@@ -817,6 +856,16 @@ void CGlobalBitmap::UpdateTextureFiltering()
     if (m_textureFilteringSwitchPending)
     {
         ApplyTextureFilteringSwitch();
+    }
+    const auto qualityStart = std::chrono::steady_clock::now();
+    while (!m_textureQualityRequests.empty())
+    {
+        const auto index = m_textureQualityRequests.back();
+        m_textureQualityRequests.pop_back();
+        if (!RebuildTextureQuality(index))
+            mu::log::Get("render")->warn("World texture quality: kept previous texture for {}", index);
+        if (std::chrono::steady_clock::now() - qualityStart >= MipChainBudgetPerFrame)
+            break;
     }
     if (!m_textureFilteringEnabled)
     {
@@ -893,7 +942,7 @@ void CGlobalBitmap::ApplyTextureFilteringSwitch()
 void CGlobalBitmap::RegisterFilteredSampler(const BITMAP_t& bitmap)
 {
     const bool upscaled = bitmap.scale > 1u;
-    if ((!bitmap.worldTexture && !upscaled) || bitmap.mipLevels <= 1u)
+    if (bitmap.lowWorldTexture || (!bitmap.worldTexture && !upscaled) || bitmap.mipLevels <= 1u)
     {
         return;
     }
@@ -994,8 +1043,8 @@ bool CGlobalBitmap::ReadBitmapPixels(const BITMAP_t& bitmap, std::vector<std::ui
     const std::vector<unsigned char>& file = read->bytes;
 
     // The texture as loaded: an original image, padded to this size.
-    const auto width = static_cast<int>(bitmap.Width);
-    const auto height = static_cast<int>(bitmap.Height);
+    const auto width = static_cast<int>(bitmap.Width) * bitmap.scale;
+    const auto height = static_cast<int>(bitmap.Height) * bitmap.scale;
     rgba.assign(static_cast<std::size_t>(width) * static_cast<std::size_t>(height) * 4u, 0u);
     if (!jpeg)
     {
@@ -1040,10 +1089,10 @@ bool CGlobalBitmap::BuildMipChain(GLuint uiBitmapIndex)
         return false;
     }
     BITMAP_t& bitmap = *found->second;
-    const auto width = static_cast<int>(bitmap.Width);
-    const auto height = static_cast<int>(bitmap.Height);
+    const auto width = static_cast<int>(bitmap.Width) * bitmap.scale;
+    const auto height = static_cast<int>(bitmap.Height) * bitmap.scale;
     SDL_GPUDevice* device = static_cast<SDL_GPUDevice*>(mu::GetRenderer().GetDevice());
-    if (!device || !bitmap.worldTexture || bitmap.mipLevels > 1u || width <= 0 || height <= 0 ||
+    if (!device || !bitmap.worldTexture || bitmap.lowWorldTexture || bitmap.mipLevels > 1u || width <= 0 || height <= 0 ||
         (bitmap.Components != 3 && bitmap.Components != 4))
     {
         return false;
@@ -1090,6 +1139,56 @@ bool CGlobalBitmap::BuildMipChain(GLuint uiBitmapIndex)
         mu::ReleaseBitmapTexture(device, previous);
     }
     RegisterFilteredSampler(bitmap);
+    return true;
+}
+
+bool CGlobalBitmap::RebuildTextureQuality(GLuint index)
+{
+    const auto found = m_mapBitmap.find(index);
+    if (found == m_mapBitmap.end())
+        return true;
+    BITMAP_t& bitmap = *found->second;
+    if (!bitmap.lowQualityEligible || bitmap.lowWorldTexture == m_lowWorldTextures)
+        return true;
+    auto* device = static_cast<SDL_GPUDevice*>(mu::GetRenderer().GetDevice());
+    std::vector<std::uint8_t> pixels;
+    if (!device || !ReadBitmapPixels(bitmap, pixels))
+        return false;
+
+    int width = static_cast<int>(bitmap.Width) * bitmap.scale;
+    int height = static_cast<int>(bitmap.Height) * bitmap.scale;
+    if (m_lowWorldTextures)
+    {
+        auto reduced = Render::Textures::ReduceWorldTexture(pixels, width, height, bitmap.scale, bitmap.Components == 4);
+        pixels = std::move(reduced.rgba);
+        width = static_cast<int>(reduced.width);
+        height = static_cast<int>(reduced.height);
+    }
+    const auto mips = PlanMipLevels(!m_lowWorldTextures && (m_textureFilteringEnabled || bitmap.scale > 1),
+                                    pixels.data(), width, height, bitmap.Components == 4, m_mipChainSeconds);
+    const auto result = mu::UploadBitmapPixels(pixels, width, height,
+        !m_lowWorldTextures && bitmap.linearFilter ? SDL_GPU_FILTER_LINEAR : SDL_GPU_FILTER_NEAREST,
+        bitmap.wrapRepeat ? SDL_GPU_SAMPLERADDRESSMODE_REPEAT : SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
+        mips.chain, mips.generate);
+    if (!result)
+        return false;
+
+    auto* previous = bitmap.sdlTexture;
+    m_dwUsedTextureMemory -= bitmap.UploadedBytes;
+    bitmap.sdlTexture = result.texture;
+    bitmap.sdlSampler = result.sampler;
+    bitmap.lowWorldTexture = m_lowWorldTextures;
+    bitmap.textureReduction = m_lowWorldTextures ? bitmap.scale * 2 : 1;
+    bitmap.UploadedBytes = UploadedBytes(width, height);
+    m_dwUsedTextureMemory += bitmap.UploadedBytes;
+    bitmap.mipLevels = static_cast<std::uint8_t>(mips.generate ? Render::Textures::CountMipLevels(width, height)
+                                                               : mips.chain.size() + 1);
+    mu::RegisterTexture(index, bitmap.sdlTexture);
+    mu::RegisterSampler(index, bitmap.sdlSampler);
+    mu::RegisterFilteredSampler(index, nullptr);
+    RegisterFilteredSampler(bitmap);
+    if (previous)
+        mu::ReleaseBitmapTexture(device, previous);
     return true;
 }
 

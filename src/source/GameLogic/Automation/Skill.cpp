@@ -3,6 +3,8 @@
 
 #include "GameLogic/Automation/Attack.h"
 #include "GameLogic/Combat/SkillExecution.h"
+#include "GameLogic/Combat/ScopedGroundAim.h"
+#include <cmath>
 #include "GameLogic/Skills/SkillManager.h"
 #include "Engine/AI/ZzzAI.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -77,6 +79,7 @@ static SkillResult AimAtSelf(int targetKey, bool allowPlayers)
 
     TargetX = Hero->PositionX;
     TargetY = Hero->PositionY;
+    VectorCopy(Hero->Object.Position, Hero->TargetPosition);
     // The aim only, as in the untargeted branch: the player's selection is
     // not this function's to clear.
     g_MovementSkill.m_iTarget = -1;
@@ -152,6 +155,51 @@ static SkillResult AimAtTarget(int targetKey, bool allowPlayers, int huntingDist
     return SkillResult::NotReady;
 }
 
+SkillResult CastSkillTowards(ActionSkillType skill, float worldX, float worldY)
+{
+    const float length = std::hypot(worldX, worldY);
+    if (!Hero || !std::isfinite(length) || length <= 0.f) return SkillResult::Refused;
+    if (IsSwingInProgress()) return SkillResult::Busy;
+    const float distance = gSkillManager.GetSkillDistance(skill, Hero);
+    constexpr float MobileAimDistance = 3.f;
+    const float reach = std::clamp(distance - 1.f, 1.f, MobileAimDistance);
+    return CastSkillAtTile(skill, static_cast<int>(std::lround(Hero->PositionX + worldX / length * reach)),
+                           static_cast<int>(std::lround(Hero->PositionY + worldY / length * reach)));
+}
+
+SkillResult CastSkillAtTile(ActionSkillType skill, int tileX, int tileY)
+{
+    if (!Hero) return SkillResult::Refused;
+    if (IsSwingInProgress()) return SkillResult::Busy;
+    const float distance = gSkillManager.GetSkillDistance(skill, Hero);
+    TargetX = std::clamp(tileX, 0, TERRAIN_SIZE - 1);
+    TargetY = std::clamp(tileY, 0, TERRAIN_SIZE - 1);
+    Hero->TargetPosition[0] = (TargetX + 0.5f) * TERRAIN_SCALE;
+    Hero->TargetPosition[1] = (TargetY + 0.5f) * TERRAIN_SCALE;
+    Hero->TargetPosition[2] = Hero->Object.Position[2];
+    g_MovementSkill.m_iSkill = skill;
+    g_MovementSkill.m_bMagic = true;
+    g_MovementSkill.m_iTarget = -1;
+    const int previous = SelectedCharacter;
+    SelectedCharacter = -1;
+    GameLogic::Combat::ScopedGroundAim aim(Hero);
+    const int result = GameLogic::Combat::ExecuteSkill(Hero, skill, distance);
+    SelectedCharacter = previous;
+    return result == SkillExecutionCast ? SkillResult::Cast : result == SkillExecutionRefused ? SkillResult::Refused : SkillResult::NotReady;
+}
+
+static SkillResult ExecuteAimedSkill(ActionSkillType skill, float distance, bool selfAim)
+{
+    const int previousSelection = SelectedCharacter;
+    if (selfAim) SelectedCharacter = -1;
+    // Class-specific checks must keep a self buff on the caster, not the cursor or selected monster.
+    GameLogic::Combat::ScopedGroundAim aim(selfAim ? Hero : nullptr);
+    const int executed = GameLogic::Combat::ExecuteSkill(Hero, skill, distance);
+    if (selfAim) SelectedCharacter = previousSelection;
+    if (executed == SkillExecutionRefused) return SkillResult::Refused;
+    return executed == SkillExecutionCast ? SkillResult::Cast : SkillResult::NotReady;
+}
+
 SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey, bool allowPlayers, int huntingDistance)
 {
     // Let the current swing finish before issuing another action.
@@ -166,6 +214,7 @@ SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey,
     {
         TargetX = Hero->PositionX;
         TargetY = Hero->PositionY;
+        VectorCopy(Hero->Object.Position, Hero->TargetPosition);
         // The aim, and only the aim: without this an untargeted skill would
         // be cast at whatever the previous targeted one aimed at.
         // `SelectedCharacter` is the player's own selection and the helper
@@ -195,12 +244,6 @@ SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey,
     g_MovementSkill.m_iSkill = skill;
     g_MovementSkill.m_bMagic = true;
 
-    const int executed = GameLogic::Combat::ExecuteSkill(Hero, skill, skillDistance);
-    if (executed == SkillExecutionRefused)
-    {
-        return SkillResult::Refused;
-    }
-
-    return executed == SkillExecutionCast ? SkillResult::Cast : SkillResult::NotReady;
+    return ExecuteAimedSkill(skill, skillDistance, !targetRequired || IsSelfPositionSkill(skill));
 }
 } // namespace GameLogic::Automation

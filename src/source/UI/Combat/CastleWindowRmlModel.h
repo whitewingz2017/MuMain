@@ -49,6 +49,8 @@ struct CastleTabEntry
 {
     Rml::String label;
     float textPx = 0.f; // shrunk towards the tab's 40 px like the native RenderText()
+    float linePx = 0.f; // its line height at textPx
+    bool twoLines = false; // split at a space ("Guardian\nStatue"): larger than on one line
     bool selected = false;
 
     bool operator==(const CastleTabEntry&) const = default;

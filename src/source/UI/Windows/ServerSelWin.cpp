@@ -55,6 +55,7 @@ void CServerSelWin::Create()
 
 void CServerSelWin::BindRmlModel(Rml::DataModelConstructor& c, ServerSelRmlModel& model)
 {
+    c.Bind("mobile", &model.mobile);
     auto group = c.RegisterStruct<GroupEntry>();
     group.RegisterMember("label", &GroupEntry::label);
     group.RegisterMember("btn_pos", &GroupEntry::btnPos);

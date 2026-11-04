@@ -27,8 +27,14 @@ public:
     virtual void SetClass(CLASS_TYPE byClass);
     virtual void SetEquipmentPacket(BYTE* pbyEquip);
     virtual void CopyPlayer();
+    void CopyUnequippedPlayer();
     virtual void SetAngle(float fDegree);
     virtual void SetZoom(float fZoom);
+    void SetPortraitMode(bool portrait) { m_bPortraitMode = portrait; }
+    void SetStudioMode(bool studio) { m_StudioMode = studio; }
+    void ClearHelper();
+    void SetFenrirPreview(int itemType);
+    void SetCompanionDrawer(std::function<void(CHARACTER&)> drawer) { m_CompanionDrawer = std::move(drawer); }
     virtual void SetAutoupdatePlayer(BOOL bFlag)
     {
         m_bUpdatePlayer = bFlag;
@@ -84,9 +90,13 @@ protected:
     // The target's drawer: one frame of the character, framed for `width` x `height`.
     void RenderInto(std::uint32_t width, std::uint32_t height);
     void RenderPhotoCharacter(float aspect);
+    void PreparePhotoLighting();
     int SetPhotoPose(int iCurrentAni, int iMoveDir = 0);
 
 protected:
+    bool m_bPortraitMode = false;
+    bool m_StudioMode = false;
+    std::function<void(CHARACTER&)> m_CompanionDrawer;
     bool m_bPointerOver = false;
     bool m_bCanControl = false;
 

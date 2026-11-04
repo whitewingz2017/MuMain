@@ -34,6 +34,15 @@ namespace mu::ui::window
         // Kalima object labels (RenderObjectDescription()), recorded under the name labels as the
         // original drew them before them; the main scene then leaves them out.
         bool RecordsInterfaceOverlays() const;
+        bool ArePlayerNamesShown() const { return m_ShowPlayerNames; }
+        bool AreMonsterNamesShown() const { return m_ShowMonsterNames; }
+        bool IsMonsterNameShown(const CHARACTER* character) const;
+        void TogglePlayerNames() { m_ShowPlayerNames = !m_ShowPlayerNames; }
+        void ToggleMonsterNames() { m_ShowMonsterNames = !m_ShowMonsterNames; }
+        bool AreDropNamesShown() const { return m_bShowItemName; }
+        void ToggleMonsterHealthBars() { m_bShowMonsterHealthBar = !m_bShowMonsterHealthBar; }
+        bool AreMonsterHealthBarsShown() const { return m_bShowMonsterHealthBar; }
+        void ToggleDropNames() { m_bShowItemName = !m_bShowItemName; }
 
         float GetLayerDepth();		// 1.0f
 
@@ -42,6 +51,12 @@ namespace mu::ui::window
         // drawn natively otherwise.
         void RenderLabels();
         void RenderName();
+        void RenderCharacterNames();
+        void SyncMonsterTarget();
+        void RenderMonsterTarget();
+        int m_monsterTargetKey = -1;
+        int m_monsterTargetIndex = -1;
+        void RenderGroundItemName(int index, bool sorted);
 
         UI::Character::WorldLabelLayer m_labelLayer;
         UI::Hud::StatusTexts m_statusTexts;
@@ -50,6 +65,8 @@ namespace mu::ui::window
         CManager* m_pNewUIMng;		// UI manager
 
 
+        bool m_ShowPlayerNames = true;
+        bool m_ShowMonsterNames = true;
         bool m_bShowItemName;
         bool m_bShowMonsterHealthBar;
 

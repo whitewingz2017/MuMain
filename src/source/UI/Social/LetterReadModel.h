@@ -21,6 +21,7 @@ struct LetterReadModel
     // window_shell's own contract: a titled panel placed at a final device-pixel top-left.
     float rootX = 0, rootY = 0;
     bool hasTitle = true, positioned = true;
+    bool canClaim = false;
 
     void Bind(Rml::DataModelConstructor& constructor);
 };

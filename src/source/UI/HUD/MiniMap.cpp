@@ -4,6 +4,7 @@
 #include "I18N/All.h"
 
 #include "UI/HUD/MiniMap.h"
+#include "UI/RmlBridge/RmlPointer.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Dialogs/CommonMessageBox.h"
 #include "UI/Dialogs/CustomMessageBox.h"
@@ -274,6 +275,7 @@ bool mu::ui::window::CMiniMap::UpdateMouseEvent()
 
 void mu::ui::window::CMiniMap::BindRmlModel(Rml::DataModelConstructor& c, MiniMapRmlModel& model)
 {
+    c.Bind("mobile", &model.mobile);
     c.Bind("text_px", &model.textPx);
     c.Bind("close_hint", &model.closeHint);
 
@@ -308,6 +310,10 @@ void mu::ui::window::CMiniMap::BindRmlModel(Rml::DataModelConstructor& c, MiniMa
     c.Bind("hint_width", &model.hintWidth);
     c.Bind("hint_height", &model.hintHeight);
 
+    c.BindEventCallback("minimap_zoom_in", [this](auto, auto&, const auto&)
+                        { m_MobileZoom = std::min(UI::MiniMap::MobileMaxZoom, m_MobileZoom + UI::MiniMap::MobileZoomStep); });
+    c.BindEventCallback("minimap_zoom_out", [this](auto, auto&, const auto&)
+                        { m_MobileZoom = std::max(UI::MiniMap::MobileTabMapMinZoom, m_MobileZoom - UI::MiniMap::MobileZoomStep); });
     c.BindEventCallback("minimap_close", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&)
                         { m_PendingClose = true; });
 }
@@ -399,10 +405,11 @@ void mu::ui::window::CMiniMap::SyncClips()
 
 void mu::ui::window::CMiniMap::SyncMap()
 {
-    const UI::MiniMap::Screen screen = CurrentScreen();
+    auto screen = CurrentScreen();
     const float length = UI::MiniMap::MapLength;
-    const float heroY = (static_cast<float>(Hero->PositionX) / 256.f) * length;
-    const float heroX = (static_cast<float>(Hero->PositionY) / 256.f) * length;
+    const auto point = UI::MiniMap::TexturePoint(Hero->PositionX, Hero->PositionY);
+    const float heroY = point.y * length;
+    const float heroX = point.x * length;
 
     // Relative to the document: themes/<theme>/mini_map.rml -> Data/<World>/mini_map.tga.
     Rml::String source;
@@ -460,8 +467,9 @@ void mu::ui::window::CMiniMap::SyncHint()
     const UI::Scaling::Transform transform = OverlayTransform();
     // The names are measured in that stretch too.
     const UI::Scaling::ScopedScreenStretch screen(static_cast<int>(WindowWidth), static_cast<int>(WindowHeight));
-    const float pointerX = UI::Scaling::LogicalX(transform, g_fWindowMouseX);
-    const float pointerY = UI::Scaling::LogicalY(transform, g_fWindowMouseY);
+    Rml::Vector2f pointer(g_fWindowMouseX, g_fWindowMouseY);
+    const float pointerX = UI::Scaling::LogicalX(transform, pointer.x);
+    const float pointerY = UI::Scaling::LogicalY(transform, pointer.y);
     for (int i = 0; i < MAX_MINI_MAP_DATA && !found; i++)
     {
         if (m_Mini_Map_Data[i].Kind <= 0)
@@ -491,4 +499,9 @@ void mu::ui::window::CMiniMap::SyncHint()
     Sync(m_RmlView.Binder(), &MiniMapRmlModel::hintTop, "hint_top", top);
     Sync(m_RmlView.Binder(), &MiniMapRmlModel::hintWidth, "hint_width", width);
     Sync(m_RmlView.Binder(), &MiniMapRmlModel::hintHeight, "hint_height", height);
+}
+
+Rml::String mu::ui::window::CMiniMap::GetMobileMapSource() const
+{
+    return m_WorldName.empty() ? Rml::String{} : "../../../../" + StringUtils::WideToNarrow(m_WorldName.c_str()) + "/mini_map.tga";
 }

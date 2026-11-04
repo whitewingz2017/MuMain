@@ -64,8 +64,14 @@ namespace GameLogic::Items
         return !IsAllowed(pItem, ItemAction::Sell);
     }
 
+    bool CanConfirmSale(const ITEM* item, int sourceIndex, int expectedIndex, unsigned int expectedKey, bool shopOpen, bool salePending)
+    {
+        return shopOpen && !salePending && item && item->Key == expectedKey && sourceIndex == expectedIndex &&
+            sourceIndex >= MAX_EQUIPMENT_INDEX && sourceIndex < MAX_MY_INVENTORY_EX_INDEX && !IsSellingBan(item);
+    }
+
     bool IsRepairBan(const ITEM* pItem)
     {
-        return !IsAllowed(pItem, ItemAction::Repair);
+        return !pItem || pItem->bPeriodItem || pItem->bExpiredPeriod || !IsAllowed(pItem, ItemAction::Repair);
     }
 }

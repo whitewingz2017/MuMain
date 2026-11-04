@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Core/Platform/WindowCoordinates.h"
 #include "Core/Input/SyntheticInput.h"
 #include "RmlUiRuntime.h"
 #include "RmlUiRenderInterface.h"
@@ -8,6 +9,7 @@
 
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/Element.h>
+#include <RmlUi/Core/ComputedValues.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/FileInterface.h>
 #include <RmlUi_Platform_SDL.h> // ThirdParty/RmlUi/Backends -- see the CMakeLists.txt addition
@@ -20,6 +22,15 @@ namespace
     {
         const Rml::String& tag = element->GetTagName();
         return tag == "input" || tag == "textarea";
+    }
+
+    void BlurFieldOnOutsidePress(Rml::Context& context, const Rml::Vector2f& position)
+    {
+        auto* focused = context.GetFocusElement();
+        if (!focused || !IsTextEntry(focused)) return;
+        for (auto* node = context.GetElementAtPoint(position); node; node = node->GetParentNode())
+            if (node == focused) return;
+        focused->Blur();
     }
 
     // A control that handles keys itself while focused (a slider's arrows): markup marks it with
@@ -274,6 +285,11 @@ void RmlUiRuntime::ReleaseStrandedFieldFocus()
     }
 }
 
+bool RmlUiRuntime::ProcessTouchScroll(const SDL_Event& event)
+{
+    return false;
+}
+
 bool RmlUiRuntime::ProcessSdlEvent(SDL_Event& event, SDL_Window* window)
 {
     if (!m_Context) return true; // nothing to consume it -- let it fall through
@@ -291,6 +307,8 @@ bool RmlUiRuntime::ProcessSdlEvent(SDL_Event& event, SDL_Window* window)
     // before this frame's game update can hide a document (ReleaseStrandedFieldFocus()).
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
     {
+        m_Context->ProcessMouseMove(static_cast<int>(event.button.x), static_cast<int>(event.button.y), RmlSDL::GetKeyModifierState());
+        BlurFieldOnOutsidePress(*m_Context, {event.button.x, event.button.y});
         const bool propagates =
             m_Context->ProcessMouseButtonDown(RmlSDL::ConvertMouseButton(event.button.button), RmlSDL::GetKeyModifierState());
         // RmlUi moves the focus only to an element under the pointer, so a press in the game world
@@ -302,7 +320,11 @@ bool RmlUiRuntime::ProcessSdlEvent(SDL_Event& event, SDL_Window* window)
         return propagates;
     }
     if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
-        return m_Context->ProcessMouseButtonUp(RmlSDL::ConvertMouseButton(event.button.button), RmlSDL::GetKeyModifierState());
+    {
+        m_Context->ProcessMouseMove(static_cast<int>(event.button.x), static_cast<int>(event.button.y), RmlSDL::GetKeyModifierState());
+        const bool propagates = m_Context->ProcessMouseButtonUp(RmlSDL::ConvertMouseButton(event.button.button), RmlSDL::GetKeyModifierState());
+        return propagates;
+    }
 
     // Mouse motion is also handled directly rather than through RmlSDL::InputEventHandler, which
     // multiplies the raw event coordinates by SDL_GetWindowPixelDensity() before forwarding them
@@ -332,6 +354,9 @@ void RmlUiRuntime::CancelSyntheticMousePress(unsigned char button, SDL_Window* w
     {
         float x = 0.0f, y = 0.0f;
         SDL_GetMouseState(&x, &y);
+        const float scale = Core::Platform::WindowToGameScale(window);
+        x *= scale;
+        y *= scale;
         m_Context->ProcessMouseMove(static_cast<int>(x), static_cast<int>(y), RmlSDL::GetKeyModifierState());
     }
 }

@@ -1,0 +1,2 @@
+#panel { font-family: "token(font-body)"; color: token(text-primary); }
+.shop-categories, .shop-items, .shop-preview { border-color: token(metal-edge); }

@@ -92,7 +92,16 @@ namespace mu::ui::window
         void BuildRmlUi();
         void SyncRmlModel();
         void ApplyShopTitleLimit();
-        void BlurShopTitleOnOutsideClick();
+        bool SelectMobileShopItem();
+        void SetSelectedItemPrice();
+        bool ReleaseMobileShopItem(ITEM* item, int index, std::uint64_t now);
+        int m_SelectedShopIndex = -1;
+        DWORD m_SelectedShopKey = 0;
+        std::uint64_t m_ShopTappedAt = 0;
+        int m_ShopHoldIndex = -1;
+        DWORD m_ShopHoldKey = 0;
+        std::uint64_t m_ShopHoldStarted = 0;
+        float m_ShopHoldX = 0, m_ShopHoldY = 0;
 
     public:
         CMyShopInventory();

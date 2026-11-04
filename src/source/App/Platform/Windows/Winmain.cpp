@@ -1,6 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "Core/Platform/WindowCoordinates.h"
 #include "Core/Input/KeyState.h"
 #include "Core/Utilities/FrameProfiler.h"
 #include "Core/Input/SyntheticInput.h"
@@ -352,7 +353,9 @@ void ApplyVSyncPreferenceNow(bool enabled)
         DisableVSync();
     }
 
-    SetTargetFps(IsVSyncEnabled() ? -1 : EffectiveOffVSyncTargetFps());
+    // Low keeps its saved frame cap even when the device requires VSync.
+    const bool low = GameConfig::GetInstance().GetLowWorldTextures();
+    SetTargetFps(IsVSyncEnabled() && !low ? -1 : EffectiveOffVSyncTargetFps());
     ResetFrameStats();
 }
 
@@ -378,6 +381,7 @@ void MuSetVSyncPreference(bool enabled)
 
 void MuSetTextureFilteringEnabled(bool enabled)
 {
+    Bitmaps.SetLowWorldTextures(GameConfig::GetInstance().GetLowWorldTextures());
     Bitmaps.SetTextureFiltering(enabled, GameConfig::GetInstance().GetAnisotropy());
 }
 
@@ -1348,7 +1352,7 @@ void MuApplyWindowResolution(unsigned int width, unsigned int height, bool windo
     // size really changes (the old position may not fit any more) or when leaving fullscreen, and
     // wrong otherwise.
     int currentW = 0, currentH = 0;
-    SDL_GetWindowSize(g_sdlWindow, &currentW, &currentH);
+    Core::Platform::GameWindowSize(g_sdlWindow, &currentW, &currentH);
     const bool leavingFullscreen = (SDL_GetWindowFlags(g_sdlWindow) & SDL_WINDOW_FULLSCREEN) != 0;
     const bool repositions = currentW != w || currentH != h || leavingFullscreen;
 
@@ -1381,7 +1385,7 @@ void MuApplyWindowResolution(unsigned int width, unsigned int height, bool windo
     // asked for. Logical size, matching what SDL_EVENT_WINDOW_RESIZED carries.
     SDL_SyncWindow(g_sdlWindow);
     int actualW = w, actualH = h;
-    SDL_GetWindowSize(g_sdlWindow, &actualW, &actualH);
+    Core::Platform::GameWindowSize(g_sdlWindow, &actualW, &actualH);
     HandleWindowResize(actualW, actualH);
     MuReapplyVSyncPreference();
 }
@@ -1488,6 +1492,7 @@ MSG MainLoop()
         // the editor's input are routed below.
         while (SDL_PollEvent(&event))
         {
+            Core::Platform::MouseEventToGameCoordinates(event);
 #ifdef _EDITOR
             // Feed every event to the editor's ImGui SDL3 backend (issue #442).
             // Guard on an active context: editor init can fail or be shut down.
@@ -1982,6 +1987,7 @@ static void InitializeWorkingDirectoryAndLog()
     mu::log::Init();
 }
 
+
 #ifdef _WIN32
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow)
 #else
@@ -2192,6 +2198,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
     }
 
     // Before the first texture loads, so Enhanced filtering builds mip chains at load.
+    Bitmaps.SetLowWorldTextures(GameConfig::GetInstance().GetLowWorldTextures());
     Bitmaps.SetTextureFiltering(Render::Look::PresetFeatures(GameConfig::GetInstance().GetLook()).textureFiltering,
                                 GameConfig::GetInstance().GetAnisotropy());
     Bitmaps.UpdateTextureFiltering();
@@ -2302,6 +2309,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
         I18N::SetLocale(uiLocale.c_str());
     }
     g_ItemDataHandler.SetTranslateItemNames(GameConfig::GetInstance().GetTranslateItemNames());
+    g_MonsterDataHandler.SetNamesChangedCallback(&GameLogic::Monsters::Names::RefreshShownNames);
 
 #ifdef _EDITOR
     // Initialize MU Editor with the live SDL GPU window.

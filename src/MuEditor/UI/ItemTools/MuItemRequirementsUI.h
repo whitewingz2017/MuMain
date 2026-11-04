@@ -10,7 +10,6 @@
 
 #include "Data/GameData/ItemData/ItemDefinition.h"
 
-#include <array>
 #include <optional>
 #include <string>
 
@@ -63,10 +62,7 @@ private:
         // The requirement's label, the undo label its edit is stored under.
         const char* label = nullptr;
     };
-    // One per requirement: a click from a +0 field into the +0 field of a
-    // requirement drawn above it makes that one active, earlier in the same
-    // frame, before the first one is reported left.
-    std::array<std::optional<TypedZeroValue>, Data::Items::ItemRequirementCount> m_typed;
+    std::optional<TypedZeroValue> m_typed;
     // Between the draft's Begin and End: a store then comes from a field. The
     // +0 field drops a value that needs the weight list itself; the other
     // fields of its requirement (the weight, By item level) store under the

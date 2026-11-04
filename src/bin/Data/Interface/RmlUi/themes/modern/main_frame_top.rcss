@@ -12,7 +12,7 @@
 #buttons_top.workspace-placed { position: absolute; transform-origin: left top; }
 #buttons_top {
 	position: relative;
-	width: 256dp;
+	width: 306dp;
 	height: 24dp;
 	font-family: "token(font-body)";
 	background-color: rgba(15, 16, 13, 190);
@@ -37,16 +37,16 @@
 	font-effect: outline(1dp #000000);
 	font-size: 8dp;
 }
-.frame-btn-top:hover,
-.frame-btn-top.open {
+.frame-btn-top:hover {
 	background-color: token(accent-steel);
 	border: 1dp token(accent-steel);
 }
-#btn_cshop_top    { left: 4dp;   }
-#btn_chainfo_top  { left: 54dp;  }
-#btn_myinven_top  { left: 104dp; }
-#btn_friend_top   { left: 154dp; }
-#btn_window_top   { left: 204dp; }
+
+
+
+
+
+
 
 .alert-dot-top {
 	position: absolute;
@@ -60,3 +60,40 @@
 	pointer-events: none;
 }
 
+
+
+#buttons_top.workspace-placed { margin-left: -5vw; margin-top: 1.5vh; }
+
+.mobile-layout-editing #buttons_top { pointer-events: auto; border: 1px #e1c26d; }
+.mobile-layout-editing .edit-selected { border-color: #7cffff; }
+
+#buttons_top { background-color: transparent; border-width: 0; }
+.frame-btn-top { background-color: #246280; border-color: #5594aa; }
+
+/* Six columns; more actions continue on the next row. The arrow remains outside the grid. */
+#buttons_top { width: 300dp; height: auto; min-height: 20dp; padding: 4dp; margin-right: 20dp; display: flex; flex-wrap: wrap; }
+.frame-btn-top { position: relative; top: 0; box-sizing: border-box; flex: 0 0 48dp; width: 48dp; margin-right: 2dp; margin-bottom: 4dp; }
+/* One line on every platform: iOS lays the bold label out wider and wrapped "BANK" below. */
+.frame-btn-top { white-space: nowrap; overflow: hidden; }
+#btn_bank_top { font-size: 6dp; }
+
+
+
+
+#top_panel_toggle { position: absolute; right: -20dp; top: 4dp; width: 16dp; height: 16dp; pointer-events: auto; }
+#buttons_top.collapsed .frame-btn-top { display: none; }
+#buttons_top.collapsed { height: 24dp; border-color: transparent; }
+
+
+@spritesheet top-menu-open-sheet {
+    src: "../../assets/mobile/TournamentBTN_I36.tga";
+    top-menu-open: 0px 0px 30px 48px;
+}
+@spritesheet top-menu-close-sheet {
+    src: "../../assets/mobile/TournamentBTN_I38.tga";
+    top-menu-close: 0px 0px 30px 48px;
+}
+#top_panel_toggle { decorator: image(top-menu-close); }
+#buttons_top.collapsed #top_panel_toggle { decorator: image(top-menu-open); }
+
+.frame-btn-top span { pointer-events: none; }

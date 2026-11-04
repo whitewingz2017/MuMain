@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Core/Input/KeyState.h"
 #include "Input/Selection.h"
+#include "Camera/CameraProjection.h"
 #include "Character/CharacterManager.h" // gCharacterManager
 
 // Includes mirror ZzzInterface.cpp, the unit this was extracted from.
@@ -234,6 +235,18 @@ int SelectCharacter(BYTE Kind)
     }
 
     return iSelected;
+}
+
+int PlayerAtWindowPoint(float x, float y)
+{
+    if (SceneFlag != MAIN_SCENE || !Hero)
+        return -1;
+    const UI::Scaling::ScopedScreenStretch screen(static_cast<int>(WindowWidth), static_cast<int>(WindowHeight));
+    const auto transform = UI::Scaling::ScreenOverlayTransform(WindowWidth, WindowHeight);
+    const int referenceX = static_cast<int>(UI::Scaling::LogicalX(transform, x));
+    const int referenceY = static_cast<int>(UI::Scaling::LogicalY(transform, y));
+    CameraProjection::ScreenToWorldRay(g_Camera, referenceX, referenceY, MouseTarget);
+    return SelectCharacter(KIND_PLAYER);
 }
 
 int SelectOperate()

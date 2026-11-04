@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <limits>
+#include "GameLogic/Items/ShopRestrictions.h"
 #include "GameLogic/Automation/Attack.h"
 #include "GameLogic/Automation/HelperPickupFilter.h"
 #include "GameLogic/Automation/Movement.h"
@@ -34,6 +36,7 @@ SpinLock _itemsLock;
 // Movement/target globals are defined in ZzzInterface.cpp.
 extern MovementSkill g_MovementSkill;
 extern int SelectedCharacter;
+extern int HeroIndex;
 extern int TargetX;
 extern int TargetY;
 
@@ -55,8 +58,12 @@ namespace MUHelper
     {
         m_config = config;
 
+        // A requested purchase only becomes usable after the server returns its paid expiry.
+        m_config.bUseSelfDefense = config.bUseSelfDefense && config.pvpPaidUntilUnix >
+            static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+
         PRECEIVE_MUHELPER_DATA netData;
-        ConfigDataSerDe::Serialize(m_config, netData);
+        ConfigDataSerDe::Serialize(config, netData);
 
         SocketClient->ToGameServer()->SendMuHelperSaveDataRequest(reinterpret_cast<BYTE*>(&netData), sizeof(netData));
     }
@@ -116,7 +123,6 @@ namespace MUHelper
         m_iCurrentItem = MAX_ITEMS;
         m_posOriginal = { Hero->PositionX, Hero->PositionY };
 
-        m_iHuntingDistance = ComputeDistanceByRange(m_config.iHuntingRange);
         m_iObtainingDistance = ComputeDistanceByRange(m_config.iObtainingRange);
 
         m_iSecondsElapsed = 0;
@@ -128,7 +134,19 @@ namespace MUHelper
         m_iLoopCounter = 0;
 
         m_bActive = true;
+        DeleteAllTargets();
+        AddVisibleTargets();
         g_ConsoleDebug->Write(MCD_NORMAL, L"[MU Helper] Started");
+    }
+
+    void CMuHelper::AddVisibleTargets()
+    {
+        for (int index = 0; index < MAX_CHARACTERS_CLIENT; ++index)
+        {
+            CHARACTER* target = &CharactersClient[index];
+            if (target != Hero && target->Object.Live && !target->Dead && IsMonster(target))
+                AddTarget(target->Key, false);
+        }
     }
 
     void CMuHelper::Stop()
@@ -217,29 +235,21 @@ namespace MUHelper
         }
 
         CHARACTER* pTarget = FindCharacterByKey(iTargetId);
-        if (!pTarget || pTarget == Hero)
+        if (!pTarget || pTarget == Hero || !IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live)
         {
             return;
         }
 
-        int iDistance = ComputeDistanceFromTarget(pTarget);
+        // Track visible monsters even outside the radius: walking closer must not need another spawn packet.
+        _targetsLock.lock();
+        m_setTargets.insert(iTargetId);
+        if (bIsAttacking) m_setTargetsAttacking.insert(iTargetId);
+        _targetsLock.unlock();
 
-        if ((iDistance <= m_iHuntingDistance)
-            || (bIsAttacking && m_config.bLongRangeCounterAttack))
-        {
-            _targetsLock.lock();
-
-            m_setTargets.insert(iTargetId);
-
-            if (bIsAttacking)
-            {
-                m_setTargetsAttacking.insert(iTargetId);
-            }
-
-            _targetsLock.unlock();
-        }
-
-        if (m_config.bUseSelfDefense && IsMonster(pTarget))
+        if (m_config.bUseSelfDefense && m_config.pvpPaidUntilUnix >
+            static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count())
+            && bIsAttacking && m_iCurrentTarget == -1
+            && (ComputeDistanceFromTarget(pTarget) <= m_config.iHuntingRange || m_config.bLongRangeCounterAttack))
         {
             m_iCurrentTarget = iTargetId;
         }
@@ -280,12 +290,8 @@ namespace MUHelper
         const POINT posHero = { Hero->PositionX, Hero->PositionY };
 
         const POINT posCurrent = { pTarget->PositionX, pTarget->PositionY };
-        const POINT posNext    = { pTarget->TargetX,   pTarget->TargetY };
-
-        return std::min(
-            ComputeDistanceBetween(posHero, posCurrent),
-            ComputeDistanceBetween(posHero, posNext)
-        );
+        // A destination inside the radius does not put the monster itself inside it.
+        return ComputeDistanceBetween(posHero, posCurrent);
     }
 
     int CMuHelper::ComputeDistanceBetween(POINT posA, POINT posB)
@@ -299,7 +305,7 @@ namespace MUHelper
     int CMuHelper::GetNearestTarget()
     {
         int iClosestMonsterId = -1;
-        int iMinDistance = m_iHuntingDistance;
+        int iMinDistance = m_config.iHuntingRange;
         std::set<int> setTargets;
         {
             _targetsLock.lock();
@@ -310,9 +316,10 @@ namespace MUHelper
         for (const int& iMonsterId : setTargets)
         {
             int iIndex = FindCharacterIndex(iMonsterId);
+            if (iIndex == MAX_CHARACTERS_CLIENT) continue;
             CHARACTER* pTarget = &CharactersClient[iIndex];
 
-            if (!IsMonster(pTarget))
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live)
             {
                 continue;
             }
@@ -328,10 +335,10 @@ namespace MUHelper
         return iClosestMonsterId;
     }
 
-    int CMuHelper::GetFarthestAttackingTarget()
+    int CMuHelper::GetNearestAttackingTarget()
     {
-        int iFarthestMonsterId = -1;
-        int iMaxDistance = -1;
+        int iNearestMonsterId = -1;
+        int iMinDistance = std::numeric_limits<int>::max();
 
         std::set<int> setTargets;
         {
@@ -343,22 +350,23 @@ namespace MUHelper
         for (const int& iMonsterId : setTargets)
         {
             int iIndex = FindCharacterIndex(iMonsterId);
+            if (iIndex == MAX_CHARACTERS_CLIENT) continue;
             CHARACTER* pTarget = &CharactersClient[iIndex];
 
-            if (!IsMonster(pTarget))
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live || pTarget->TargetCharacter != HeroIndex)
             {
                 continue;
             }
 
             int iDistance = ComputeDistanceFromTarget(pTarget);
-            if (iDistance > iMaxDistance)
+            if (iDistance < iMinDistance)
             {
-                iMaxDistance = iDistance;
-                iFarthestMonsterId = iMonsterId;
+                iMinDistance = iDistance;
+                iNearestMonsterId = iMonsterId;
             }
         }
 
-        return iFarthestMonsterId;
+        return iNearestMonsterId;
     }
 
     void CMuHelper::CleanupTargets()
@@ -380,11 +388,35 @@ namespace MUHelper
             }
 
             CHARACTER* pTarget = &CharactersClient[iIndex];
-            if (pTarget->Dead > 0 || !pTarget->Object.Live)
+            const bool attackingHero = pTarget->TargetCharacter == HeroIndex;
+            if (!attackingHero)
+            {
+                _targetsLock.lock();
+                m_setTargetsAttacking.erase(iMonsterId);
+                _targetsLock.unlock();
+            }
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live)
             {
                 DeleteTarget(iMonsterId);
             }
+            else if (iMonsterId == m_iCurrentTarget && ComputeDistanceFromTarget(pTarget) > m_config.iHuntingRange
+                && !(m_config.bLongRangeCounterAttack && attackingHero))
+            {
+                m_iCurrentTarget = -1;
+            }
         }
+    }
+
+    int CMuHelper::CountTargetsInRange(const std::set<int>& targets)
+    {
+        int count = 0;
+        for (const int key : targets)
+        {
+            CHARACTER* target = FindCharacterByKey(key);
+            if (target && target->Object.Live && !target->Dead && IsMonster(target)
+                && ComputeDistanceFromTarget(target) <= m_config.iHuntingRange) ++count;
+        }
+        return count;
     }
 
     int CMuHelper::ActivatePet()
@@ -690,7 +722,8 @@ namespace MUHelper
 
         if (iRemaining <= m_config.iHealThreshold)
         {
-            m_iCurrentTarget = GetNearestTarget();
+            CleanupTargets();
+            if (m_iCurrentTarget == -1) m_iCurrentTarget = GetNearestTarget();
             if (m_iCurrentTarget != -1)
             {
                 return SimulateSkill(iDrainLife, true, m_iCurrentTarget);
@@ -707,7 +740,7 @@ namespace MUHelper
             for (int i = 0; i < MAX_EQUIPMENT; i++)
             {
                 ITEM* pItem = &CharacterMachine->Equipment[i];
-                if (!pItem || pItem->Type == -1)
+                if (!pItem || pItem->Type == -1 || GameLogic::Items::IsRepairBan(pItem))
                 {
                     continue;
                 }
@@ -721,6 +754,7 @@ namespace MUHelper
                 int iLevel = pItem->Level;
                 int iDurability = pItem->Durability;
                 int iMaxDurability = CalcMaxDurability(pItem, pAttr, iLevel);
+                if (iMaxDurability <= 0) continue;
 
                 int64_t iHealth = (iDurability * 100 + iMaxDurability - 1) / iMaxDurability;
 
@@ -740,15 +774,23 @@ namespace MUHelper
 
     int CMuHelper::Attack()
     {
+        CleanupTargets();
+        if (m_config.bLongRangeCounterAttack && m_iCurrentTarget != -1)
+        {
+            CHARACTER* current = FindCharacterByKey(m_iCurrentTarget);
+            if (current && ComputeDistanceFromTarget(current) > m_config.iHuntingRange)
+            {
+                const int attacker = GetNearestAttackingTarget();
+                if (attacker != -1) m_iCurrentTarget = attacker;
+            }
+        }
         if (m_iCurrentTarget == -1)
         {
             if (!m_setTargets.empty())
             {
-                CleanupTargets();
-
                 if (m_config.bLongRangeCounterAttack)
                 {
-                    m_iCurrentTarget = GetFarthestAttackingTarget();
+                    m_iCurrentTarget = GetNearestAttackingTarget();
                 }
                 
                 if (m_iCurrentTarget == -1)
@@ -813,11 +855,11 @@ namespace MUHelper
                 int iCount = 0;
                 if (m_config.aiSkillCondition[i] & ON_MOBS_NEARBY)
                 {
-                    iCount = (int)m_setTargets.size();
+                    iCount = CountTargetsInRange(m_setTargets);
                 }
                 else if (m_config.aiSkillCondition[i] & ON_MOBS_ATTACKING)
                 {
-                    iCount = (int)m_setTargetsAttacking.size();
+                    iCount = CountTargetsInRange(m_setTargetsAttacking);
                 }
                 else
                 {
@@ -869,12 +911,15 @@ namespace MUHelper
     {
         using GameLogic::Automation::SkillResult;
 
+        // Finish the sent walk before aiming or casting from the next position.
+        if (Hero->Movement) return 0;
+
         // Players are allowed here, and must be: the helper casts its buffs and
         // heals on party members and on the hero itself. Only the plain attack
         // is monster-only, as it always was. A target that is not attackable is
         // still refused by the primitive when it is dead.
         const SkillResult result =
-            GameLogic::Automation::CastSkill(iSkill, bTargetRequired, iTarget, true, m_iHuntingDistance);
+            GameLogic::Automation::CastSkill(iSkill, bTargetRequired, iTarget, true, m_config.iHuntingRange);
 
         if (iTarget != -1 && GameLogic::Automation::ShouldForgetTarget(result))
         {
@@ -890,12 +935,12 @@ namespace MUHelper
 
         // No target is not a failed attack: without this the helper asks the
         // automation for object -1 and then forgets a target it never had.
-        if (iTarget == -1)
+        if (iTarget == -1 || Hero->Movement)
         {
             return 0;
         }
 
-        const AttackResult result = GameLogic::Automation::AttackObject(iTarget, false, m_iHuntingDistance);
+        const AttackResult result = GameLogic::Automation::AttackObject(iTarget, false, m_config.iHuntingRange);
 
         if (GameLogic::Automation::ShouldForgetTarget(result))
         {
@@ -916,7 +961,6 @@ namespace MUHelper
 
             m_iSecondsAway = 0;
             m_iComboState = 0;
-            m_iCurrentTarget = -1;
         }
 
         return 1;

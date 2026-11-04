@@ -19,6 +19,7 @@ namespace mu::ui::window
     // One skill the player can assign, placed where native's fan-out put it.
     struct MuHelperSkillPickerEntry
     {
+        bool clear = false;
         Rml::String decorator;  // "image(skill-icon-skill2-lit-3-8)" -- see UI::MuHelper::SkillIconDecorator()
     };
 

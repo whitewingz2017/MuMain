@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Core/Text/TextLineWrap.h"
 #include "UI/Chat/Chat.h"
+#include "UI/Character/NameWindow.h"
+#include "UI/Character/WorldNameRules.h"
+#include <array>
+#include "UI/Core/WindowSystem.h"
 #include "Character/CharacterManager.h" // gCharacterManager
 #include "Camera/CameraProjection.h" // CameraProjection
 
@@ -75,6 +79,14 @@ typedef struct
 
 CHAT Chat[MAX_CHAT];
 
+bool ShowOwnerName(const CHAT* chat)
+{
+    if (!g_pNameWindow || !chat->Owner) return true;
+    const auto kind = chat->Owner->Object.Kind;
+    return kind == KIND_PLAYER ? g_pNameWindow->ArePlayerNamesShown() :
+        kind == KIND_MONSTER ? g_pNameWindow->IsMonsterNameShown(chat->Owner) : true;
+}
+
 void SetBooleanPosition(CHAT* c)
 {
     SIZE Size[5]{};
@@ -90,6 +102,7 @@ void SetBooleanPosition(CHAT* c)
         Size[0] = g_pRenderText->MeasureText(c->ID, lstrlen(c->ID));
     }
 
+    if (!ShowOwnerName(c)) Size[0] = {};
     g_pRenderText->SetFont(g_hFont);
     Size[1] = g_pRenderText->MeasureText(c->Text[0], lstrlen(c->Text[0]));
     Size[2] = g_pRenderText->MeasureText(c->Text[1], lstrlen(c->Text[1]));
@@ -105,7 +118,7 @@ void SetBooleanPosition(CHAT* c)
         c->Width = std::max<int>(std::max<int>(Size[0].cx, Size[1].cx), std::max<int>(Size[3].cx, Size[4].cx));
     else
         c->Width = std::max<int>(std::max<int>(Size[0].cx, Size[3].cx), Size[4].cx);
-    const int lineCount = (c->ID[0] != L'\0') + (c->LifeTime[0] > 0) + (c->LifeTime[1] > 0)
+    const int lineCount = (ShowOwnerName(c) && c->ID[0] != L'\0') + (c->LifeTime[0] > 0) + (c->LifeTime[1] > 0)
         + (c->Union[0] != L'\0') + (c->Guild[0] != L'\0');
     c->LineHeight = 1;
     for (const SIZE& size : Size)
@@ -148,8 +161,31 @@ void SetPlayerColor(BYTE PK)
 
 const int ciSystemColor = 240;
 
+void RenderOwnerName(CHAT* c, POINT& RenderPos, SIZE RenderBoxSize, int iLineHeight, bool bGmMode)
+{
+    if (ShowOwnerName(c))
+    {
+        const auto background = g_pRenderText->GetBgColor();
+        if (c->Owner->Object.Kind == KIND_PLAYER) g_pRenderText->SetBgColor(0u);
+        if (bGmMode)
+        {
+            g_pRenderText->SetFont(g_hFontBold);
+            g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->ID, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
+            RenderPos.y += iLineHeight;
+            g_pRenderText->SetFont(g_hFont);
+        }
+        else
+        {
+            g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->ID, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
+            RenderPos.y += iLineHeight;
+        }
+        g_pRenderText->SetBgColor(background);
+    }
+}
+
 void RenderBoolean(int x, int y, CHAT* c)
 {
+    if (!ShowOwnerName(c) && c->LifeTime[0] <= 0 && c->LifeTime[1] <= 0) return;
     if (g_isCharacterBuff((&c->Owner->Object), eBuff_CrywolfNPCHide))
     {
         return;
@@ -287,18 +323,7 @@ void RenderBoolean(int x, int y, CHAT* c)
         g_pRenderText->SetTextColor(Temp);
     }
 
-    if (bGmMode)
-    {
-        g_pRenderText->SetFont(g_hFontBold);
-        g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->ID, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
-        RenderPos.y += iLineHeight;
-        g_pRenderText->SetFont(g_hFont);
-    }
-    else
-    {
-        g_pRenderText->RenderText(RenderPos.x, RenderPos.y, c->ID, RenderBoxSize.cx, iLineHeight, RT3_SORT_LEFT);
-        RenderPos.y += iLineHeight;
-    }
+    RenderOwnerName(c, RenderPos, RenderBoxSize, iLineHeight, bGmMode);
 
     if (c->GuildColor == 0)
         g_pRenderText->SetBgColor(10, 30, 50, 150);
@@ -574,6 +599,16 @@ void AssignChat(wchar_t* character_name, const wchar_t* chat_text, int flag)
     }
 }
 
+void UpdateShopTitleVisibility()
+{
+    // The bubble also draws a Store header while only the character name is visible.
+    for (const auto& chat : Chat)
+        if (chat.Owner) EnableShopTitleDraw(chat.Owner);
+    for (const auto& chat : Chat)
+        if (chat.Owner && (chat.IDLifeTime > 0 || chat.LifeTime[0] > 0))
+            DisableShopTitleDraw(chat.Owner);
+}
+
 void MoveChat()
 {
     for (int i = 0; i < MAX_CHAT; i++)
@@ -592,87 +627,69 @@ void MoveChat()
             c->LifeTime[0] = 0;
             c->LifeTime[1] = 0;
         }
-        if (c->LifeTime[0] > 0) {
-            DisableShopTitleDraw(c->Owner);
-        }
-        if (c->Owner != NULL && c->LifeTime[0] <= 0) {
-            EnableShopTitleDraw(c->Owner);
-        }
     }
+    UpdateShopTitleVisibility();
 }
 
+
+std::array<CHAT*, MAX_CHAT> VisibleChats(std::size_t& count)
+{
+    std::array<CHAT*, MAX_CHAT> visible{};
+    count = 0;
+    for (auto& chat : Chat)
+        if (UI::Character::HasVisibleLabel(ShowOwnerName(&chat), chat.IDLifeTime,
+                                           chat.LifeTime[0], chat.LifeTime[1]))
+            visible[count++] = &chat;
+    return visible;
+}
+
+void ProjectChat(CHAT* chat)
+{
+    int screenX, screenY;
+    if (chat->Owner)
+    {
+        const auto& object = chat->Owner->Object;
+        constexpr float NameOffset = 60.f, SmallNpcOffset = 20.f;
+        const bool smallNpc = (object.Type >= MODEL_LITTLESANTA && object.Type <= MODEL_LITTLESANTA_END) ||
+            object.Type == MODEL_MERCHANT_MAN;
+        vec3_t position;
+        Vector(object.Position[0], object.Position[1],
+               object.Position[2] + object.BoundingBoxMax[2] + (smallNpc ? SmallNpcOffset : NameOffset), position);
+        CameraProjection::WorldToScreen(g_Camera, position, &screenX, &screenY);
+    }
+    else
+        CameraProjection::WorldToScreen(g_Camera, chat->Position, &screenX, &screenY);
+    SetBooleanPosition(chat);
+    chat->x = screenX - chat->Width / 2;
+    chat->y = screenY - chat->Height;
+}
 
 void RenderBooleans()
 {
     g_pRenderText->SetFont(g_hFont);
+    std::size_t count;
+    const auto visible = VisibleChats(count);
+    for (std::size_t i = 0; i < count; ++i)
+        ProjectChat(visible[i]);
 
-    for (int i = 0; i < MAX_CHAT; i++)
+    // Preserve the original collision order, considering only labels with visible content.
+    for (std::size_t i = 0; i < count; ++i)
     {
-        CHAT* ci = &Chat[i];
-        if (ci->IDLifeTime > 0 || ci->LifeTime[0] > 0)
+        CHAT* ci = visible[i];
+        for (std::size_t j = 0; j < count; ++j)
         {
-            vec3_t Position;
-            int ScreenX, ScreenY;
-            if (ci->Owner != NULL)
-            {
-                OBJECT* o = &ci->Owner->Object;
-                Vector(o->Position[0], o->Position[1], o->Position[2] + o->BoundingBoxMax[2] + 60.f, Position);
-
-                if (o->Type >= MODEL_LITTLESANTA && o->Type <= MODEL_LITTLESANTA_END)
-                {
-                    Vector(o->Position[0], o->Position[1], o->Position[2] + o->BoundingBoxMax[2] + 20.f, Position);
-                }
-                if (o->Type == MODEL_MERCHANT_MAN)
-                {
-                    Vector(o->Position[0], o->Position[1], o->Position[2] + o->BoundingBoxMax[2] + 20.f, Position);
-                }
-                CameraProjection::WorldToScreen(g_Camera, Position, &ScreenX, &ScreenY);
-            }
-            else
-            {
-                CameraProjection::WorldToScreen(g_Camera, ci->Position, &ScreenX, &ScreenY);
-            }
-            SetBooleanPosition(ci);
-            ci->x = ScreenX - (ci->Width / 2);
-            ci->y = ScreenY - ci->Height;
+            CHAT* cj = visible[j];
+            if (i == j || ci->x + ci->Width <= cj->x || ci->x >= cj->x + cj->Width ||
+                ci->y + ci->Height <= cj->y || ci->y >= cj->y + cj->Height) continue;
+            ci->y = ci->y < cj->y + cj->Height / 2 ? cj->y - ci->Height : cj->y + cj->Height;
         }
     }
-
-    for (int i = 0; i < MAX_CHAT; i++)		//. Bubble sorting
+    for (std::size_t i = 0; i < count; ++i)
     {
-        CHAT* ci = &Chat[i];
-        if (ci->IDLifeTime > 0 || ci->LifeTime[0] > 0)
-        {
-            for (int j = 0; j < MAX_CHAT; j++)
-            {
-                CHAT* cj = &Chat[j];
-                if (i != j && (cj->IDLifeTime > 0 || cj->LifeTime[0] > 0))
-                {
-                    if (ci->x + ci->Width > cj->x && ci->x<cj->x + cj->Width &&
-                        ci->y + ci->Height>cj->y && ci->y < cj->y + cj->Height)
-                    {
-                        if (ci->y < cj->y + cj->Height / 2)
-                            ci->y = cj->y - ci->Height;
-                        else
-                            ci->y = cj->y + cj->Height;
-                    }
-                }
-            }
-        }
-    }
-
-    for (int i = 0; i < MAX_CHAT; i++)
-    {
-        CHAT* ci = &Chat[i];
-        if (ci->IDLifeTime > 0 || ci->LifeTime[0] > 0)
-        {
-            //. Fit to screen
-            if (ci->x < 0) ci->x = 0;
-            if (ci->x >= (int)WindowWidth - ci->Width) ci->x = WindowWidth - ci->Width;
-            if (ci->y < 0) ci->y = 0;
-            if (ci->y >= (int)WindowHeight - ci->Height) ci->y = WindowHeight - ci->Height;
-            RenderBoolean(ci->x, ci->y, ci);
-        }
+        CHAT* chat = visible[i];
+        chat->x = std::clamp(chat->x, 0, std::max(0, static_cast<int>(WindowWidth) - chat->Width));
+        chat->y = std::clamp(chat->y, 0, std::max(0, static_cast<int>(WindowHeight) - chat->Height));
+        RenderBoolean(chat->x, chat->y, chat);
     }
 }
 }

@@ -34,6 +34,7 @@ public:
     void ResetForScene(EGameScene scene);
 
     // Public accessors for UI
+    void ApplyTouchGesture(float zoomRatio, float yawDegrees, float pitchDegrees);
     float GetRadius() const { return m_Radius; }
     float GetTotalYaw() const { return m_BaseYaw + m_DeltaYaw; }
     float GetTotalPitch() const { return m_BasePitch + m_DeltaPitch; }

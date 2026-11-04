@@ -2,6 +2,9 @@
 
 #include "ItemDisplay.h"
 #include "ItemModelLookup.h"
+#include "InventoryFit.h"
+#include "Camera/CameraProjection.h"
+#include "Render/Models/ZzzBMD.h"
 
 #include "Core/Globals/_enum.h"
 #include "Data/GameData/ItemData/ItemModelDatabase.h"
@@ -9,6 +12,9 @@
 #include "Data/GameData/ItemData/ItemType.h"
 
 #include <algorithm>
+#include <array>
+#include <cstring>
+#include <unordered_map>
 
 namespace Render::Items::Display
 {
@@ -339,6 +345,112 @@ InventoryDisplay GetInventoryDisplay(int modelType)
         return other->display;
     }
     return ToInventoryDisplay(ItemInventoryDisplay{});
+}
+
+namespace
+{
+struct EyeBounds
+{
+    vec3_t minimum{};
+    vec3_t maximum{};
+    bool valid = false;
+
+    void Add(const vec3_t local, const float (*bone)[4])
+    {
+        vec3_t point, eye;
+        VectorTransform(local, bone, point);
+        VectorRotate(point, g_Camera.Matrix, eye);
+        for (int axis = 0; axis < 3; ++axis)
+        {
+            minimum[axis] = valid ? std::min(minimum[axis], eye[axis]) : eye[axis];
+            maximum[axis] = valid ? std::max(maximum[axis], eye[axis]) : eye[axis];
+        }
+        valid = true;
+    }
+};
+
+EyeBounds MeshBounds(const BMD& mesh, int boneCount, const float (*bones)[3][4])
+{
+    EyeBounds bounds;
+    if (!mesh.Meshs) return bounds;
+    for (int m = 0; m < mesh.NumMeshs; ++m)
+    {
+        const Mesh_t& part = mesh.Meshs[m];
+        if (!part.Vertices) continue;
+        for (int v = 0; v < part.NumVertices; ++v)
+        {
+            const Vertex_t& vertex = part.Vertices[v];
+            if (vertex.Node >= 0 && vertex.Node < boneCount) bounds.Add(vertex.Position, bones[vertex.Node]);
+        }
+    }
+    return bounds;
+}
+
+// The mesh's bounds, measured again only when its pose in the slot (its root bone) or the camera
+// changed. Measuring walks every vertex, and the imported skins have thousands: done for every item
+// in an open inventory each frame, it cost much of the frame rate. An animated item keeps the
+// bounds of the pose it was measured in, which is close enough to fit it in its slot.
+EyeBounds CachedMeshBounds(const BMD& mesh, int boneCount, const float (*bones)[3][4])
+{
+    struct Entry
+    {
+        std::array<float, 12> rootBone{};
+        std::array<float, 9> camera{};
+        EyeBounds bounds;
+    };
+    static std::unordered_map<const BMD*, Entry> cache;
+
+    std::array<float, 12> rootBone{};
+    std::array<float, 9> camera{};
+    std::memcpy(rootBone.data(), bones[0], sizeof(rootBone));
+    for (int row = 0; row < 3; ++row)
+        for (int column = 0; column < 3; ++column)
+            camera[row * 3 + column] = g_Camera.Matrix[row][column];
+
+    Entry& entry = cache[&mesh];
+    if (!entry.bounds.valid || entry.rootBone != rootBone || entry.camera != camera)
+    {
+        entry.rootBone = rootBone;
+        entry.camera = camera;
+        entry.bounds = MeshBounds(mesh, boneCount, bones);
+    }
+    return entry.bounds;
+}
+
+EyeBounds BoneBounds(const BMD& skeleton, const float (*bones)[3][4])
+{
+    EyeBounds bounds;
+    for (int bone = 0; bone < skeleton.NumBones; ++bone)
+    {
+        if (!skeleton.Bones[bone].BoundingBox) continue;
+        for (const auto& corner : skeleton.Bones[bone].BoundingVertices) bounds.Add(corner, bones[bone]);
+    }
+    return bounds;
+}
+} // namespace
+
+void FitInventoryModel(const BMD& skeleton, const BMD& mesh, const float (*bones)[3][4], float* position,
+                       float& scale, float width, float height)
+{
+    if (!skeleton.Bones || skeleton.NumBones <= 0 || skeleton.NumBones > MAX_BONES || width <= 0 || height <= 0) return;
+    EyeBounds bounds = CachedMeshBounds(mesh, skeleton.NumBones, bones);
+    if (!bounds.valid) bounds = BoneBounds(skeleton, bones);
+    if (!bounds.valid) return;
+    const vec3_t& minimum = bounds.minimum;
+    const vec3_t& maximum = bounds.maximum;
+    vec3_t eyePosition, center, half, worldCenter;
+    VectorTransform(position, g_Camera.Matrix, eyePosition);
+    for (int axis = 0; axis < 3; ++axis)
+    {
+        center[axis] = (minimum[axis] + maximum[axis]) * 0.5f;
+        half[axis] = (maximum[axis] - minimum[axis]) * 0.5f;
+    }
+    const float fit = InventoryFitScale(width * g_fScreenRate_x, height * g_fScreenRate_y,
+        half[0], half[1], half[2], -eyePosition[2], g_Camera.PerspectiveX, g_Camera.PerspectiveY);
+    if (fit <= 0) return;
+    scale = std::min(scale, fit);
+    VectorIRotate(center, g_Camera.Matrix, worldCenter);
+    VectorMA(position, -scale, worldCenter, position);
 }
 
 std::optional<float> GetSmallArchangelWeaponScale(int modelType, int level)

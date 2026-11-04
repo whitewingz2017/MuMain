@@ -46,12 +46,17 @@ void CGenericMenuDialog::BindRmlModel(Rml::DataModelConstructor& c, GenericMenuR
 
     auto button = c.RegisterStruct<MenuButtonEntry>();
     button.RegisterMember("label", &MenuButtonEntry::label);
+    button.RegisterMember("detail", &MenuButtonEntry::detail);
+    button.RegisterMember("secondary_label", &MenuButtonEntry::secondaryLabel);
+    button.RegisterMember("tertiary_label", &MenuButtonEntry::tertiaryLabel);
+    button.RegisterMember("icon_decorator", &MenuButtonEntry::iconDecorator);
     button.RegisterMember("tooltip", &MenuButtonEntry::tooltip);
     // Reuses the LineEntry/std::vector<LineEntry> array type already registered above for
     // the top-level `lines` -- per-button description text, rendered directly above that
     // button rather than lumped into the shared summary (see MenuButton::lines).
     button.RegisterMember("lines", &MenuButtonEntry::lines);
     button.RegisterMember("has_lines", &MenuButtonEntry::hasLines);
+    button.RegisterMember("has_icon", &MenuButtonEntry::hasIcon);
     button.RegisterMember("enabled", &MenuButtonEntry::enabled);
     button.RegisterMember("compact", &MenuButtonEntry::compact);
     button.RegisterMember("cols2", &MenuButtonEntry::cols2);
@@ -88,6 +93,16 @@ void CGenericMenuDialog::BindRmlModel(Rml::DataModelConstructor& c, GenericMenuR
             if (!m_Active.buttons[index].enabled) return;
             m_bButtonClicked = true;
             m_iClickedButtonIndex = index;
+            m_iClickedButtonAction = 0;
+        });
+    c.BindEventCallback("gmd_button_action",
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList& args)
+        {
+            event.StopPropagation();
+            if (!m_bActive || args.size() != 2) return;
+            const int index = args[0].Get<int>(-1), action = args[1].Get<int>(-1);
+            if (index < 0 || index >= static_cast<int>(m_Active.buttons.size()) || action < 1 || action > 2 || !m_Active.buttons[index].enabled) return;
+            m_bButtonClicked = true; m_iClickedButtonIndex = index; m_iClickedButtonAction = action;
         });
     // A close action outside the button list: the same as Esc.
     c.BindEventCallback("gmd_cancel",
@@ -118,6 +133,7 @@ void CGenericMenuDialog::Release()
     m_RmlView.Release();
     m_bActive = false;
     m_Queue.clear();
+    m_Active = {};
 }
 
 void CGenericMenuDialog::Show(GenericMenuConfig cfg)
@@ -134,6 +150,7 @@ void CGenericMenuDialog::Show(GenericMenuConfig cfg)
     m_bActive = true;
     m_bButtonClicked = false;
     m_iClickedButtonIndex = -1;
+    m_iClickedButtonAction = 0;
 
     if (m_RmlView.Document())
     {
@@ -155,6 +172,7 @@ void CGenericMenuDialog::ShowNext()
     m_Queue.pop_front();
     m_bButtonClicked = false;
     m_iClickedButtonIndex = -1;
+    m_iClickedButtonAction = 0;
 
     if (m_RmlView.Document())
     {
@@ -170,7 +188,9 @@ void CGenericMenuDialog::Resolve(int buttonIndex)
 
     if (buttonIndex >= 0 && buttonIndex < static_cast<int>(cfg.buttons.size()))
     {
-        if (cfg.buttons[buttonIndex].onClick) cfg.buttons[buttonIndex].onClick();
+        const auto& button = cfg.buttons[buttonIndex];
+        const auto& callback = m_iClickedButtonAction == 1 ? button.onSecondary : m_iClickedButtonAction == 2 ? button.onTertiary : button.onClick;
+        if (callback) callback();
     }
     else if (cfg.onCancel)
     {
@@ -245,6 +265,13 @@ void CGenericMenuDialog::SyncCanvasTop()
     m_RmlView.MarkDirty("canvas_top");
 }
 
+void CGenericMenuDialog::SyncButtonIcons()
+{
+    for (size_t i = 0; i < m_Active.buttons.size(); ++i)
+        if (const auto& sync = m_Active.buttons[i].syncIcon)
+            sync(m_RmlView.Document()->GetElementById("menu_icon_" + std::to_string(i)));
+}
+
 void CGenericMenuDialog::SyncRmlModel()
 {
     if (!m_RmlView.Document()) return;
@@ -306,11 +333,16 @@ void CGenericMenuDialog::SyncRmlModel()
     {
         MenuButtonEntry entry;
         entry.label = StringUtils::WideToNarrow(button.label.c_str());
+        entry.detail = StringUtils::WideToNarrow(button.liveDetail ? button.liveDetail().c_str() : button.detail.c_str());
+        entry.secondaryLabel = StringUtils::WideToNarrow(button.secondaryLabel.c_str());
+        entry.tertiaryLabel = StringUtils::WideToNarrow(button.tertiaryLabel.c_str());
+        entry.iconDecorator = button.iconDecorator;
         entry.tooltip = StringUtils::WideToNarrow(button.tooltip.c_str());
         entry.lines.reserve(button.lines.size());
         for (const auto& line : button.lines)
             entry.lines.push_back(ToLineEntry(line));
         entry.hasLines = !button.lines.empty();
+        entry.hasIcon = static_cast<bool>(button.syncIcon);
         entry.enabled = button.enabled;
         entry.compact = button.compact;
         entry.cols2 = (m_Active.columns == 2) && !button.compact;
@@ -324,9 +356,9 @@ void CGenericMenuDialog::SyncRmlModel()
     {
         const auto& a = newButtons[i];
         const auto& b = model.buttons[i];
-        buttonsChanged = a.label != b.label || a.tooltip != b.tooltip ||
+        buttonsChanged = a.secondaryLabel != b.secondaryLabel || a.tertiaryLabel != b.tertiaryLabel || a.label != b.label || a.tooltip != b.tooltip || a.detail != b.detail || a.iconDecorator != b.iconDecorator ||
                          a.enabled != b.enabled || a.compact != b.compact || a.cols2 != b.cols2 ||
-                         a.narrow != b.narrow ||
+                         a.narrow != b.narrow || a.hasIcon != b.hasIcon ||
                          a.linesBelow != b.linesBelow || a.dismiss != b.dismiss || a.lines.size() != b.lines.size();
         for (size_t j = 0; j < a.lines.size() && !buttonsChanged; ++j)
             buttonsChanged = !SameLine(a.lines[j], b.lines[j]);
@@ -336,7 +368,7 @@ void CGenericMenuDialog::SyncRmlModel()
         model.buttons = std::move(newButtons);
         m_RmlView.MarkDirty("buttons");
     }
-
+    SyncButtonIcons();
 }
 
 } // namespace mu::ui::window

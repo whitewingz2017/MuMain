@@ -112,6 +112,8 @@ private:
 
     static bool isClassRequirementFulfilled(const ITEM_SET_OPTION& setOptions, int firstClass, int secondClass);
     static void TryAddSetOption(std::uint8_t option, int value, int optionIndex, SET_SEARCH_RESULT_OPT& set, const ITEM_SET_OPTION& setOptions, bool isThisSetComplete, bool isFullOption, bool isExtOption, bool fulfillsClassRequirement, int firstClass, int secondClass);
+    // Fills set.SetOption from the set's standard, ext and full options; set.ItemCount decides which are active.
+    static void BuildSetOptionList(SET_SEARCH_RESULT_OPT& set, const ITEM_SET_OPTION& setOptions, bool isThisSetComplete, int firstClass, int secondClass);
 
     static bool getExplainText(wchar_t* text, std::uint8_t option, int value);
     static std::uint8_t RenderSetOptionList(const SET_SEARCH_RESULT_OPT& set, std::uint8_t textIndex, bool bIsEquippedItem, bool bShowInactive);

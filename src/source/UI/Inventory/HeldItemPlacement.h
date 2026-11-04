@@ -37,5 +37,5 @@ bool SendHeldItemMove(const HeldItemMove& move);
 // move was sent.
 bool AutoMoveItemAtCursor(mu::ui::window::CInventoryCtrl* source, STORAGE_TYPE sourceType,
                           mu::ui::window::CInventoryCtrl* target, STORAGE_TYPE targetType,
-                          const std::function<bool(ITEM*)>& accepts);
+                          const std::function<bool(ITEM*)>& accepts, ITEM* selectedItem = nullptr);
 } // namespace UI::Items::Placement

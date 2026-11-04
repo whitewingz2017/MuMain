@@ -15,6 +15,7 @@
 #include <RmlUi/Core/TextShapingContext.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cwchar>
 #include <functional>
@@ -128,6 +129,7 @@ void UI::Character::WorldLabelLayer::Hide()
 
 void UI::Character::WorldLabelLayer::BeginFrame()
 {
+    m_groundItems = false;
     m_drawn = 0;
     m_shownByContent.clear();
     m_hiddenSlots.clear();
@@ -220,6 +222,7 @@ void UI::Character::WorldLabelLayer::SetKind(Slot& slot, SlotKind kind)
     }
 
     SetDisplay(slot.box, kind != SlotKind::Hidden);
+    slot.box->SetClass("text-box", kind == SlotKind::Text);
     if (slot.text != nullptr)
         SetDisplay(slot.text, kind == SlotKind::Text);
     if (slot.image != nullptr)
@@ -236,8 +239,12 @@ void UI::Character::WorldLabelLayer::SetBox(Slot& slot, const Rect& rect, std::u
 {
     SetPx(slot.box, Rml::PropertyId::Left, slot.x, rect.x);
     SetPx(slot.box, Rml::PropertyId::Top, slot.y, rect.y);
-    SetPx(slot.box, Rml::PropertyId::Width, slot.width, rect.width);
-    SetPx(slot.box, Rml::PropertyId::Height, slot.height, rect.height);
+    // Fractional text boxes change their rounded size as they move, rebuilding RmlUi geometry.
+    // Round outward once so the cached background stays reusable and still contains the text.
+    SetPx(slot.box, Rml::PropertyId::Width, slot.width,
+          slot.kind == SlotKind::Text && g_retainLabelBoxGeometry ? std::ceil(rect.width) : rect.width);
+    SetPx(slot.box, Rml::PropertyId::Height, slot.height,
+          slot.kind == SlotKind::Text && g_retainLabelBoxGeometry ? std::ceil(rect.height) : rect.height);
     if (slot.boxColor != abgr)
     {
         slot.boxColor = abgr;
@@ -251,6 +258,7 @@ void UI::Character::WorldLabelLayer::RecordText(const Render::Renderer::Recorded
     {
         return candidate.utf8 == text.utf8 && candidate.textPixelSize == text.textPixelSize && candidate.bold == text.bold;
     });
+    slot.box->SetClass("ground-item", m_groundItems);
     const bool textChanged =
         slot.utf8 != text.utf8 || slot.textPixelSize != text.textPixelSize || slot.bold != text.bold;
     const float textOffset = text.textX - text.boxX;
@@ -281,8 +289,13 @@ void UI::Character::WorldLabelLayer::RecordText(const Render::Renderer::Recorded
     // The native renderer draws no box for a fully transparent background colour; a box keeps the
     // blend state it was drawn under (opaque after the F8 health bars' DisableAlphaBlend()). The box
     // never ends before the text RmlUi draws in it.
-    const float boxWidth = std::max(text.boxWidth, textOffset + slot.drawnTextWidth);
-    const Rect box{text.boxX, text.boxY, boxWidth, text.boxHeight};
+    const auto [boxX, boxWidth] = text.FittedBox(slot.drawnTextWidth);
+    const auto& edges = slot.text->GetBox();
+    const float left = edges.GetEdge(Rml::BoxArea::Padding, Rml::BoxEdge::Left);
+    const float right = edges.GetEdge(Rml::BoxArea::Padding, Rml::BoxEdge::Right);
+    const float top = edges.GetEdge(Rml::BoxArea::Padding, Rml::BoxEdge::Top);
+    const float bottom = edges.GetEdge(Rml::BoxArea::Padding, Rml::BoxEdge::Bottom);
+    const Rect box{boxX - left, text.boxY - top, boxWidth + left + right, text.boxHeight + top + bottom};
     if ((text.backColor >> 24) == 0)
     {
         SetBox(slot, box, 0u);

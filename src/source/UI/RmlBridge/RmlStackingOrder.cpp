@@ -43,6 +43,7 @@ constexpr DocumentPlacement Placements[] = {
     {"hud_status.rml", 1.0f, MainScene},
     // The modern theme's top-right button row: under every window, which dock over it.
     {"main_frame_top.rml", 1.05f, MainScene},
+    {"mobile_controls.rml", 1.06f, MainScene},
     // The duel and soccer boards drew under every panel.
     {"duel_window.rml", 1.1f, MainScene},
     {"blood_castle_time.rml", 1.2f, MainScene},
@@ -95,6 +96,7 @@ constexpr DocumentPlacement Placements[] = {
     {"duel_watch.rml", 5.0f, MainScene},
     {"duel_watch_frame.rml", 5.0f, MainScene},
     {"duel_watch_spectators.rml", 5.0f, MainScene},
+    {"combat_statistics.rml", 5.2f, MainScene},
     {"character_info.rml", 5.1f, MainScene},
     {"mu_helper_skill_picker.rml", 5.2f, MainScene},
     {"party_list.rml", 5.4f, MainScene},
@@ -114,11 +116,11 @@ constexpr DocumentPlacement Placements[] = {
     {"move_command.rml", 8.3f, MainScene},
     {"crywolf.rml", 10.0f, MainScene},
     // CInGameShop::GetLayerDepth(): the shop sits above crywolf and below kanturu_enter.
-    {"in_game_shop.rml", 10.08f, MainScene},
+    {"in_game_shop.rml", 10.66f, MainScene},
     // The shop's own buy dialog, above the shop it opens from.
-    {"igs_buy_package.rml", 10.09f, MainScene},
-    {"igs_buy_select.rml", 10.09f, MainScene},
-    {"igs_send_gift.rml", 10.09f, MainScene},
+    {"igs_buy_package.rml", 10.665f, MainScene},
+    {"igs_buy_select.rml", 10.665f, MainScene},
+    {"igs_send_gift.rml", 10.665f, MainScene},
     {"kanturu_enter.rml", 10.1f, MainScene},
     {"master_level.rml", 10.1f, MainScene},
     {"master_level_band.rml", 10.1f, MainScene},
@@ -131,6 +133,10 @@ constexpr DocumentPlacement Placements[] = {
     // The original drew it at 10.5, under the HUD; the modern theme's settings screen covers the
     // whole screen, HUD included. Still under the tooltips and message boxes.
     {"option_window.rml", 10.67f, EveryScene},
+    {"skin_shop.rml", SkinShopLayerDepth, MainScene},
+    {"skin_inventory.rml", SkinShopLayerDepth, MainScene},
+    {"muun_inventory.rml", SkinShopLayerDepth, MainScene},
+    {"excellent_combination.rml", SkinShopLayerDepth, MainScene},
     // The original drew each tooltip at its owner's depth (item tooltips at 5.5), where the
     // chat log, the friends window, the full map and the HUD hid its rows: an original
     // defect. Every tooltip draws above the windows instead, still under the message boxes.

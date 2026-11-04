@@ -16,9 +16,13 @@
 #include "UI/Core/WindowSystem.h"
 #include "Scenes/MainScene.h"
 #include "Render/Renderer/MuRenderer.h"
+#include "Camera/CameraProjection.h"
+#include "Render/Items/ScopedItemEffects.h"
 
 #include <algorithm>
 #include <array>
+#include <bitset>
+#include <cstring>
 #include <optional>
 
 namespace
@@ -144,6 +148,55 @@ void RenderSprite(OBJECT* o, OBJECT* Owner)
     }
 }
 
+namespace
+{
+void RenderSpriteWithBlend(int index)
+{
+    auto* sprite = &Sprites[index];
+    if (sprite->Type == BITMAP_FORMATION_MARK || sprite->SubType == 2) EnableAlphaTest();
+    else if (sprite->SubType == 0) EnableAlphaBlend();
+    else if (sprite->SubType == 1) EnableAlphaBlendMinus();
+    else if (sprite->SubType == 3) EnableAlphaBlend2();
+    std::optional<mu::ScopedBloomExclusion> exclusion;
+    if (s_spriteBloomExcluded[index]) exclusion.emplace();
+    RenderSprite(sprite, sprite->Owner);
+}
+}
+
+void RenderWithSpriteCamera(const std::function<void()>& draw)
+{
+    float savedMatrix[3][4];
+    std::memcpy(savedMatrix, g_Camera.Matrix, sizeof(savedMatrix));
+    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
+    BeginSprite();
+    draw();
+    EndSprite();
+    std::memcpy(g_Camera.Matrix, savedMatrix, sizeof(savedMatrix));
+}
+
+void RenderWithSprites(const std::function<void()>& draw)
+{
+    // Preview attachments must stay in this camera and out of the world particle pool.
+    const Render::Items::ScopedItemEffects effects(Render::Items::ScopedItemEffects::Enabled(), true);
+    std::bitset<MAX_SPRITES> existing;
+    for (int i = 0; i < MAX_SPRITES; ++i) existing[i] = Sprites[i].Live;
+    draw();
+    float savedMatrix[3][4];
+    std::memcpy(savedMatrix, g_Camera.Matrix, sizeof(savedMatrix));
+    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
+    BeginSprite();
+    for (int i = 0; i < MAX_SPRITES; ++i)
+    {
+        auto& sprite = Sprites[i];
+        if (existing[i] || !sprite.Live) continue;
+        sprite.Visible = true;
+        if (!IsSpritesDisabledDebug()) RenderSpriteWithBlend(i);
+        sprite.Live = false;
+    }
+    EndSprite();
+    std::memcpy(g_Camera.Matrix, savedMatrix, sizeof(savedMatrix));
+}
+
 void RenderSprites(BYTE byRenderOneMore)
 {
     if (!g_pOption->GetRenderAllEffects())
@@ -176,34 +229,7 @@ void RenderSprites(BYTE byRenderOneMore)
 
         if (o->Live)
         {
-            if (o->Type == BITMAP_FORMATION_MARK)
-            {
-                EnableAlphaTest();
-            }
-            else if (o->SubType == 0)
-            {
-                EnableAlphaBlend();
-            }
-            else if (o->SubType == 1)
-            {
-                EnableAlphaBlendMinus();
-            }
-            else if (o->SubType == 2)
-            {
-                EnableAlphaTest();
-            }
-            else if (o->SubType == 3)
-            {
-                EnableAlphaBlend2();
-            }
-            {
-                std::optional<mu::ScopedBloomExclusion> exclusion;
-                if (s_spriteBloomExcluded[i])
-                {
-                    exclusion.emplace();
-                }
-                RenderSprite(o, o->Owner);
-            }
+            RenderSpriteWithBlend(i);
 
             if (byRenderOneMore == 0 || byRenderOneMore == 2)
             {

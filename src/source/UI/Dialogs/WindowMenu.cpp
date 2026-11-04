@@ -1,7 +1,15 @@
 
 #include "stdafx.h"
+#include "UI/Inventory/ExcellentCombinationWindow.h"
+#include "GameLogic/Events/EventSchedule.h"
+#include "GameLogic/Pets/Muun.h"
+#include "UI/Inventory/MuunInventoryWindow.h"
+#include "Camera/CameraManager.h"
+#include "World/MapInfra/MapManager.h"
 #include "UI/Dialogs/WindowMenu.h"
+#include "UI/Dialogs/RedeemCodeDialog.h"
 #include "UI/Core/WindowSystem.h"
+#include "UI/Character/NameWindow.h"
 #include "UI/Core/WindowCommon.h" // ShowSystemMenuDialog
 #include "Audio/DSPlaySound.h"
 #include "I18N/All.h"
@@ -20,7 +28,7 @@ using namespace mu::ui::window;
 namespace
 {
 // The row labels, top to bottom (CWindowMenu::MenuEntry order).
-constexpr int kMenuTextIds[CWindowMenu::MENU_MAX_INDEX] = {1741, 1742, 364, 1743, 3055, 3103};
+constexpr int kMenuTextIds[CWindowMenu::MENU_MAX_INDEX] = {1741, 1742, 0, 0, 0, 0, 0, 0, 0, 0, 364, 1743, 3055, 3103};
 
 template <typename Model>
 void SyncFloat(RmlModelBinder<Model>& binder, float Model::* field, const char* name, float value)
@@ -95,6 +103,8 @@ bool mu::ui::window::CWindowMenu::UpdateKeyEvent()
 
 bool mu::ui::window::CWindowMenu::Update()
 {
+    GameLogic::Events::Schedule::Update();
+    GameLogic::Pets::Muun::Update();
     SyncRmlModel();
 
     if (m_PendingEntry >= 0)
@@ -119,6 +129,14 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
 {
     switch (entry)
     {
+    case MENU_MUUN:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (g_pMuunInventoryWindow) g_pMuunInventoryWindow->Open();
+        break;
+    case MENU_EVENT_TIMERS:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        GameLogic::Events::Schedule::Open();
+        break;
     case MENU_SYSTEM:
         g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
         mu::ui::window::ShowSystemMenuDialog();
@@ -133,6 +151,34 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
         g_pNewUISystem->Show(mu::ui::window::INTERFACE_GUILDINFO);
         g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
         break;
+    case MENU_CHAT:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        g_pNewUISystem->Show(mu::ui::window::INTERFACE_PARTY);
+        break;
+    case MENU_DROP_NAMES:
+        if (g_pNameWindow) g_pNameWindow->ToggleDropNames();
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        break;
+    case MENU_CAMERA:
+        CameraManager::Instance().SetCameraMode(CameraManager::Instance().GetCurrentMode() == CameraMode::Default ? CameraMode::Orbital : CameraMode::Default);
+        break;
+    case MENU_CAMERA_RESET:
+        CameraManager::Instance().ResetActiveView();
+        break;
+    case MENU_MONSTER_HP:
+        if (g_pNameWindow) g_pNameWindow->ToggleMonsterHealthBars();
+        break;
+    case MENU_PLAYER_NAMES:
+        if (g_pNameWindow) g_pNameWindow->TogglePlayerNames();
+        break;
+    case MENU_MONSTER_NAMES:
+        if (g_pNameWindow) g_pNameWindow->ToggleMonsterNames();
+        break;
+    case MENU_COMMAND:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (!gMapManager.InChaosCastle() && !::IsStrifeMap(gMapManager.WorldActive))
+            g_pNewUISystem->Toggle(INTERFACE_COMMAND);
+        break;
     case MENU_MOVE:
         g_pNewUISystem->Toggle(mu::ui::window::INTERFACE_MOVEMAP);
         break;
@@ -142,6 +188,14 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
             g_pNewUISystem->Hide(mu::ui::window::INTERFACE_MINI_MAP);
         else
             g_pNewUISystem->Toggle(mu::ui::window::INTERFACE_MINI_MAP);
+        break;
+    case MENU_EXCELLENT_COMBINATION:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (g_pExcellentCombinationWindow) g_pExcellentCombinationWindow->Open();
+        break;
+    case MENU_REDEEM:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        UI::RedeemCodes::Open();
         break;
     case MENU_GENS:
         if (g_pNewUIGensRanking->SetGensInfo())
@@ -174,7 +228,17 @@ void mu::ui::window::CWindowMenu::BindRmlModel(Rml::DataModelConstructor& c, Win
 
     model.rows.clear();
     for (int i = 0; i < MENU_MAX_INDEX; ++i)
-        model.rows.push_back({StringUtils::WideToNarrow(I18N::Game::Lookup(kMenuTextIds[i])), i});
+    {
+        const wchar_t* label = i == MENU_MUUN ? L"Muun Inventory" : i == MENU_EVENT_TIMERS ? L"Event Timers" : i == MENU_EXCELLENT_COMBINATION ? L"Excellent Combination" : i == MENU_REDEEM ? L"Redeem Code" : i == MENU_CHAT ? L"Party" :
+            i == MENU_CAMERA ? L"Toggle 3D Camera" :
+            i == MENU_CAMERA_RESET ? L"Reset Camera View" :
+            i == MENU_MONSTER_HP ? L"Toggle Monster HP Bar" :
+            i == MENU_PLAYER_NAMES ? L"Hide Player Names" :
+            i == MENU_MONSTER_NAMES ? L"Hide Monster Names" :
+            i == MENU_COMMAND ? L"Command (D)" :
+            i == MENU_DROP_NAMES ? L"Show Drop Name" : I18N::Game::Lookup(kMenuTextIds[i]);
+        model.rows.push_back({StringUtils::WideToNarrow(label), i});
+    }
 }
 
 void mu::ui::window::CWindowMenu::BuildRmlUi()
@@ -193,6 +257,21 @@ void mu::ui::window::CWindowMenu::SyncRmlModel()
     if (!IsVisible())
         return;
 
+    auto& label = m_RmlView.GetModel().rows[MENU_DROP_NAMES].label;
+    const Rml::String text = g_pNameWindow && g_pNameWindow->AreDropNamesShown() ? "Hide Drop Name" : "Show Drop Name";
+    if (label != text)
+    {
+        label = text;
+        m_RmlView.MarkDirty("rows");
+    }
+
+    const auto setNameLabel = [this](int entry, bool shown, const char* show, const char* hide) {
+        auto& value = m_RmlView.GetModel().rows[entry].label;
+        const Rml::String text = shown ? hide : show;
+        if (value != text) { value = text; m_RmlView.MarkDirty("rows"); }
+    };
+    setNameLabel(MENU_PLAYER_NAMES, g_pNameWindow && g_pNameWindow->ArePlayerNamesShown(), "Show Player Names", "Hide Player Names");
+    setNameLabel(MENU_MONSTER_NAMES, g_pNameWindow && g_pNameWindow->AreMonsterNamesShown(), "Show Monster Names", "Hide Monster Names");
     SyncTransform();
 }
 

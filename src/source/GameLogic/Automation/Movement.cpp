@@ -11,7 +11,7 @@ extern int TargetY;
 
 namespace GameLogic::Automation
 {
-MoveResult WalkTo(int tileX, int tileY)
+MoveResult WalkTo(int tileX, int tileY, float arrivalTolerance)
 {
     // The arrival test and the path finder both read the target globals, so
     // they are set first; the movement mode follows only when a walk is
@@ -20,7 +20,7 @@ MoveResult WalkTo(int tileX, int tileY)
     TargetX = tileX;
     TargetY = tileY;
 
-    if (CheckTile(Hero, &Hero->Object, ArrivalTolerance))
+    if (CheckTile(Hero, &Hero->Object, arrivalTolerance))
     {
         return MoveResult::Arrived;
     }

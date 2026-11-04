@@ -66,6 +66,7 @@ public:
     /**
      * @brief Flips the zoom-lock flag (F10 key).
      */
+    void ApplyTouchGesture(float zoomRatio, float yawDegrees, float pitchDegrees);
     void ToggleZoomLock() { m_ZoomLocked = !m_ZoomLocked; }
 
     /**

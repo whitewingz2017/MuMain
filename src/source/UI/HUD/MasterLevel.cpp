@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
+#include "Core/Text/GroupedNumbers.h"
 #include "App/Platform/Windows/Winmain.h"
 #include "Render/Textures/ZzzTexture.h"
 #include "GameLogic/Items/CSItemOption.h"
@@ -723,8 +724,9 @@ void mu::ui::window::CMasterLevel::ShowExperienceHint()
     TextList[0][0] = 0;
     TextBold[0] = 0;
     TextListColor[0] = 0;
-    mu_swprintf(TextList[0], L"%I64d / %I64d", Master_Level_Data.lMasterLevel_Experince,
-                Master_Level_Data.lNext_MasterLevel_Experince);
+    mu_swprintf(TextList[0], L"%ls / %ls",
+                Core::Text::GroupedNumbers(std::to_wstring(Master_Level_Data.lMasterLevel_Experince)).c_str(),
+                Core::Text::GroupedNumbers(std::to_wstring(Master_Level_Data.lNext_MasterLevel_Experince)).c_str());
 
     Rml::Element* area = m_RmlView.Document() ? m_RmlView.Document()->GetElementById("experience_area") : nullptr;
     Rml::Vector2f origin;

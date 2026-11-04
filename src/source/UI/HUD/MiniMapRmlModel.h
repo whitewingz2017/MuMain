@@ -25,6 +25,7 @@ struct MiniMapMarkerEntry
 
 struct MiniMapRmlModel
 {
+    bool mobile = false;
     float textPx = 0.f; // native text size in physical px (RmlNativeTextSize.h)
 
     std::vector<MiniMapClipEntry> clips;

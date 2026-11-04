@@ -365,6 +365,7 @@ bool mu::ui::window::CNPCShop::InventoryProcess()
 
     if (mu::ui::window::IsRelease(VK_LBUTTON) == true && m_pNewInventoryCtrl->ContainsPointer() == true && m_bSellingItem == false)
     {
+        if (pPickedItem->GetSourceStorageType() != STORAGE_TYPE::INVENTORY) return true;
         if (CharacterMachine->Gold + ItemValue(pItem) > GameLogic::Items::kMaxInventoryZen)
         {
             g_pSystemLogBox->AddText(I18N::Game::ExceededMaximumAmountOfZenYouCanPossess, mu::ui::window::TYPE_SYSTEM_MESSAGE);
@@ -385,7 +386,8 @@ bool mu::ui::window::CNPCShop::InventoryProcess()
 
             return true;
         }
-        if (pItem && GameLogic::Items::IsHighValueItem(pItem) == true)
+        const bool confirmSale = pItem && GameLogic::Items::IsHighValueItem(pItem);
+        if (confirmSale)
         {
             mu::ui::window::GenericDialogConfig cfg;
             cfg.showCancel = true;
@@ -395,11 +397,14 @@ bool mu::ui::window::CNPCShop::InventoryProcess()
                 { I18N::Game::CheckTheItemPlease, true },
                 { I18N::Game::AreYouSureYouWantToSellIt, true },
             };
-            cfg.onPrimary = []
+            const auto expectedKey = pItem->Key;
+            const int expectedIndex = pPickedItem->GetSourceLinealPos();
+            cfg.onPrimary = [expectedKey, expectedIndex]
             {
                 CPickedItem* pPickedItem = mu::ui::window::CInventoryCtrl::GetPickedItem();
                 int iSourceIndex = pPickedItem ? pPickedItem->GetSourceLinealPos() : -1;
-                if (iSourceIndex >= MAX_EQUIPMENT_INDEX && iSourceIndex < MAX_MY_INVENTORY_EX_INDEX)
+                if (GameLogic::Items::CanConfirmSale(pPickedItem ? pPickedItem->GetItem() : nullptr,
+                    iSourceIndex, expectedIndex, expectedKey, g_pNewUISystem->IsVisible(INTERFACE_NPCSHOP), g_pNPCShop->IsSellingItem()))
                 {
                     SocketClient->ToGameServer()->SendSellItemToNpcRequest(iSourceIndex);
                     g_pNPCShop->SetSellingItem(true);

@@ -125,6 +125,8 @@ public:
     void InsertEventPackage(int* pPackageSeq);
 
     bool IsShopOpen();
+    bool HasCatalogVersion();
+    bool EnsureCatalog();
     bool IsRequestEventPackge();
     void SetRequestEventPackge();
 

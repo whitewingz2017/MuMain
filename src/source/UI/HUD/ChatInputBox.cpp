@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "UI/Chat/ChatInput.h"
 #include "UI/HUD/ChatInputBox.h"
 #include "Core/Input/SyntheticInput.h"
@@ -79,8 +79,7 @@ bool mu::ui::window::CChatInputBox::Create(
     m_pNewUIChatLogWnd = pNewUIChatLogWnd;
     m_pNewUISystemLogWnd = pNewUISystemLogWnd;
 
-    // A theme slot moves the box. The slot stays while the box is hidden, so the log above it does
-    // not drop when typing ends.
+    // Mobile chat history rests above the EXP strip when the input is closed.
     UI::RmlBridge::WorkspaceDocumentOptions options;
     options.placedWhileHidden = true;
     options.measure = [] { return UI::Placement::PlacementParticipant::Size{CHATBOX_WIDTH, CHATBOX_HEIGHT}; };
@@ -305,10 +304,11 @@ bool mu::ui::window::CChatInputBox::UpdateKeyEvent()
     }
 
     const uint64_t currentTickCount = GetTickCount64();
-    if (IsVisible() && HaveFocus() && mu::ui::window::IsPress(VK_RETURN)
+    if (IsVisible() && HaveFocus() && (m_SubmitRequested || mu::ui::window::IsPress(VK_RETURN))
         && m_lastChatTime < currentTickCount - ChatCooldownMs)
     {
         m_lastChatTime = currentTickCount;
+        m_SubmitRequested = false;
         wchar_t	szChatText[MAX_CHAT_SIZE + 1] = { '\0' };
         wchar_t	szWhisperID[MAX_USERNAME_SIZE + 1] = { '\0' };
 
@@ -472,8 +472,28 @@ bool mu::ui::window::CChatInputBox::Render()
 
 void mu::ui::window::CChatInputBox::BindRmlModel(Rml::DataModelConstructor& c, ChatInputRmlModel& model)
 {
+    c.Bind("history_tab", &model.historyTab);
+    c.BindEventCallback("chat_history_tab", [this](auto, auto&, const Rml::VariantList& args) {
+        if (args.empty()) return;
+        const int index = args[0].Get<int>(0);
+        constexpr std::array<MESSAGE_TYPE, 8> Types = {TYPE_ALL_MESSAGE, TYPE_CHAT_MESSAGE, TYPE_WHISPER_MESSAGE,
+            TYPE_PARTY_MESSAGE, TYPE_GUILD_MESSAGE, TYPE_UNION_MESSAGE, TYPE_GENS_MESSAGE, TYPE_SYSTEM_MESSAGE};
+        if (index < 0 || index >= static_cast<int>(Types.size())) return;
+        m_RmlView.GetModel().historyTab = index;
+        m_RmlView.MarkDirty("history_tab");
+        m_pNewUIChatLogWnd->ChangeMessage(Types[index]);
+        SetInputMsgType(index == 3 ? INPUT_PARTY_MESSAGE : index == 4 ? INPUT_GUILD_MESSAGE : index == 6 ? INPUT_GENS_MESSAGE : INPUT_CHAT_MESSAGE);
+        if (index == 2) FocusField("whisper_field");
+    });
     c.Bind("chat_text", &model.chatText);
     c.Bind("whisper_id", &model.whisperId);
+    // Soft keyboards can deliver Enter down/up between game key-state polls.
+    c.BindEventCallback("chat_submit",
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<bool>("linebreak", false) && IsVisible() && HaveFocus())
+                m_SubmitRequested = true;
+        });
     c.Bind("input_msg_type", &model.inputMsgType);
     c.Bind("block_whisper", &model.blockWhisper);
     c.Bind("show_system", &model.showSystem);
@@ -653,18 +673,18 @@ float mu::ui::window::CChatInputBox::GetKeyEventOrder()
 
 void mu::ui::window::CChatInputBox::OpenningProcess()
 {
-    // Only clears the field and arms the focus latch -- see m_bFocusPending. The document is not
-    // visible yet at this point, so focusing here would be silently dropped.
+    // Desktop Enter defers field focus until the document is visible.
     BuildRmlUi();
     SetFieldText("chat_field", L"");
     m_bFocusPending = true;
+    m_SubmitRequested = false;
 }
 
 void mu::ui::window::CChatInputBox::ClosingProcess()
 {
     m_pNewUIChatLogWnd->HideFrame();
-
     m_bFocusPending = false;
+    m_SubmitRequested = false;
     if (Rml::Element* field = GetField("chat_field")) field->Blur();
     if (Rml::Element* field = GetField("whisper_field")) field->Blur();
 

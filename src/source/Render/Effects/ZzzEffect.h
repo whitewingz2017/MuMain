@@ -1,6 +1,8 @@
 #ifndef __ZZZ_EFFECT_H__
 #define __ZZZ_EFFECT_H__
 
+#include <functional>
+
 extern OBJECT Effects[];
 extern OBJECT Sprites[];
 extern JOINT Joints[];
@@ -28,6 +30,9 @@ int CreateSprite(int Type, vec3_t Position, float Scale, vec3_t Light, OBJECT* O
                  int SubType = 0);
 void RenderSprites(BYTE byRenderOneMore = 0);
 void CheckSprites();
+// Draw only sprites produced by this preview, under its camera, without consuming world sprites.
+void RenderWithSpriteCamera(const std::function<void()>& draw);
+void RenderWithSprites(const std::function<void()>& draw);
 
 void AnimationFlag();
 void RenderFlag(OBJECT* o, vec3_t Light, int Tex1, int Tex2);

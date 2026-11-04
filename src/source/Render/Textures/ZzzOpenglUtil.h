@@ -58,7 +58,7 @@ void EnableLightMap();
 void EnableAlphaTest(bool DepthMake = true);
 // Sets glAlphaFunc(GL_GREATER, ref) and mirrors it to the shader-side alpha-test ref.
 void SetAlphaFuncRef(float ref);
-void EnableAlphaBlend();
+void EnableAlphaBlend(bool sourceAlpha = false);
 void EnableAlphaBlendMinus();
 void EnableAlphaBlend2();
 void EnableAlphaBlend3();

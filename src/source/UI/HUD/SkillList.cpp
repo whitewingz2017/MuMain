@@ -814,6 +814,11 @@ float mu::ui::window::CSkillList::GetHotKeySlotCooldownFraction(int iSlotIndex)
     return ComputeSkillCooldownFraction(m_iHotKeySkillType[iIndex]);
 }
 
+float mu::ui::window::CSkillList::GetSkillCooldownFraction(int index)
+{
+    return index >= 0 && index < MAX_MAGIC ? ComputeSkillCooldownFraction(index) : 0.f;
+}
+
 float mu::ui::window::CSkillList::GetCurrentSkillCooldownFraction()
 {
     return ComputeSkillCooldownFraction(Hero->CurrentSkill);

@@ -88,6 +88,9 @@ namespace mu::ui::window
         bool m_bRepairEnableLevel;
         bool m_bMyShopOpen;
         bool m_bMyShopLocked = false;
+        bool m_SkinPage = false;
+        void ToggleEquipmentPage();
+        bool ProcessSkinSlots();
 
         // The whole window is RmlUi: the equipped and the grid's items are live 3D, drawn into the
         // document's #item_view (m_ItemTarget).
@@ -98,9 +101,13 @@ namespace mu::ui::window
             float textPx = 0.f; // UI::RmlBridge::SyncNativeTextSize()
 
             Rml::String title;
+            bool skinPage = false;
             Rml::String goldText;
             Rml::String goldTier; // UI::RmlBridge::GoldTierKey() of the amount
 
+            bool mobileActionsVisible = false;
+            bool mobileSellEnabled = false;
+            bool mobileLooseItem = false;
             bool repairVisible = false;
             Rml::String repairTooltip;
 
@@ -118,6 +125,7 @@ namespace mu::ui::window
             Rml::String socketOptionLabel;
             bool setOptionActive = false;    // IsAncientSetEquipped() -- label color
             bool socketOptionActive = false; // IsSocketSetOptionEnabled() -- label color
+            float optionLabelsFit = 1.f;     // the line shrunk to the frame's width, 1 = fits
             bool setOptionHovered = false;
             bool socketOptionHovered = false;
 
@@ -135,6 +143,8 @@ namespace mu::ui::window
 
         void BuildRmlUi();
         void SyncRmlModel();
+        void SyncOptionLabelsFit(const wchar_t* setOptionLabel, const wchar_t* socketOptionLabel);
+        std::wstring m_measuredOptionLabels; // the header line optionLabelsFit was measured for
         // The equipment slots' states and the grid's cells, into the model.
         void SyncSlotStates();
 
@@ -219,6 +229,7 @@ namespace mu::ui::window
 
         static bool CanRegisterItemHotKey(int iType);
         static bool HandleInventoryActions(CInventoryCtrl* targetControl);
+        bool SelectMobileItem(CInventoryCtrl* control, ITEM* item, int equipmentSlot = -1);
 
         // Public to allow refresh when resolution changes
         void SetEquipmentSlotInfo();
@@ -236,6 +247,24 @@ namespace mu::ui::window
         int FindItemIndexWithTagInUseOrder(Data::Items::ItemTag tag) const;
 
         bool EquipmentWindowProcess();
+        bool ReleaseMobileItemTap(CInventoryCtrl* control, ITEM* item, int index);
+        ITEM* MobileSelectedItem() const;
+        CInventoryCtrl* MobileSelectedControl() const;
+        void UpdateMobileActions();
+        bool UnequipToInventory(int slot);
+        int m_MobileSelectedIndex = -1;
+        DWORD m_MobileSelectedKey = 0;
+        int m_PendingMobileAction = -1;
+        CInventoryCtrl* m_MobileHoldOwner = nullptr;
+        int m_MobileHoldIndex = -1;
+        DWORD m_MobileHoldKey = 0;
+        unsigned long long m_MobileHoldStarted = 0;
+        float m_MobileHoldX = 0, m_MobileHoldY = 0;
+        bool m_MobileHoldShown = false;
+        CInventoryCtrl* m_MobileTappedOwner = nullptr;
+        int m_MobileTappedIndex = -1;
+        DWORD m_MobileTappedKey = 0;
+        unsigned long long m_MobileTappedAt = 0;
         // The pointer over the drawn panel.
         bool IsPointerOverPanel() const;
         // Whether the item in equipmentSlot may be taken off here; tells the

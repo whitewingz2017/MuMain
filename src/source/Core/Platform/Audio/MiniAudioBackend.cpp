@@ -225,10 +225,9 @@ void MiniAudioBackend::LoadSound(ESound buffer, const wchar_t* filename, int cha
             return;
         }
 
-        if (enable3D)
-        {
-            ma_sound_set_spatialization_enabled(&m_sounds[bufIdx][ch], MA_TRUE);
-        }
+        ma_sound_set_spatialization_enabled(&m_sounds[bufIdx][ch], enable3D ? MA_TRUE : MA_FALSE);
+        // MU uses 100 world units per tile; keep a one-tile source at full volume.
+        ma_sound_set_min_distance(&m_sounds[bufIdx][ch], TERRAIN_SCALE);
     }
 
     m_soundLoaded[bufIdx] = true;
@@ -311,23 +310,7 @@ bool MiniAudioBackend::PlaySound(ESound buffer, const void* pObject, bool looped
     // start() is subject to a data race on the first mix tick.
     ma_sound_set_looping(pSound, looped ? MA_TRUE : MA_FALSE);
 
-    // Set 3D position BEFORE start() so the audio thread
-    // never renders at the default origin (0,0,0) for even one mix tick.
-    // OBJECT::Position is vec3_t (float[3]): [0]=X, [1]=Y, [2]=Z.
-    // pObject is void* — cast to OBJECT* for position access.
-    if (m_sound3DEnabled[bufIdx] && pObject != nullptr)
-    {
-        const auto* pObj = static_cast<const OBJECT*>(pObject);
-        ma_sound_set_position(pSound, pObj->Position[0], pObj->Position[1], pObj->Position[2]);
-    }
-
-    // Store the object pointer for per-frame position updates in Set3DSoundPosition(). Only
-    // track for 3D-enabled slots — mono/stereo SFX do not need per-frame position updates.
-    // pObject may be nullptr (checked in Set3DSoundPosition).
-    if (m_sound3DEnabled[bufIdx])
-    {
-        m_soundObjects[bufIdx] = pObject;
-    }
+    PositionSound(bufIdx, pSound, pObject);
 
     // Apply stored SFX volume to newly-started effect
     ma_sound_set_volume(pSound, m_sfxVolume);
@@ -335,6 +318,19 @@ bool MiniAudioBackend::PlaySound(ESound buffer, const void* pObject, bool looped
     ma_sound_start(pSound);
 
     return true;
+}
+
+void MiniAudioBackend::PositionSound(int buffer, ma_sound* sound, const void* object)
+{
+    const bool positional = m_sound3DEnabled[buffer] && object != nullptr;
+    ma_sound_set_spatialization_enabled(sound, positional ? MA_TRUE : MA_FALSE);
+    if (positional)
+    {
+        const auto* source = static_cast<const OBJECT*>(object);
+        ma_sound_set_position(sound, source->Position[0], source->Position[1], source->Position[2]);
+    }
+    // Unanchored effects stay centered, even if their slot was loaded as positional.
+    m_soundObjects[buffer] = positional ? object : nullptr;
 }
 
 // ---------------------------------------------------------------------------
@@ -444,12 +440,20 @@ void MiniAudioBackend::ReleaseSound(ESound buffer)
 // Lifetime assumption: game engine guarantees the OBJECT outlives its attached sound
 // during normal play (same contract as DirectSoundManager::attachedObjects).
 // ---------------------------------------------------------------------------
-void MiniAudioBackend::Set3DSoundPosition()
+void MiniAudioBackend::Set3DSoundPosition(const void* listener)
 {
     if (!m_initialized)
     {
         return;
     }
+
+    constexpr ma_uint32 ListenerIndex = 0;
+    const auto* object = static_cast<const OBJECT*>(listener);
+    ma_engine_listener_set_position(&m_engine, ListenerIndex, object ? object->Position[0] : 0.f,
+        object ? object->Position[1] : 0.f, object ? object->Position[2] : 0.f);
+    // The game's ground plane is XY and height is Z.
+    ma_engine_listener_set_world_up(&m_engine, ListenerIndex, 0.f, 0.f, 1.f);
+    ma_engine_listener_set_direction(&m_engine, ListenerIndex, 0.f, -1.f, 0.f);
 
     for (int buf = 0; buf < static_cast<int>(MAX_BUFFER); ++buf)
     {

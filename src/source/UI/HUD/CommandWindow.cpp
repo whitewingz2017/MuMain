@@ -3,6 +3,10 @@
 #include "I18N/All.h"
 
 #include "UI/HUD/CommandWindow.h"
+#include "UI/HUD/CommandTargetInput.h"
+#include "Core/Input/UiInputRouter.h"
+#include "Core/Input/KeyState.h"
+#include "Input/Selection.h"
 #include "UI/RmlBridge/RmlPanelGeometry.h"
 #include "UI/RmlBridge/RmlPointer.h"
 
@@ -103,6 +107,8 @@ void mu::ui::window::CCommandWindow::ClosingProcess()
 
 void mu::ui::window::CCommandWindow::PressCommandButton(int command)
 {
+    if (command < COMMAND_TRADE || command >= COMMAND_END)
+        return;
     // The chat commands don't act on the selected character, they open their own list instead.
     if (command == COMMAND_SPECIAL)
     {
@@ -309,108 +315,75 @@ float mu::ui::window::CCommandWindow::GetLayerDepth()
     return LayerDepth;
 }
 
+CHARACTER* mu::ui::window::CCommandWindow::ResolveCommandTarget(int& index)
+{
+    index = -1;
+    m_bSelectedChar = false;
+    m_bCanCommand = false;
+    if (!Hero || SelectedCharacter < 0 || SelectedCharacter >= MAX_CHARACTERS_CLIENT)
+        return nullptr;
+    auto* target = &CharactersClient[SelectedCharacter];
+    m_bSelectedChar = true;
+    const int dx = abs(target->PositionX - Hero->PositionX);
+    const int dy = abs(target->PositionY - Hero->PositionY);
+    if (target == Hero || target->Object.Kind != KIND_PLAYER ||
+        (target->Object.Type != MODEL_PLAYER && !target->Change) ||
+        dx > MAX_DISTANCE_TILE || dy > MAX_DISTANCE_TILE)
+        return nullptr;
+    const auto subtype = target->Object.SubType;
+    if (subtype == MODEL_XMAS_EVENT_CHA_DEER || subtype == MODEL_XMAS_EVENT_CHA_SNOWMAN ||
+        subtype == MODEL_XMAS_EVENT_CHA_SSANTA)
+        return nullptr;
+    index = SelectedCharacter;
+    m_bCanCommand = true;
+    return target;
+}
+
+void mu::ui::window::CCommandWindow::ExecuteSelectedCommand(CHARACTER* target, int index)
+{
+    switch (m_iCurSelectCommand)
+    {
+    case COMMAND_TRADE: CommandTrade(target); break;
+    case COMMAND_PURCHASE: CommandPurchase(target); break;
+    case COMMAND_PARTY: CommandParty(target->Key); break;
+    case COMMAND_WHISPER: CommandWhisper(target); break;
+    case COMMAND_GUILD: CommandGuild(target); break;
+    case COMMAND_GUILDUNION: CommandGuildUnion(target); break;
+    case COMMAND_RIVAL: CommandGuildRival(target); break;
+    case COMMAND_RIVALOFF: CommandCancelGuildRival(target); break;
+    case COMMAND_ADD_FRIEND: CommandAddFriend(target); break;
+    case COMMAND_FOLLOW: CommandFollow(index); break;
+    case COMMAND_BATTLE: CommandDual(target); break;
+    default: break;
+    }
+}
+
 void mu::ui::window::CCommandWindow::RunCommand()
 {
     if (MouseLButtonPush && m_iCurMouseCursor != CURSOR_IDSELECT)
         SetMouseCursor(CURSOR_PUSH);
-
     if (m_iCurSelectCommand == COMMAND_NONE)
         return;
-
-    int Selectindex = -1;
-    CHARACTER* pSelectedCha = NULL;
-    int distX, distY;
-    m_bSelectedChar = false;
-    m_bCanCommand = false;
-
-    if (SelectedCharacter >= 0)
+    const bool overUi = Core::Input::IsMouseOverUI();
+    if ((MouseLButtonPush || MouseRButtonPush) && !overUi)
+        SelectedCharacter = Input::Selection::PlayerAtWindowPoint(g_fWindowMouseX, g_fWindowMouseY);
+    int index = -1;
+    auto* target = ResolveCommandTarget(index);
+    if (!UI::Commands::ShouldConfirmTarget(MouseLButtonPush, MouseRButtonPush, target != nullptr,
+                                           overUi))
+        return;
+    if (MouseLButtonPush && target)
     {
-        pSelectedCha = &CharactersClient[SelectedCharacter];
-        m_bSelectedChar = true;
-        if (pSelectedCha != NULL)
-        {
-            distX = abs((pSelectedCha->PositionX) - (Hero->PositionX));
-            distY = abs((pSelectedCha->PositionY) - (Hero->PositionY));
-            if (pSelectedCha->Object.Kind == KIND_PLAYER && pSelectedCha != Hero && (pSelectedCha->Object.Type == MODEL_PLAYER || pSelectedCha->Change) && (distX <= MAX_DISTANCE_TILE && distY <= MAX_DISTANCE_TILE))
-            {
-                if ((pSelectedCha->Object.SubType != MODEL_XMAS_EVENT_CHA_DEER) && (pSelectedCha->Object.SubType != MODEL_XMAS_EVENT_CHA_SNOWMAN) && (pSelectedCha->Object.SubType != MODEL_XMAS_EVENT_CHA_SSANTA))
-                {
-                    Selectindex = SelectedCharacter;
-                    m_bCanCommand = true;
-                }
-            }
-        }
+        MouseLButtonPush = false;
+        MouseLButton = false;
+        Core::Input::ClearLeftMouseButtonPressEdge();
     }
-
-    if (MouseRButtonPush)
-    {
-        MouseRButtonPush = false;
-        MouseRButton = false;
-
-        SetMouseCursor(CURSOR_NORMAL);
-
-        if (Selectindex >= 0)
-        {
-            switch (m_iCurSelectCommand)
-            {
-            case COMMAND_TRADE:
-            {
-                CommandTrade(pSelectedCha);
-            }break;
-
-            case COMMAND_PURCHASE:
-            {
-                CommandPurchase(pSelectedCha);
-            }break;
-
-            case COMMAND_PARTY:
-            {
-                CommandParty(pSelectedCha->Key);
-            }break;
-
-            case COMMAND_WHISPER:
-            {
-                CommandWhisper(pSelectedCha);
-            }break;
-
-            case COMMAND_GUILD:
-            {
-                CommandGuild(pSelectedCha);
-            }break;
-
-            case COMMAND_GUILDUNION:
-            {
-                CommandGuildUnion(pSelectedCha);
-            }break;
-
-            case COMMAND_RIVAL:
-            {
-                CommandGuildRival(pSelectedCha);
-            }break;
-
-            case COMMAND_RIVALOFF:
-            {
-                CommandCancelGuildRival(pSelectedCha);
-            }break;
-
-            case COMMAND_ADD_FRIEND:
-            {
-                CommandAddFriend(pSelectedCha);
-            }break;
-
-            case COMMAND_FOLLOW:
-            {
-                CommandFollow(Selectindex);
-            }break;
-
-            case COMMAND_BATTLE:
-            {
-                CommandDual(pSelectedCha);
-            }break;
-            }
-        }
-        m_iCurSelectCommand = COMMAND_NONE;
-    }
+    MouseRButtonPush = false;
+    MouseRButton = false;
+    SetMouseCursor(CURSOR_NORMAL);
+    if (target)
+        ExecuteSelectedCommand(target, index);
+    m_iCurSelectCommand = COMMAND_NONE;
 }
 int mu::ui::window::CCommandWindow::GetCurCommandType()
 {

@@ -3,6 +3,8 @@
 #include "I18N/All.h"
 
 #include "NewBloodCastleSystem.h"
+#include "GameLogic/Events/MobileEventState.h"
+#include "GameLogic/Events/BloodCastleQuestItem.h"
 #include "UI/Dialogs/CustomMessageBox.h"
 #include "UI/Core/WindowSystem.h"
 #include "Audio/DSPlaySound.h"
@@ -29,12 +31,17 @@ void CNewBloodCastleSystem::SetMatchResult(const int iNumDevilRank, const int iM
     }
 
     m_iNumResult = Success;
+    GameLogic::Events::CompleteBloodCastleProgress(Success != 0);
     memcpy(m_MatchResult, pMatchResult, sizeof(MatchResult));
     mu::ui::window::CreateMessageBox(MSGBOX_LAYOUT_CLASS(mu::ui::window::CBloodCastleResultMsgBoxLayout));
 }
 
 void CNewBloodCastleSystem::SetMatchGameCommand(const LPPRECEIVE_MATCH_GAME_STATE data)
 {
+    GameLogic::Events::UpdateBloodCastleProgress(data->m_byPlayState, data->m_wRemainSec,
+        data->m_wCurKillMonster, data->m_wMaxKillMonster, data->m_byItemType);
+    if (data->m_byPlayState != 3)
+        GameLogic::Events::SetArchangelCarrier(data->m_wIndex & 0x7FFF, data->m_byPlayState == 2 ? 0 : data->m_byItemType);
     switch (data->m_byPlayState)
     {
     case 0:
@@ -44,19 +51,6 @@ void CNewBloodCastleSystem::SetMatchGameCommand(const LPPRECEIVE_MATCH_GAME_STAT
     case 1:
         SetMatchInfo(data->m_byPlayState + 1, 15 * 60, data->m_wRemainSec, data->m_wMaxKillMonster, data->m_wCurKillMonster);
 
-        if (data->m_wIndex != 65535 && data->m_byItemType != 255 && data->m_byItemType != 0)
-        {
-            WORD Key = data->m_wIndex;
-            Key &= 0x7FFF;
-
-            int  index = HangerBloodCastleQuestItem(Key);
-            CHARACTER* c = &CharactersClient[index];
-
-            if (c != NULL)
-            {
-                c->EtcPart = data->m_byItemType;
-            }
-        }
         break;
 
     case 2:
@@ -71,19 +65,6 @@ void CNewBloodCastleSystem::SetMatchGameCommand(const LPPRECEIVE_MATCH_GAME_STAT
     case 4:
         SetMatchInfo(data->m_byPlayState + 1, 15 * 60, data->m_wRemainSec, data->m_wMaxKillMonster, data->m_wCurKillMonster);
 
-        if (data->m_wIndex != 65535 && data->m_byItemType != 255 && data->m_byItemType != 0)
-        {
-            WORD Key = data->m_wIndex;
-            Key &= 0x7FFF;
-
-            int  index = HangerBloodCastleQuestItem(Key);
-            CHARACTER* c = &CharactersClient[index];
-
-            if (c != NULL)
-            {
-                c->EtcPart = data->m_byItemType;
-            }
-        }
         break;
     }
 }

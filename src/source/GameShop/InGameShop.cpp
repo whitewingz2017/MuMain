@@ -523,12 +523,16 @@ bool CInGameShop::IsInGameShopOpen()
         return false;
     }
 
-    if (g_InGameShopSystem->IsShopOpen() == false)
+    if (!g_InGameShopSystem->HasCatalogVersion())
     {
-        CreateOkMessageBoxWithTitle(I18N::Game::Error, I18N::Game::CannotOpenMUItemShopPleaseReconnectToTheGame);
-        g_ConsoleDebug->Write(MCD_NORMAL, L"InGameShopStatue.Txt Return - false <%ls>", I18N::Game::CannotOpenMUItemShopPleaseReconnectToTheGame);
+        if (!g_InGameShopSystem->GetIsRequestShopOpenning())
+        {
+            g_InGameShopSystem->SetIsRequestShopOpenning(true);
+            SocketClient->ToGameServer()->SendCashShopOpenState(0);
+        }
         return false;
     }
+    if (!g_InGameShopSystem->EnsureCatalog()) return false;
     g_ConsoleDebug->Write(MCD_NORMAL, L"InGameShopStatue.Txt Return - true");
     return true;
 }

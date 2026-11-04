@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "GameLogic/Events/MobileEventState.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
@@ -42,6 +43,7 @@ namespace   matchEvent
 
     void    DeleteEventMatch(void)
     {
+        GameLogic::Events::ResetMobileEvents();
         if (g_csMatchInfo != NULL)
         {
             delete g_csMatchInfo;

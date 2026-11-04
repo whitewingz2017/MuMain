@@ -239,6 +239,14 @@ void CBuffStrip::BindRmlModel(Rml::DataModelConstructor& c, BuffStripRmlModel& m
     buff.RegisterMember("decorator", &BuffEntry::decorator);
     c.RegisterArray<std::vector<BuffEntry>>();
 
+    BindBuffEvents(c);
+    c.Bind("buffs", &model.buffs);
+    c.Bind("collapsed", &model.collapsed);
+    c.Bind("can_collapse", &model.canCollapse);
+}
+
+void CBuffStrip::BindBuffEvents(Rml::DataModelConstructor& c)
+{
     c.BindEventCallback("buff_cancel",
         [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList& args)
         {
@@ -249,13 +257,23 @@ void CBuffStrip::BindRmlModel(Rml::DataModelConstructor& c, BuffStripRmlModel& m
     c.BindEventCallback("buff_hover",
         [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList& args)
         {
-            if (!args.empty())
+            if (!m_RmlView.GetModel().collapsed && !args.empty())
                 m_Tooltip.Enter(event, args[0].Get<int>(-1));
         });
     c.BindEventCallback("buff_leave",
         [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) { m_Tooltip.Leave(event); });
 
-    c.Bind("buffs", &model.buffs);
+    c.BindEventCallback("buff_toggle",
+        [this](Rml::DataModelHandle handle, Rml::Event& event, const Rml::VariantList&)
+        {
+            auto& model = m_RmlView.GetModel();
+            if (event.GetParameter<int>("button", 0) != 0 || !model.canCollapse)
+                return;
+            model.collapsed = !model.collapsed;
+            m_Tooltip.Hide();
+            handle.DirtyVariable("collapsed");
+            event.StopPropagation();
+        });
 }
 
 void CBuffStrip::BuildRmlUi()
@@ -276,6 +294,8 @@ void CBuffStrip::Release()
         m_RmlView.Document()->Hide();
 
     m_RmlView.Release();
+    m_ShownBuffs.clear();
+    m_Tooltip.Hide();
 }
 
 bool CBuffStrip::UpdateMouseEvent()
@@ -305,12 +325,18 @@ void CBuffStrip::SyncRmlModel()
 {
     if (!m_RmlView.Document()) return;
 
+    SyncBuffEntries();
+    SyncTooltip();
+}
+
+void CBuffStrip::SyncBuffEntries()
+{
     std::list<eBuffState> buffstate;
     BuffSort(buffstate);
 
-    // Rebuilt and marked dirty unconditionally every frame -- deliberate, since this verifies
-    // RmlModelBinder handling a bound std::vector whose size changes at runtime. Revisit if this
-    // proves too expensive in practice.
+    if (std::equal(buffstate.begin(), buffstate.end(), m_ShownBuffs.begin(), m_ShownBuffs.end()))
+        return;
+
     auto& model = m_RmlView.GetModel();
     model.buffs.clear();
     model.buffs.reserve(buffstate.size());
@@ -327,13 +353,19 @@ void CBuffStrip::SyncRmlModel()
     }
 
     m_RmlView.MarkDirty("buffs");
-    SyncTooltip();
+    model.canCollapse = model.buffs.size() > 1;
+    m_RmlView.MarkDirty("can_collapse");
+    if (!model.canCollapse && model.collapsed)
+    {
+        model.collapsed = false;
+        m_RmlView.MarkDirty("collapsed");
+    }
 }
 
 void CBuffStrip::SyncTooltip()
 {
     const int slot = m_Tooltip.Hovered();
-    if (slot < 0 || slot >= static_cast<int>(m_ShownBuffs.size()))
+    if (m_RmlView.GetModel().collapsed || slot < 0 || slot >= static_cast<int>(m_ShownBuffs.size()))
     {
         m_Tooltip.Hide();
         return;
@@ -346,7 +378,7 @@ void CBuffStrip::SyncTooltip()
 
 void CBuffStrip::OnBuffRightClick(int slot)
 {
-    if (slot < 0 || slot >= static_cast<int>(m_ShownBuffs.size()))
+    if (m_RmlView.GetModel().collapsed || slot < 0 || slot >= static_cast<int>(m_ShownBuffs.size()))
         return;
     const int skill = CancellableSkill(static_cast<eBuffState>(m_ShownBuffs[slot]));
     if (skill == 0)

@@ -2,6 +2,7 @@
 #include "RmlUiSystemInterface.h"
 
 #include "Core/Utilities/Log/MuLogger.h"
+#include "Core/Platform/WindowCoordinates.h"
 #include <SDL3/SDL.h>
 #include <chrono>
 
@@ -51,12 +52,14 @@ void RmlUiSystemInterface::GetClipboardText(Rml::String& text)
 
 void RmlUiSystemInterface::ActivateKeyboard(Rml::Vector2f caret_position, float line_height)
 {
-    // RmlUi supplies the caret rectangle in window pixels, as SDL_SetTextInputArea requires.
     m_TextInputActive = true;
     if (!m_Window) return;
-    const SDL_Rect rect = {static_cast<int>(caret_position.x), static_cast<int>(caret_position.y), 1, static_cast<int>(line_height)};
+    const float scale = Core::Platform::WindowToGameScale(m_Window);
+    const SDL_Rect rect = {static_cast<int>(caret_position.x / scale), static_cast<int>(caret_position.y / scale),
+                           1, std::max(1, static_cast<int>(line_height / scale))};
     SDL_SetTextInputArea(m_Window, &rect, 0);
-    SDL_StartTextInput(m_Window);
+    // UIKit reapplies field properties on StartTextInput, removing and refocusing its native field.
+    if (!SDL_TextInputActive(m_Window)) SDL_StartTextInput(m_Window);
 }
 
 void RmlUiSystemInterface::DeactivateKeyboard()

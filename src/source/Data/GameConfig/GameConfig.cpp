@@ -21,7 +21,9 @@ GameConfig& GameConfig::GetInstance()
     return instance;
 }
 
-GameConfig::GameConfig()
+namespace
+{
+std::filesystem::path ResolveConfigPath()
 {
     // Get executable directory and construct config path
     wchar_t exePath[MAX_PATH];
@@ -47,9 +49,14 @@ GameConfig::GameConfig()
         *(lastSlash + 1) = L'\0';  // Keep the trailing separator
     }
 
-    m_configPath = exePath;
-    m_configPath += L"config.ini";
+    return std::filesystem::path(exePath) / "config.ini";
 
+}
+}
+
+GameConfig::GameConfig()
+    : m_configPath(ResolveConfigPath())
+{
     Load();
 }
 
@@ -71,6 +78,7 @@ void GameConfig::Load()
     m_languageSelection = ReadString(CfgSectionLogin, CfgKeyLanguage, CfgDefaultLanguage);
     m_encryptedUsername = ReadString(CfgSectionLogin, CfgKeyEncryptedUsername, CfgDefaultEncryptedUsername);
     m_encryptedPassword = ReadString(CfgSectionLogin, CfgKeyEncryptedPassword, CfgDefaultEncryptedPassword);
+    LoadSavedAccounts();
 
     m_serverIP = GameConfigValidation::ValidateServerIP(
         ReadString(CfgSectionConnectionSettings, CfgKeyServerIP, CfgDefaultServerIP), CfgDefaultServerIP);
@@ -80,6 +88,7 @@ void GameConfig::Load()
     m_chatCommandFavourites = ReadStringList(L"ChatCommands", L"Favourite");
     m_chatCommandTemplates = ReadStringList(L"ChatCommands", L"Template");
 
+    SetChatTextScalePercent(ReadInt(CfgSectionUI, CfgKeyChatTextScalePercent, CfgDefaultChatTextScalePercent));
     m_uiLocale = ReadString(CfgSectionUI, CfgKeyUILocale, CfgDefaultUILocale);
     m_translateItemNames = ReadBool(CfgSectionUI, CfgKeyTranslateItemNames, CfgDefaultTranslateItemNames);
     m_fontSelection = ReadString(CfgSectionUI, CfgKeyFont, CfgDefaultFont);
@@ -113,6 +122,7 @@ void GameConfig::Load()
     m_disableBodyShadows = ReadBool(CfgSectionRender, CfgKeyDisableBodyShadows, CfgDefaultDisableBodyShadows);
     m_fpsCap = ReadInt(CfgSectionRender, CfgKeyFpsCap, CfgDefaultFpsCap);
     m_texturePack = ReadString(CfgSectionRender, CfgKeyTexturePack, CfgDefaultTexturePack);
+    m_lowWorldTextures = ReadBool(CfgSectionRender, CfgKeyLowWorldTextures, false);
 
     // Strip keys/sections we used to write but no longer use, so user config
     // files don't accumulate orphans. Append one line per retired key — no
@@ -141,6 +151,7 @@ void GameConfig::Save()
     WriteInt(CfgSectionAudio, CfgKeySoundVolume, m_soundVolume);
     WriteInt(CfgSectionAudio, CfgKeyMusicVolume, m_musicVolume);
 
+    SaveSavedAccounts();
     WriteBool(CfgSectionLogin, CfgKeyRememberMe, m_rememberMe);
     WriteBool(CfgSectionLogin, CfgKeySavePassword, m_savePassword);
     WriteString(CfgSectionLogin, CfgKeyLanguage, m_languageSelection);
@@ -158,6 +169,7 @@ void GameConfig::Save()
     WriteString(CfgSectionUI, CfgKeyFont, m_fontSelection);
     WriteString(CfgSectionUI, CfgKeyRmlTheme, m_rmlTheme);
     WriteInt(CfgSectionUI, CfgKeyUIScalePercent, m_uiScalePercent);
+    WriteInt(CfgSectionUI, CfgKeyChatTextScalePercent, m_chatTextScalePercent);
 
     WriteInt(CfgSectionCamera, CfgKeyZoom, m_zoom);
     WriteBool(CfgSectionRender, CfgKeyVSync, m_vsyncEnabled);
@@ -176,6 +188,7 @@ void GameConfig::Save()
     WriteBool(CfgSectionRender, CfgKeyDisableBodyShadows, m_disableBodyShadows);
     WriteInt(CfgSectionRender, CfgKeyFpsCap, m_fpsCap);
     WriteString(CfgSectionRender, CfgKeyTexturePack, m_texturePack);
+    WriteBool(CfgSectionRender, CfgKeyLowWorldTextures, m_lowWorldTextures);
 }
 
 LookPreset ReadLookPreset(const std::filesystem::path& configFile)
@@ -346,6 +359,11 @@ void GameConfig::SetFontSelection(const std::wstring& font)
 void GameConfig::SetRmlTheme(const std::wstring& theme)
 {
     m_rmlTheme = theme;
+}
+
+void GameConfig::SetChatTextScalePercent(int percent)
+{
+    m_chatTextScalePercent = std::clamp(percent, CfgDefaults::CfgMinChatTextScalePercent, CfgDefaults::CfgMaxChatTextScalePercent);
 }
 
 void GameConfig::SetUIScalePercent(int percent)
@@ -553,31 +571,17 @@ std::wstring GameConfig::EncryptSetting(const wchar_t* input)
 
 void GameConfig::EncryptAndSaveCredentials(const wchar_t* user, const wchar_t* pass)
 {
-    std::wstring encUser = EncryptSetting(user);
-    if (encUser.empty())
+    auto encryptedUser = EncryptSetting(user);
+    if (encryptedUser.empty()) return;
+    auto encryptedPassword = m_savePassword ? EncryptSetting(pass) : std::wstring{};
+    if (m_savePassword && encryptedPassword.empty())
     {
-        // No username to remember; leave any prior credentials untouched.
+        g_ErrorReport.Write(L"Failed to encrypt saved credentials.\r\n");
         return;
     }
-
-    SetEncryptedUsername(encUser);
-
-    // The password is persisted only with explicit consent. Without it, clear
-    // any previously stored password so it never lingers in config.ini.
-    if (m_savePassword)
-    {
-        std::wstring encryptedPassword = EncryptSetting(pass);
-        if (encryptedPassword.empty())
-        {
-            g_ErrorReport.Write(L"Failed to encrypt saved credentials.\r\n");
-            return;
-        }
-        SetEncryptedPassword(encryptedPassword);
-    }
-    else
-    {
-        SetEncryptedPassword(L"");
-    }
-
-    Save(); // Actually write to the .ini file
+    // Publish the pair together; an encryption failure must never mix two accounts.
+    SetEncryptedUsername(encryptedUser);
+    SetEncryptedPassword(encryptedPassword);
+    RememberCurrentAccount();
+    Save();
 }

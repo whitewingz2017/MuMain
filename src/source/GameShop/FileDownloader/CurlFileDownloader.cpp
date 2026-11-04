@@ -89,7 +89,7 @@ WZResult CurlFileDownloader::DownloadFile(const std::wstring& url,
 {
     WZResult result;
 
-    const std::filesystem::path targetPath(localPath);
+    const std::filesystem::path targetPath(mu_narrow_path(localPath));
     std::error_code fsError;
     if (targetPath.has_parent_path())
     {

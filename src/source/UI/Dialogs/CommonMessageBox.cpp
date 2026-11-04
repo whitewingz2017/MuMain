@@ -39,7 +39,7 @@ extern BYTE Ranking[5];
 extern CLASS_TYPE HeroClass[5];
 extern int HeroScore[5];
 extern wchar_t HeroName[5][MAX_USERNAME_SIZE + 1];
-extern char	View_Suc_Or_Fail;
+extern signed char	View_Suc_Or_Fail;
 
 extern int BuyCost;
 

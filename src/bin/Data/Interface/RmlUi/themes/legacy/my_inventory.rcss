@@ -185,3 +185,29 @@
 /* The grid's clicks are native (CInventoryCtrl), so the placed panel takes no pointer events; its
    controls take their own. */
 #panel.slot-placed { pointer-events: none; }
+
+#inventory_mobile_actions { position: absolute; right: 100%; top: 40%; width: 66px; padding: 3px; background-color: #111a20ee; pointer-events: auto; }
+#inventory_mobile_actions button { position: relative; display: block; width: 60px; height: 26px; margin-bottom: 4px; font-family: "Liberation Sans"; font-size: 12px; text-align: center; line-height: 26px; background-color: #222c37; border: 1px #968664; color: #fff5dd; pointer-events: auto; }
+#inventory_mobile_actions button:disabled { opacity: 0.4; }
+
+#inventory_mobile_actions { position: absolute; left: max(1vw, calc(var(--world-right, 100%) - 76dp)); right: auto; top: 36vh; width: 68dp; }
+#inventory_mobile_actions button { width: 64dp; height: 26dp; line-height: 26dp; font-size: 11dp; }
+
+/* Header arrows switch only the equipment page; the bag stays in place. */
+.inventory-page-prev, .inventory-page-next {
+    position: absolute; top: 10px; width: 24px; height: 24px;
+    padding: 0; pointer-events: auto; z-index: 2; color: #efb34fff;
+    background-color: #00000000; border: 0px;
+    font-family: "Liberation Sans"; font-size: 12px; line-height: 24px; text-align: center;
+}
+.inventory-page-prev { left: 53px; }
+.inventory-page-next { right: 53px; }
+.skin-page .equip-slot.skin-slot { background-color: #083a44aa; }
+.skin-page #slot_ring_left, .skin-page #slot_ring_right, .skin-page #slot_amulet,
+.skin-page .option-labels, .skin-page #set_option_label, .skin-page #socket_option_label { visibility: hidden; }
+
+/* One full-set item replaces the four retired body skin slots. */
+.skin-page #slot_helm, .skin-page #slot_pants, .skin-page #slot_gloves, .skin-page #slot_boots { visibility: hidden; }
+.skin-shop-open { position: absolute; left: 10px; top: 164px; width: 62px; height: 22px; box-sizing: border-box; padding: 0; color: #eac45c; border: 1px #685333; background-color: #15140ff0; font-family: "Liberation Sans"; font-size: 12px; line-height: 20px; text-align: center; pointer-events: auto; }
+
+.skin-storage-open { position: absolute; left: 77px; top: 164px; width: 103px; height: 22px; padding: 0; color: #eac45c; background-color: #15140ff0; border: 1px #685333; font-size: 12px; line-height: 20px; text-align: center; pointer-events: auto; }

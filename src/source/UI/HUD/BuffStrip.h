@@ -56,6 +56,8 @@ namespace mu::ui::window
         struct BuffStripRmlModel
         {
             std::vector<BuffEntry> buffs;
+            bool collapsed = false;
+            bool canCollapse = false;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, BuffStripRmlModel& model);
         UI::RmlBridge::ThemedView<BuffStripRmlModel> m_RmlView{"buff_strip",
@@ -71,6 +73,8 @@ namespace mu::ui::window
         void SyncTooltip();
 
         void SyncRmlModel();
+        void SyncBuffEntries();
+        void BindBuffEvents(Rml::DataModelConstructor& c);
         void OnBuffRightClick(int slot);
     };
 }

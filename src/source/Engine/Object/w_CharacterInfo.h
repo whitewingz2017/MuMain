@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Utilities/SpinLock.h"
+#include "GameLogic/Cosmetics/WingAnimationClock.h"
 
 typedef struct _PATH_t
 {
@@ -218,6 +219,7 @@ public:
     PART_t    	BodyPart[MAX_BODYPART];
     PART_t		Weapon[2];
     PART_t		Wing;
+    GameLogic::Cosmetics::WingAnimationClock CosmeticWingClock;
     PART_t		Helper;
     PART_t		Flag;
     PATH_t      Path;
@@ -230,6 +232,7 @@ public:
     wchar_t     OwnerID[32];
 
 private:
+    void InitializeObject();
     ST_POSTMOVE_PROCESS*
         m_pPostMoveProcess;
 

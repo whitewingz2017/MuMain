@@ -3,6 +3,7 @@
 #include "UI/Core/WindowObject.h"
 #include "UI/Core/WindowManager.h"
 #include "UI/Events/EventTimerView.h"
+#include <chrono>
 
 namespace mu::ui::window
 {
@@ -65,6 +66,7 @@ public:
     void SetRemainTime(DWORD tick)
     {
         m_dTime = tick;
+        m_TimeSampled = std::chrono::steady_clock::now();
     }
     void SetDay(int iDay)
     {
@@ -94,6 +96,7 @@ private:
 
     int m_iType;
     DWORD m_dTime;
+    std::chrono::steady_clock::time_point m_TimeSampled = std::chrono::steady_clock::now();
     int m_iDay;
     int m_iZone;
     int m_iMonsterCount;

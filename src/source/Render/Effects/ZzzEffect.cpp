@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
+#include "Render/Models/CosmeticArmor.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -7650,6 +7651,8 @@ void MoveEffects()
 
 void RenderWheelWeapon(OBJECT* o)
 {
+    const int Type = Render::Models::CosmeticArmor::SkillWeaponModel(o->Owner);
+    if (Type < 0) return;
     vec3_t TempPosition, TempAngle;
     VectorCopy(o->Position, TempPosition);
     VectorCopy(o->Angle, TempAngle);
@@ -7661,7 +7664,6 @@ void RenderWheelWeapon(OBJECT* o)
 
     float Alpha = o->Alpha;
 
-    int Type = Data::Items::ToModelSlot(o->Owner->Weapon);
     BMD* b = &Models[Type];
     b->CurrentAction = 0;
     b->Skin = gCharacterManager.GetBaseClass(Hero->Class);
@@ -7675,7 +7677,8 @@ void RenderWheelWeapon(OBJECT* o)
     vec3_t Light;
     RequestModelTerrainLight(o->Position[0], o->Position[1], Light);
     VectorAdd(Light, o->Light, Light);
-    RenderPartObject(o, Type, NULL, Light, Alpha, o->Owner->WeaponLevel, 0, 0, true, true, true);
+    const int level = Type == Data::Items::ToModelSlot(o->Owner->Weapon) ? o->Owner->WeaponLevel : 0;
+    RenderPartObject(o, Type, NULL, Light, Alpha, level, 0, 0, true, true, true);
     o->Type = (short)TempType;
 
     VectorCopy(TempPosition, o->Position);
@@ -7691,7 +7694,8 @@ void RenderFuryStrike(OBJECT* o)
 
         Vector(0.f, 100.f, 0.f, p);
 
-        int Type = Data::Items::ToModelSlot(o->Owner->Weapon);
+        const int Type = Render::Models::CosmeticArmor::SkillWeaponModel(o->Owner);
+        if (Type < 0) return;
         BMD* b = &Models[Type];
         b->CurrentAction = 0;
         b->Skin = gCharacterManager.GetBaseClass(Hero->Class);
@@ -7709,7 +7713,8 @@ void RenderFuryStrike(OBJECT* o)
         VectorCopy(o->Angle, Angle);
 
         b->Animation(BoneTransform, o->AnimationFrame, o->PriorAnimationFrame, o->PriorAction, Angle, o->HeadAngle, false, false);
-        RenderPartObject(o, Type, NULL, Light, Alpha, o->Owner->WeaponLevel, 0, 0, true, true, true);
+        const int level = Type == Data::Items::ToModelSlot(o->Owner->Weapon) ? o->Owner->WeaponLevel : 0;
+        RenderPartObject(o, Type, NULL, Light, Alpha, level, 0, 0, true, true, true);
 
         o->Type = (short)TempType;
     }

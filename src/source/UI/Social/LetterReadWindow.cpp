@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "GameLogic/Items/StoreMail.h"
 #include "UI/Social/LetterReadWindow.h"
 #include "UI/Social/LetterReadView.h"
 #include "UI/Core/WindowCommon.h"
@@ -68,6 +69,11 @@ BOOL CUILetterReadWindow::HandleMessage()
         g_pWindowMgr->SendUIMessage(UI_MESSAGE_CLOSE, GetUIID(), 0);
     }
     return TRUE;
+}
+
+void CUILetterReadWindow::ClaimAttachment()
+{
+    GameLogic::PersonalShop::ClaimMailAttachment(LetterIndex());
 }
 
 void CUILetterReadWindow::Reply()

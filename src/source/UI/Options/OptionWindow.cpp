@@ -183,7 +183,7 @@ static const int s_NumFonts = sizeof(s_Fonts) / sizeof(s_Fonts[0]);
 // FPS cap choices offered by the Video tab's FPS Limit row -- -1 matches SceneManager::SetTargetFps's
 // own "uncapped" sentinel and GameConfig::GetFpsCap()'s default, so "Uncapped" doubles as this
 // setting's untouched-by-the-user state (see Winmain.cpp's EffectiveOffVSyncTargetFps()).
-static const int s_FpsCapValues[] = { 24, 30, 60, 120, 144, -1 };
+static const int s_FpsCapValues[] = { 24, 30, 50, 60, 120, 144, -1 };
 static const int s_NumFpsCapValues = sizeof(s_FpsCapValues) / sizeof(s_FpsCapValues[0]);
 
 // The Video tab's Anti-aliasing and Anisotropic filtering rows, in the values config.ini holds
@@ -384,6 +384,7 @@ void mu::ui::window::COptionWindow::BindRmlModel(Rml::DataModelConstructor& c, O
     c.Bind("windowed_mode", &model.windowedMode);
     c.Bind("windowed_mode_label", &model.windowedModeLabel);
 
+    c.Bind("chat_text_size", &model.chatTextSize);
     c.Bind("sound_volume", &model.soundVolume);
     c.Bind("sound_volume_label", &model.soundVolumeLabel);
     c.Bind("music_volume", &model.musicVolume);
@@ -501,6 +502,9 @@ void mu::ui::window::COptionWindow::BindRmlModel(Rml::DataModelConstructor& c, O
     c.Bind("texture_pack_value_label", &model.texturePackValueLabel);
     c.Bind("texture_pack_tooltip", &model.texturePackTooltip);
 
+    c.Bind("mobile_ui", &model.mobileUi);
+    c.BindEventCallback("option_ui_editor", [this](auto, auto&, const auto&) {
+    });
     c.BindEventCallback("option_click_close",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickClose(); });
 
@@ -551,6 +555,12 @@ void mu::ui::window::COptionWindow::BindRmlModel(Rml::DataModelConstructor& c, O
     c.BindEventCallback("option_toggle_vsync",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlToggleVsync(); });
 
+    c.Bind("mobile_graphics", &model.mobileGraphics);
+    c.Bind("low_graphics", &model.lowGraphics);
+    c.Bind("balanced_graphics", &model.balancedGraphics);
+    c.BindEventCallback("option_graphics_preset", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList& args) {
+        if (!args.empty()) RmlApplyGraphicsPreset(args[0].Get<int>());
+    });
     c.BindEventCallback("option_toggle_disable_effects",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlToggleDisableEffects(); });
     c.BindEventCallback("option_toggle_disable_particles",
@@ -949,6 +959,19 @@ void mu::ui::window::COptionWindow::RmlGaugeEvent(Rml::Event& event, int gauge)
         if (const auto next = UI::RmlBridge::ApplyLevelGaugeEvent(event, m_iRenderLevel, 4, renderFromPointer))
             RmlRenderLevelChanged(*next);
         break;
+    case 3:
+    {
+        using namespace CfgDefaults;
+        auto& config = GameConfig::GetInstance();
+        const int level = (config.GetChatTextScalePercent() - CfgMinChatTextScalePercent) / CfgChatTextScaleStep;
+        const int maxLevel = (CfgMaxChatTextScalePercent - CfgMinChatTextScalePercent) / CfgChatTextScaleStep;
+        if (const auto next = UI::RmlBridge::ApplyLevelGaugeEvent(event, level, maxLevel, volumeFromPointer))
+        {
+            config.SetChatTextScalePercent(CfgMinChatTextScalePercent + *next * CfgChatTextScaleStep);
+            config.Save();
+        }
+        break;
+    }
     default:
         break;
     }
@@ -1762,6 +1785,8 @@ void mu::ui::window::COptionWindow::SyncRmlModel()
     if (model.renderAllEffects != m_bRenderAllEffects) { model.renderAllEffects = m_bRenderAllEffects; m_RmlView.MarkDirty("render_all_effects"); }
     if (model.windowedMode != m_bWindowedMode) { model.windowedMode = m_bWindowedMode; m_RmlView.MarkDirty("windowed_mode"); }
 
+    const int chatTextSize = (GameConfig::GetInstance().GetChatTextScalePercent() - CfgDefaults::CfgMinChatTextScalePercent) / CfgDefaults::CfgChatTextScaleStep;
+    if (model.chatTextSize != chatTextSize) { model.chatTextSize = chatTextSize; m_RmlView.MarkDirty("chat_text_size"); }
     if (model.soundVolume != m_iVolumeLevel) { model.soundVolume = m_iVolumeLevel; m_RmlView.MarkDirty("sound_volume"); }
     if (model.musicVolume != m_iMusicLevel) { model.musicVolume = m_iMusicLevel; m_RmlView.MarkDirty("music_volume"); }
     if (model.renderLevel != m_iRenderLevel) { model.renderLevel = m_iRenderLevel; m_RmlView.MarkDirty("render_level"); }
@@ -1828,6 +1853,7 @@ void mu::ui::window::COptionWindow::SyncRmlModel()
     if (model.fpsCapIndex != m_iFpsCapIndex) { model.fpsCapIndex = m_iFpsCapIndex; m_RmlView.MarkDirty("fps_cap_index"); }
     syncDropdownValue(model.fpsCapValueLabel, "fps_cap_value_label", model.fpsCapLabels, model.fpsCapIndex);
 
+    SyncMobileGraphicsPresets();
     if (model.disableEffects != m_bDisableEffects) { model.disableEffects = m_bDisableEffects; m_RmlView.MarkDirty("disable_effects"); }
     if (model.disableParticles != m_bDisableParticles) { model.disableParticles = m_bDisableParticles; m_RmlView.MarkDirty("disable_particles"); }
     SyncImpliedEffectRows(model);

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string_view>
+#include <utility>
 
 // A scoped seam that turns the native 2D primitives' draws into records: while an
 // Overlay2DRecordScope is active, CUIRenderTextSDLTtf::RenderText(), RenderColorQuadARGB() and
@@ -23,6 +24,8 @@ enum class RecordedBlend
 
 struct RecordedText
 {
+    bool autoWidth = false;
+    float horizontalAnchor = 0.0f; // 0 = left, 0.5 = centre, 1 = right for auto-width labels
     float boxX = 0.0f;
     float boxY = 0.0f;
     float boxWidth = 0.0f;
@@ -35,6 +38,9 @@ struct RecordedText
     bool bold = false;
     std::uint32_t textColor = 0; // ABGR
     std::string_view utf8;       // borrowed: valid only during the RecordText() call
+
+    // Refit auto-width text to a theme font while retaining its left/centre/right world anchor.
+    std::pair<float, float> FittedBox(float drawnWidth) const;
 };
 
 struct RecordedQuad

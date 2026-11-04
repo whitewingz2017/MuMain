@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "UI/MuHelper/MuHelperConfigWindow.h"
+#include "UI/Dialogs/GenericConfirmDialog.h"
 
 #include "Character/CharacterManager.h"
+#include "Engine/Object/ZzzCharacter.h"
+#include "Scenes/SceneCommon.h"
 #include "Core/Utilities/StringUtils.h"
 #include "Data/GameData/ItemData/ItemStructs.h"
 #include "I18N/All.h"
@@ -244,7 +247,33 @@ void CMuHelperConfigWindow::OnToggle(const Rml::String& key)
     else if (key == "pick_extra") flip(c.bPickExtraItems);
     else if (key == "auto_friend") flip(c.bAutoAcceptFriend);
     else if (key == "auto_guild") flip(c.bAutoAcceptGuild);
-    else if (key == "auto_defend") flip(c.bUseSelfDefense);
+    else if (key == "auto_defend")
+    {
+        if (c.bUseSelfDefense)
+        {
+            c.bUseSelfDefense = false;
+            c.bPvpCostConfirmed = false;
+            SaveConfig();
+            return;
+        }
+        GenericDialogConfig dialog;
+        dialog.title = L"PvP Counterattack";
+        dialog.showCancel = true;
+        dialog.primaryLabel = L"Enable";
+        dialog.lines = {{L"Costs 30 WCoin C for one hour.", true},
+            {L"Renews every hour while enabled, including while online with the helper stopped.", false},
+            {L"Stops if you cannot pay. A remaining paid hour is reused; no refund on disabling.", false}};
+        const std::wstring owner = Hero ? Hero->ID : L"";
+        dialog.isValid = [owner] { return Hero && SceneFlag == MAIN_SCENE && owner == Hero->ID; };
+        dialog.onPrimary = [this]
+        {
+            auto& config = UI::MuHelper::StagedConfig();
+            config.bUseSelfDefense = true;
+            config.bPvpCostConfirmed = true;
+            SaveConfig();
+        };
+        g_pGenericConfirmDialog->Show(std::move(dialog));
+    }
 }
 
 void CMuHelperConfigWindow::OnButton(const Rml::String& key)
@@ -312,6 +341,9 @@ void CMuHelperConfigWindow::OnSlotClear(int slot)
         return;
 
     m_aiSelectedSkills[slot] = -1;
+    ConfigData& config = UI::MuHelper::StagedConfig();
+    if (slot < 3) config.aiSkill[slot] = 0;
+    else config.aiBuff[slot - 3] = 0;
     ClearCombo();
 }
 
@@ -325,6 +357,7 @@ void CMuHelperConfigWindow::AssignSkill(int iSkill)
     if (m_iSelectedSkillSlot < 0 || m_iSelectedSkillSlot >= SkillSlotCount)
         return;
 
+    if (iSkill == 0) { OnSlotClear(m_iSelectedSkillSlot); return; }
     ConfigData& c = UI::MuHelper::StagedConfig();
 
     if (!IsSkillAssigned(iSkill))

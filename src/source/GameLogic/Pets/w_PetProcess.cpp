@@ -2,6 +2,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "GameLogic/Pets/Muun.h"
 #include "w_PetActionStand.h"
 #include "w_PetActionRound.h"
 #include "w_PetActionDemon.h"
@@ -9,7 +10,9 @@
 #include "w_PetActionCollecter_Add.h"
 #include "w_PetActionUnicorn.h"
 #include "w_PetProcess.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "Core/Utilities/ReadScript.h"
+#include <algorithm>
 
 
 PetInfoPtr PetInfo::Make()
@@ -110,6 +113,25 @@ void PetProcess::Init()
     m_petsAction.insert(make_pair(SKELETON, actionCollecter_Skeleton));
 
     LoadData();
+    const auto addCosmetic = [this](int itemType, float scale)
+    {
+        auto cosmetic = PetInfo::Make();
+        constexpr int ActionCount = PetObject::eAction_End;
+        int actions[ActionCount];
+        float speeds[ActionCount];
+        std::fill_n(actions, ActionCount, PC4_TEST);
+        std::fill_n(speeds, ActionCount, 0.3f);
+        cosmetic->SetScale(scale);
+        cosmetic->SetBlendMesh(-1);
+        cosmetic->SetActions(ActionCount, actions, speeds);
+        m_petsInfo.emplace(itemType, cosmetic);
+    };
+    for (int i = 0; i < 6; ++i) addCosmetic(GameLogic::Pets::Muun::FirstType + i, 0.65f);
+    addCosmetic(GameLogic::Cosmetics::CosmeticPetItemType, 0.5f);
+    addCosmetic(GameLogic::Pets::DarkHorseItem, 1.f);
+    addCosmetic(GameLogic::Pets::FenrirItem, 0.9f);
+    for (const auto& skin : GameLogic::Cosmetics::FinalMuSkins)
+        if (skin.part == 8) addCosmetic(skin.type, skin.scale);
 }
 
 void PetProcess::Destroy()
@@ -295,6 +317,8 @@ bool PetProcess::IsPet(int itemType)
 bool PetProcess::CreatePet(int itemType, int modelType, vec3_t Position, CHARACTER* Owner, int SubType, int LinkBone)
 {
     if (NULL == Owner) return FALSE;
+    // Inventory, appearance and Muun refreshes can announce the same follower.
+    if (HasPet(Owner, itemType)) return TRUE;
 
     PetObjectPtr _tempPet = PetObject::Make();
     if (_tempPet->Create(itemType, modelType, Position, Owner, SubType, LinkBone))
@@ -326,6 +350,12 @@ bool PetProcess::CreatePet(int itemType, int modelType, vec3_t Position, CHARACT
     }
 
     return FALSE;
+}
+
+bool PetProcess::HasPet(CHARACTER* owner, int itemType) const
+{
+    return owner && std::any_of(m_petsList.begin(), m_petsList.end(),
+        [owner, itemType](const auto& pet) { return pet && pet->IsAlive() && pet->IsSameObject(&owner->Object, itemType); });
 }
 
 void PetProcess::DeletePet(CHARACTER* Owner, int itemType, bool allDelete)
@@ -368,6 +398,8 @@ void PetProcess::UpdatePets()
             basepet.lock()->Update();
         }
     }
+    // A dead entry would make HasPet/CreatePet treat the reused owner slot as already having its pet.
+    m_petsList.remove_if([](const auto& pet) { return !pet || !pet->IsAlive(); });
 }
 
 void PetProcess::RenderPets()
@@ -383,4 +415,10 @@ void PetProcess::RenderPets()
             basepet.lock()->Render();
         }
     }
+}
+
+void PetProcess::AttackMuun(CHARACTER* owner, int type, int targetIndex)
+{
+    for (const auto& pet : m_petsList)
+        if (pet->IsSameObject(&owner->Object, type)) pet->ShowMuunAttack(targetIndex);
 }

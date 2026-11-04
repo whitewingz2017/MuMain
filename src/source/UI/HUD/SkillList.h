@@ -94,6 +94,7 @@ namespace mu::ui::window
         // Per-slot cooldown fraction for the compact hotkey row + current-skill slot (0 = ready).
         float GetHotKeySlotCooldownFraction(int iSlotIndex);
         float GetCurrentSkillCooldownFraction();
+        float GetSkillCooldownFraction(int index);
 
         // Naming trap: despite the name, this is whether the compact hotkey row shows its "upper"
         // set (6-9,0 vs 1-5), NOT whether the grid popup is open. Use IsSkillGridOpen() for that --

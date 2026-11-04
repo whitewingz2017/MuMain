@@ -27,6 +27,7 @@ namespace mu::ui::window
     // keyboard handling, which runs while one of its fields is focused (TakesTypingFrom()).
     struct ChatInputRmlModel
     {
+        int historyTab = 0;
         Rml::String chatText;
         Rml::String whisperId;
 
@@ -107,6 +108,7 @@ namespace mu::ui::window
         // happen after SyncDocumentVisibility()'s own Show(), which defaults to FocusFlag::Auto and
         // would blur the field again.
         bool m_bFocusPending = false;
+        bool m_SubmitRequested = false;
 
     public:
         CChatInputBox();
@@ -146,6 +148,9 @@ namespace mu::ui::window
         float GetKeyEventOrder();
 
         void OpenningProcess();
+        // Focuses the chat field as soon as the box shows, which brings up the soft keyboard: for an
+        // explicit request to type (the mobile chat button), unlike merely opening the history.
+        void FocusChatFieldWhenShown() { m_bFocusPending = true; }
         void ClosingProcess();
 
         void SetWhsprID(const wchar_t* strWhsprID);

@@ -2,6 +2,8 @@
 // Routes the engine's error/info dialogs through SDL's message box.
 #ifndef _WIN32
 
+#include "Core/Platform/WindowCoordinates.h"
+
 #include "Core/Platform/WinUser.h"
 #include "Core/Platform/GameWindow.h"
 
@@ -125,6 +127,9 @@ BOOL GetCursorPos(LPPOINT lpPoint)
     if (!lpPoint) return FALSE;
     float x = 0.0f, y = 0.0f;
     SDL_GetMouseState(&x, &y); // relative to the window the mouse is in
+    const float scale = Core::Platform::WindowToGameScale(Core::Platform::GameWindow());
+    x *= scale;
+    y *= scale;
 #ifdef _EDITOR
     // In another window of the game (the editor's own) the position is made
     // relative to the game window, as Win32's GetCursorPos plus

@@ -465,6 +465,14 @@ bool OrbitalCamera::DescribeState(wchar_t* text, std::size_t textSize) const
     return true;
 }
 
+void OrbitalCamera::ApplyTouchGesture(float zoomRatio, float yawDegrees, float pitchDegrees)
+{
+    m_Radius = std::clamp(m_Radius / std::clamp(zoomRatio, 0.5f, 2.f), MIN_RADIUS, MAX_RADIUS);
+    m_DeltaYaw += yawDegrees;
+    m_DeltaPitch = std::clamp(m_DeltaPitch + pitchDegrees, MIN_PITCH - m_BasePitch, MAX_PITCH - m_BasePitch);
+    UpdateConfigForView();
+}
+
 void OrbitalCamera::HandleInput()
 {
     // Mouse wheel zoom. Always consume the wheel even when locked so a

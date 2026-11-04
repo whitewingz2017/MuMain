@@ -76,7 +76,7 @@ namespace mu::ui::window
         bool ProcessClosing() const;
         bool InsertItem(int iIndex, std::span<const BYTE> pbyItemPacket) const;
         int FindEmptySlot(const ITEM* pItemObj) const;
-        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr);
+        bool ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl = nullptr, ITEM* selectedItem = nullptr);
 
         bool IsItemAutoMove() const { return m_bItemAutoMove; }
 

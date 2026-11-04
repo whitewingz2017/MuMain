@@ -1,7 +1,11 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "Render/Items/ScopedItemEffects.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "Core/Text/GroupedNumbers.h"
+#include "Core/Utilities/FrameProfiler.h"
 #include "UI/Placement/WindowPlacement.h"
 #include "UI/Core/UIManager.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
@@ -1755,6 +1759,10 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
     {
         Color = TEXT_COLOR_YELLOW;
     }
+    else if (GameLogic::Cosmetics::ArmorPart(ip->Type) >= 0)
+    {
+        Color = TEXT_COLOR_WHITE;
+    }
     else if (ip->AncientDiscriminator > 0)
     {
         Color = TEXT_COLOR_GREEN_BLUE;
@@ -1763,7 +1771,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
     {
         Color = TEXT_COLOR_VIOLET;
     }
-    else if (ip->SpecialNum > 0 && ip->ExcellentFlags > 0)
+    else if (ip->SpecialNum > 0 && ip->ExcellentFlags > 0 && GameLogic::Cosmetics::ArmorPart(ip->Type) < 0)
     {
         Color = TEXT_COLOR_GREEN;
     }
@@ -1813,7 +1821,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
 
     if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_NPCSHOP) && !GameLogic::Items::IsSellingBan(ip))
     {
-        wchar_t Text[100];
+        wchar_t Text[MAX_TEXT_LENGTH];
         {
             if (Sell)
             {
@@ -1841,14 +1849,16 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
     {
         {
             GameLogic::PersonalShop::ItemPrice itemPrice;
-            int indexInv = g_pMyShopInventory->GetInventoryCtrl()->GetIndexByItem(ip);
-            wchar_t Text[100];
+            int indexInv = Inventype == mu::ui::window::TOOLTIP_TYPE_PURCHASE_SHOP
+                ? g_pPurchaseShopInventory->GetInventoryCtrl()->GetIndexByItem(ip)
+                : g_pMyShopInventory->GetInventoryCtrl()->GetIndexByItem(ip);
+            wchar_t Text[MAX_TEXT_LENGTH];
 
             const bool hasPrice = GetPersonalItemPrice(indexInv, itemPrice, g_IsPurchaseShop);
             if (hasPrice && itemPrice.Kind != GameLogic::PersonalShop::PriceKind::Zen)
             {
                 // The server tells the player when the jewels or coins are not enough.
-                mu_swprintf(Text, L"%d %ls", itemPrice.Amount, GameLogic::PersonalShop::GetCurrencyName(itemPrice));
+                mu_swprintf(Text, L"%ls", GameLogic::PersonalShop::FormatPrice(itemPrice).c_str());
                 mu_swprintf(TextList[TextNum], I18N::Game::SellingPriceS, Text);
                 TextListColor[TextNum] = TEXT_COLOR_YELLOW;
                 TextBold[TextNum] = true;
@@ -1890,7 +1900,9 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
             {
                 TextListColor[TextNum] = TEXT_COLOR_RED;
                 TextBold[TextNum] = true;
-                mu_swprintf(TextList[TextNum], I18N::Game::RightClickForPriceSetting);
+                mu_swprintf(TextList[TextNum],
+                    I18N::Game::RightClickForPriceSetting
+                );
                 TextNum++;
                 mu_swprintf(TextList[TextNum], L"\n"); TextNum++; SkipNum++;
             }
@@ -2165,7 +2177,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
     }
     else if (ip->Type >= ITEM_SPLINTER_OF_ARMOR && ip->Type <= ITEM_HORN_OF_FENRIR)
     {
-        if (ip->Type == ITEM_HORN_OF_FENRIR)
+        if (GameLogic::Cosmetics::HelperBehaviorItem(ip->Type) == ITEM_HORN_OF_FENRIR)
         {
             Color = TEXT_COLOR_BLUE;
             if ((ip->ExcellentFlags & 63) == 0x01)
@@ -2230,7 +2242,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
             wcscpy(TextName, p->Name);
         }
 
-        if (ip->ExcellentFlags > 0)
+        if (ip->ExcellentFlags > 0 && GameLogic::Cosmetics::ArmorPart(ip->Type) < 0)
         {
             if (Level == 0)
                 mu_swprintf(TextList[TextNum], L"%ls %ls", I18N::Game::Excellent, TextName);
@@ -2246,6 +2258,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
         }
     }
 
+    if (GameLogic::Cosmetics::ArmorPart(ip->Type) >= 0) Color = TEXT_COLOR_WHITE;
     TextListColor[TextNum] = Color; TextBold[TextNum] = true; TextNum++;
     mu_swprintf(TextList[TextNum], L"\n"); TextNum++; SkipNum++;
 
@@ -4064,7 +4077,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
             mu_swprintf(TextList[TextNum], I18N::Game::DD, ip->Durability, 10);
             Success = true;
         }
-        else if (ip->Type == ITEM_HORN_OF_FENRIR)
+        else if (GameLogic::Cosmetics::HelperBehaviorItem(ip->Type) == ITEM_HORN_OF_FENRIR)
         {
             if (ip->bPeriodItem == false)
             {
@@ -4626,7 +4639,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
         TextListColor[TextNum] = TEXT_COLOR_YELLOW;
         TextNum++;
     }
-    else if (ip->Type == ITEM_HORN_OF_FENRIR)
+    else if (GameLogic::Cosmetics::HelperBehaviorItem(ip->Type) == ITEM_HORN_OF_FENRIR)
     {
         GetSpecialOptionText(0, TextList[TextNum], AT_SKILL_PLASMA_STORM_FENRIR, 0, 0);
         TextListColor[TextNum] = TEXT_COLOR_BLUE;
@@ -5094,7 +5107,11 @@ static void RenderRepairInfo(const UI::Scaling::Transform& screen, int sx, int s
     int Level = ip->Level;
     int Color;
 
-    if (ip->Type == ITEM_JEWEL_OF_BLESS || ip->Type == ITEM_JEWEL_OF_SOUL || ip->Type == ITEM_JEWEL_OF_CHAOS)
+    if (GameLogic::Cosmetics::ArmorPart(ip->Type) >= 0)
+    {
+        Color = TEXT_COLOR_WHITE;
+    }
+    else if (ip->Type == ITEM_JEWEL_OF_BLESS || ip->Type == ITEM_JEWEL_OF_SOUL || ip->Type == ITEM_JEWEL_OF_CHAOS)
     {
         Color = TEXT_COLOR_YELLOW;
     }
@@ -5110,7 +5127,7 @@ static void RenderRepairInfo(const UI::Scaling::Transform& screen, int sx, int s
     {
         Color = TEXT_COLOR_YELLOW;
     }
-    else if (ip->SpecialNum > 0 && ip->ExcellentFlags > 0)
+    else if (ip->SpecialNum > 0 && ip->ExcellentFlags > 0 && GameLogic::Cosmetics::ArmorPart(ip->Type) < 0)
     {
         Color = TEXT_COLOR_GREEN;
     }
@@ -5159,7 +5176,7 @@ static void RenderRepairInfo(const UI::Scaling::Transform& screen, int sx, int s
 
         mu_swprintf(TextList[TextNum], L"\n"); TextNum++; SkipNum++;
 
-        wchar_t Text[100];
+        wchar_t Text[MAX_TEXT_LENGTH];
 
         maxDurability = CalcMaxDurability(ip, p, Level);
         if (ip->Durability < maxDurability)
@@ -5219,7 +5236,7 @@ static void RenderRepairInfo(const UI::Scaling::Transform& screen, int sx, int s
     }
     else
     {
-        if (ip->ExcellentFlags > 0)
+        if (ip->ExcellentFlags > 0 && GameLogic::Cosmetics::ArmorPart(ip->Type) < 0)
         {
             if (Level == 0)
                 mu_swprintf(TextList[TextNum], L"%ls %ls", I18N::Game::Excellent, p->Name);
@@ -5234,6 +5251,7 @@ static void RenderRepairInfo(const UI::Scaling::Transform& screen, int sx, int s
                 mu_swprintf(TextList[TextNum], L"%ls +%d", p->Name, Level);
         }
     }
+    if (GameLogic::Cosmetics::ArmorPart(ip->Type) >= 0) Color = TEXT_COLOR_WHITE;
     TextListColor[TextNum] = Color; TextBold[TextNum] = true; TextNum++;
     mu_swprintf(TextList[TextNum], L"\n"); TextNum++; SkipNum++;
 
@@ -5620,10 +5638,11 @@ namespace
 {
 struct GroundItemLabelDescriptor
 {
+    static constexpr DWORD DefaultBackground = 0xA0000000;
     wchar_t Name[80]{};
     HFONT Font = g_hFont;
     DWORD TextColor = 0xFFFFFFFF;
-    DWORD BgColor = 0xFF000000;
+    DWORD BgColor = DefaultBackground;
 };
 
 DWORD MakeRgba(BYTE red, BYTE green, BYTE blue, BYTE alpha = 255)
@@ -5696,7 +5715,7 @@ void BuildGroundItemLabelDescriptor(OBJECT* o, ITEM* ip, GroundItemLabelDescript
         itemName = ItemAttribute[Data::Items::ToItemType(o->Type)].Name;
         if (o->Type == MODEL_ZEN) // Zen
         {
-            FormatGroundItemLabelText(descriptor.Name, L"%ls %d", itemName, ItemLevel);
+            FormatGroundItemLabelText(descriptor.Name, L"%ls %ls", itemName, Core::Text::GroupedNumbers(std::to_wstring(ItemLevel)).c_str());
         }
         else if (ItemLevel == 0)
         {
@@ -6091,20 +6110,15 @@ void ApplyGroundItemLabelDescriptor(const GroundItemLabelDescriptor& descriptor)
 void RenderItemName(int i, OBJECT* o, ITEM* ip, bool Sort)
 {
     (void)i;
-
-    if (!Sort)
     {
         GroundItemLabelDescriptor descriptor;
-        BuildGroundItemLabelDescriptor(o, ip, descriptor);
+        {
+            FRAME_PROFILE(ItemLabelFormat);
+            BuildGroundItemLabelDescriptor(o, ip, descriptor);
+        }
         ApplyGroundItemLabelDescriptor(descriptor);
-        g_pRenderText->RenderText(MouseX, MouseY - 15, descriptor.Name, 0, 0, RT3_WRITE_CENTER);
-    }
-    else
-    {
-        GroundItemLabelDescriptor descriptor;
-        BuildGroundItemLabelDescriptor(o, ip, descriptor);
-        ApplyGroundItemLabelDescriptor(descriptor);
-        g_pRenderText->RenderText(o->ScreenX, o->ScreenY - 15, descriptor.Name, 0, 0, RT3_WRITE_CENTER);
+        g_pRenderText->RenderText(Sort ? o->ScreenX : MouseX, (Sort ? o->ScreenY : MouseY) - 15,
+                                 descriptor.Name, 0, 0, RT3_WRITE_CENTER);
     }
 
     g_pRenderText->SetTextColor(255, 230, 200, 255);
@@ -6356,7 +6370,7 @@ constexpr float SelectedItemTurnSpeed = 0.45f;
 } // namespace
 
 void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancientDiscriminator, vec3_t Target,
-                        int Select, bool PickUp)
+                        int Select, bool PickUp, float slotWidth, float slotHeight)
 {
     int Level = ItemLevel;
     vec3_t Direction, Position;
@@ -6398,9 +6412,12 @@ void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancient
         ItemLevel = 0;
     }
 
-    VectorAdd(Position, display.offset.data(), Position);
+    if (slotWidth <= 0) VectorAdd(Position, display.offset.data(), Position);
 
     b->Animation(BoneTransform, ObjectSelect.AnimationFrame, ObjectSelect.PriorAnimationFrame, ObjectSelect.PriorAction, ObjectSelect.Angle, ObjectSelect.HeadAngle, false, false);
+
+    if (slotWidth > 0)
+        Render::Items::Display::FitInventoryModel(*b, Models[Type], BoneTransform, Position, Scale, slotWidth, slotHeight);
 
     CHARACTER Armor;
     OBJECT* o = &Armor.Object;
@@ -6451,11 +6468,14 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
                            int ancientDiscriminator, bool PickUp, bool hovered)
 {
     // Item previews are screen-space: keep Classic texture sampling.
+    const Render::Items::ScopedItemEffects itemEffects(false);
     const mu::ScopedScreenSpaceSampling screenSpaceSampling;
 
     const bool Success = UI::Items::ShouldAnimatePreview(hovered, g_pPickedItem != nullptr, PickUp);
 
-    const Render::Items::Display::Anchor anchor = Render::Items::Display::GetInventoryAnchor(Type, Level);
+    const bool fitSkin = GameLogic::Cosmetics::ArmorPart(Type) >= 0 || GameLogic::Cosmetics::IsFenrirMount(Type);
+    const Render::Items::Display::Anchor anchor = fitSkin ? Render::Items::Display::Anchor{0.5f, 0.5f}
+        : Render::Items::Display::GetInventoryAnchor(Type, Level);
     sx += Width * anchor.x;
     sy += Height * anchor.y;
 
@@ -6480,7 +6500,7 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
                  Render::Items::Display::FindInventoryModel(Type, Level))
     {
         RenderObjectScreen(model->modelType, model->drawLevel, excellentFlags, ancientDiscriminator, Position, Success,
-                           PickUp);
+                           PickUp, fitSkin ? Width : 0, fitSkin ? Height : 0);
     }
 }
 

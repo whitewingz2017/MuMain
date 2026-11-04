@@ -106,7 +106,8 @@ bool CInGameShopSystem::ScriptDownload()
     ::GetCurrentDirectory(255, m_szScriptLocalPath);
 
     wchar_t szScriptRemotePathforDMZ[MAX_TEXT_LENGTH];
-    mu_swprintf(m_szScriptLocalPath, L"%ls%ls", m_szScriptLocalPath, L"\\data\\InGameShopScript");
+    const std::wstring scriptBase(m_szScriptLocalPath);
+    mu_swprintf(m_szScriptLocalPath, L"%ls%ls", scriptBase.c_str(), L"/Data/InGameShopScript");
     wcscpy(m_szScriptIPAddress, L"image.webzen.com");
     wcscpy(m_szScriptRemotePath, L"/Global/Payment/ProductTransfer");
     wcscpy(szScriptRemotePathforDMZ, L"/Global/Payment/DevScriptGB/ProductTransfer");
@@ -165,7 +166,8 @@ bool CInGameShopSystem::BannerDownload()
     ::GetCurrentDirectory(255, m_szBannerLocalPath);
 
     wchar_t szBannerRemotePathforDMZ[MAX_TEXT_LENGTH];
-    mu_swprintf(m_szBannerLocalPath, L"%ls%ls", m_szBannerLocalPath, L"\\data\\InGameShopBanner");
+    const std::wstring bannerBase(m_szBannerLocalPath);
+    mu_swprintf(m_szBannerLocalPath, L"%ls%ls", bannerBase.c_str(), L"/Data/InGameShopBanner");
 
     wcscpy(m_szBannerIPAddress, L"image.webzen.com");
     wcscpy(m_szBannerRemotePath, L"/Global/Payment/BannerTransfer");
@@ -745,6 +747,26 @@ void CInGameShopSystem::SetRequestEventPackge()
 bool CInGameShopSystem::IsShopOpen()
 {
     return m_bIsShopOpenLock ? false : true;
+}
+
+bool CInGameShopSystem::HasCatalogVersion()
+{
+    return m_ScriptVerInfo.Zone != static_cast<WORD>(-1)
+        && m_ScriptVerInfo.year != static_cast<WORD>(-1)
+        && m_ScriptVerInfo.yearId != static_cast<WORD>(-1);
+}
+
+bool CInGameShopSystem::EnsureCatalog()
+{
+    // A failed load locks the shop; retry here, before the UI's lock check.
+    if (!HasCatalogVersion()) return false;
+    if (IsShopOpen() && m_pCategoryList && m_pPackageList && m_pProductList
+        && m_CurrentScriptVerInfo.Zone == m_ScriptVerInfo.Zone
+        && m_CurrentScriptVerInfo.year == m_ScriptVerInfo.year
+        && m_CurrentScriptVerInfo.yearId == m_ScriptVerInfo.yearId) return true;
+    if (!ScriptDownload()) return false;
+    Initalize();
+    return true;
 }
 
 bool CInGameShopSystem::IsBanner()

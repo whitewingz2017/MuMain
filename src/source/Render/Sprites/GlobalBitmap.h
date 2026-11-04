@@ -60,6 +60,10 @@ public:
     // Read from the active texture pack, not from Data: a later re-read of the
     // pixels (CGlobalBitmap::ReadBitmapPixels) reads the same file.
     bool fromTexturePack = false;
+    std::uint8_t textureReduction = 1;
+    bool lowWorldTexture = false;
+    bool linearFilter = false;
+    bool lowQualityEligible = false; // Excludes canvases and UI-owned cached GPU handles.
 };
 
 // A texture file as the loaders read it.
@@ -144,6 +148,8 @@ class CGlobalBitmap
     // Enhanced texture filtering. The requested
     // state is applied between frames by UpdateTextureFiltering.
     bool m_textureFilteringEnabled = false;
+    bool m_lowWorldTextures = false;
+    std::vector<std::uint32_t> m_textureQualityRequests;
     bool m_textureFilteringRequested = false;
     bool m_textureFilteringSwitchPending = false;
     int m_requestedAnisotropy = 8;
@@ -212,6 +218,7 @@ public:
     // applies it between frames through UpdateTextureFiltering, which also
     // builds the mip chains that world draws asked for since the last frame.
     void SetTextureFiltering(bool enabled, int anisotropy);
+    void SetLowWorldTextures(bool enabled);
 
     // The texture pack (Render/Textures/TexturePack.h) whose files are read
     // before those in Data: a folder name in Data/TexturePacks, or empty for
@@ -267,6 +274,7 @@ protected:
     // The RGBA pixels of a loaded original texture, read from its file again.
     bool ReadBitmapPixels(const BITMAP_t& bitmap, std::vector<std::uint8_t>& rgba);
     bool BuildMipChain(GLuint uiBitmapIndex);
+    bool RebuildTextureQuality(GLuint uiBitmapIndex);
     void SplitFileName(IN const std::wstring& filepath, OUT std::wstring& filename, bool bIncludeExt);
     void SplitExt(IN const std::wstring& filepath, OUT std::wstring& ext, bool bIncludeDot);
     void ExchangeExt(IN const std::wstring& in_filepath, IN const std::wstring& ext, OUT std::wstring& out_filepath);

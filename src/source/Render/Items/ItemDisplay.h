@@ -5,6 +5,8 @@
 #include <array>
 #include <optional>
 
+class BMD;
+
 #ifdef _EDITOR
 namespace Data::Items
 {
@@ -98,6 +100,11 @@ bool IsLiftedOnGround(int modelType);
 // How the model is drawn in the inventory. The inventory models of the Rage
 // Fighter armor have the look of their item.
 InventoryDisplay GetInventoryDisplay(int modelType);
+
+// Centers and shrinks oversized slot previews by the bounds of the drawn mesh, posed by the
+// skeleton's bones. Armor is drawn on the player skeleton, whose own bounds are the whole body.
+void FitInventoryModel(const BMD& skeleton, const BMD& mesh, const float (*bones)[3][4], float* position,
+                       float& scale, float width, float height);
 
 // The Weapon of Archangel (13,19) shows the archangel weapons smaller; it
 // draws them with level -1. The scale they have then, or none for other

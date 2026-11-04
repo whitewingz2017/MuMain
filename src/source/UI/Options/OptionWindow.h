@@ -171,6 +171,8 @@ namespace mu::ui::window
         // console-only ($effects ...) diagnostics to a persisted, in-game-options setting.
         void RmlToggleVsync();
         void RmlFpsCapChanged(int index);
+        void RmlApplyGraphicsPreset(int preset);
+        void SyncMobileGraphicsPresets();
         void RmlToggleDisableEffects();
         void RmlToggleDisableParticles();
         void RmlToggleDisableSkillEffectModels();
@@ -233,6 +235,7 @@ namespace mu::ui::window
 
         struct OptionRmlModel
         {
+            bool mobileUi = false;
             // window_shell's positioning extension -- always false: `.center-both` centres this
             // window, and a drag (MakeDraggable()) moves it for the session without
             // a C++-computed position. Still bound since window_shell.rml's template always
@@ -283,6 +286,7 @@ namespace mu::ui::window
             bool windowedMode = false;
             Rml::String windowedModeLabel;
 
+            int chatTextSize = 2;
             int soundVolume = 0;
             Rml::String soundVolumeLabel;
             int musicVolume = 0;
@@ -317,6 +321,9 @@ namespace mu::ui::window
             Rml::String fpsCapValueLabel;
 
             // Graphics tab -- DXP-23's per-system effect-cost toggles, promoted to a real setting.
+            bool mobileGraphics = false;
+            bool lowGraphics = false;
+            bool balancedGraphics = false;
             bool disableEffects = false;
             Rml::String disableEffectsLabel;
             bool disableParticles = false;

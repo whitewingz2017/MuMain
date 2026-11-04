@@ -131,6 +131,7 @@ private:
     void BuildRmlUi();
     void SyncRmlModel();
     void SyncContent();
+    CastleTabEntry MakeTabEntry(const wchar_t* label, bool selected) const;
 };
 } // namespace mu::ui::window
 

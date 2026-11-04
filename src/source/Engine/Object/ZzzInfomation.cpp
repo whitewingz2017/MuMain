@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "UI/Core/UIManager.h"
 #include "Engine/Object/ZzzInfomation.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "I18N/All.h"
 
 #include <codecvt>
@@ -399,7 +400,7 @@ void CalcWingOptions(ITEM* ip)
             ip->Special[ip->SpecialNum] = AT_SET_OPTION_IMPROVE_CHARISMA; ip->SpecialNum++;
         }
     }
-    else if (GameLogic::Items::IsThirdTierWing(ip))
+    else if (GameLogic::Items::IsThirdTierWing(ip) || GameLogic::Cosmetics::ArmorPart(ip->Type) == 7)
     {
         if (ip->ExcellentFlags & 0x01)
         {

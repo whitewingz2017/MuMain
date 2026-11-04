@@ -1,5 +1,6 @@
 #include "SdlTtfTextCache.h"
 
+#include <algorithm>
 #include <new>
 #include <utility>
 
@@ -17,10 +18,13 @@ SdlTtfTextCache::PreparedText SdlTtfTextCache::Prepare(TTF_Font* font, std::stri
     if (m_engine == nullptr || font == nullptr)
         return {};
 
-    for (const Entry& entry : m_entries)
+    for (Entry& entry : m_entries)
     {
         if (entry.font == font && entry.utf8 == utf8)
+        {
+            entry.lastUsed = ++m_useCounter;
             return {entry.text.get(), entry.width, entry.height};
+        }
     }
 
     TextOwner text(TTF_CreateText(m_engine, font, utf8.data(), utf8.size()), TTF_DestroyText);
@@ -32,6 +36,12 @@ SdlTtfTextCache::PreparedText SdlTtfTextCache::Prepare(TTF_Font* font, std::stri
     if (!TTF_GetTextSize(text.get(), &width, &height))
         return {};
 
+    return Retain(font, utf8, std::move(text), width, height);
+}
+
+SdlTtfTextCache::PreparedText SdlTtfTextCache::Retain(TTF_Font* font, std::string_view utf8, TextOwner text,
+                                                   int width, int height)
+{
     PreparedText prepared{text.get(), width, height};
     if (m_capacity == 0)
     {
@@ -42,20 +52,27 @@ SdlTtfTextCache::PreparedText SdlTtfTextCache::Prepare(TTF_Font* font, std::stri
     try
     {
         std::string key(utf8);
-        if (m_entries.size() >= m_capacity)
-            Clear();
         if (m_entries.capacity() < m_capacity)
             m_entries.reserve(m_capacity);
-        m_entries.push_back({font, std::move(key), std::move(text), width, height});
+        Entry entry{font, std::move(key), std::move(text), width, height, ++m_useCounter};
+        if (m_entries.size() < m_capacity)
+        {
+            m_entries.push_back(std::move(entry));
+            return prepared;
+        }
+
+        auto oldest = std::min_element(m_entries.begin(), m_entries.end(), [](const Entry& a, const Entry& b)
+        {
+            return a.lastUsed < b.lastUsed;
+        });
+        *oldest = std::move(entry);
+        return prepared;
     }
     catch (const std::bad_alloc&)
     {
         prepared.transient = std::move(text);
         return prepared;
     }
-
-    const Entry& entry = m_entries.back();
-    return {entry.text.get(), entry.width, entry.height};
 }
 
 void SdlTtfTextCache::Reset(TTF_TextEngine* engine)
@@ -67,6 +84,7 @@ void SdlTtfTextCache::Reset(TTF_TextEngine* engine)
 void SdlTtfTextCache::Clear()
 {
     m_entries.clear();
+    m_useCounter = 0;
 }
 
 std::size_t SdlTtfTextCache::Size() const

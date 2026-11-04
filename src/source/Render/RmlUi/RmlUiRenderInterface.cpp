@@ -6,6 +6,7 @@
 #include "Core/Globals/_TextureIndex.h"
 #include "Core/Utilities/StringUtils.h"
 #include <algorithm>
+#include <filesystem>
 
 namespace
 {
@@ -37,6 +38,20 @@ Rml::TextureHandle RmlUiRenderInterface::LoadTexture(Rml::Vector2i& texture_dime
         return handle;
     }
 
+    return LoadFileTexture(texture_dimensions, source);
+}
+
+Rml::TextureHandle RmlUiRenderInterface::LoadFileTexture(Rml::Vector2i& texture_dimensions, const Rml::String& source)
+{
+    const std::string normalized = m_ResolveTextureFile ? m_ResolveTextureFile(source) : source;
+    if (normalized.empty())
+        return 0;
+
+    // SDL_image decodes plain PNGs and premultiplies their alpha; the legacy cache only reads OZJ/OZT.
+    const std::string extension = std::filesystem::path(normalized).extension().string();
+    if (SDL_strcasecmp(extension.c_str(), ".png") == 0)
+        return RenderInterface_SDL_GPU::LoadTexture(texture_dimensions, normalized);
+
     // Routed through CGlobalBitmap (the same ref-counted, OZJ/OZT-aware pipeline every other
     // texture in the game uses -- GlobalBitmap.cpp) rather than the base class's own LoadTexture
     // (which reads the file directly via Rml::FileInterface + SDL_image's generic format
@@ -48,10 +63,7 @@ Rml::TextureHandle RmlUiRenderInterface::LoadTexture(Rml::Vector2i& texture_dime
     // caller of Bitmaps.LoadImage passes backslash-separated paths (e.g. "Interface\\Foo.jpg"),
     // matching this codebase's own path-handling convention -- normalize rather than assume
     // forward-slash tolerance extends to this legacy loader too.
-    std::string normalized = m_ResolveTextureFile ? m_ResolveTextureFile(source) : source;
-    if (normalized.empty())
-        return 0;
-    const std::wstring wpath = BitmapPath(std::move(normalized)); // Rml::String is std::string (RmlUi/Config/Config.h)
+    const std::wstring wpath = BitmapPath(normalized); // Rml::String is std::string (RmlUi/Config/Config.h)
     // LoadImageExclusive, NOT LoadImage: this handle is cached indefinitely (by RmlUi's compiled
     // geometry, and by m_FileBackedBitmapIndexByHandle below) for as long as the document lives,
     // which today is the whole process -- but plain LoadImage() would find-and-share an existing

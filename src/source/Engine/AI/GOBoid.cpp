@@ -1,9 +1,14 @@
-﻿//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //  GOBoid.cpp
 //
 //////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "GameLogic/Pets/MountCompanions.h"
+#include "GameLogic/Pets/MuunMounts.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
+#include "Render/Models/FenrirMount.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
@@ -34,6 +39,7 @@ static  const   BYTE    BOID_UP = 3;
 
 void DeleteMount(OBJECT* Owner)
 {
+    GameLogic::Cosmetics::FenrirMounts::Clear(Owner);
     for (int i = 0; i < MAX_MOUNTS; i++)
     {
         OBJECT* o = &Mounts[i];
@@ -57,7 +63,7 @@ bool IsMount(ITEM* pItem)
         || pItem->Type == ITEM_HORN_OF_UNIRIA
         || pItem->Type == ITEM_HORN_OF_DINORANT
         || GameLogic::Items::IsDarkLordPet(pItem)
-        || pItem->Type == ITEM_HORN_OF_FENRIR
+        || GameLogic::Cosmetics::HelperBehaviorItem(pItem->Type) == ITEM_HORN_OF_FENRIR
         )
     {
         return true;
@@ -138,7 +144,8 @@ void CreateMount(int Type, vec3_t Position, OBJECT* Owner, int SubType, int Link
 {
     if (gMapManager.InChaosCastle() == true) return;
 
-    if (Owner->Type != MODEL_PLAYER && Type != MODEL_HELPER)
+    // A transformation ring keeps its wearer a player; the mount then follows on foot.
+    if (Owner->Type != MODEL_PLAYER && Owner->Kind != KIND_PLAYER && Type != MODEL_HELPER)
         return;
 
     for (int i = 0; i < MAX_MOUNTS; i++)
@@ -168,6 +175,12 @@ bool MoveMount(OBJECT* o, bool bForceRender)
         }
 
         Alpha(o);
+        if (GameLogic::Pets::MountCompanions::FollowInTown(o, bForceRender))
+        {
+            // Following on foot skips the ride code below, which is where the frame normally advances.
+            PlayMountAnimation(o);
+            return true;
+        }
 
         int     j;
         float   FlyRange = 0.0f;
@@ -204,6 +217,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
             VectorCopy(o->Owner->HeadAngle, o->HeadAngle);
             VectorCopy(o->Owner->Position, o->Position);
             VectorCopy(o->Owner->Angle, o->Angle);
+            GameLogic::Pets::MountCompanions::SyncFenrirRider(o);
 
             if ((o->Owner->CurrentAction >= PLAYER_FENRIR_ATTACK && o->Owner->CurrentAction <= PLAYER_FENRIR_ATTACK_BOW)
                 || IsAliceRideAction_Fenrir(o->Owner->CurrentAction) == true
@@ -632,7 +646,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
         }
         b->CurrentAction = o->CurrentAction;
 
-        b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, o->Velocity, o->Position, o->Angle);
+        PlayMountAnimation(o);
 
         if (o->Type == MODEL_HELPER || o->Type == MODEL_IMP)
         {
@@ -682,16 +696,17 @@ void MoveMounts()
 
 bool RenderMount(OBJECT* o, bool bForceRender)
 {
+    if (!bForceRender && SceneFlag == MAIN_SCENE && GameLogic::Pets::MuunMounts::IsRiding(o->Owner)) return true;
     if (o->Live)
     {
         o->Visible = (bForceRender == FALSE ? TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -20.f) : true);
 
         if (o->Visible)
         {
-            if (o->Owner->Type != MODEL_PLAYER && o->Type != MODEL_HELPER)
+            if (o->Owner->Type != MODEL_PLAYER && o->Owner->Kind != KIND_PLAYER && o->Type != MODEL_HELPER)
                 return TRUE;
 
-            if (bForceRender)
+            if (bForceRender || GameLogic::Pets::MountCompanions::InTown(o))
                 o->Scale = o->Scale;
             else if (SceneFlag == CHARACTER_SCENE)
                 o->Scale = 1.2f;
@@ -706,7 +721,8 @@ bool RenderMount(OBJECT* o, bool bForceRender)
                 State = 10;
             }
 
-            RenderObject(o, false, 0, State);
+            if (!Render::Models::FenrirMount::Draw(o, State))
+                RenderObject(o, false, 0, State);
 
             vec3_t Light;
             float  Luminosity = (float)(rand() % 30 + 70) * 0.01f;

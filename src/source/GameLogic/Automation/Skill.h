@@ -67,7 +67,7 @@ enum class SkillResult : std::uint8_t
 [[nodiscard]] constexpr bool ShouldForgetTarget(SkillResult result)
 {
     return result == SkillResult::NotInView || result == SkillResult::NotAttackable || result == SkillResult::NoPath ||
-           result == SkillResult::Blocked || result == SkillResult::Refused;
+           result == SkillResult::Blocked;
 }
 
 // Skills that are aimed at the caster's own tile rather than at a target
@@ -81,6 +81,11 @@ enum class SkillResult : std::uint8_t
 // a target is told rather than casting into an empty tile. `targetKey` is
 // ignored entirely when `targetRequired` is false. `huntingDistance` bounds how far the path
 // finder may search beyond the skill's range.
+SkillResult CastSkillTowards(ActionSkillType skill, float worldX, float worldY);
+
+// Casts the skill at the tile the player chose (mobile ground targeting), without walking.
+SkillResult CastSkillAtTile(ActionSkillType skill, int tileX, int tileY);
+
 SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey, bool allowPlayers,
                       int huntingDistance);
 } // namespace GameLogic::Automation

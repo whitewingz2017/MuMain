@@ -15,6 +15,7 @@
 
 #include "DSPlaySound.h"
 #include "Core/Platform/IPlatformAudio.h"
+#include "Engine/Object/ZzzCharacter.h"
 #ifdef _EDITOR
 #include "Audio/EditorSoundMute.h"
 #endif
@@ -86,6 +87,6 @@ void Set3DSoundPosition()
 {
     if (g_platformAudio != nullptr)
     {
-        g_platformAudio->Set3DSoundPosition();
+        g_platformAudio->Set3DSoundPosition(Hero && Hero->Object.Live ? &Hero->Object : nullptr);
     }
 }

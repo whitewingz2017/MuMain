@@ -306,7 +306,7 @@ void CStorageInventoryExt::ProcessStorageItemAutoMove()
     }
 }
 
-bool CStorageInventoryExt::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl)
+bool CStorageInventoryExt::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl, ITEM* selectedItem)
 {
     if (g_pPickedItem && g_pPickedItem->GetItem())
     {
@@ -328,7 +328,7 @@ bool CStorageInventoryExt::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl
         return false;
     }
 
-    if (const auto pItemObj = sourceCtrl->FindItemAtPointer())
+    if (const auto pItemObj = selectedItem ? selectedItem : sourceCtrl->FindItemAtPointer())
     {
         if (pItemObj->Type == ITEM_WIZARDS_RING)
             return false;

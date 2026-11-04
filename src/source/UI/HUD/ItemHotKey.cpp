@@ -64,25 +64,32 @@ mu::ui::window::CItemHotKey::~CItemHotKey()
 
 bool mu::ui::window::CItemHotKey::UpdateKeyEvent()
 {
-    int iIndex = -1;
+    int slot = -1;
 
     if (mu::ui::window::IsPress('Q') == true)
     {
-        iIndex = GetHotKeyItemIndex(HOTKEY_Q);
+        slot = HOTKEY_Q;
     }
     else if (mu::ui::window::IsPress('W') == true)
     {
-        iIndex = GetHotKeyItemIndex(HOTKEY_W);
+        slot = HOTKEY_W;
     }
     else if (mu::ui::window::IsPress('E') == true)
     {
-        iIndex = GetHotKeyItemIndex(HOTKEY_E);
+        slot = HOTKEY_E;
     }
     else if (mu::ui::window::IsPress('R') == true)
     {
-        iIndex = GetHotKeyItemIndex(HOTKEY_R);
+        slot = HOTKEY_R;
     }
 
+    return !UseSlot(slot);
+}
+
+bool mu::ui::window::CItemHotKey::UseSlot(int slot)
+{
+    if (slot < 0 || slot >= HOTKEY_COUNT) return false;
+    const int iIndex = GetHotKeyItemIndex(slot);
     if (iIndex != -1)
     {
         ITEM* pItem = NULL;
@@ -108,10 +115,10 @@ bool mu::ui::window::CItemHotKey::UpdateKeyEvent()
         {
             SendRequestUse(iIndex, 0);
         }
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 namespace
@@ -167,6 +174,8 @@ mu::ui::window::HotKeyItemTypes mu::ui::window::GetHotKeyItemTypes(int hotKey, i
     {
         return ItemTypesInUseOrder(ItemTag::ShieldPotion);
     }
+    if (GameLogic::Items::IsElitePotionType(boundType) || GameLogic::Items::IsElixirType(boundType))
+        return HotKeyItemTypes(boundType);
     if (GameLogic::Items::IsComplexPotionType(boundType))
     {
         return ItemTypesInUseOrder(ItemTag::ComplexPotion);
@@ -332,6 +341,7 @@ void mu::ui::window::CItemHotKey::SyncSlotIcons(Rml::ElementDocument* document)
         m_SlotTargets[i]->Sync(icon, m_bSlotIconsShown && filled);
     }
 }
+
 
 void mu::ui::window::CItemHotKey::SetSlotIconsShown(bool shown)
 {

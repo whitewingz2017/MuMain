@@ -54,6 +54,7 @@ namespace mu::ui::window
         virtual ~CItemHotKey();
 
         bool UpdateKeyEvent();
+        bool UseSlot(int slot);
 
         void SetHotKey(int iHotKey, int iItemType, int iItemLevel);
         int GetHotKey(int iHotKey);

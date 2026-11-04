@@ -5,98 +5,204 @@
     {
       "number": 0,
       "file": "Data/Item/Mace01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 1,
       "file": "Data/Item/Mace02.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 2,
       "file": "Data/Item/Mace03.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 3,
       "file": "Data/Item/Mace04.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 25]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 4,
       "file": "Data/Item/Mace05.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 25]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 5,
       "file": "Data/Item/Mace06.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 25]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 6,
       "file": "Data/Item/Mace07.bmd",
-      "textureFolders": ["Item"],
-      "noneBlendMeshes": [1],
+      "textureFolders": [
+        "Item"
+      ],
+      "noneBlendMeshes": [
+        1
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 25]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 7,
       "file": "Data/Item/Mace08.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "hiddenMesh": 2
@@ -106,14 +212,27 @@
     {
       "number": 8,
       "file": "Data/Item/Mace09.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15],
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ],
         "scale": 0.003
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "steelBlue"
@@ -123,14 +242,27 @@
     {
       "number": 9,
       "file": "Data/Item/Mace10.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15],
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ],
         "scale": 0.003
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "sand"
@@ -140,14 +272,27 @@
     {
       "number": 10,
       "file": "Data/Item/Mace11.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15],
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ],
         "scale": 0.003
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "sage"
@@ -157,27 +302,53 @@
     {
       "number": 11,
       "file": "Data/Item/Mace12.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15],
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ],
         "scale": 0.003
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "renderStyle": "lordScepter"
     },
     {
       "number": 12,
       "file": "Data/Item/Mace13.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "copper"
@@ -187,27 +358,56 @@
     {
       "number": 13,
       "file": "Data/Item/saint.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.6, 0.5],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.6,
+          0.5
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "renderStyle": "divineScepterOfArchangel"
     },
     {
       "number": 14,
       "file": "Data/Item/HDK_Mace.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "offset": [-0.01, 0.1],
-        "rotation": [180, 90, 13]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "offset": [
+          -0.01,
+          0.1
+        ],
+        "rotation": [
+          180,
+          90,
+          13
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "olive"
@@ -217,14 +417,30 @@
     {
       "number": 15,
       "file": "Data/Item/CW_Mace.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "offset": [0, 0.05],
-        "rotation": [180, 90, 13]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "offset": [
+          0,
+          0.05
+        ],
+        "rotation": [
+          180,
+          90,
+          13
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "olive"
@@ -233,28 +449,60 @@
     {
       "number": 16,
       "file": "Data/Item/Mace_17.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "offset": [-0.02, 0],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "offset": [
+          -0.02,
+          0
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "renderStyle": "frostMace"
     },
     {
       "number": 17,
       "file": "Data/Item/Mace_18.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "offset": [-0.02, 0.04],
-        "rotation": [180, 270, 15]
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "offset": [
+          -0.02,
+          0.04
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "crimson"
@@ -263,21 +511,3793 @@
     {
       "number": 18,
       "file": "Data/Item/gamble_safter01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.8, 0.7],
-        "offset": [-0.03, 0.06],
-        "rotation": [180, 90, 2],
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "offset": [
+          -0.03,
+          0.06
+        ],
+        "rotation": [
+          180,
+          90,
+          2
+        ],
         "scale": 0.0024
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "white",
-        "meshes": [0]
+        "meshes": [
+          0
+        ]
       },
       "renderStyle": "strikerScepter"
+    },
+    {
+      "number": 100,
+      "file": "Data/Custom/Skins/MACE/Sword140.bmd",
+      "textureFolders": [
+        "Custom/Skins/MACE"
+      ],
+      "inventory": {
+        "scale": 0.0025,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 2,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 3,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 4,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 5,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 6,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 7,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 8,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 9,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 10,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 11,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 12,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 1,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 2,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 3,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 4,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 5,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 6,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 7,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 8,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 9,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 10,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 11,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 12,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 13,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 14,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 15,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 16,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 17,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 18,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 19,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 20,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 21,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        },
+        {
+          "bone": 22,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.5
+        }
+      ],
+      "glow": {
+        "excellent": false
+      }
+    },
+    {
+      "number": 101,
+      "file": "Data/Item/Mace09.bmd",
+      "textureFolders": [
+        "Item"
+      ],
+      "inventory": {
+        "anchor": [
+          0.8,
+          0.7
+        ],
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
+      },
+      "glow": {
+        "color": "steelBlue",
+        "excellent": false
+      },
+      "renderStyle": "battleScepter"
+    },
+    {
+      "number": 300,
+      "file": "Data/Custom/Skins/FinalMU/02_300/thunder_bolt.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_300"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x100"
+      },
+      "staticEffects": [
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.18,
+            0.5,
+            0.5
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32266,
+          "color": [
+            0.36,
+            1.0,
+            1.0
+          ],
+          "size": 0.6,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32266,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32266,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32266,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.1,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 7,
+          "texture": 32119,
+          "color": [
+            0.2,
+            0.46,
+            0.9
+          ],
+          "size": 1.0,
+          "subType": 1
+        }
+      ],
+      "inventory": {
+        "scale": 0.001144,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 301,
+      "file": "Data/Custom/Skins/FinalMU/02_301/hornofsteel.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_301"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x101"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 9,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 10,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 11,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 12,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 13,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 14,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.002121,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 304,
+      "file": "Data/Custom/Skins/FinalMU/02_304/eXG_Mace103.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_304"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x102"
+      },
+      "staticEffects": [
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            0.9,
+            0.06,
+            0.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.91,
+            0.25,
+            0.15
+          ],
+          "size": 3.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.91,
+            0.25,
+            0.15
+          ],
+          "size": 3.0,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001783,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 305,
+      "file": "Data/Custom/Skins/FinalMU/02_305/HolyAngelSepter.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_305"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x103"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1,
+            "green": 1,
+            "blue": 1
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 66,
+            "blend": 2,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 4,
+            "flags": 66,
+            "blend": 4,
+            "light": 1.0,
+            "u": 0.0,
+            "v": [
+              1,
+              0.0,
+              0.0005,
+              1,
+              2000,
+              0
+            ],
+            "red": 0.10000000149011612,
+            "green": 0.20000000298023224,
+            "blue": 1.0
+          },
+          {
+            "mesh": 3,
+            "flags": 66,
+            "blend": 3,
+            "light": [
+              10,
+              0.5,
+              0.02666666666666667,
+              0,
+              15,
+              0
+            ],
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.25,
+            "green": 0.699999988079071,
+            "blue": 1.0
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.000985,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 302,
+      "file": "Data/Custom/Skins/FinalMU/02_302/Bless_Absolute_Mace.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_302"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x104"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 3,
+            "flags": 66,
+            "blend": 3,
+            "light": 1.0,
+            "u": [
+              5,
+              0.15,
+              0.5,
+              0.004,
+              6.28,
+              0.0
+            ],
+            "v": 0.0,
+            "red": 0.699999988079071,
+            "green": 0.8999999761581421,
+            "blue": 1.0
+          },
+          {
+            "mesh": 4,
+            "flags": 66,
+            "blend": 4,
+            "light": [
+              10,
+              0.4,
+              0.03076923076923077,
+              0,
+              20,
+              0
+            ],
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.20000000298023224,
+            "green": 0.5,
+            "blue": 1.0
+          }
+        ]
+      },
+      "inventory": {
+        "scale": 0.001481,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 303,
+      "file": "Data/Custom/Skins/FinalMU/02_303/Axeggggg.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_303"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x105"
+      },
+      "staticEffects": [
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32900,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001389,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 306,
+      "file": "Data/Custom/Skins/FinalMU/02_306/absolute_septer.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_306"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x106"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 2,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1,
+            "green": 1,
+            "blue": 1
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 4,
+            "flags": 70,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 1.0
+          },
+          {
+            "mesh": 3,
+            "flags": 66,
+            "blend": 3,
+            "light": 1.0,
+            "u": [
+              1,
+              -0.0,
+              0.001,
+              -1,
+              1001,
+              1000
+            ],
+            "v": 0.0,
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 1.0
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.48,
+            0.25
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32002,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 73,
+          "texture": 32002,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 74,
+          "texture": 32002,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32002,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32114,
+          "color": [
+            0.19,
+            0.18,
+            0.78
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32377,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32377,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32400,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 24,
+          "texture": 32393,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 10.4,
+          "subType": 0
+        },
+        {
+          "bone": 25,
+          "texture": 32393,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 10.4,
+          "subType": 0
+        },
+        {
+          "bone": 40,
+          "texture": 32393,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 10.4,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001374,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 307,
+      "file": "Data/Custom/Skins/FinalMU/02_307/eXG_Mace107.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_307"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x107"
+      },
+      "staticEffects": [
+        {
+          "bone": 18,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32229,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.3374999925,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.3374999925,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.3374999925,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.3374999925,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.674999985,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.674999985,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.674999985,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.674999985,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32229,
+          "color": [
+            0.68000001,
+            0.1,
+            0.44999999
+          ],
+          "size": 0.44999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32229,
+          "color": [
+            0.68000001,
+            0.1,
+            0.44999999
+          ],
+          "size": 0.44999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32131,
+          "color": [
+            0.18000001,
+            0.1,
+            0.94999999
+          ],
+          "size": 0.80000001,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32131,
+          "color": [
+            0.18000001,
+            0.1,
+            0.94999999
+          ],
+          "size": 4.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001729,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 308,
+      "file": "Data/Custom/Skins/FinalMU/02_308/eXG_Mace108.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_308"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x108"
+      },
+      "inventory": {
+        "scale": 0.001575,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 309,
+      "file": "Data/Custom/Skins/FinalMU/02_309/eXG_Mace109.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_309"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x109"
+      },
+      "staticEffects": [
+        {
+          "bone": 10,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 25,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32900,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001704,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 310,
+      "file": "Data/Custom/Skins/FinalMU/02_310/eXG_Mace110.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_310"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x110"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32291,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001414,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 311,
+      "file": "Data/Custom/Skins/FinalMU/02_311/eXG_Mace111.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_311"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x111"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 9,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 10,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 11,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 12,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 13,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 14,
+          "texture": 32393,
+          "color": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "size": 0.0,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.002121,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 312,
+      "file": "Data/Custom/Skins/FinalMU/02_312/eXG_Mace112.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_312"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "staticEffects": [
+        {
+          "bone": 2,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.02,
+            0.01
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.02,
+            0.01
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32371,
+          "color": [
+            1.0,
+            0.85,
+            0.36
+          ],
+          "size": 0.1,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32131,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32131,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32131,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001915,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 313,
+      "file": "Data/Custom/Skins/FinalMU/02_313/eXG_Mace113.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_313"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x113"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 25,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 26,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 27,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 28,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 29,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 31,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 32,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 33,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 34,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 35,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 36,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 38,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 39,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 40,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 41,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 42,
+          "texture": 32002,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 0.9,
+          "rotation": 0.0
+        },
+        {
+          "bone": 48,
+          "texture": 32400,
+          "color": [
+            0.45,
+            0.45,
+            0.45
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.45,
+            0.45,
+            0.45
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32400,
+          "color": [
+            0.45,
+            0.45,
+            0.45
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 51,
+          "texture": 32140,
+          "color": [
+            0.45,
+            0.45,
+            0.45
+          ],
+          "size": 0.6,
+          "rotation": 0.0
+        },
+        {
+          "bone": 51,
+          "texture": 32114,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32114,
+          "color": [
+            0.89,
+            0.05,
+            0.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 1,
+          "texture": 32387,
+          "color": [
+            1.0,
+            0.29,
+            0.19
+          ],
+          "size": 0.4,
+          "subType": 0
+        },
+        {
+          "bone": 51,
+          "texture": 32393,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 48,
+          "texture": 32393,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.0,
+          "subType": 0
+        },
+        {
+          "bone": 45,
+          "texture": 32393,
+          "color": [
+            0.89,
+            0.05,
+            0.05
+          ],
+          "size": 0.0,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001365,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 314,
+      "file": "Data/Custom/Skins/FinalMU/02_314/eXG_Mace114.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_314"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x114"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.6,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.6,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001394,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 315,
+      "file": "Data/Custom/Skins/FinalMU/02_315/eXG_Mace115.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_315"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x115"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001491,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 316,
+      "file": "Data/Custom/Skins/FinalMU/02_316/eXG_Mace116.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/02_316"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu2x116"
+      },
+      "staticEffects": [
+        {
+          "bone": 0,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 25,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 26,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 27,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 28,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 29,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 31,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 32,
+          "texture": 32400,
+          "color": [
+            0.47,
+            0.47,
+            0.47
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001584,
+        "rotation": [
+          180,
+          270,
+          15
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
     }
   ]
 }

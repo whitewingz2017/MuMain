@@ -1,8 +1,11 @@
 
 #include "stdafx.h"
+#include "Core/Utilities/FrameProfiler.h"
 #include "UI/Scaling/UITransform.h"
 #include "UI/Chat/Chat.h"
 #include "UI/Character/NameWindow.h"
+#include "UI/Character/WorldNameRules.h"
+#include "MUHelper/MuHelper.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -130,7 +133,7 @@ bool mu::ui::window::CNameWindow::UpdateKeyEvent()
 {
     if (mu::ui::window::IsPress(VK_MENU) == true)
     {
-        m_bShowItemName = !m_bShowItemName;
+        ToggleDropNames();
     }
 
     if (mu::ui::window::IsPress(VK_F8) == true)
@@ -159,6 +162,7 @@ void mu::ui::window::CNameWindow::Show(bool bShow)
 
 void mu::ui::window::CNameWindow::PrepareFrame()
 {
+    FRAME_PROFILE(WorldLabels);
     m_statusTexts.Sync(IsVisible(), g_Camera.TopViewEnable == false);
     m_matchStatus.Sync(IsVisible());
 
@@ -212,8 +216,68 @@ void mu::ui::window::CNameWindow::RenderLabels()
     DisableAlphaBlend();
 }
 
+void mu::ui::window::CNameWindow::SyncMonsterTarget()
+{
+    const auto monsterKey = [](int index)
+    {
+        return index >= 0 && index < MAX_CHARACTERS_CLIENT && CharactersClient[index].Object.Kind == KIND_MONSTER
+            ? CharactersClient[index].Key : -1;
+    };
+    m_monsterTargetKey = UI::Character::MonsterTargetKey(MUHelper::g_MuHelper.GetTargetKey(),
+        monsterKey(SelectedCharacter), Attacking > 0 ? monsterKey(ActionTarget) : -1, m_monsterTargetKey);
+    m_monsterTargetIndex = -1;
+    for (int i = 0; i < MAX_CHARACTERS_CLIENT; ++i)
+    {
+        const auto& character = CharactersClient[i];
+        if (character.Key == m_monsterTargetKey && character.Object.Kind == KIND_MONSTER &&
+            character.Object.Live && character.Object.Visible && character.Dead == 0)
+        { m_monsterTargetIndex = i; break; }
+    }
+    if (m_monsterTargetIndex < 0) m_monsterTargetKey = -1;
+}
+
+bool mu::ui::window::CNameWindow::IsMonsterNameShown(const CHARACTER* character) const
+{
+    return m_ShowMonsterNames && m_monsterTargetIndex >= 0 && character == &CharactersClient[m_monsterTargetIndex];
+}
+
+void mu::ui::window::CNameWindow::RenderMonsterTarget()
+{
+    if (!m_ShowMonsterNames || m_monsterTargetIndex < 0) return;
+    const auto& target = CharactersClient[m_monsterTargetIndex];
+    g_pRenderText->SetTextColor(255, 230, 200, 255);
+    g_pRenderText->SetBgColor(100, 0, 0, 255);
+    g_pRenderText->RenderText(320, 2, target.ID, 0, 0, RT3_WRITE_CENTER);
+    if (UI::Combat::HealthBar::ShouldRenderSelected(target.HealthStatus))
+        DrawHealthBar(320, 15, target.HealthStatus, 20, 1.f);
+}
+
+void mu::ui::window::CNameWindow::RenderCharacterNames()
+{
+    for (int index = 0; index < MAX_CHARACTERS_CLIENT; ++index)
+    {
+        auto& character = CharactersClient[index];
+        const auto& object = character.Object;
+        if (!object.Live || !object.Visible) continue;
+        if ((object.Kind == KIND_PLAYER && m_ShowPlayerNames) || (object.Kind == KIND_MONSTER && IsMonsterNameShown(&character)))
+            UI::Chat::CreateChat(character.ID, L"", &character);
+    }
+
+}
+
+void mu::ui::window::CNameWindow::RenderGroundItemName(int index, bool sorted)
+{
+    m_labelLayer.SetGroundItems(true);
+    RenderItemName(index, &Items[index].Object, &Items[index].Item, sorted);
+    m_labelLayer.SetGroundItems(false);
+}
+
 void mu::ui::window::CNameWindow::RenderName()
 {
+    SyncMonsterTarget();
+    RenderCharacterNames();
+    RenderMonsterTarget();
+
     if (g_bGMObservation == true)
     {
         for (int i = 0; i < MAX_CHARACTERS_CLIENT; i++)
@@ -250,19 +314,7 @@ void mu::ui::window::CNameWindow::RenderName()
             CHARACTER* c = &CharactersClient[SelectedCharacter];
 
             OBJECT* o = &c->Object;
-            if (o->Kind == KIND_MONSTER)
-            {
-                g_pRenderText->SetTextColor(255, 230, 200, 255);
-                g_pRenderText->SetBgColor(100, 0, 0, 255);
-                g_pRenderText->RenderText(320, 2, c->ID, 0, 0, RT3_WRITE_CENTER);
-
-                if (UI::Combat::HealthBar::ShouldRenderSelected(c->HealthStatus))
-                {
-                    // Full-width bar centered under the selected monster's name.
-                    DrawHealthBar(320, 15, c->HealthStatus, 20, 1.f);
-                }
-            }
-            else
+            if (o->Kind != KIND_MONSTER)
 #ifdef ASG_ADD_GENS_SYSTEM
 #ifndef PBG_MOD_STRIFE_GENSMARKRENDER
                 if (!::IsStrifeMap(World) || Hero->m_byGensInfluence == c->m_byGensInfluence)
@@ -280,7 +332,7 @@ void mu::ui::window::CNameWindow::RenderName()
 #ifdef _EDITOR
             if (DevEditor_ShouldRenderItemLabels())
 #endif
-                RenderItemName(SelectedItem, &Items[SelectedItem].Object, &Items[SelectedItem].Item, false);
+                RenderGroundItemName(SelectedItem, false);
         }
     }
 
@@ -301,7 +353,7 @@ void mu::ui::window::CNameWindow::RenderName()
                 {
                     if (o->Visible && i != SelectedItem)
                     {
-                        RenderItemName(i, o, &Items[i].Item, true);
+                        RenderGroundItemName(i, true);
                     }
                 }
             }

@@ -28,6 +28,7 @@ public:
     void SetTextureFileResolver(TextureFileResolver resolver) { m_ResolveTextureFile = std::move(resolver); }
 
 private:
+    Rml::TextureHandle LoadFileTexture(Rml::Vector2i& texture_dimensions, const Rml::String& source);
     TextureFileResolver m_ResolveTextureFile;
     TextureSourceResolver m_ResolveTextureSource;
     // RmlUi's own TextureHandle IS the raw SDL_GPUTexture* (see RenderInterface_SDL_GPU.cpp) --

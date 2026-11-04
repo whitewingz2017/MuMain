@@ -1,5 +1,7 @@
 
 #include "stdafx.h"
+#include "UI/Bank/JewelBank.h"
+#include "Core/Text/GroupedNumbers.h"
 #include <algorithm>
 #include "I18N/All.h"
 
@@ -37,6 +39,7 @@
 #include "Camera/CameraProjection.h"
 #include "UI/RmlBridge/RmlDocumentVisibility.h"
 #include "UI/RmlBridge/RmlTheme.h"
+#include "UI/RmlBridge/RmlSyncField.h"
 #include "UI/RmlBridge/RmlWorkspaceParticipant.h"
 #include "UI/Placement/WindowPlacement.h"
 #include "UI/RmlBridge/RmlTooltip.h"
@@ -119,6 +122,7 @@ SlotBox SlotBoxInReference(Rml::Element* element)
 void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c, MainFrameRmlModel& model)
 {
 
+    c.Bind("mobile_custom_columns", &model.mobileCustomColumns);
     c.Bind("hp_fraction", &model.hpFraction);
     c.Bind("mp_fraction", &model.mpFraction);
     c.Bind("ag_fraction", &model.agFraction);
@@ -138,9 +142,19 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
     c.Bind("poisoned", &model.poisoned);
 
     c.Bind("exp_fraction", &model.expFraction);
+    c.Bind("mobile_exp_fraction", &model.mobileExpFraction);
+    c.Bind("mobile_exp_text", &model.mobileExpText);
     c.Bind("exp_digit", &model.expDigit);
     c.Bind("exp_tooltip", &model.expTooltip);
 
+    c.Bind("panel_collapsed", &model.panelCollapsed);
+    c.BindEventCallback("mainframe_panel_toggle", [this](Rml::DataModelHandle handle, Rml::Event& event, const Rml::VariantList&) {
+        if (event.GetParameter<int>("button", 0) != 0) return;
+        auto& model = m_RmlView.GetModel();
+        model.panelCollapsed = !model.panelCollapsed;
+        handle.DirtyVariable("panel_collapsed");
+    });
+    c.BindEventCallback("mainframe_bank_click", [](auto, auto& event, const auto&) { if (event.template GetParameter<int>("button", 0) == 0) UI::Bank::Open(); });
     c.Bind("cshop_open", &model.cShopOpen);
     c.Bind("chainfo_open", &model.chaInfoOpen);
     c.Bind("myinven_open", &model.myInvenOpen);
@@ -153,6 +167,9 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
     c.Bind("window_tooltip", &model.windowTooltip);
 
     c.Bind("chainfo_alert", &model.chaInfoAlert);
+    c.Bind("mobile_stat_points", &model.mobileStatPoints);
+    c.Bind("mobile_profile_level", &model.mobileProfileLevel);
+    c.Bind("mobile_profile_location", &model.mobileProfileLocation);
     c.Bind("friend_alert", &model.friendAlert);
 
     c.Bind("skill_slot_0_selected", &model.skillSlot0Selected);
@@ -269,15 +286,19 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
         });
 
     c.BindEventCallback("mainframe_cshop_click",
-        [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickCShop(); });
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) { if (event.GetParameter<int>("button", 0) == 0) RmlClickCShop(); });
     c.BindEventCallback("mainframe_chainfo_click",
-        [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickChaInfo(); });
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) {
+            if (event.GetParameter<int>("button", 0) != 0) return;
+            if (event.GetCurrentElement()->GetId() == "btn_chainfo_top") g_pNewUISystem->Toggle(mu::ui::window::INTERFACE_MOVEMAP);
+            else RmlClickChaInfo();
+        });
     c.BindEventCallback("mainframe_myinven_click",
-        [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickMyInven(); });
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) { if (event.GetParameter<int>("button", 0) == 0) RmlClickMyInven(); });
     c.BindEventCallback("mainframe_friend_click",
-        [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickFriend(); });
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) { if (event.GetParameter<int>("button", 0) == 0) RmlClickFriend(); });
     c.BindEventCallback("mainframe_window_click",
-        [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickWindow(); });
+        [this](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&) { if (event.GetParameter<int>("button", 0) == 0) RmlClickWindow(); });
 }
 
 void mu::ui::window::CMainFrameWindow::OnRmlReloaded()
@@ -316,6 +337,12 @@ bool mu::ui::window::CMainFrameWindow::Render()
 bool mu::ui::window::CMainFrameWindow::IsVisible() const
 {
     return CObject::IsVisible();
+}
+
+Rml::Element* mu::ui::window::CMainFrameWindow::GetHealthHudAnchor() const
+{
+    auto* document = m_RmlView.Document();
+    return document && document->IsVisible() ? document->GetElementById("bar_hp") : nullptr;
 }
 
 bool mu::ui::window::CMainFrameWindow::IsMouseOverHud() const
@@ -450,6 +477,92 @@ bool mu::ui::window::CMainFrameWindow::Update()
     return true;
 }
 
+void mu::ui::window::CMainFrameWindow::SyncMobileProfile()
+{
+    wchar_t profileLevel[128]{};
+    const int masterLevel = gCharacterManager.IsMasterLevel(Hero->Class) ? std::max<int>(0, Master_Level_Data.nMLevel) : 0;
+    mu_swprintf(profileLevel, L"Lvl %d | ML %d | Resets: %u", CharacterAttribute->Level, masterLevel, CharacterAttribute->Resets);
+    SyncField(m_RmlView.Binder(), &MainFrameRmlModel::mobileProfileLevel, "mobile_profile_level", StringUtils::WideToNarrow(profileLevel));
+    wchar_t profileLocation[128]{};
+    mu_swprintf(profileLocation, L"%ls (%d, %d)", gMapManager.GetMapName(gMapManager.WorldActive), Hero->PositionX, Hero->PositionY);
+    SyncField(m_RmlView.Binder(), &MainFrameRmlModel::mobileProfileLocation, "mobile_profile_location", StringUtils::WideToNarrow(profileLocation));
+    SyncField(m_RmlView.Binder(), &MainFrameRmlModel::mobileStatPoints, "mobile_stat_points", CharacterAttribute->LevelUpPoint > 0);
+}
+
+void mu::ui::window::CMainFrameWindow::SyncExperience()
+{
+    auto syncWide = [this](Rml::String MainFrameRmlModel::* field, const char* name, const wchar_t* text)
+    {
+        SyncField(m_RmlView.Binder(), field, name, StringUtils::WideToNarrow(text));
+    };
+    wchar_t szTip[256]{};
+    __int64 wLevel, dwNexExperience, dwExperience;
+    const bool masterActive = gCharacterManager.IsMasterExperienceActive(Hero->Class, CharacterAttribute->Level);
+    if (masterActive)
+    {
+        wLevel = (__int64)Master_Level_Data.nMLevel;
+        dwNexExperience = (__int64)Master_Level_Data.lNext_MasterLevel_Experince;
+        dwExperience = (__int64)Master_Level_Data.lMasterLevel_Experince;
+    }
+    else
+    {
+        wLevel = CharacterAttribute->Level;
+        dwNexExperience = CharacterAttribute->NextExperience;
+        dwExperience = CharacterAttribute->Experience;
+    }
+
+    __int64 lowerBound;
+    if (masterActive)
+    {
+        const __int64 iTotalLevel = wLevel + 400;
+        const __int64 iTOverLevel = iTotalLevel - 255;
+        const __int64 iData_Master =
+            (((__int64)9 + iTotalLevel) * iTotalLevel * iTotalLevel * (__int64)10)
+            + (((__int64)9 + iTOverLevel) * iTOverLevel * iTOverLevel * (__int64)1000);
+        lowerBound = (iData_Master - (__int64)3892250000) / (__int64)2;
+    }
+    else
+    {
+        const __int64 iPriorLevel = wLevel - 1;
+        __int64 iPriorExperience = 0;
+        if (iPriorLevel > 0)
+        {
+            iPriorExperience = (9 + iPriorLevel) * iPriorLevel * iPriorLevel * 10;
+            if (iPriorLevel > 255)
+            {
+                const __int64 iLevelOverN = iPriorLevel - 255;
+                iPriorExperience += (9 + iLevelOverN) * iLevelOverN * iLevelOverN * 1000;
+            }
+        }
+        lowerBound = iPriorExperience;
+    }
+
+    __int64 upperBound = dwNexExperience;
+    if (upperBound < lowerBound)
+        upperBound = lowerBound;
+
+    const double fNeedExp = static_cast<double>(upperBound - lowerBound);
+    const double fClampedExp = std::clamp(static_cast<double>(dwExperience), static_cast<double>(lowerBound), static_cast<double>(upperBound));
+    const double fRatio = (fNeedExp > 0.0) ? std::clamp((fClampedExp - static_cast<double>(lowerBound)) / fNeedExp, 0.0, 1.0) : 0.0;
+
+    SyncField(m_RmlView.Binder(), &MainFrameRmlModel::mobileExpFraction, "mobile_exp_fraction", static_cast<float>(fRatio));
+    wchar_t mobileExp[128] = {};
+    mu_swprintf(mobileExp, L"%llu / %llu  %.2f%%", static_cast<unsigned long long>(dwExperience), static_cast<unsigned long long>(dwNexExperience), fRatio * 100.0);
+    syncWide(&MainFrameRmlModel::mobileExpText, "mobile_exp_text", Core::Text::GroupedNumbers(mobileExp).c_str());
+    const double scaled = std::clamp(fRatio, 0.0, 1.0) * 10.0;
+    int iExp = std::clamp(static_cast<int>(scaled), 0, 9);
+    double fProgress = std::clamp(scaled - static_cast<double>(static_cast<long long>(scaled)), 0.0, 1.0);
+    if (fRatio >= 1.0) { iExp = 9; fProgress = 1.0; }
+
+    SyncField(m_RmlView.Binder(), &MainFrameRmlModel::expFraction, "exp_fraction", static_cast<float>(fProgress));
+    wchar_t szExp[8] = {};
+    mu_swprintf(szExp, L"%d", iExp);
+    syncWide(&MainFrameRmlModel::expDigit, "exp_digit", szExp);
+    mu_swprintf(szTip, I18N::Game::EXPI64dI64d, static_cast<unsigned long long>(dwExperience),
+                static_cast<unsigned long long>(dwNexExperience));
+    syncWide(&MainFrameRmlModel::expTooltip, "exp_tooltip", Core::Text::GroupedNumbers(szTip).c_str());
+}
+
 void mu::ui::window::CMainFrameWindow::SyncRmlModel()
 {
     if (!m_RmlView.Document()) return;
@@ -487,6 +600,8 @@ void mu::ui::window::CMainFrameWindow::SyncRmlModel()
     };
 
     m_ItemHotKey.SyncSlotIcons(m_RmlView.Document());
+
+    SyncMobileProfile();
 
     // HP/MP -- legacy RenderLifeMana(). fLife/fMana there are the EMPTY fraction; store filled.
     DWORD wLifeMax, wLife, wManaMax, wMana;
@@ -568,72 +683,7 @@ void mu::ui::window::CMainFrameWindow::SyncRmlModel()
     mu_swprintf(szTip, I18N::Game::SDDD, wShield, wMaxShield);
     syncWide(&MainFrameRmlModel::sdTooltip, "sd_tooltip", szTip);
 
-    // EXP -- legacy RenderExperience(), flash-highlight overlay intentionally not reproduced (see
-    // this class's header comment). expFraction is progress *within* the current decile, matching
-    // buildExpSegment()'s original digit/fraction split.
-    {
-        __int64 wLevel, dwNexExperience, dwExperience;
-        const bool masterActive = gCharacterManager.IsMasterExperienceActive(CharacterAttribute->Class, CharacterAttribute->Level);
-        if (masterActive)
-        {
-            wLevel = (__int64)Master_Level_Data.nMLevel;
-            dwNexExperience = (__int64)Master_Level_Data.lNext_MasterLevel_Experince;
-            dwExperience = (__int64)Master_Level_Data.lMasterLevel_Experince;
-        }
-        else
-        {
-            wLevel = CharacterAttribute->Level;
-            dwNexExperience = CharacterAttribute->NextExperience;
-            dwExperience = CharacterAttribute->Experience;
-        }
-
-        __int64 lowerBound;
-        if (masterActive)
-        {
-            const __int64 iTotalLevel = wLevel + 400;
-            const __int64 iTOverLevel = iTotalLevel - 255;
-            const __int64 iData_Master =
-                (((__int64)9 + iTotalLevel) * iTotalLevel * iTotalLevel * (__int64)10)
-                + (((__int64)9 + iTOverLevel) * iTOverLevel * iTOverLevel * (__int64)1000);
-            lowerBound = (iData_Master - (__int64)3892250000) / (__int64)2;
-        }
-        else
-        {
-            const __int64 iPriorLevel = wLevel - 1;
-            __int64 iPriorExperience = 0;
-            if (iPriorLevel > 0)
-            {
-                iPriorExperience = (9 + iPriorLevel) * iPriorLevel * iPriorLevel * 10;
-                if (iPriorLevel > 255)
-                {
-                    const __int64 iLevelOverN = iPriorLevel - 255;
-                    iPriorExperience += (9 + iLevelOverN) * iLevelOverN * iLevelOverN * 1000;
-                }
-            }
-            lowerBound = iPriorExperience;
-        }
-
-        __int64 upperBound = dwNexExperience;
-        if (upperBound < lowerBound)
-            upperBound = lowerBound;
-
-        const double fNeedExp = static_cast<double>(upperBound - lowerBound);
-        const double fClampedExp = std::clamp(static_cast<double>(dwExperience), static_cast<double>(lowerBound), static_cast<double>(upperBound));
-        const double fRatio = (fNeedExp > 0.0) ? std::clamp((fClampedExp - static_cast<double>(lowerBound)) / fNeedExp, 0.0, 1.0) : 0.0;
-
-        const double scaled = std::clamp(fRatio, 0.0, 1.0) * 10.0;
-        int iExp = std::clamp(static_cast<int>(scaled), 0, 9);
-        double fProgress = std::clamp(scaled - static_cast<double>(static_cast<long long>(scaled)), 0.0, 1.0);
-        if (fRatio >= 1.0) { iExp = 9; fProgress = 1.0; }
-
-        syncFloat(&MainFrameRmlModel::expFraction, "exp_fraction", static_cast<float>(fProgress));
-        wchar_t szExp[8] = {};
-        mu_swprintf(szExp, L"%d", iExp);
-        syncWide(&MainFrameRmlModel::expDigit, "exp_digit", szExp);
-        mu_swprintf(szTip, I18N::Game::EXPI64dI64d, static_cast<unsigned long long>(dwExperience),
-                    static_cast<unsigned long long>(dwNexExperience));
-        syncWide(&MainFrameRmlModel::expTooltip, "exp_tooltip", szTip);
-    }
+    SyncExperience();
 
     // Button tooltips: static strings, re-checked every frame for consistency but effectively set-once.
     syncWide(&MainFrameRmlModel::chaInfoTooltip, "chainfo_tooltip", I18N::Game::CharacterC);

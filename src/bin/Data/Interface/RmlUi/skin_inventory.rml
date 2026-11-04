@@ -1,0 +1,13 @@
+<rml><head><title>Skin Inventory</title>
+<link type="text/rcss" href="base.rcss"/>
+<link type="text/rcss" href="../../skin_inventory_common.rcss"/>
+<link type="text/rcss" href="skin_inventory.rcss"/>
+<link type="text/template" href="window_shell.rml"/>
+</head><body template="window_shell" data-model="skin_inventory">
+<div class="storage-toolbar"><button class="btn" data-event-click="storage_category(0)">All</button><button class="btn" data-event-click="storage_category(1)">Sets</button><button class="btn" data-event-click="storage_category(2)">Wings</button><button class="btn" data-event-click="storage_category(3)">Weapons</button><button class="btn" data-event-click="storage_category(4)">Pets / Mounts</button><button class="btn" data-event-click="storage_close">Close</button></div>
+<div class="storage-columns"><div class="storage-grid"><div class="storage-card" data-for="item : items" data-class-column-middle="it_index == 1 || it_index == 4" data-class-column-right="it_index == 2 || it_index == 5" data-class-row-bottom="it_index &gt;= 3">
+<img class="storage-image" data-attr-id="'stored_skin_' + it_index"/>
+<span>{{item.label}}</span><button class="btn" data-class-disabled="pending" data-event-click="storage_remove(item.index)">Remove</button></div></div></div>
+<div class="storage-toolbar"><button class="btn" data-event-click="storage_page(-1)">Previous</button><span>{{page}}</span><button class="btn" data-event-click="storage_page(1)">Next</button></div>
+<div class="storage-note">{{status}}</div>
+</body></rml>

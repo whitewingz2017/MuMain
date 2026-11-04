@@ -23,10 +23,22 @@ public:
     {
         MENU_SYSTEM = 0,
         MENU_HELP,
+        MENU_CHAT,
+        MENU_DROP_NAMES,
+        MENU_CAMERA,
+        MENU_CAMERA_RESET,
+        MENU_MONSTER_HP,
+        MENU_PLAYER_NAMES,
+        MENU_MONSTER_NAMES,
+        MENU_COMMAND,
         MENU_GUILD,
         MENU_MOVE,
         MENU_MINIMAP,
         MENU_GENS,
+        MENU_REDEEM,
+        MENU_EXCELLENT_COMBINATION,
+        MENU_EVENT_TIMERS,
+        MENU_MUUN,
         MENU_MAX_INDEX,
     };
 

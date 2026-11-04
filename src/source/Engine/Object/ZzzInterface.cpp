@@ -21,6 +21,7 @@
 #include "Engine/Object/ZzzInterface.h"
 #include "UI/Chat/ChatInput.h"
 #include "GameLogic/Combat/ClassAttack.h"
+#include "GameLogic/Combat/ForcedAttack.h"
 #include "GameLogic/Combat/SkillCast.h"
 #include "GameLogic/Combat/SkillExecution.h"
 #include "Core/Input/ImeInput.h"
@@ -540,7 +541,7 @@ bool CheckAttack_Fenrir(CHARACTER* c)
     }
     else if (::IsStrifeMap(gMapManager.WorldActive) && c != Hero && c->m_byGensInfluence != Hero->m_byGensInfluence)
     {
-        if (((wcscmp(GuildMark[Hero->GuildMarkIndex].GuildName, GuildMark[c->GuildMarkIndex].GuildName) == 0) || (g_pPartyManager->IsPartyMember(SelectedCharacter))) && (Core::Input::IsKeyDown(VK_CONTROL)))
+        if (((wcscmp(GuildMark[Hero->GuildMarkIndex].GuildName, GuildMark[c->GuildMarkIndex].GuildName) == 0) || (g_pPartyManager->IsPartyMember(SelectedCharacter))) && (GameLogic::Combat::IsForcedAttackRequested()))
         {
             return true;
         }
@@ -667,7 +668,7 @@ bool CheckAttack_Fenrir(CHARACTER* c)
                 return false;
             }
         }
-        else if (c->PK >= PVP_MURDERER2 || (Core::Input::IsKeyDown(VK_CONTROL) && c != Hero))
+        else if (c->PK >= PVP_MURDERER2 || (GameLogic::Combat::IsForcedAttackRequested() && c != Hero))
         {
             return true;
         }
@@ -727,7 +728,7 @@ bool CheckAttack()
             return false;
         }
 
-        if (Core::Input::IsKeyDown(VK_CONTROL))
+        if (GameLogic::Combat::IsForcedAttackRequested())
         {
             if (EnableGuildWar)
             {
@@ -906,7 +907,7 @@ bool CheckAttack()
                 return false;
             }
         }
-        else if (c->PK >= PVP_MURDERER2 || (Core::Input::IsKeyDown(VK_CONTROL) && c != Hero))
+        else if (c->PK >= PVP_MURDERER2 || (GameLogic::Combat::IsForcedAttackRequested() && c != Hero))
         {
             return true;
         }
@@ -991,7 +992,7 @@ int	getTargetCharacterKey(CHARACTER* c, int selected)
         if ((wcscmp(GuildMark[Hero->GuildMarkIndex].GuildName, GuildMark[c->GuildMarkIndex].GuildName) == 0) ||
             g_pPartyManager->IsPartyMember(SelectedCharacter))
         {
-            if (Core::Input::IsKeyDown(VK_CONTROL))
+            if (GameLogic::Combat::IsForcedAttackRequested())
             {
                 return sc->Key;
             }
@@ -1000,7 +1001,7 @@ int	getTargetCharacterKey(CHARACTER* c, int selected)
         }
     }
 
-    if ((sc->PK >= PVP_MURDERER2 && sc->Object.Kind == KIND_PLAYER) || (Core::Input::IsKeyDown(VK_CONTROL) && sc != Hero))
+    if ((sc->PK >= PVP_MURDERER2 && sc->Object.Kind == KIND_PLAYER) || (GameLogic::Combat::IsForcedAttackRequested() && sc != Hero))
     {
         return sc->Key;
     }

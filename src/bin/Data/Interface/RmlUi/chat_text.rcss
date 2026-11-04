@@ -1,0 +1,57 @@
+/* Dream MU chat palette and effects; message age supplies normalized animation progress.
+   Chat stays bottom-left and scrollable; system rows stay in their passive HUD overlay. */
+#panel { font-size: max(12px, 8dp); }
+#panel.chat-history { font-size: calc(max(12px, 8dp) * var(--chat-text-scale, 1)); height: calc(var(--visible-lines, 6) * 1.35em + 10dp); }
+#lines { font-size: 1em; line-height: 1.35em; height: calc(var(--visible-lines, 6) * 1.35em); }
+.chat-line, .syslog-line
+{
+    font-effect: outline(1px #000000), shadow(0dp 2dp #000000);
+    transform: translateX(calc(-28dp * (1 - var(--entry-progress, 1)))) translateY(calc(-22dp * var(--exit-progress, 0)));
+    background-color: transparent;
+    border-left-width: 0;
+    font-weight: normal;
+    font-size: 1em;
+    line-height: 1.35em;
+    height: auto;
+    min-height: 1.35em;
+    margin-bottom: 0;
+}
+#panel:not(.chat-history) { min-height: 8.1em; }
+#panel.framed .chat-line { background-color: transparent; }
+.syslog-text { font-effect: outline(1px #000000), shadow(0dp 2dp #000000); }
+.chat-name, .chat-prefix { font-weight: bold; }
+.chat-line--chat, .syslog-line--chat { color: #e8e8e8; }
+.chat-line--whisper, .syslog-line--whisper { color: #e86aad; }
+.chat-line--party, .syslog-line--party { color: #6ee0e4; }
+.chat-line--guild, .syslog-line--guild { color: #3ad8b0; }
+.chat-line--union, .syslog-line--union { color: #dcc56a; }
+.chat-line--gens, .syslog-line--gens { color: #c8ad84; }
+.chat-line--world, .syslog-line--world { color: #ff9a48; }
+.chat-line--system, .syslog-line--system { color: #72a6f0; }
+.chat-line--error, .syslog-line--error { color: #ee5a56; }
+.chat-line--loot, .syslog-line--loot { color: #c4befa; }
+.chat-line--experience, .syslog-line--experience { color: #e0b6e6; }
+.chat-line--location, .syslog-line--location { color: #eeaa7a; }
+.chat-line--trade, .syslog-line--trade { color: #f0d46a; }
+.chat-line--notice, .syslog-line--notice { color: #ffd56a; }
+.chat-line--warning, .syslog-line--warning { color: #ee7356; }
+.chat-line--social, .syslog-line--social { color: #72fc4a; }
+.chat-line--gm, .syslog-line--gm { color: #8b5cff; font-weight: normal; }
+.chat-line--chat .chat-name { color: #d1d1d1; }
+.chat-line--whisper .chat-name { color: #d93d95; }
+.chat-line--party .chat-name { color: #48d4d9; }
+.chat-line--guild .chat-name { color: #18cc99; }
+.chat-line--union .chat-name { color: #cfb953; }
+.chat-line--gens .chat-name { color: #b8996c; }
+.chat-line--world .chat-name, .chat-line--world .chat-prefix,
+.syslog-line--world .chat-name, .syslog-line--world .chat-prefix { color: #ff7a1a; }
+.chat-line--system .chat-name { color: #5490eb; }
+.chat-line--error .chat-name { color: #e63633; }
+.chat-line--loot .chat-name { color: #b3acf8; }
+.chat-line--experience .chat-name { color: #d6a0df; }
+.chat-line--gm .chat-name { color: #6f3de8; }
+.chat-line--pointed .chat-name { color: #e79500; }
+
+/* The channel is already orange; Dream shows the speaker without the transport tag. */
+.chat-line--world .chat-prefix, .syslog-line--world .chat-prefix { display: none; }
+.syslog-line { white-space: normal; max-width: 100%; word-break: break-word; }

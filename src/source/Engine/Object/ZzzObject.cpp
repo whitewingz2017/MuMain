@@ -6780,7 +6780,7 @@ Render::Items::ItemEffects::Result ApplyPartObjectEffect(BMD* b, OBJECT* o, int 
 
 extern float g_Luminosity;
 
-void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha, int ItemLevel, int ExcellentFlags,
+static void RenderPartObjectEffectBody(OBJECT* o, int Type, vec3_t Light, float Alpha, int ItemLevel, int ExcellentFlags,
                             int ancientDiscriminator, int Select, int RenderType)
 {
     int Level = ItemLevel;
@@ -7101,6 +7101,13 @@ void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha, int 
 }
 
 extern float BoneScale;
+
+void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha, int ItemLevel, int ExcellentFlags,
+                            int ancientDiscriminator, int Select, int RenderType)
+{
+    RenderPartObjectEffectBody(o, Type, Light, Alpha, ItemLevel, ExcellentFlags, ancientDiscriminator, Select, RenderType);
+    Render::Items::ItemEffects::RenderAttachments(&Models[Type], o, Type, Alpha);
+}
 
 void RenderPartObjectEdge(BMD* b, OBJECT* o, int Flag, bool Translate, float Scale)
 {

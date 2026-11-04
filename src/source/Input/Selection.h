@@ -6,4 +6,6 @@
 namespace Input::Selection
 {
     void SelectObjects();
+    // Resolve a command's tap immediately, before the normal frame's hover selection updates.
+    int PlayerAtWindowPoint(float x, float y);
 }

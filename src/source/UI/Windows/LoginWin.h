@@ -2,6 +2,7 @@
 // File: LoginWin.h
 //*****************************************************************************
 #pragma once
+#include <vector>
 
 #include "UI/Core/WindowObject.h"
 
@@ -124,9 +125,15 @@ private:
     void SubmitCancel();
     void ApplyRememberMeChange();
     void ApplySavePasswordChange();
+    void RefreshSavedAccounts();
+    void SelectSavedAccount(int index);
+    bool m_PendingAccountConsent = false;
 
     struct LoginRmlModel
     {
+        bool accountListOpen = false;
+        std::vector<Rml::String> savedAccounts;
+        Rml::String savedAccountLabel = "Choose account";
         bool rememberMeChecked = false;
         bool savePasswordChecked = false;
         Rml::String serverName;
@@ -150,6 +157,7 @@ private:
         {{"Data/Interface/RmlUi/login.rml"}},
         {.afterBuild = [this] { ApplyCredentialLimits(); }, .afterReload = [this] { OnRmlReloaded(); }}};
 
+    void AdjustForKeyboard();
     void SyncRmlModel();
     void BindRmlModel(Rml::DataModelConstructor& c, LoginRmlModel& model);
     void OnRmlReloaded();

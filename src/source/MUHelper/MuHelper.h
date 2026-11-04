@@ -29,6 +29,7 @@ namespace MUHelper
 		void TriggerStart();
 		void TriggerStop();
 		bool IsActive() { return m_bActive; }
+        int GetTargetKey() const { return m_bActive ? m_iCurrentTarget.load() : -1; }
 		void AddCost(int iCost) { m_iTotalCost += iCost; }
 		int GetTotalCost() { return m_iTotalCost; }
 
@@ -59,8 +60,10 @@ namespace MUHelper
 		int SimulateBasicAttack(int iTarget);
 		int SimulateComboAttack();
 		int GetNearestTarget();
-		int GetFarthestAttackingTarget();
+		int GetNearestAttackingTarget();
 		void CleanupTargets();
+		void AddVisibleTargets();
+		int CountTargetsInRange(const std::set<int>& targets);
 		int ComputeDistanceByRange(int iRange);
 		int ComputeDistanceFromTarget(CHARACTER* pTarget);
 		int ComputeDistanceBetween(POINT posA, POINT posB);
@@ -82,13 +85,12 @@ namespace MUHelper
 		std::set<int> m_setTargetsAttacking;
 		std::set<int> m_setItems;
 		int m_iCurrentItem;
-		int m_iCurrentTarget;
+		std::atomic<int> m_iCurrentTarget{-1};
 		int m_iCurrentBuffIndex;
 		int m_iCurrentBuffPartyIndex;
 		int m_iCurrentHealPartyIndex;
 		int m_iComboState;
 		ActionSkillType m_iCurrentSkill;
-		int m_iHuntingDistance;
 		int m_iObtainingDistance;
 		int m_iLoopCounter;
 		int m_iSecondsElapsed;

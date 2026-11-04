@@ -139,8 +139,9 @@ namespace MUHelper
 			iItemIndex++;
 		}
 
-		// byte 33, client-local. server echoes unchanged, see MuHelperData.h
+		// Shared flags and server-owned paid-hour expiry, see MuHelperData.h
 		netData.bUseSelfDefense = gameData.bUseSelfDefense ? 1 : 0;
+		netData.bPvpCostConfirmed = gameData.bPvpCostConfirmed ? 1 : 0;
 		netData.bAutoAcceptFriend = gameData.bAutoAcceptFriend ? 1 : 0;
 		netData.bAutoAcceptGuild = gameData.bAutoAcceptGuild ? 1 : 0;
 		netData.bFallbackBasicAttack = gameData.bFallbackBasicAttack ? 1 : 0;
@@ -230,8 +231,14 @@ namespace MUHelper
 			}
 		}
 
-		// byte 33, client-local. server echoes unchanged, see MuHelperData.h
+		// Shared flags and server-owned paid-hour expiry, see MuHelperData.h
 		gameData.bUseSelfDefense = (bool)netData.bUseSelfDefense;
+		gameData.bPvpCostConfirmed = false;
+		gameData.pvpPaidUntilUnix = 0;
+		std::uint32_t leaseMarker = 0;
+		std::memcpy(&leaseMarker, netData._UnusedPadding, sizeof(leaseMarker));
+		if (leaseMarker == 0x43505650) // Server-owned PVPC lease, little-endian.
+			std::memcpy(&gameData.pvpPaidUntilUnix, netData._UnusedPadding + 4, sizeof(gameData.pvpPaidUntilUnix));
 		gameData.bAutoAcceptFriend = (bool)netData.bAutoAcceptFriend;
 		gameData.bAutoAcceptGuild = (bool)netData.bAutoAcceptGuild;
 		gameData.bFallbackBasicAttack = (bool)netData.bFallbackBasicAttack;

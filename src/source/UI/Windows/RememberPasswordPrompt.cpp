@@ -25,6 +25,7 @@ namespace
         Rml::String cancelLabel;
     };
 
+    bool g_AccountOnly = false;
     UI::Login::RememberPasswordChoice g_Choice = UI::Login::RememberPasswordChoice::None;
 
     void Resolve(UI::Login::RememberPasswordChoice choice);
@@ -66,8 +67,8 @@ namespace
                 g_View.MarkDirty(boundName);
             }
         };
-        syncLabel(&PromptModel::titleText, "title_text", I18N::Game::LoginSavePasswordWarningTitle);
-        syncLabel(&PromptModel::bodyText, "body_text", I18N::Game::LoginSavePasswordWarningBody);
+        syncLabel(&PromptModel::titleText, "title_text", g_AccountOnly ? L"Save account on this device?" : I18N::Game::LoginSavePasswordWarningTitle);
+        syncLabel(&PromptModel::bodyText, "body_text", g_AccountOnly ? L"Anyone using this device can see saved accounts. Use this only on a device you trust. Passwords are saved only when Save Password is enabled." : I18N::Game::LoginSavePasswordWarningBody);
         syncLabel(&PromptModel::okLabel, "ok_label", I18N::Game::OK);
         syncLabel(&PromptModel::cancelLabel, "cancel_label", I18N::Game::Cancel);
     }
@@ -75,8 +76,9 @@ namespace
 
 namespace UI::Login
 {
-void OpenRememberPasswordPrompt()
+void OpenRememberPasswordPrompt(bool accountOnly)
 {
+    g_AccountOnly = accountOnly;
     g_Choice = RememberPasswordChoice::Pending;
     if (g_View.Ensure())
     {

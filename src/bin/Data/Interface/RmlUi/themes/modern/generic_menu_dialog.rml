@@ -2,7 +2,10 @@
 <head>
 	<title>Generic Menu Dialog</title>
 	<link type="text/rcss" href="base.rcss"/>
+	<link type="text/rcss" href="skill_icons.rcss"/>
+	<link type="text/rcss" href="master_skill_icons.rcss"/>
 	<link type="text/rcss" href="generic_menu_dialog.rcss"/>
+<link type="text/rcss" href="../../timer_bank_common.rcss"/>
 	<link type="text/template" href="window_shell.rml"/>
 </head>
 <!-- Modern theme's own copy of the generic menu dialog -- per-theme file since window_shell.rml's
@@ -14,7 +17,11 @@
 
      The in-game system menu (is_system_menu) fills the screen instead, like the options screen:
      its own heading and close action, the buttons as a list (generic_menu_dialog.rcss). -->
-<body template="window_shell" data-model="generic_menu_dialog" data-class-system-menu="is_system_menu">
+<body template="window_shell" data-model="generic_menu_dialog" data-class-timer-bank="kind == 'event-timers' || kind == 'jewel-bank'" data-class-event-timers="kind == 'event-timers'" data-class-jewel-bank="kind == 'jewel-bank'" data-class-system-menu="is_system_menu" data-attr-data-kind="kind">
+    <img class="timer-bank-frame" data-if="kind == 'event-timers' || kind == 'jewel-bank'" src="../../../Muun/list_frame.tga"/>
+    <div class="timer-bank-title" data-if="kind == 'event-timers' || kind == 'jewel-bank'">{{title}}</div>
+    <button class="timer-bank-close" data-if="kind == 'event-timers' || kind == 'jewel-bank'" data-event-click="gmd_cancel">X</button>
+
 	<div class="gmd-sys-header" data-class-hidden="!is_system_menu">
 		<div class="gmd-sys-title">{{system_menu_label}}</div>
 		<div class="gmd-sys-close" data-event-click="gmd_cancel">
@@ -30,7 +37,7 @@
 		     -- proven pattern, see ../../generic_menu_dialog.rml's own comment. gmd-button-cell
 		     wraps each button with its own optional description lines -- see
 		     ../../generic_menu_dialog.rml's own comment for why (nested data-for). -->
-		<div class="gmd-button-cell" data-for="button : buttons" data-class-compact="button.compact" data-class-has-lines="button.has_lines" data-class-cols-2="button.cols2"
+		<div class="gmd-button-cell" data-for="button : buttons" data-class-has-actions="button.secondary_label != ''" data-class-compact="button.compact" data-class-has-lines="button.has_lines" data-class-cols-2="button.cols2"
 		     data-class-dismiss="button.dismiss">
 			<div class="gmd-line" data-for="line : button.lines" data-class-bold="line.bold">{{line.text}}</div>
 			<div class="btn gmd-btn" data-class-compact="button.compact" data-class-cols-2="button.cols2" data-class-disabled="!button.enabled"
@@ -39,10 +46,15 @@
 				     exists (bordered elements with children don't paint a complete box in this
 				     engine) and why .gmd-btn-label needs position:relative. -->
 				<div class="gmd-btn-fill"></div>
-				<div class="gmd-btn-label">{{button.label}}</div>
-			</div>
-		</div>
-	</div>
+				<img class="gmd-button-icon" data-if="button.has_icon" data-attr-id="'menu_icon_' + it_index"/>
+				<div class="gmd-skill-icon" data-if="button.icon_decorator != ''" data-style-decorator="button.icon_decorator"></div><div class="gmd-btn-label">{{button.label}}</div><div class="gmd-btn-detail" data-if="button.detail != ''">{{button.detail}}</div>
+            </div>
+            <div class="gmd-row-actions" data-if="button.secondary_label != ''">
+                <button data-event-click="gmd_button_action(it_index, 1)">{{button.secondary_label}}</button>
+                <button data-event-click="gmd_button_action(it_index, 2)">{{button.tertiary_label}}</button>
+            </div>
+        </div>
+    </div>
 	<div class="gmd-sys-footer" data-class-hidden="!is_system_menu">
 		<div class="gmd-sys-footer-action" data-event-click="gmd_cancel">
 			<span class="gmd-sys-keycap">Esc</span><span class="gmd-sys-footer-label">{{close_label}}</span>

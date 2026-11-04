@@ -4,6 +4,7 @@
 #include "Render/RmlUi/RmlUiRuntime.h"
 #include "UI/RmlBridge/RmlThemedView.h"
 
+#include <memory_resource>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -17,6 +18,8 @@ class ElementText;
 
 namespace UI::Character
 {
+// Session-only A/B control; labels remain visible in both modes.
+inline bool g_retainLabelBoxGeometry = true;
 // CNameWindow's world labels in RmlUi: one document (world_labels.rml) behind every other
 // document, holding a pool of absolutely positioned elements filled in draw order from
 // what the native label code draws while this layer records (Render::Renderer::Overlay2DRecordScope).
@@ -40,6 +43,7 @@ public:
     void BeginFrame();
     void EndFrame();
     void Hide();
+    void SetGroundItems(bool groundItems) { m_groundItems = groundItems; }
 
     void RecordText(const Render::Renderer::RecordedText& text) override;
     void RecordQuad(const Render::Renderer::RecordedQuad& quad) override;
@@ -98,9 +102,12 @@ private:
 
     std::vector<Slot> m_slots;
     // This frame: the slots shown last frame and not taken yet, by content key, and the hidden ones.
-    std::unordered_multimap<std::size_t, std::size_t> m_shownByContent;
+    // Reuse lookup nodes instead of returning every visible label's node to the heap each frame.
+    std::pmr::unsynchronized_pool_resource m_lookupMemory;
+    std::pmr::unordered_multimap<std::size_t, std::size_t> m_shownByContent{&m_lookupMemory};
     std::vector<std::size_t> m_hiddenSlots;
     std::size_t m_drawn = 0;
+    bool m_groundItems = false;
     // The labels draw under every window.
     UI::RmlBridge::ThemedView<> m_view{{{"Data/Interface/RmlUi/world_labels.rml"}},
                                        {.stacking = UI::RmlBridge::ThemedStacking::Back,

@@ -1,4 +1,16 @@
 #include "stdafx.h"
+#include "GameLogic/Pets/MuunMounts.h"
+#include "Scenes/CharacterSelectionLayout.h"
+#include "GameLogic/Pets/Muun.h"
+#include "GameLogic/Items/StoreMail.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Items/ExcellentCombination.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
+#include "GameLogic/Cosmetics/SkinShop.h"
+#include "GameLogic/Bank/JewelBank.h"
+#include "GameLogic/Events/MobileEventState.h"
+#include "GameLogic/Events/EventSchedule.h"
+#include "Core/Text/GroupedNumbers.h"
 #include "App/Control/ControlTaps.h"
 #include "Core/Utilities/Log/MuLogger.h"
 #include "UI/Chat/Chat.h"
@@ -383,7 +395,8 @@ BOOL CreateSocket(const wchar_t* IpAddr, unsigned short Port)
     {
         bResult = FALSE;
         wchar_t connectError[256];
-        mu_swprintf_s(connectError, L"Cannot connect to %ls:%d. Server may be offline.", IpAddr, Port);
+        // mu_swprintf_s(connectError, L"Cannot connect to %ls:%d. Server may be offline.", IpAddr, Port);
+        mu_swprintf_s(connectError, L"Cannot connect to the server, Server may be offline.");
         g_ErrorReport.Write(L"NET: %ls\r\n", connectError);
         g_ErrorReport.WriteCurrentTime();
         delete SocketClient;
@@ -715,40 +728,10 @@ void ReceiveCharacterListExtended(const BYTE* ReceiveBuffer)
         auto Data2 = (LPPRECEIVE_CHARACTER_LIST_EXTENDED)(ReceiveBuffer + Offset);
 
         auto iClass = gCharacterManager.ChangeServerClassTypeToClientClassType(Data2->Class);
-        float fPos[2], fAngle = 0.0f;
+        if (Data2->Index >= Scenes::CharacterSelectionPoses.size()) return;
+        const auto& pose = Scenes::CharacterSelectionPoses[Data2->Index];
 
-        switch (Data2->Index)
-        {
-        case 0:
-            fPos[0] = 8008.0f;
-            fPos[1] = 18885.0f;
-            fAngle = 115.0f;
-            break;
-        case 1:
-            fPos[0] = 7986.0f;
-            fPos[1] = 19145.0f;
-            fAngle = 90.0f;
-            break;
-        case 2:
-            fPos[0] = 8046.0f;
-            fPos[1] = 19400.0f;
-            fAngle = 75.0f;
-            break;
-        case 3:
-            fPos[0] = 8133.0f;
-            fPos[1] = 19645.0f;
-            fAngle = 60.0f;
-            break;
-        case 4:
-            fPos[0] = 8282.0f;
-            fPos[1] = 19845.0f;
-            fAngle = 35.0f;
-            break;
-        default:
-            return;
-        }
-
-        CHARACTER* c = CreateHero(Data2->Index, iClass, 0, fPos[0], fPos[1], fAngle);
+        CHARACTER* c = CreateHero(Data2->Index, iClass, 0, pose.x, pose.y, pose.facing);
 
         c->Level = Data2->Level;
         c->CtlCode = Data2->CtlCode;
@@ -796,42 +779,14 @@ void ReceiveCreateCharacter(const BYTE* ReceiveBuffer)
                                   Data->Index, static_cast<int>(Data->Class), Data->Level);
     if (Data->Result == 1)
     {
-        float fPos[2] = {0.0f, 0.0f}, fAngle = 0.0f;
-
-        switch (Data->Index)
-        {
-        case 0:
-            fPos[0] = 8008.0f;
-            fPos[1] = 18885.0f;
-            fAngle = 115.0f;
-            break;
-        case 1:
-            fPos[0] = 7986.0f;
-            fPos[1] = 19145.0f;
-            fAngle = 90.0f;
-            break;
-        case 2:
-            fPos[0] = 8046.0f;
-            fPos[1] = 19400.0f;
-            fAngle = 75.0f;
-            break;
-        case 3:
-            fPos[0] = 8133.0f;
-            fPos[1] = 19645.0f;
-            fAngle = 60.0f;
-            break;
-        case 4:
-            fPos[0] = 8282.0f;
-            fPos[1] = 19845.0f;
-            fAngle = 35.0f;
-            break;
-        }
+        if (Data->Index >= Scenes::CharacterSelectionPoses.size()) return;
+        const auto& pose = Scenes::CharacterSelectionPoses[Data->Index];
 
         INT iCharacterKey;
         iCharacterKey = Data->Index;
         DeleteCharacter(iCharacterKey);
 
-        CreateHero(Data->Index, CharacterView.Class, CharacterView.Skin, fPos[0], fPos[1], fAngle);
+        CreateHero(Data->Index, CharacterView.Class, CharacterView.Skin, pose.x, pose.y, pose.facing);
         CharactersClient[Data->Index].Level = Data->Level;
         auto serverClass = (SERVER_CLASS_TYPE)(Data->Class >> 3);
         auto iClass = gCharacterManager.ChangeServerClassTypeToClientClassType(serverClass);
@@ -1604,7 +1559,7 @@ void ReceiveMuHelperStatusUpdate(std::span<const BYTE> ReceiveBuffer)
 
             wchar_t Text[100];
             mu_swprintf(Text, I18N::Game::DZenSHaveBeenSpentInImplementingOfficialMUHelper, iTotalCost);
-            UI::Chat::PostSystem(Text, mu::ui::window::TYPE_SYSTEM_MESSAGE);
+            UI::Chat::PostSystem(Text, mu::ui::window::TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -2343,7 +2298,7 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
         }
         else
         {
-            c->Weapon[0].Type = Data::Items::ToModelSlot(Type);
+            c->Weapon[0].Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::EquipmentVisualItem(Type));
             c->Weapon[0].Level = Data->ItemLevel;
             c->Weapon[0].ExcellentFlags = Data->ExcellentFlags;
         }
@@ -2357,7 +2312,7 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
         }
         else
         {
-            c->Weapon[1].Type = Data::Items::ToModelSlot(Type);
+            c->Weapon[1].Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::EquipmentVisualItem(Type));
             c->Weapon[1].Level = Data->ItemLevel;
             c->Weapon[1].ExcellentFlags = Data->ExcellentFlags;
             CreatePetDarkSpirit_Now(c);
@@ -2472,9 +2427,14 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
         }
         else
         {
-            c->Helper.Type = Data::Items::ToModelSlot(Type);
+            // The new helper replaces the old one: without this a second mount stacks on the first
+            // for every re-sent slot (the mount slots run out), and a swapped-out pet stays.
+            DeleteMount(o);
+            ThePetProcess().DeletePet(c, Data::Items::ToItemType(c->Helper.Type), true);
+            GameLogic::Cosmetics::FenrirMounts::SetItem(o, Type);
+            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(Type));
             c->Helper.Level = 0;
-            switch (Type)
+            switch (GameLogic::Cosmetics::HelperBehaviorItem(Type))
             {
             case ITEM_HELPER:
                 CreateMount(MODEL_HELPER, o->Position, o);
@@ -2507,6 +2467,7 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
                     CreateMount(MODEL_FENRIR_RED, o->Position, o);
                 }
                 break;
+            case GameLogic::Cosmetics::CosmeticPetItemType:
             case ITEM_DEMON:
             case ITEM_SPIRIT_OF_GUARDIAN:
             {
@@ -2527,10 +2488,16 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
             case ITEM_PET_SKELETON:
                 ThePetProcess().CreatePet(Type, c->Helper.Type, o->Position, c);
                 break;
+            default:
+                if (GameLogic::Cosmetics::IsCosmeticPet(Type))
+                    ThePetProcess().CreatePet(Type, c->Helper.Type, o->Position, c);
+                break;
             }
         }
         break;
     }
+
+    if (Data->ItemSlot == 8) GameLogic::Pets::MuunMounts::EquipmentChanged(c);
 
     // Ancient full-set glow state (purple aura) is sent explicitly per equipment change.
     c->ExtendState = Data->IsAncientSetComplete > 0;
@@ -2799,7 +2766,8 @@ void ReceiveCreateTransformViewport(std::span<const BYTE> ReceiveBuffer)
 
             CMultiLanguage::ConvertFromUtf8(c->ID, Data2->ID, MAX_USERNAME_SIZE);
 
-            ChangeCharacterExt(FindCharacterIndex(Key), Data2->Equipment);
+            // Head code 45 carries the extended equipment layout, like the normal player viewport.
+            ReadEquipmentExtended(FindCharacterIndex(Key), Data2->Flags, Data2->Equipment);
         }
 
         Offset += *EntryLength;
@@ -3186,7 +3154,7 @@ void ReceiveDamage(const BYTE* ReceiveBuffer)
 
     int ShieldDamage = ((int)(Data->ShieldDamageH) << 8) + Data->ShieldDamageL;
     if (CharacterAttribute->Shield >= ShieldDamage)
-        CharacterAttribute->Shield = ShieldDamage;
+        CharacterAttribute->Shield -= ShieldDamage;
     else
         CharacterAttribute->Shield = 0;
 
@@ -3504,7 +3472,7 @@ void ReceiveAttackDamageExtended(const BYTE* ReceiveBuffer)
     g_ConsoleDebug->Write(MCD_RECEIVE, L"0x15 [ReceiveAttackDamageExtended(%d %d)]", AttackPlayer, Damage);
     if (IsMonster(c))
     {
-        MUHelper::g_MuHelper.AddTarget(Key, true);
+        MUHelper::g_MuHelper.AddTarget(Key, false);
     }
 
     if (Data->HealthStatus == 0xFF)
@@ -3530,7 +3498,7 @@ void ReceiveAttackDamageExtended(const BYTE* ReceiveBuffer)
     }
     else
     {
-        c->ShieldStatus = static_cast<float>(Data->HealthStatus) / 250.f;
+        c->ShieldStatus = static_cast<float>(Data->ShieldStatus) / 250.f;
     }
 
     if (gMapManager.InChaosCastle())
@@ -3586,8 +3554,8 @@ void ReceiveAction(const BYTE* ReceiveBuffer, int Size)
         c->AttackTime = 1;
         c->Object.AnimationFrame = 0;
 
-        c->TargetCharacter = HeroIndex;
-        if (IsMonster(c))
+        c->TargetCharacter = iTargetIndex;
+        if (IsMonster(c) && iTargetIndex == HeroIndex)
         {
             MUHelper::g_MuHelper.AddTarget(Key, true);
         }
@@ -4100,6 +4068,7 @@ BOOL ReceiveMonsterSkill(const BYTE* ReceiveBuffer, int Size, BOOL bEncrypted)
 
     sc->SkillSuccess = (Success != 0);
     sc->TargetCharacter = TargetIndex;
+    if (IsMonster(sc) && TargetIndex == HeroIndex) MUHelper::g_MuHelper.AddTarget(SourceKey, true);
 
     if (SkillNumber > ATMON_SKILL_BIGIN && SkillNumber < ATMON_SKILL_END)
     {
@@ -4156,6 +4125,7 @@ BOOL ReceiveMagic(const BYTE* ReceiveBuffer, int Size, BOOL bEncrypted)
         if (sc != Hero && MagicNumber != AT_SKILL_TELEPORT && MagicNumber != AT_SKILL_TELEPORT_ALLY && to->Visible)
             so->Angle[2] = CreateAngle2D(so->Position, to->Position);
         sc->TargetCharacter = TargetIndex;
+        if (IsMonster(sc) && TargetIndex == HeroIndex) MUHelper::g_MuHelper.AddTarget(SourceKey, true);
 
         if (MagicNumber == AT_SKILL_PLASMA_STORM_FENRIR)
             sc->m_iFenrirSkillTarget = TargetIndex;
@@ -6114,8 +6084,8 @@ void ReceiveGetItem(std::span<const BYTE> ReceiveBuffer)
 
             if (getGold > 0)
             {
-                mu_swprintf(szMessage, L"%d %ls %ls", getGold, I18N::Game::Zen, I18N::Game::Obtained);
-                UI::Chat::PostSystem(szMessage, mu::ui::window::TYPE_SYSTEM_MESSAGE);
+                mu_swprintf(szMessage, L"%ls %ls %ls", Core::Text::GroupedNumbers(std::to_wstring(getGold)).c_str(), I18N::Game::Zen, I18N::Game::Obtained);
+                UI::Chat::PostSystem(szMessage, mu::ui::window::TYPE_LOOT_MESSAGE);
             }
         }
         else
@@ -9881,8 +9851,8 @@ void ReceiveLetter(const BYTE* ReceiveBuffer)
     szName[MAX_USERNAME_SIZE] = '\0';
 
     wchar_t szSubject[MAX_TEXT_LENGTH + 1] = {};
-    CMultiLanguage::ConvertFromUtf8(szSubject, Data->Subject, MAX_USERNAME_SIZE);
-    szSubject[MAX_USERNAME_SIZE] = '\0';
+    CMultiLanguage::ConvertFromUtf8(szSubject, Data->Subject, MAX_LETTER_TITLE_LENGTH);
+    szSubject[MAX_LETTER_TITLE_LENGTH] = '\0';
 
     const UI::Social::LetterSummary letter{ Data->Index, szName, szSubject, szDate, szTime };
     switch (Data->Read)
@@ -11126,6 +11096,39 @@ void ReceiveBCWithdraw(const BYTE* ReceiveBuffer)
     }
 }
 
+namespace SiegeGuildLists
+{
+// The castle siege guild lists (0xB4, 0xB5) as the server lays them out: a C2 header, the result
+// at 4, a little-endian count at 5 and 14-byte entries from 9. The old structs were unpacked
+// (count read at 8, entries from 12), so the count read part of the first guild name and the
+// client looped over millions of entries -- the Guard NPC's List tab froze the game.
+constexpr int ResultOffset = 4;
+constexpr int CountOffset = 5;
+constexpr int FirstEntryOffset = 9;
+constexpr int EntrySize = 14;
+constexpr int NameLength = 8;
+
+int PacketSize(const BYTE* packet) { return (packet[1] << 8) | packet[2]; }
+
+std::uint32_t ReadLittleEndian(const BYTE* data) { return data[0] | (data[1] << 8) | (data[2] << 16) | (std::uint32_t(data[3]) << 24); }
+
+std::uint32_t ReadBigEndian(const BYTE* data) { return (std::uint32_t(data[0]) << 24) | (data[1] << 16) | (data[2] << 8) | data[3]; }
+
+// The entries the packet really holds: never more than its size leaves room for.
+int EntryCount(const BYTE* packet)
+{
+    const int room = std::max(0, (PacketSize(packet) - FirstEntryOffset) / EntrySize);
+    return static_cast<int>(std::min<std::uint32_t>(ReadLittleEndian(packet + CountOffset), room));
+}
+
+std::wstring Name(const BYTE* text)
+{
+    wchar_t name[MAX_GUILDNAME + 1]{};
+    CMultiLanguage::ConvertFromUtf8(name, reinterpret_cast<const char*>(text), NameLength);
+    return name;
+}
+}
+
 void ReceiveTaxInfo(const BYTE* ReceiveBuffer)
 {
     auto Data = (LPPMSG_ANS_MAPSVRTAXINFO)ReceiveBuffer;
@@ -11175,22 +11178,29 @@ void ReceiveHuntZoneEnter(const BYTE* ReceiveBuffer)
 
 void ReceiveBCNPCList(const BYTE* ReceiveBuffer, int Size)
 {
-    auto Data = (LPPMSG_ANS_NPCDBLIST)ReceiveBuffer;
-    int Offset = sizeof(PMSG_ANS_NPCDBLIST);
-
-    switch (Data->btResult)
+    // The server's layout: count at 5, 27-byte entries from 9 (six little-endian ints, x, y,
+    // alive). The unpacked structs read the count at 8 and 28-byte entries from 12, so every
+    // gate and statue came out as garbage and none could be picked on the Senior's map.
+    constexpr int EntrySize = 27;
+    constexpr int NumberOffset = 0, IndexOffset = 4, DefenseOffset = 8, RegenOffset = 12, MaxHpOffset = 16,
+                  HpOffset = 20, XOffset = 24, YOffset = 25, AliveOffset = 26;
+    switch (ReceiveBuffer[SiegeGuildLists::ResultOffset])
     {
     case 0:
         UI::Chat::PostSystem(I18N::Game::RequestHasFailed, mu::ui::window::TYPE_SYSTEM_MESSAGE);
         break;
     case 1:
     {
-        // The count is the server's; never read past the packet.
-        for (int i = 0; i < Data->iCount && Offset + static_cast<int>(sizeof(PMSG_NPCDBLIST)) <= Size; ++i)
+        const int room = std::max(0, (Size - SiegeGuildLists::FirstEntryOffset) / EntrySize);
+        const int count = static_cast<int>(std::min<std::uint32_t>(
+            SiegeGuildLists::ReadLittleEndian(ReceiveBuffer + SiegeGuildLists::CountOffset), room));
+        for (int i = 0; i < count; ++i)
         {
-            auto pNpcInfo = (LPPMSG_NPCDBLIST)(ReceiveBuffer + Offset);
-            g_SenatusInfo.SetNPCInfo(pNpcInfo);
-            Offset += sizeof(PMSG_NPCDBLIST);
+            const BYTE* entry = ReceiveBuffer + SiegeGuildLists::FirstEntryOffset + i * EntrySize;
+            const auto field = [entry](int offset) { return static_cast<INT>(SiegeGuildLists::ReadLittleEndian(entry + offset)); };
+            PMSG_NPCDBLIST info{field(NumberOffset), field(IndexOffset), field(DefenseOffset), field(RegenOffset),
+                                field(MaxHpOffset), field(HpOffset), entry[XOffset], entry[YOffset], entry[AliveOffset]};
+            g_SenatusInfo.SetNPCInfo(&info);
         }
     }
     break;
@@ -11202,10 +11212,9 @@ void ReceiveBCNPCList(const BYTE* ReceiveBuffer, int Size)
 
 void ReceiveBCDeclareGuildList(const BYTE* ReceiveBuffer)
 {
-    auto Data = (LPPMSG_ANS_CSREGGUILDLIST)ReceiveBuffer;
-    int Offset = sizeof(PMSG_ANS_CSREGGUILDLIST);
-
-    switch (Data->btResult)
+    // Entry: name (8), mark count (big-endian, 4), giving up, sequence number.
+    constexpr int MarksOffset = 8, GiveUpOffset = 12, SequenceOffset = 13;
+    switch (ReceiveBuffer[SiegeGuildLists::ResultOffset])
     {
     case 0:
         UI::Chat::PostSystem(I18N::Game::RequestHasFailed, mu::ui::window::TYPE_SYSTEM_MESSAGE);
@@ -11213,24 +11222,13 @@ void ReceiveBCDeclareGuildList(const BYTE* ReceiveBuffer)
     case 1:
     {
         std::vector<UI::Siege::DeclarationGuild> guilds;
-        for (int i = 0; i < Data->iCount; ++i)
+        const int count = SiegeGuildLists::EntryCount(ReceiveBuffer);
+        for (int i = 0; i < count; ++i)
         {
-            auto pData2 = (LPPMSG_CSREGGUILDLIST)(ReceiveBuffer + Offset);
-
-            // WTF - why not just use an int?
-            DWORD dwMarkCount;
-            auto* pMarkCount = (BYTE*)&dwMarkCount;
-            *pMarkCount++ = pData2->btRegMarks4;
-            *pMarkCount++ = pData2->btRegMarks3;
-            *pMarkCount++ = pData2->btRegMarks2;
-            *pMarkCount++ = pData2->btRegMarks1;
-
-            wchar_t guildName[MAX_GUILDNAME + 1]{};
-            CMultiLanguage::ConvertFromUtf8(guildName, pData2->szGuildName, MAX_GUILDNAME);
-            guilds.push_back({guildName, static_cast<int>(dwMarkCount),
-                              pData2->btIsGiveUp != 0, pData2->btSeqNum});
-
-            Offset += sizeof(PMSG_CSREGGUILDLIST);
+            const BYTE* entry = ReceiveBuffer + SiegeGuildLists::FirstEntryOffset + i * SiegeGuildLists::EntrySize;
+            guilds.push_back({SiegeGuildLists::Name(entry),
+                              static_cast<int>(SiegeGuildLists::ReadBigEndian(entry + MarksOffset)),
+                              entry[GiveUpOffset] != 0, entry[SequenceOffset]});
         }
         UI::Siege::ReplaceDeclarations(guilds);
     }
@@ -11240,10 +11238,9 @@ void ReceiveBCDeclareGuildList(const BYTE* ReceiveBuffer)
 
 void ReceiveBCGuildList(const BYTE* ReceiveBuffer)
 {
-    auto Data = (LPPMSG_ANS_CSATTKGUILDLIST)ReceiveBuffer;
-    int Offset = sizeof(PMSG_ANS_CSATTKGUILDLIST);
-
-    switch (Data->btResult)
+    // Entry: join side, involved, name (8), score (little-endian, 4).
+    constexpr int SideOffset = 0, InvolvedOffset = 1, NameOffset = 2, ScoreOffset = 10;
+    switch (ReceiveBuffer[SiegeGuildLists::ResultOffset])
     {
     case 0:
         UI::Chat::PostSystem(I18N::Game::RequestHasFailed, mu::ui::window::TYPE_SYSTEM_MESSAGE);
@@ -11251,16 +11248,12 @@ void ReceiveBCGuildList(const BYTE* ReceiveBuffer)
     case 1:
     {
         std::vector<UI::Siege::AttackingGuild> guilds;
-        for (int i = 0; i < Data->iCount; ++i)
+        const int count = SiegeGuildLists::EntryCount(ReceiveBuffer);
+        for (int i = 0; i < count; ++i)
         {
-            auto pData2 = (LPPMSG_CSATTKGUILDLIST)(ReceiveBuffer + Offset);
-            wchar_t guildName[MAX_GUILDNAME + 1]{};
-            CMultiLanguage::ConvertFromUtf8(guildName, pData2->szGuildName, MAX_GUILDNAME);
-
-            guilds.push_back({guildName, pData2->btCsJoinSide,
-                              pData2->btGuildInvolved, pData2->iGuildScore});
-
-            Offset += sizeof(PMSG_CSATTKGUILDLIST);
+            const BYTE* entry = ReceiveBuffer + SiegeGuildLists::FirstEntryOffset + i * SiegeGuildLists::EntrySize;
+            guilds.push_back({SiegeGuildLists::Name(entry + NameOffset), entry[SideOffset], entry[InvolvedOffset],
+                              static_cast<int>(SiegeGuildLists::ReadLittleEndian(entry + ScoreOffset))});
         }
         UI::Siege::ReplaceAttackingGuilds(guilds);
     }
@@ -11620,9 +11613,15 @@ void ReceiveCastleGuildMark(const BYTE* ReceiveBuffer)
 
 void ReceiveCastleHuntZoneInfo(const BYTE* ReceiveBuffer)
 {
-    auto pData = (LPPRECEIVE_CASTLE_HUNTZONE_INFO)ReceiveBuffer;
+    // The server packs the prices right after the flag (6, 10, 14); the unpacked struct read them
+    // at 8, 12 and 16, so the step was garbage (often 0: the fee arrows did nothing) and the
+    // maximum a nonsense figure.
+    constexpr int ResultOffset = 4, EnableOffset = 5, CurrentOffset = 6, MaxOffset = 10, UnitOffset = 14;
+    const auto price = [ReceiveBuffer](int offset) {
+        return static_cast<int>(SiegeGuildLists::ReadLittleEndian(ReceiveBuffer + offset));
+    };
 
-    if (pData->m_byResult == 0)
+    if (ReceiveBuffer[ResultOffset] == 0)
     {
         UI::Dialogs::ConfirmRequest cfg;
         cfg.lines.push_back({ I18N::Game::RequestHasFailed, false });
@@ -11630,8 +11629,8 @@ void ReceiveCastleHuntZoneInfo(const BYTE* ReceiveBuffer)
     }
     else
     {
-        UI::Siege::OpenHuntZone(pData->m_byResult, pData->m_byEnable != 0, pData->m_iCurrPrice,
-                                pData->m_iUnitPrice, pData->m_iMaxPrice);
+        UI::Siege::OpenHuntZone(ReceiveBuffer[ResultOffset], ReceiveBuffer[EnableOffset] != 0, price(CurrentOffset),
+                                price(UnitOffset), price(MaxOffset));
     }
 }
 
@@ -11736,7 +11735,7 @@ void ReceivePreviewPort(std::span<const BYTE> ReceiveBuffer)
 
             c->m_iDeleteTime = 150;
 
-            ChangeCharacterExt(FindCharacterIndex(Key), pData2->m_byEquipment);
+            ReadEquipmentExtended(FindCharacterIndex(Key), pData2->Flags, pData2->m_byEquipment);
 
             wcscpy(c->ID, L"   ");
             c->ID[MAX_USERNAME_SIZE] = 0;
@@ -12651,6 +12650,19 @@ bool ReceiveIGS_CashPoint(const BYTE* pReceiveBuffer)
     return true;
 }
 
+static bool PrepareCashShopCatalog()
+{
+    if (!g_InGameShopSystem->HasCatalogVersion())
+    {
+        mu::ui::window::CreateOkMessageBoxWithTitle(I18N::Game::Error,
+            L"Cash Shop catalog version was not received. Check the server Cash Shop configuration and plugins.");
+        return false;
+    }
+    if (!g_InGameShopSystem->EnsureCatalog()) return false;
+    if (g_InGameShopSystem->IsBannerDownload()) g_InGameShopSystem->BannerDownload();
+    return true;
+}
+
 // (0xD2)(0x02)
 bool ReceiveIGS_ShopOpenResult(const BYTE* pReceiveBuffer)
 {
@@ -12660,6 +12672,14 @@ bool ReceiveIGS_ShopOpenResult(const BYTE* pReceiveBuffer)
 
     if ((BYTE)Data->byShopOpenResult == 0)
     {
+        mu::ui::window::CreateOkMessageBoxWithTitle(I18N::Game::Error,
+            L"Cash Shop access was denied by the server. Use it in a safe zone with other inventory operations closed, and check that Cash Shop is enabled on this server.");
+        return false;
+    }
+
+    if (!PrepareCashShopCatalog())
+    {
+        SocketClient->ToGameServer()->SendCashShopOpenState(1);
         return false;
     }
 
@@ -12675,6 +12695,7 @@ bool ReceiveIGS_ShopOpenResult(const BYTE* pReceiveBuffer)
 // (0xD2)(0x03)
 bool ReceiveIGS_BuyItem(const BYTE* pReceiveBuffer)
 {
+    static_assert(sizeof(PMSG_CASHSHOP_BUYITEM_ANS) == 9);
     auto Data = (LPPMSG_CASHSHOP_BUYITEM_ANS)pReceiveBuffer;
 
     switch ((BYTE)Data->byResultCode)
@@ -12857,9 +12878,11 @@ bool ReceiveIGS_StorageItemListCount(const BYTE* pReceiveBuffer)
 }
 
 // (0xD2)(0x0D)
-bool ReceiveIGS_StorageItemList(const BYTE* pReceiveBuffer)
+bool ReceiveIGS_StorageItemList(std::span<const BYTE> packet)
 {
-    auto Data = (LPPMSG_CASHSHOP_STORAGELIST)pReceiveBuffer;
+    static_assert(sizeof(PMSG_CASHSHOP_STORAGELIST) == 33);
+    const auto* Data = safe_cast<PMSG_CASHSHOP_STORAGELIST>(packet);
+    if (!Data) return false;
 
 #ifdef KJH_MOD_SHOP_SCRIPT_DOWNLOAD
     if (g_InGameShopSystem->IsShopOpen() == false)
@@ -12873,9 +12896,11 @@ bool ReceiveIGS_StorageItemList(const BYTE* pReceiveBuffer)
 }
 
 // (0xD2)(0x0E)
-bool ReceiveIGS_StorageGiftItemList(const BYTE* pReceiveBuffer)
+bool ReceiveIGS_StorageGiftItemList(std::span<const BYTE> packet)
 {
-    auto Data = (LPPMSG_CASHSHOP_GIFTSTORAGELIST)pReceiveBuffer;
+    static_assert(offsetof(PMSG_CASHSHOP_GIFTSTORAGELIST, chItemType) == 32);
+    const auto* Data = safe_cast<PMSG_CASHSHOP_GIFTSTORAGELIST>(packet);
+    if (!Data) return false;
 
 #ifdef KJH_MOD_SHOP_SCRIPT_DOWNLOAD
     if (g_InGameShopSystem->IsShopOpen() == false)
@@ -13219,6 +13244,47 @@ void ReceiveDarkside(const BYTE* ReceiveBuffer)
 static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
 {
     auto received_span = std::span<const BYTE>(ReceiveBuffer, Size);
+    if (Size >= 4 && ReceiveBuffer[0] == 0xC1 && ReceiveBuffer[2] == 0xFE)
+    {
+        GameLogic::PersonalShop::ReceiveStoreMail(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFD && (ReceiveBuffer[4] == 0x05 || ReceiveBuffer[4] == 0x06))
+    {
+        if (ReceiveBuffer[4] == 0x05) GameLogic::Pets::Muun::Receive(received_span);
+        else GameLogic::Pets::Muun::ReceiveAppearance(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFD && ReceiveBuffer[4] == 0x03)
+    {
+        GameLogic::Items::ExcellentCombination::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFD && ReceiveBuffer[4] == 0x01)
+    {
+        GameLogic::Cosmetics::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFD && ReceiveBuffer[4] == 0x02)
+    {
+        GameLogic::Cosmetics::SkinShop::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFA && ReceiveBuffer[4] == 0x19)
+    {
+        GameLogic::Bank::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFB && ReceiveBuffer[4] == 0x21)
+    {
+        GameLogic::Events::Schedule::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFA && ReceiveBuffer[4] == 0x30)
+    {
+        GameLogic::Events::ReceiveDevilSquareProgress(received_span);
+        return;
+    }
     BYTE HeadCode = 0;
     BOOL bEncrypted = ReceiveBuffer[0] >= 0xC3;
     BOOL bIsC1C3 = ReceiveBuffer[0] % 2 == 1;
@@ -14695,10 +14761,10 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
             ReceiveIGS_UpdateScript(ReceiveBuffer);
             break;
         case 0x0D:
-            ReceiveIGS_StorageItemList(ReceiveBuffer);
+            ReceiveIGS_StorageItemList(received_span);
             break;
         case 0x0E:
-            ReceiveIGS_StorageGiftItemList(ReceiveBuffer);
+            ReceiveIGS_StorageGiftItemList(received_span);
             break;
         case 0x13:
             ReceiveIGS_EventItemlistCnt(ReceiveBuffer);

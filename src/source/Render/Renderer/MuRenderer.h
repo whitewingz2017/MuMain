@@ -420,7 +420,8 @@ public:
     // drawn before is processed, what is drawn after is drawn on the processed
     // image. The first call of a frame counts; a frame without one is not
     // processed.
-    virtual void EndSceneGeometry() {}
+    // resolutionScale below one renders the world smaller; UI and touch coordinates stay native.
+    virtual void EndSceneGeometry(float /*resolutionScale*/ = 1.f) {}
 
     // Opaque, depth-writing draws recorded between these two move ahead of the others and are
     // grouped by state, to cut state changes; depth decides what shows, and the others keep

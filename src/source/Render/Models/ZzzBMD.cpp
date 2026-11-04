@@ -1348,6 +1348,18 @@ void BMD::EndRenderCoinHeap(int coinCount)
     mu::GetRenderer().RenderTriangles(muVerts, 0u);
 }
 
+static void SetTexturedMeshBlend(int flags, float alpha, int components)
+{
+    if (flags & RENDER_BRIGHT)
+        EnableAlphaBlend(components == 4);
+    else if (flags & RENDER_DARK)
+        EnableAlphaBlendMinus();
+    else if (alpha < 0.99f || components == 4)
+        EnableAlphaTest();
+    else
+        DisableAlphaBlend();
+}
+
 void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshIndex, float blendMeshAlpha, float blendMeshTextureCoordU, float blendMeshTextureCoordV, int explicitTextureIndex)
 {
     if (meshIndex >= NumMeshs || meshIndex < 0) return;
@@ -1564,22 +1576,7 @@ void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshI
     {
         finalRenderFlags = RENDER_TEXTURE;
         BindTexture(textureIndex);
-        if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((renderFlags & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (alpha < 0.99f || texture->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
+        SetTexturedMeshBlend(renderFlags, alpha, texture->Components);
 
         if ((renderFlags & RENDER_NODEPTH) == RENDER_NODEPTH)
         {
@@ -2118,22 +2115,7 @@ void BMD::RenderMeshAlternative(int iRndExtFlag, int iParam, int i, int RenderFl
     {
         Render = RENDER_TEXTURE;
         BindTexture(Texture);
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (Alpha < 0.99f || pBitmap->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
+        SetTexturedMeshBlend(RenderFlag, Alpha, pBitmap->Components);
 
         if ((RenderFlag & RENDER_NODEPTH) == RENDER_NODEPTH)
         {
@@ -2601,22 +2583,7 @@ void BMD::RenderMeshTranslate(int i, int RenderFlag, float Alpha, int BlendMesh,
     {
         Render = RENDER_TEXTURE;
         BindTexture(Texture);
-        if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((RenderFlag & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (Alpha < 0.99f || pBitmap->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
+        SetTexturedMeshBlend(RenderFlag, Alpha, pBitmap->Components);
     }
     else if ((RenderFlag & RENDER_BRIGHT) == RENDER_BRIGHT)
     {

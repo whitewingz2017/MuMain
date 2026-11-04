@@ -340,7 +340,7 @@ void mu::ui::window::CGemIntegrationDisjointMsgBox::SetButtonInfo()
 // reachable from this file, unlike the genuinely generic CreateOkMessageBox()/
 // CreateOkMessageBoxWithTitle() helpers that do live in WindowCommon.cpp.
 //
-// All 5 buttons keep native's own uniform 108x29 size (MSGBOX_BTN_EMPTY_WIDTH/_HEIGHT) -- unlike
+// The menu buttons keep native's own uniform 108x29 size (MSGBOX_BTN_EMPTY_WIDTH/_HEIGHT) -- unlike
 // most other CustomMessageBox.h menu classes, this one does NOT give Cancel the smaller
 // MSGBOX_BTN_EMPTY_SMALL_WIDTH treatment, so no button here sets compact=true.
 void mu::ui::window::ShowSystemMenuDialog()

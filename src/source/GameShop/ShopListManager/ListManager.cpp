@@ -55,6 +55,7 @@ void CListManager::SetListManagerInfo(DownloaderType type, const wchar_t* Server
     this->m_ListManagerInfo.m_nPortNum = PortNum;
     this->m_ListManagerInfo.m_ftpMode = ftpMode;
     this->m_ListManagerInfo.m_strLocalPath = LocalPath;
+    std::replace(this->m_ListManagerInfo.m_strLocalPath.begin(), this->m_ListManagerInfo.m_strLocalPath.end(), L'\\', L'/');
     this->m_ListManagerInfo.m_strRemotePath = RemotePath;
     this->m_ListManagerInfo.m_strPWD = Pwd;
     this->m_ListManagerInfo.m_strServerIP = ServerIP;
@@ -63,7 +64,7 @@ void CListManager::SetListManagerInfo(DownloaderType type, const wchar_t* Server
     this->m_ListManagerInfo.m_dwDownloadMaxTime = dwDownloadMaxTime;
 
     std::error_code error;
-    std::filesystem::create_directories(std::filesystem::path(LocalPath), error);
+    std::filesystem::create_directories(std::filesystem::path(mu_narrow_path(this->m_ListManagerInfo.m_strLocalPath)), error);
 
     const wchar_t separator = std::filesystem::path::preferred_separator;
     if (!this->m_ListManagerInfo.m_strLocalPath.empty() && this->m_ListManagerInfo.m_strLocalPath.back() != separator)

@@ -43,6 +43,13 @@ void CameraManager::Initialize()
     m_pActiveCamera->OnActivate(g_Camera);
 }
 
+void CameraManager::ApplyTouchGesture(float zoomRatio, float yawDegrees, float pitchDegrees)
+{
+    if (!m_pOrbitalCamera) Initialize();
+    if (m_CurrentMode != CameraMode::Orbital) SetCameraMode(CameraMode::Orbital);
+    if (m_CurrentMode == CameraMode::Orbital) static_cast<OrbitalCamera*>(m_pOrbitalCamera.get())->ApplyTouchGesture(zoomRatio, yawDegrees, pitchDegrees);
+}
+
 void CameraManager::Shutdown()
 {
     if (m_pActiveCamera)

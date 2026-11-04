@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "UI/Social/PhotoViewer.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 
 #include "UI/Social/SocialWindowManager.h"
 #include "UI/Core/UIManager.h"
@@ -16,6 +18,8 @@
 #include "Engine/Object/ZzzObject.h"
 #include "Core/Input/KeyState.h"
 #include "Camera/CameraProjection.h"
+#include "Render/Lighting/EnhancedLightingSetting.h"
+#include "Render/Effects/ZzzEffect.h"
 #include "Character/CharacterManager.h"
 #include "Engine/AI/GOBoid.h"
 #include "Engine/AI/ZzzAI.h"
@@ -82,9 +86,13 @@ void CUIPhotoViewer::RenderPhotoCharacter(float aspect)
     OBJECT* o = &c->Object;
     int WorldBackup = gMapManager.WorldActive;
     gMapManager.WorldActive = WD_0LORENCIA;
-    MoveCharacter(c, o);
-    MoveCharacterVisual(c, o);
-    MoveMount(&m_PhotoHelper, TRUE);
+    if (!m_bPortraitMode)
+    {
+        MoveCharacter(c, o);
+        MoveCharacterVisual(c, o);
+        MoveMount(&m_PhotoHelper, TRUE);
+    }
+    else { o->AnimationFrame = 0; o->PriorAnimationFrame = 0; }
     gMapManager.WorldActive = WorldBackup;
 
     mu::GetRenderer().SetMatrixMode(GL_PROJECTION);
@@ -92,7 +100,7 @@ void CUIPhotoViewer::RenderPhotoCharacter(float aspect)
     mu::GetRenderer().LoadIdentity();
     // The capture brings its own viewport, the whole target, so only the projection is set here:
     // the character is framed by the well it stands in at whatever size that is.
-    gluPerspective2(1.f, aspect, 2000, 20000);
+    gluPerspective2(m_bPortraitMode ? 0.5f : 1.f, aspect, 2000, 20000);
     mu::GetRenderer().SetMatrixMode(GL_MODELVIEW);
     mu::GetRenderer().PushMatrix();
     mu::GetRenderer().LoadIdentity();
@@ -102,7 +110,9 @@ void CUIPhotoViewer::RenderPhotoCharacter(float aspect)
 
     mu::GetRenderer().Rotate(-90.0f, 1.f, 0.f, 0.f);
     mu::GetRenderer().Rotate(-90.0f, 0.f, 0.f, 1.f);
-    mu::GetRenderer().Translate(-10000.0f, 0.0f, -75.f);
+    const float photoHeight = m_bPortraitMode ? 125.f * m_fCurrentZoom
+        : m_StudioMode ? 75.f * m_fCurrentZoom : 75.f;
+    mu::GetRenderer().Translate(-10000.0f, 0.0f, -photoHeight);
 
     if (c->Helper.Type == MODEL_DARK_HORSE_ITEM)
         mu::GetRenderer().Translate(-o->Position[0], -o->Position[1], -o->Position[2] - 50.0f);
@@ -128,28 +138,34 @@ void CUIPhotoViewer::RenderPhotoCharacter(float aspect)
     mu::GetRenderer().ClearDepthBuffer();
     o->Scale = 0.7f * m_fCurrentZoom;
     m_PhotoHelper.Scale = m_fPhotoHelperScale * m_fCurrentZoom;
-    Vector(1, 1, 1, o->Light);
-    Vector(1, 1, 1, m_PhotoHelper.Light);
-
-    c->HideShadow = true;
-    if (c->Wing.Type != -1 && m_iSettingAnimation > AT_HEALING1)
-        c->SafeZone = true;
-    else c->SafeZone = false;
-    if (c->Helper.Type == MODEL_HORN_OF_UNIRIA)
-        m_PhotoHelper.Position[2] += 10;
-    else if (c->Helper.Type == MODEL_HORN_OF_DINORANT)
-        m_PhotoHelper.Position[2] += 25;
-    RenderMount(&m_PhotoHelper, TRUE);
-    if (c->Helper.Type == MODEL_HORN_OF_UNIRIA)
-        m_PhotoHelper.Position[2] -= 10;
-    else if (c->Helper.Type == MODEL_HORN_OF_DINORANT)
-        m_PhotoHelper.Position[2] -= 25;
-    RenderCharacter(c, o);
+    PreparePhotoLighting();
+    RenderWithSprites([&] {
+        if (c->Helper.Type == MODEL_HORN_OF_UNIRIA)
+            m_PhotoHelper.Position[2] += 10;
+        else if (c->Helper.Type == MODEL_HORN_OF_DINORANT)
+            m_PhotoHelper.Position[2] += 25;
+        RenderMount(&m_PhotoHelper, TRUE);
+        if (c->Helper.Type == MODEL_HORN_OF_UNIRIA)
+            m_PhotoHelper.Position[2] -= 10;
+        else if (c->Helper.Type == MODEL_HORN_OF_DINORANT)
+            m_PhotoHelper.Position[2] -= 25;
+        RenderCharacter(c, o);
+        if (m_CompanionDrawer) m_CompanionDrawer(*c);
+    });
 
     mu::GetRenderer().SetMatrixMode(GL_MODELVIEW);
     mu::GetRenderer().PopMatrix();
     mu::GetRenderer().SetMatrixMode(GL_PROJECTION);
     mu::GetRenderer().PopMatrix();
+}
+
+void CUIPhotoViewer::PreparePhotoLighting()
+{
+    Vector(1.f, 1.f, 1.f, m_PhotoChar.Object.Light);
+    Vector(1.f, 1.f, 1.f, m_PhotoChar.Light);
+    Vector(1.f, 1.f, 1.f, m_PhotoHelper.Light);
+    m_PhotoChar.HideShadow = true;
+    m_PhotoChar.SafeZone = m_PhotoChar.Wing.Type != -1 && m_iSettingAnimation > AT_HEALING1;
 }
 
 int CUIPhotoViewer::SetPhotoPose(int iCurrentAni, int iMoveDir)
@@ -366,6 +382,7 @@ CUIPhotoViewer::CUIPhotoViewer()
 
 CUIPhotoViewer::~CUIPhotoViewer()
 {
+    GameLogic::Cosmetics::FenrirMounts::Clear(&m_PhotoChar.Object);
     g_SummonSystem.RemoveEquipEffects(&m_PhotoChar);
     DeleteCloth(&m_PhotoChar, &m_PhotoChar.Object);
 }
@@ -425,6 +442,40 @@ void SetItemToPhoto(PART_t* itemDest, const ITEM* itemSrc, int iDefaultValue)
     }
 }
 
+void CUIPhotoViewer::ClearHelper()
+{
+    m_PhotoHelper.Live = false;
+    m_PhotoChar.Helper.Type = -1;
+    GameLogic::Cosmetics::FenrirMounts::Clear(&m_PhotoChar.Object);
+}
+
+void CUIPhotoViewer::SetFenrirPreview(int itemType)
+{
+    if (!GameLogic::Cosmetics::IsFenrirMount(itemType)) return;
+    m_PhotoHelper.Live = false;
+    m_PhotoChar.Helper.Type = MODEL_HORN_OF_FENRIR;
+    GameLogic::Cosmetics::FenrirMounts::SetItem(&m_PhotoChar.Object, itemType);
+    CreateMountSub(MODEL_FENRIR_RED, m_PhotoChar.Object.Position, &m_PhotoChar.Object, &m_PhotoHelper);
+    m_fPhotoHelperScale = m_PhotoHelper.Scale * 0.7f / m_PhotoChar.Object.Scale;
+    SetAnimation(AT_STAND1);
+}
+
+void CUIPhotoViewer::CopyUnequippedPlayer()
+{
+    if (!m_bIsInitialized) return;
+    DeleteCloth(&m_PhotoChar, &m_PhotoChar.Object);
+    m_PhotoChar.Class = Hero->Class;
+    m_PhotoChar.SkinIndex = Hero->SkinIndex;
+    m_PhotoChar.Change = false;
+    m_PhotoChar.EtcPart = 0;
+    m_PhotoChar.BodyPart[BODYPART_HEAD].Type = static_cast<int>(MODEL_BODY_HELM) + Hero->SkinIndex;
+    constexpr int ExtendedEquipmentSize = 25;
+    BYTE emptyEquipment[ExtendedEquipmentSize];
+    std::fill_n(emptyEquipment, ExtendedEquipmentSize, 0xFF);
+    SetEquipmentPacket(emptyEquipment);
+    ClearHelper();
+}
+
 void CUIPhotoViewer::CopyPlayer()
 {
     if (m_bIsInitialized == FALSE) return;
@@ -441,7 +492,9 @@ void CUIPhotoViewer::CopyPlayer()
     BOOL bChangeArmor = FALSE;
     BOOL bChangeWeapon = FALSE;
     BOOL bChangeWing = FALSE;
-    BOOL bChangeHelper = FALSE;
+    const int mountItem = GameLogic::Cosmetics::FenrirMounts::Item(&Hero->Object);
+    BOOL bChangeHelper = mountItem != GameLogic::Cosmetics::FenrirMounts::Item(&m_PhotoChar.Object);
+    GameLogic::Cosmetics::FenrirMounts::SetItem(&m_PhotoChar.Object, mountItem);
     if (Hero->Change == FALSE)
     {
         for (i = 0; i < MAX_BODYPART; ++i)
@@ -756,7 +809,7 @@ void CUIPhotoViewer::RenderInto(std::uint32_t width, std::uint32_t height)
     CHARACTER* c = &m_PhotoChar;
     OBJECT* o = &c->Object;
 
-    if (o->AnimationFrame < m_iCurrentFrame)
+    if (!m_bPortraitMode && o->AnimationFrame < m_iCurrentFrame)
     {
         if (m_bActionRepeatCheck == FALSE && rand_fps_check(4))
         {
@@ -780,5 +833,29 @@ void CUIPhotoViewer::RenderInto(std::uint32_t width, std::uint32_t height)
     {
         DeleteParts(&m_PhotoChar);
     }
+    const auto savedCamera = g_Camera;
+    const auto savedScene = SceneFlag;
+    const bool savedFog = FogEnable;
+    // Mesh blend helpers consult this flag and would turn distant world fog back on.
+    FogEnable = false;
+    const bool enhancedLighting = Render::Lighting::EnhancedLightingActive();
+    if (m_bPortraitMode || m_StudioMode)
+    {
+        // Portrait lighting and the eye position must not inherit the world's orbital view.
+        SceneFlag = CHARACTER_SCENE;
+        g_Camera.Reset();
+        Vector(o->Position[0] + 10000.f, o->Position[1], o->Position[2] + (m_bPortraitMode ? 125.f : 75.f) * m_fCurrentZoom, g_Camera.Position);
+        o->LightEnable = false;
+        // The portrait has no world camera or world fog.
+        (void)mu::GetRenderer().SetEnhancedLighting(false);
+    }
     RenderPhotoCharacter(static_cast<float>(width) / static_cast<float>(height));
+    FogEnable = savedFog;
+    mu::GetRenderer().SetFogEnabled(savedFog);
+    if (m_bPortraitMode || m_StudioMode)
+    {
+        (void)mu::GetRenderer().SetEnhancedLighting(enhancedLighting);
+        g_Camera = savedCamera;
+        SceneFlag = savedScene;
+    }
 }

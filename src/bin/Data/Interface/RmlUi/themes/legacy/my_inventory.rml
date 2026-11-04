@@ -8,7 +8,7 @@
 <body data-model="my_inventory">
 	<!-- CMyInventory (MyInventory.h): the frame, the equipment slots, the item grid, the items
 	     C++ draws live into #item_view, the stack counts, the title, gold and buttons. -->
-	<div id="panel" data-style---text-px="text_px + 'px'">
+	<div data-class-skin-page="skin_page" id="panel" data-style---text-px="text_px + 'px'">
 		<div id="frame_corner_close" data-event-click="window_close"></div>
 		<!-- CMyInventory::RenderFrame()'s five pieces. -->
 		<div class="bg-fill"></div>
@@ -47,12 +47,16 @@
 		<img id="item_view" class="item-view"/>
 		<div id="item_grid_counts" class="item-grid-counts">
 			<div class="item-count" data-for="c : grid_cells"><span class="item-count-text counter-scaled" data-if="c.count != ''"
-			     data-style-font-size="text_px + 'px'">{{c.count}}</span></div>
+			     data-style-font-size="text_px * 0.55 + 'px'">{{c.count}}</span></div>
 		</div>
 		<div id="option_tooltip_anchor" class="native-anchor"></div>
 		<!-- Text leaves marked native-text render at the native text renderer's size: text_px is the
 		     physical size, and .counter-scaled cancels #panel's scale so glyphs rasterise at it. #title
 		     stays full size as the drag handle. -->
+		<button class="skin-storage-open" data-if="skin_page" data-event-click="my_inventory_skin_storage">Skin Inventory</button>
+		<button class="skin-shop-open" data-if="skin_page" data-event-click="my_inventory_skin_shop">Skin Shop</button>
+		<button class="inventory-page-prev" data-event-click="my_inventory_page" data-hint="Switch Gear / Skin">&#9664;</button>
+		<button class="inventory-page-next" data-event-click="my_inventory_page" data-hint="Switch Gear / Skin">&#9654;</button>
 		<div id="title"><span class="native-text title-text counter-scaled" data-style-font-size="text_px + 'px'">{{title}}</span></div>
 
 		<div id="gold_bg"></div>
@@ -77,7 +81,7 @@
 		<!-- Set/Socket option header: one centred line with both labels at the same size (the native
 		     client shrank each label into its own narrow box, so a long label came out smaller -- not
 		     reproduced). Hover areas stay the former native half-width split, as empty boxes. -->
-		<div class="option-labels native-text counter-scaled" data-style-font-size="text_px + 'px'">
+		<div class="option-labels native-text counter-scaled" data-style-font-size="text_px * option_labels_fit + 'px'">
 			<span class="option-label" data-class-active="set_option_active">{{set_option_label}}</span>
 			<span class="option-label" data-class-active="socket_option_active">{{socket_option_label}}</span>
 		</div>
@@ -85,6 +89,13 @@
 		     data-event-mouseover="my_inventory_set_option_hover" data-event-mouseout="my_inventory_set_option_unhover"></div>
 		<div id="socket_option_label" class="option-hover option-hover-socket"
 		     data-event-mouseover="my_inventory_socket_option_hover" data-event-mouseout="my_inventory_socket_option_unhover"></div>
+
 	</div>
+        <div id="inventory_mobile_actions" data-class-hidden="!mobile_actions_visible">
+            <button data-event-click="inventory_mobile_action(0)">Use</button>
+            <button data-attrif-disabled="!mobile_loose_item" data-event-click="inventory_mobile_action(1)">Drop</button>
+            <button data-attrif-disabled="!mobile_sell_enabled" data-event-click="inventory_mobile_action(2)">Sell</button>
+            <button data-event-click="inventory_mobile_action(3)">Cancel</button>
+        </div>
 </body>
 </rml>

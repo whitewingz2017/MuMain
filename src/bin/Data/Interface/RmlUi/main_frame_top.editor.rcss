@@ -1,0 +1,26 @@
+/* Managed by TwinMU RmlUi visual editor. */
+
+#btn_window_top.rml-editor-8eb35e9dfee9 {
+    background-color: #000;
+}
+
+#btn_friend_top.rml-editor-22c27dc8f82f {
+    background-color: #000;
+}
+
+#btn_chat_top.rml-editor-0426a1650f48 {
+    background-color: #000;
+}
+
+#btn_chainfo_top.rml-editor-944eb9d5d28c {
+    background-color: #000;
+}
+
+#btn_cshop_top.rml-editor-927f1e2beded {
+    background-color: #000;
+}
+
+#buttons_top.rml-editor-17d670db9736 {
+    opacity: 1;
+    border-color: transparent;
+}

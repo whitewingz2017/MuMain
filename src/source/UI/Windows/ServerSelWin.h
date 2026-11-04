@@ -91,6 +91,7 @@ private:
     };
     struct ServerSelRmlModel
     {
+        bool mobile = false;
         // One merged, order-preserving list.
         std::vector<GroupEntry> groups;
         std::vector<ServerEntry> servers;

@@ -510,6 +510,8 @@ void CCastleWindow::BindRmlModel(Rml::DataModelConstructor& c, CastleWindowRmlMo
     auto tab = c.RegisterStruct<CastleTabEntry>();
     tab.RegisterMember("label", &CastleTabEntry::label);
     tab.RegisterMember("text_px", &CastleTabEntry::textPx);
+    tab.RegisterMember("line_px", &CastleTabEntry::linePx);
+    tab.RegisterMember("two_lines", &CastleTabEntry::twoLines);
     tab.RegisterMember("selected", &CastleTabEntry::selected);
     c.RegisterArray<std::vector<CastleTabEntry>>();
     c.Bind("tabs", &model.tabs);
@@ -607,6 +609,57 @@ void CCastleWindow::SyncRmlModel()
     SyncContent();
 }
 
+// A tab label shrunk until it fits a little inside its 40 x 22 tab, so neighbouring labels no
+// longer run into each other. A long label of two words ("Guardian Statue") goes on two lines when
+// that lets it be larger than on one, where it was too small to read on a phone.
+CastleTabEntry CCastleWindow::MakeTabEntry(const wchar_t* label, bool selected) const
+{
+    constexpr float TabLabelWidth = 36.f;
+    constexpr float TabLabelHeight = 20.f;
+    const float nativePx = UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Normal);
+    const float nativeLinePx = CUIRenderTextSDLTtf::LineHeightPx(UI::Scaling::FontRole::Normal);
+
+    CastleTabEntry entry;
+    entry.selected = selected;
+    entry.linePx = nativeLinePx;
+    if (label == nullptr || label[0] == L'\0')
+        return entry;
+
+    g_pRenderText->SetFont(g_hFont);
+    auto widthOf = [](const std::wstring& text)
+    { return static_cast<float>(g_pRenderText->MeasureText(text.c_str(), static_cast<int>(text.size())).cx); };
+    const std::wstring text = label;
+    const float oneLineWidth = widthOf(text);
+    entry.label = StringUtils::WideToNarrow(label);
+    entry.textPx = oneLineWidth > TabLabelWidth ? nativePx * TabLabelWidth / oneLineWidth : nativePx;
+
+    // The space nearest the middle splits the label.
+    const size_t middle = text.size() / 2;
+    const size_t before = text.rfind(L' ', middle);
+    const size_t after = text.find(L' ', middle);
+    size_t split = before;
+    if (split == std::wstring::npos || (after != std::wstring::npos && after - middle < middle - before))
+        split = after;
+    if (split == std::wstring::npos)
+        return entry;
+
+    const std::wstring first = text.substr(0, split);
+    const std::wstring second = text.substr(split + 1);
+    const float twoLineWidth = std::max(widthOf(first), widthOf(second));
+    const float lineHeight = static_cast<float>(g_pRenderText->MeasureText(text.c_str(), static_cast<int>(text.size())).cy);
+    float fit = std::min(1.f, TabLabelWidth / twoLineWidth);
+    if (lineHeight > 0.f)
+        fit = std::min(fit, TabLabelHeight / (2.f * lineHeight));
+    if (nativePx * fit <= entry.textPx)
+        return entry;
+
+    entry.label = StringUtils::WideToNarrow((first + L"\n" + second).c_str());
+    entry.textPx = nativePx * fit;
+    entry.linePx = nativeLinePx * fit;
+    entry.twoLines = true;
+    return entry;
+}
+
 void CCastleWindow::SyncContent()
 {
 
@@ -623,25 +676,29 @@ void CCastleWindow::SyncContent()
                                         : UI::RmlBridge::NativeTextPx(role);
         return {StringUtils::WideToNarrow(text), px};
     };
+    // A line that must stay inside its box at any size: shrunk by the box's share of its width,
+    // without the native renderer's minimum font size, which still let long labels run over
+    // their neighbours on a phone.
+    auto fittedLine = [&](const wchar_t* text, bool boldFont, float boxWidth) -> CastleLine
+    {
+        if (text == nullptr || text[0] == L'\0')
+            return {};
+        g_pRenderText->SetFont(boldFont ? g_hFontBold : g_hFont);
+        const float measured = static_cast<float>(g_pRenderText->MeasureText(text, static_cast<int>(wcslen(text))).cx);
+        const float px = UI::RmlBridge::NativeTextPx(boldFont ? UI::Scaling::FontRole::Bold : UI::Scaling::FontRole::Normal);
+        constexpr float NoMinimumPx = 0.f;
+        return {StringUtils::WideToNarrow(text), UI::Scaling::FitTextPixelSizeToWidth(px, measured, boxWidth, NoMinimumPx)};
+    };
     wchar_t szTemp[256] = {};
 
     // RenderFrame(): the title, in the bold font.
     CastleLine title = line(I18N::Game::SeniorNPC, true, 160.f);
 
-    // The tabs: a label wider than its tab is shrunk towards the tab's 40 px down to the minimum
-    // font size and overflows both its sides, as in the original client.
     const wchar_t* tabLabels[] = {I18N::Game::CastleGate, I18N::Game::GuardianStatue, I18N::Game::Tax,
                                   I18N::Game::Store1640};
     std::vector<CastleTabEntry> tabs;
-    g_pRenderText->SetFont(g_hFont);
     for (int i = 0; i < 4; ++i)
-    {
-        const SIZE size = g_pRenderText->MeasureText(tabLabels[i], static_cast<int>(wcslen(tabLabels[i])));
-        tabs.push_back(
-            {StringUtils::WideToNarrow(tabLabels[i]),
-             UI::RmlBridge::NativeTextPxInBox(UI::Scaling::FontRole::Normal, static_cast<float>(size.cx), 40.f),
-             i == m_iNumCurOpenTab});
-    }
+        tabs.push_back(MakeTabEntry(tabLabels[i], i == m_iNumCurOpenTab));
 
     std::vector<CastleMapItem> mapItems;
     bool statuePage = false;
@@ -728,30 +785,37 @@ void CCastleWindow::SyncContent()
             recoverButton = {StringUtils::WideToNarrow(I18N::Game::Improve), true,
                              !g_SenatusInfo.IsStatueRecoverUpgradable()};
 
+        // The stat lines stay inside their boxes (castle_window.rcss): the durability line has
+        // the row to the frame's inner edge, the rows beside the Repair / Improve buttons (x 110)
+        // end a little before them. Unbounded, a 1,500,000 durability ran past the frame and the
+        // next-level lines into the buttons on a phone.
+        constexpr float StatLineWidth = 150.f;
+        constexpr float StatBesideButtonWidth = 86.f;
+        constexpr float NextLineWidth = 76.f;
         mu_swprintf(szTemp, I18N::Game::DURDD, pNPCInfo->iNpcHp, pNPCInfo->iNpcMaxHp);
         InsertComma(szTemp, pNPCInfo->iNpcHp);
         InsertComma(szTemp, pNPCInfo->iNpcMaxHp);
-        statHp = line(szTemp, false, 0.f);
+        statHp = fittedLine(szTemp, false, StatLineWidth);
         mu_swprintf(szTemp, I18N::Game::DPD, g_SenatusInfo.GetDefense(pNPCInfo->iNpcNumber, pNPCInfo->iNpcDfLevel));
-        statDefense = line(szTemp, false, 0.f);
+        statDefense = fittedLine(szTemp, false, StatBesideButtonWidth);
         if (statue)
         {
             mu_swprintf(szTemp, I18N::Game::RRD, g_SenatusInfo.GetRecover(pNPCInfo->iNpcNumber, pNPCInfo->iNpcRgLevel));
-            statRecover = line(szTemp, false, 0.f);
+            statRecover = fittedLine(szTemp, false, StatBesideButtonWidth);
         }
 
         improveTitle = line(I18N::Game::Improve, true, 190.f);
         mu_swprintf(szTemp, I18N::Game::DURD, g_SenatusInfo.GetNextAddHP(pNPCInfo));
         InsertComma(szTemp, g_SenatusInfo.GetNextAddHP(pNPCInfo));
-        nextHp = line(szTemp, false, 0.f);
+        nextHp = fittedLine(szTemp, false, NextLineWidth);
         mu_swprintf(szTemp, I18N::Game::DPD1564, g_SenatusInfo.GetNextAddDefense(pNPCInfo));
         InsertComma(szTemp, g_SenatusInfo.GetNextAddDefense(pNPCInfo));
-        nextDefense = line(szTemp, false, 0.f);
+        nextDefense = fittedLine(szTemp, false, NextLineWidth);
         if (statue)
         {
             mu_swprintf(szTemp, I18N::Game::RRD1565, g_SenatusInfo.GetNextAddRecover(pNPCInfo));
             InsertComma(szTemp, g_SenatusInfo.GetNextAddRecover(pNPCInfo));
-            nextRecover = line(szTemp, false, 0.f);
+            nextRecover = fittedLine(szTemp, false, NextLineWidth);
         }
         break;
     }
@@ -761,9 +825,11 @@ void CCastleWindow::SyncContent()
         taxTitle = line(I18N::Game::AdjustTaxRate, true, 190.f);
         mu_swprintf(szTemp, I18N::Game::ChaosCombinationGoblinDD, g_SenatusInfo.GetRealTaxRateChaos(),
                     g_SenatusInfo.GetChaosTaxRate());
-        chaosRate = line(szTemp, false, 175.f);
+        // The rate lines are bold and share their row with the arrows at x 158.
+        constexpr float RateTextWidth = 136.f;
+        chaosRate = fittedLine(szTemp, true, RateTextWidth);
         mu_swprintf(szTemp, I18N::Game::NPCDD, g_SenatusInfo.GetRealTaxRateStore(), g_SenatusInfo.GetNormalTaxRate());
-        storeRate = line(szTemp, false, 175.f);
+        storeRate = fittedLine(szTemp, true, RateTextWidth);
         applyButton = {StringUtils::WideToNarrow(I18N::Game::Apply), true, false};
 
         note1 = line(I18N::Game::OnlyTheLordOfTheCastle, false, 160.f);

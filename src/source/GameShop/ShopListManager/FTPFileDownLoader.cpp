@@ -11,37 +11,13 @@
 #include "stdafx.h"
 #ifdef KJH_ADD_INGAMESHOP_UI_SYSTEM
 #include "FTPFileDownLoader.h"
+#include "DownloadUrl.h"
 
 #include <iterator>
 
 #include <string>
 
 #include "GameShop/FileDownloader/CurlFileDownloader.h"
-
-namespace
-{
-std::wstring BuildFtpUrl(const std::wstring& host, unsigned short port, const std::wstring& remotePath)
-{
-    // WinINet's FtpOpenFile treated the remote path as relative to the login
-    // directory; libcurl's ftp://host/path does the same with a single leading
-    // slash. Normalise separators and drop any leading slash so exactly one
-    // sits between the host and the path.
-    std::wstring path = remotePath;
-    for (wchar_t& ch : path)
-    {
-        if (ch == L'\\')
-        {
-            ch = L'/';
-        }
-    }
-    while (!path.empty() && path.front() == L'/')
-    {
-        path.erase(path.begin());
-    }
-
-    return L"ftp://" + host + L":" + std::to_wstring(port) + L"/" + path;
-}
-} // namespace
 
 CFTPFileDownLoader::CFTPFileDownLoader() // OK
 {
@@ -77,7 +53,7 @@ WZResult CFTPFileDownLoader::DownLoadFiles(DownloaderType type,
     for (std::vector<std::wstring>::iterator it = vScriptFiles.begin(); it != vScriptFiles.end(); ++it)
     {
         const std::wstring localPath = localBase + (*it);
-        const std::wstring url = BuildFtpUrl(strServerIP, PortNum, remoteBase + (*it));
+        const std::wstring url = GameShop::BuildDownloadUrl(type == FTP, strServerIP, PortNum, remoteBase + (*it));
 
         result = CurlFileDownloader::DownloadFile(url, localPath, strUserName, strPWD, bPassiveMode, &this->m_Break);
 

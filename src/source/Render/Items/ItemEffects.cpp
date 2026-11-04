@@ -1,13 +1,18 @@
 #include "stdafx.h"
 
 #include "ItemEffects.h"
+#include "ScopedItemEffects.h"
 #include "ItemModelTable.h"
+#include "UI/Core/WindowSystem.h"
+#include "Scenes/MainScene.h"
 
 #include "Core/Globals/_enum.h"
 #include "Engine/Object/w_ObjectInfo.h"
 #include "Engine/Object/ZzzCharacter.h"
 #include "Render/Effects/ZzzEffect.h"
 #include "Render/Models/ZzzBMD.h"
+#include "Render/Textures/ZzzTexture.h"
+#include "Render/Textures/ZzzOpenglUtil.h"
 
 #include <algorithm>
 #include <string_view>
@@ -572,7 +577,121 @@ ItemModelTable<const ItemEffect*> g_itemEffects{[](const Data::Items::ItemModelD
                                                     return model.itemEffect.empty() ? nullptr
                                                                                     : FindEffect(model.itemEffect);
                                                 }};
+ItemModelTable<const Data::Items::ItemModelDefinition*> g_staticEffects{
+    [](const Data::Items::ItemModelDefinition& model) { return &model; }};
+
+void ApplyStaticEffects(BMD* b, OBJECT* o, int modelType, float alpha)
+{
+    const auto* effects = g_staticEffects.Find(modelType);
+    if (!effects || alpha <= 0.f) return;
+    vec3_t originalLight;
+    VectorCopy(b->BodyLight, originalLight);
+    for (const auto& effect : effects->meshEffects)
+    {
+        if (effect.mesh < 0 || effect.mesh >= b->NumMeshs) continue;
+        for (int channel = 0; channel < 3; ++channel)
+            b->BodyLight[channel] = static_cast<float>(effect.color[channel]);
+        b->RenderMesh(effect.mesh, effect.flags, alpha, -1, 1.f);
+    }
+    VectorCopy(originalLight, b->BodyLight);
+}
+
+bool TransformAttachment(BMD* b, int bone, const std::array<double, 3>& color, const std::array<double, 3>& offset, float alpha,
+                         vec3_t position, vec3_t light)
+{
+    if (bone < 0 || bone >= b->NumBones || !b->Bones || b->Bones[bone].Dummy) return false;
+    vec3_t origin{};
+    for (int axis = 0; axis < 3; ++axis) origin[axis] = static_cast<float>(offset[axis]);
+    b->TransformPosition(BoneTransform[bone], origin, position, true);
+    for (int channel = 0; channel < 3; ++channel)
+        light[channel] = static_cast<float>(color[channel]) * alpha;
+    return true;
+}
+
+void DrawAttachmentSprite(int textureId, double size, vec3_t position, vec3_t light, double rotation = 0.0)
+{
+    const auto* texture = Bitmaps.FindTexture(textureId);
+    if (!texture || texture->Width <= 0 || texture->Height <= 0) return;
+    const float scale = static_cast<float>(size);
+    EnableAlphaBlend(false);
+    RenderSprite(textureId, position, texture->Width * scale, texture->Height * scale, light, static_cast<float>(rotation));
+}
+
+double AttachmentParticlePreviewSize(const Data::Items::ItemParticleEffect& effect)
+{
+    constexpr double HikPreviewSize = 0.35;
+    constexpr double ShinyPreviewSize = 0.3;
+    constexpr double SparkPreviewSize = 1.2;
+    if (effect.texture == BITMAP_FIRE_HIK2_MONO) return HikPreviewSize;
+    if (effect.texture == BITMAP_SHINY + 6 && effect.subType == 1) return ShinyPreviewSize;
+    if (effect.texture == BITMAP_SPARK + 1) return SparkPreviewSize;
+    return std::abs(effect.size);
+}
+
+void RenderParticleAttachments(BMD* b, OBJECT* o, const Data::Items::ItemModelDefinition& model, float alpha)
+{
+    if (IsParticlesDisabledDebug()) return;
+    for (const auto& effect : model.particleEffects)
+    {
+        // HIK2 and sparkle particles initialize their own scale, including zero-size source rows.
+        const bool initializesScale = effect.texture == BITMAP_FIRE_HIK2_MONO
+            || (effect.texture == BITMAP_SHINY + 6 && effect.subType == 1)
+            || effect.texture == BITMAP_SPARK + 1;
+        if (effect.size == 0.0 && !initializesScale) continue;
+        if (!Bitmaps.FindTexture(effect.texture)) continue;
+        vec3_t position, light;
+        if (!TransformAttachment(b, effect.bone, effect.color, effect.offset, alpha, position, light)) continue;
+        if (ScopedItemEffects::LocalParticles())
+        {
+            DrawAttachmentSprite(effect.texture, AttachmentParticlePreviewSize(effect), position, light);
+            continue;
+        }
+        CreateParticleFpsChecked(effect.texture, position, o->Angle, light, effect.subType,
+                                 static_cast<float>(effect.size));
+    }
+}
+
 } // namespace
+
+void RenderAttachments(BMD* b, OBJECT* o, int modelType, float alpha)
+{
+    if (!ScopedItemEffects::Enabled() || o->EnableShadow || alpha <= 0.f
+        || !g_pOption->GetRenderAllEffects()) return;
+    const auto* effects = g_staticEffects.Find(modelType);
+    if (!effects || (effects->staticEffects.empty() && effects->particleEffects.empty())) return;
+    // Attached colors belong to this draw, not the finite world-particle queue.
+    RenderWithSpriteCamera([&]
+    {
+        if (!IsSpritesDisabledDebug())
+        {
+            for (const auto& effect : effects->staticEffects)
+            {
+                vec3_t position, light;
+                if (!TransformAttachment(b, effect.bone, effect.color, effect.offset, alpha, position, light)) continue;
+                DrawAttachmentSprite(effect.texture, effect.size, position, light, effect.rotation);
+            }
+        }
+        RenderParticleAttachments(b, o, *effects, alpha);
+    });
+}
+
+void RenderPetEffects(BMD* b, OBJECT* o, int modelType, float alpha, bool defaultGlow)
+{
+    if (!ScopedItemEffects::Enabled() || o->EnableShadow || alpha <= 0.f
+        || !g_pOption->GetRenderAllEffects()) return;
+    if (defaultGlow && b->NumMeshs > 0)
+    {
+        constexpr int FinalMuFollowerGlowFlags = 70;
+        vec3_t originalLight;
+        VectorCopy(b->BodyLight, originalLight);
+        Vector(1.f, 1.f, 1.f, b->BodyLight);
+        b->RenderMesh(0, FinalMuFollowerGlowFlags, alpha, -1, 1.f);
+        VectorCopy(originalLight, b->BodyLight);
+    }
+    int level = 0;
+    Apply(b, o, modelType, alpha, level);
+    RenderAttachments(b, o, modelType, alpha);
+}
 
 bool Exists(std::string_view name)
 {
@@ -596,6 +715,8 @@ std::span<const std::string_view> GetNames()
 
 Result Apply(BMD* b, OBJECT* o, int modelType, float alpha, int& level)
 {
+    if (!ScopedItemEffects::Enabled()) return Result::None;
+    ApplyStaticEffects(b, o, modelType, alpha);
     const ItemEffect* effect = g_itemEffects.Find(modelType);
     return effect != nullptr ? effect->apply(b, o, modelType, alpha, level) : Result::None;
 }

@@ -61,7 +61,7 @@ public:
     bool UpdateKeyEvent();
     float GetLayerDepth()
     {
-        return 10.08f;
+        return 10.66f;
     }
 
     void OpeningProcess();

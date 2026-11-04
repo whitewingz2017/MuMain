@@ -1,4 +1,13 @@
 #include "Render/Renderer/Overlay2DRecorder.h"
+#include <algorithm>
+
+std::pair<float, float> Render::Renderer::RecordedText::FittedBox(float drawnWidth) const
+{
+    const float width = autoWidth && drawnWidth > 0.0f
+        ? drawnWidth : std::max(boxWidth, textX - boxX + drawnWidth);
+    const float x = boxX + (autoWidth ? (boxWidth - width) * horizontalAnchor : 0.0f);
+    return {x, width};
+}
 
 namespace
 {

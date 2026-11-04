@@ -5,68 +5,128 @@
     {
       "number": 0,
       "file": "Data/Item/Bow01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 1,
       "file": "Data/Item/Bow02.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 2,
       "file": "Data/Item/Bow03.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 3,
       "file": "Data/Item/Bow04.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "renderStyle": "monsterBattleBow"
     },
     {
       "number": 4,
       "file": "Data/Item/Bow05.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 5,
       "file": "Data/Item/Bow06.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "white",
@@ -76,100 +136,215 @@
     {
       "number": 6,
       "file": "Data/Item/Bow07.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [180, 270, 25]
+        "rotation": [
+          180,
+          270,
+          25
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       }
     },
     {
       "number": 7,
       "file": "Data/Item/Arrows01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [0, 270, 15],
+        "rotation": [
+          0,
+          270,
+          15
+        ],
         "scale": 0.0012
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
-        "level": [0, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]
+        "level": [
+          0,
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27,
+          29,
+          31
+        ]
       },
       "renderStyle": "ammunition"
     },
     {
       "number": 8,
       "file": "Data/Item/CrossBow01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 9,
       "file": "Data/Item/CrossBow02.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 10,
       "file": "Data/Item/CrossBow03.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 11,
       "file": "Data/Item/CrossBow04.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 12,
       "file": "Data/Item/CrossBow05.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 13,
       "file": "Data/Item/CrossBow06.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       },
       "glow": {
         "color": "white",
@@ -179,54 +354,123 @@
     {
       "number": 14,
       "file": "Data/Item/CrossBow07.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 15,
       "file": "Data/Item/Arrows02.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [0, 270, 15],
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          0,
+          270,
+          15
+        ],
         "scale": 0.0011
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       },
       "glow": {
-        "level": [0, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]
+        "level": [
+          0,
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27,
+          29,
+          31
+        ]
       },
       "renderStyle": "ammunition"
     },
     {
       "number": 16,
       "file": "Data/Item/CrossBow17.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       }
     },
     {
       "number": 17,
       "file": "Data/Item/Bow18.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.5],
-        "rotation": [0, 90, 15]
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "rotation": [
+          0,
+          90,
+          15
+        ]
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "steelBlue"
@@ -235,13 +479,26 @@
     {
       "number": 18,
       "file": "Data/Item/Bow19.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "rotation": [90, 180, 20]
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ]
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       },
       "glow": {
         "color": "sand"
@@ -251,14 +508,27 @@
     {
       "number": 19,
       "file": "Data/Item/CrossBow20.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.75],
-        "rotation": [90, 180, 20],
+        "anchor": [
+          0.7,
+          0.75
+        ],
+        "rotation": [
+          90,
+          180,
+          20
+        ],
         "scale": 0.002
       },
       "ground": {
-        "rotation": [90, 0, -45]
+        "rotation": [
+          90,
+          0,
+          -45
+        ]
       },
       "glow": {
         "color": "steelBlue"
@@ -268,10 +538,19 @@
     {
       "number": 20,
       "file": "Data/Item/Bow20.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.55],
-        "rotation": [180, -90, 15]
+        "anchor": [
+          0.5,
+          0.55
+        ],
+        "rotation": [
+          180,
+          -90,
+          15
+        ]
       },
       "glow": {
         "color": "copper"
@@ -281,11 +560,23 @@
     {
       "number": 21,
       "file": "Data/Item/HDK_Bow.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "offset": [0, 0.12],
-        "rotation": [180, -90, 15],
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "offset": [
+          0,
+          0.12
+        ],
+        "rotation": [
+          180,
+          -90,
+          15
+        ],
         "scale": 0.0022
       },
       "glow": {
@@ -296,11 +587,23 @@
     {
       "number": 22,
       "file": "Data/Item/CW_Bow.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "offset": [-0.1, 0.08],
-        "rotation": [180, -90, 15],
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "offset": [
+          -0.1,
+          0.08
+        ],
+        "rotation": [
+          180,
+          -90,
+          15
+        ],
         "scale": 0.002
       },
       "glow": {
@@ -311,15 +614,31 @@
     {
       "number": 23,
       "file": "Data/Item/Bow_24.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "offset": [-0.1, 0.08],
-        "rotation": [180, -90, 15],
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "offset": [
+          -0.1,
+          0.08
+        ],
+        "rotation": [
+          180,
+          -90,
+          15
+        ],
         "scale": 0.0032
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "rose"
@@ -328,19 +647,2825 @@
     {
       "number": 24,
       "file": "Data/Item/gamblebow.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.7, 0.7],
-        "offset": [-0.07, 0.07],
-        "rotation": [180, -90, 15],
+        "anchor": [
+          0.7,
+          0.7
+        ],
+        "offset": [
+          -0.07,
+          0.07
+        ],
+        "rotation": [
+          180,
+          -90,
+          15
+        ],
         "scale": 0.0023
       },
       "ground": {
-        "rotation": [0, 270, -45]
+        "rotation": [
+          0,
+          270,
+          -45
+        ]
       },
       "glow": {
         "color": "periwinkle",
-        "meshes": [0]
+        "meshes": [
+          0
+        ]
+      }
+    },
+    {
+      "number": 100,
+      "file": "Data/Custom/Skins/BOW/Arco37.bmd",
+      "textureFolders": [
+        "Custom/Skins/BOW"
+      ],
+      "inventory": {
+        "scale": 0.0025,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        }
+      ],
+      "glow": {
+        "excellent": false
+      }
+    },
+    {
+      "number": 300,
+      "file": "Data/Custom/Skins/FinalMU/04_300/blue_eyebow_stand.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_300"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x100"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 6,
+            "flags": 66,
+            "blend": 6,
+            "light": [
+              2,
+              0.5,
+              -0.5000002,
+              -0.004,
+              6.28,
+              -0.0
+            ],
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 7,
+            "flags": 2,
+            "blend": 7,
+            "light": [
+              2,
+              0.575,
+              -0.4250002,
+              -0.004,
+              6.28,
+              -0.0
+            ],
+            "u": 0.0,
+            "v": [
+              1,
+              0.0,
+              0.0005,
+              1,
+              2000,
+              0
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 2,
+            "blend": 2,
+            "light": [
+              2,
+              0.65,
+              -0.3500002,
+              -0.004,
+              6.28,
+              -0.0
+            ],
+            "u": [
+              3,
+              0.0,
+              0.25,
+              0.016666666666666666,
+              15,
+              0
+            ],
+            "v": [
+              4,
+              0.0,
+              0.25,
+              0.016666666666666666,
+              15,
+              0
+            ],
+            "red": 0.10000000149011612,
+            "green": 0.6499999761581421,
+            "blue": 0.5
+          },
+          {
+            "mesh": 3,
+            "flags": 2,
+            "blend": 3,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.10000000149011612,
+            "green": 0.6499999761581421,
+            "blue": 0.5
+          },
+          {
+            "mesh": 4,
+            "flags": 2,
+            "blend": 4,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.10000000149011612,
+            "green": 0.6499999761581421,
+            "blue": 0.5
+          },
+          {
+            "mesh": 5,
+            "flags": 2,
+            "blend": 5,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 0.10000000149011612,
+            "green": 0.6499999761581421,
+            "blue": 0.5
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 14,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 2.0999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 2.0999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 0.69999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 0.69999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 0.69999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 0.69999999,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 2.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 31,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 32,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 33,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 34,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32002,
+          "color": [
+            0.079999998,
+            0.15000001,
+            0.60000002
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32900,
+          "color": [
+            0.06274509803,
+            0.30980392156,
+            1.0
+          ],
+          "size": 0.325,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.17647058823,
+            0.68235294117
+          ],
+          "size": 1.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 31,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.30000001,
+          "rotation": 0.0
+        },
+        {
+          "bone": 32,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.30000001,
+          "rotation": 0.0
+        },
+        {
+          "bone": 33,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.30000001,
+          "rotation": 0.0
+        },
+        {
+          "bone": 34,
+          "texture": 32900,
+          "color": [
+            0.0,
+            0.07843137254,
+            0.13921568627
+          ],
+          "size": 0.30000001,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001059,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 301,
+      "file": "Data/Custom/Skins/FinalMU/04_301/hs_soularcherbow_s.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_301"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x101"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 3,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 4,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 5,
+            "flags": 66,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 6,
+            "flags": 2,
+            "blend": 6,
+            "light": [
+              2,
+              0.5,
+              -0.5000002,
+              -0.004,
+              6.28,
+              -0.0
+            ],
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 7,
+            "flags": 66,
+            "blend": 7,
+            "light": 1.0,
+            "u": 0.0,
+            "v": [
+              1,
+              0.0,
+              0.0005,
+              1,
+              2000,
+              0
+            ],
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 0.5
+          },
+          {
+            "mesh": 2,
+            "flags": 66,
+            "blend": 2,
+            "light": 1.0,
+            "u": [
+              3,
+              0.0,
+              0.25,
+              0.025,
+              15,
+              0
+            ],
+            "v": [
+              4,
+              0.0,
+              0.25,
+              0.025,
+              15,
+              0
+            ],
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 0.5
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 26,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 27,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 36,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 28,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 29,
+          "texture": 32002,
+          "color": [
+            0.72,
+            0.02,
+            0.01
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.95,
+            0.73
+          ],
+          "size": 1.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32900,
+          "color": [
+            1.0,
+            0.95,
+            0.73
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.95,
+            0.73
+          ],
+          "size": 1.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32900,
+          "color": [
+            1.0,
+            0.95,
+            0.73
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 30,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 31,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 32,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 33,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 34,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 35,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.28,
+            0.16
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.00084,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 302,
+      "file": "Data/Custom/Skins/FinalMU/04_302/absolute_gunbow.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_302"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x102"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 4,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 5,
+            "flags": 66,
+            "blend": 5,
+            "light": 1.0,
+            "u": [
+              4,
+              0.0,
+              0.25,
+              0.07999999821186066,
+              16,
+              0
+            ],
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 3,
+            "flags": 66,
+            "blend": 3,
+            "light": 1.0,
+            "u": [
+              1,
+              -0.0,
+              0.001,
+              -1,
+              1001,
+              1000
+            ],
+            "v": 0.0,
+            "red": 1.0,
+            "green": 0.8999999761581421,
+            "blue": 0.5
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 18,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 64,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 48,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 49,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 50,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 53,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 54,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 56,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 57,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 58,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 59,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 63,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.25,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 25,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 27,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 28,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 34,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 35,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 36,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 41,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 42,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 43,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 26,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 33,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 40,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 51,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 52,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 55,
+          "texture": 32400,
+          "color": [
+            1.0,
+            0.72,
+            0.4
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 62,
+          "texture": 32271,
+          "color": [
+            1.0,
+            0.25,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 62,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.47,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 62,
+          "texture": 32400,
+          "color": [
+            0.29,
+            0.31,
+            0.92
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001021,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 303,
+      "file": "Data/Custom/Skins/FinalMU/04_303/Darkangel_Bow.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_303"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x103"
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1,
+            "green": 1,
+            "blue": 1
+          },
+          {
+            "mesh": 2,
+            "flags": 66,
+            "blend": 2,
+            "light": 1.0,
+            "u": 0.0,
+            "v": [
+              1,
+              0.0,
+              0.0005,
+              1,
+              2000,
+              0
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1.0,
+            "u": 0.0,
+            "v": 0.0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 7,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32119,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32900,
+          "color": [
+            0.64,
+            0.26,
+            1.0
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.33,
+            0.94
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001294,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 304,
+      "file": "Data/Custom/Skins/FinalMU/04_304/Bow103.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_304"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x104"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32900,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.15,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001704,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 305,
+      "file": "Data/Custom/Skins/FinalMU/04_305/Bow104.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_305"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x105"
+      },
+      "staticEffects": [
+        {
+          "bone": 37,
+          "texture": 32231,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32002,
+          "color": [
+            0.91,
+            0.25,
+            0.15
+          ],
+          "size": 2.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32002,
+          "color": [
+            0.91,
+            0.25,
+            0.15
+          ],
+          "size": 2.5,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 37,
+          "texture": 32387,
+          "color": [
+            1.0,
+            0.29,
+            0.19
+          ],
+          "size": 0.4,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001514,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 306,
+      "file": "Data/Custom/Skins/FinalMU/04_306/Bow105.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_306"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x106"
+      },
+      "staticEffects": [
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32002,
+          "color": [
+            0.0,
+            0.68,
+            1.0
+          ],
+          "size": 2.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32900,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32900,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32900,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32900,
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001206,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 307,
+      "file": "Data/Custom/Skins/FinalMU/04_307/Bow106.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_307"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x107"
+      },
+      "staticEffects": [
+        {
+          "bone": 22,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 27,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 28,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 29,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32002,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 13,
+          "texture": 32119,
+          "color": [
+            0.5,
+            0.87,
+            0.4
+          ],
+          "size": 0.2,
+          "subType": 0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001311,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 308,
+      "file": "Data/Custom/Skins/FinalMU/04_308/Bow107.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_308"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x108"
+      },
+      "staticEffects": [
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.05,
+            0.5,
+            0.59
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.05,
+            0.5,
+            0.59
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32002,
+          "color": [
+            0.05,
+            0.5,
+            0.59
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32002,
+          "color": [
+            0.05,
+            0.5,
+            0.59
+          ],
+          "size": 1.0,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001461,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 309,
+      "file": "Data/Custom/Skins/FinalMU/04_309/Bow108.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_309"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x109"
+      },
+      "staticEffects": [
+        {
+          "bone": 0,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32400,
+          "color": [
+            0.0,
+            0.46,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001205,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 310,
+      "file": "Data/Custom/Skins/FinalMU/04_310/Bow109.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/04_310"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu4x110"
+      },
+      "staticEffects": [
+        {
+          "bone": 0,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 13,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 14,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 15,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 16,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 17,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 18,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 19,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 20,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 21,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 22,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 23,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 24,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 25,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.4,
+          "rotation": 0.0
+        },
+        {
+          "bone": 26,
+          "texture": 32400,
+          "color": [
+            0.25,
+            0.23,
+            0.15
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001111,
+        "rotation": [
+          180,
+          270,
+          25
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
       }
     }
   ]

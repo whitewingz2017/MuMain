@@ -47,7 +47,7 @@ public:
     void StopSound(ESound buffer, bool resetPosition) override;
     void AllStopSound() override;
     void ReleaseSound(ESound buffer) override;
-    void Set3DSoundPosition() override;
+    void Set3DSoundPosition(const void* listener = nullptr) override;
     void SetVolume(ESound buffer, long vol) override;
     void SetMasterVolume(long vol) override;
 
@@ -66,6 +66,7 @@ public:
 private:
     // Convert DirectSound volume (dB * 100, range -10000..0) to linear 0.0..1.0
     static float DbToLinear(long dsVol);
+    void PositionSound(int buffer, ma_sound* sound, const void* object);
 
     bool HasFailedMusicTrack(const char* name) const;
     bool StartMusicStream(const std::string& identity);

@@ -4,6 +4,7 @@
 #include <string_view>
 #include "Core/Utilities/Benchmark/BenchConsoleCommand.h"
 #include "Core/Utilities/Log/MuLogger.h"
+#include "UI/Character/WorldLabelLayer.h"
 
 #include "muConsoleDebug.h"	// self
 
@@ -364,6 +365,12 @@ bool CmuConsoleDebug::CheckCommand(const std::wstring& strCommand)
     else if (strCommand.compare(L"$details off") == 0)
     {
         SetShowDebugInfo(false);
+        return true;
+    }
+    else if (strCommand == L"$labelboxes old" || strCommand == L"$labelboxes new")
+    {
+        UI::Character::g_retainLabelBoxGeometry = strCommand == L"$labelboxes new";
+        mu::log::Get("render")->info("Label box retention: {}", UI::Character::g_retainLabelBoxGeometry);
         return true;
     }
     else if (strCommand.compare(L"$glstats on") == 0)

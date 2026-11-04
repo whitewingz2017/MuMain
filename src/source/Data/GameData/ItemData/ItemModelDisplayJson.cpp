@@ -107,6 +107,18 @@ void ReadGround(const OrderedJson& json, ItemGroundDisplay& display, const Repor
     reader.WarnAboutUnknownKeys();
 }
 
+void ReadEquipment(const OrderedJson& json, ItemModelDefinition& model, const ReportIssue& report)
+{
+    const auto* object = ModelJson::FindObject(json, EquipmentKey, report);
+    if (!object) return;
+    model.equipment.emplace();
+    ModelJson::ItemModelValueReader reader(*object, EquipmentKey, report);
+    reader.ReadNumbers(RotationKey, model.equipment->rotation, RotationCount);
+    reader.ReadNumbers(OffsetKey, model.equipment->offset, OffsetCount);
+    reader.ReadNumber(ScaleKey, model.equipment->scale, true);
+    reader.WarnAboutUnknownKeys();
+}
+
 void ReadCloth(const OrderedJson& json, bool& cloth, const ReportIssue& report)
 {
     const auto field = json.find(ClothKey);
@@ -139,12 +151,19 @@ void Write(const ItemModelDefinition& model, OrderedJson& json)
     {
         json[ClothKey] = true;
     }
+    if (model.equipment)
+    {
+        json[EquipmentKey] = {{RotationKey, WriteNumbers(model.equipment->rotation)},
+            {OffsetKey, WriteNumbers(model.equipment->offset)},
+            {ScaleKey, WriteNumber(model.equipment->scale)}};
+    }
 }
 
 void Read(const OrderedJson& json, ItemModelDefinition& model, const ReportIssue& report)
 {
     ReadInventory(json, model.inventory, report);
     ReadGround(json, model.ground, report);
+    ReadEquipment(json, model, report);
     ReadCloth(json, model.cloth, report);
 }
 } // namespace Data::Items::DisplayJson

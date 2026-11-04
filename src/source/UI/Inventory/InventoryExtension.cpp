@@ -292,6 +292,7 @@ float CInventoryExtension::GetLayerDepth()
 
 CInventoryCtrl* CInventoryExtension::TryGetExtensionByInventoryIndex(int iIndex) const
 {
+    if (iIndex < MAX_MY_INVENTORY_INDEX) return nullptr;
     const auto index = iIndex - MAX_MY_INVENTORY_INDEX;
     const auto extensionIndex = index / MAX_INVENTORY_EXT_ONE;
     if (extensionIndex >= 0 && extensionIndex < MAX_INVENTORY_EXT_COUNT)

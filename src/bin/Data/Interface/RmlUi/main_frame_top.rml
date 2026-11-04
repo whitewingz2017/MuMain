@@ -3,6 +3,7 @@
 	<title>Main Frame Top</title>
 	<link type="text/rcss" href="base.rcss"/>
 	<link type="text/rcss" href="main_frame_top.rcss"/>
+	<link type="text/rcss" href="main_frame_top.editor.rcss"/>
 </head>
 <body data-model="main_frame">
 	<!-- The corner buttons as a top-right panel, for a theme that wants them there instead of
@@ -12,24 +13,26 @@
 	     `.anchor-top-right`'s `right:0` -- `right:0` was confirmed not to render this element at
 	     all here (root cause unknown), flex sidesteps it. -->
 	<div id="top_right_row" class="anchor-top-left">
-		<div id="buttons_top">
-			<div id="btn_cshop_top" class="frame-btn-top" data-class-open="cshop_open" data-event-click="mainframe_cshop_click" data-attr-data-hint="cshop_tooltip">
+		<div id="buttons_top" data-class-collapsed="panel_collapsed" class="rml-editor-17d670db9736">
+			<div id="btn_cshop_top" class="frame-btn-top rml-editor-927f1e2beded" data-class-open="cshop_open" data-event-mousedown="mainframe_cshop_click">
 				<span>SHOP</span>
 			</div>
-			<div id="btn_chainfo_top" class="frame-btn-top" data-class-open="chainfo_open" data-event-click="mainframe_chainfo_click" data-attr-data-hint="chainfo_tooltip">
-				<span>CHAR</span>
-				<div class="alert-dot-top" data-class-hidden="!chainfo_alert"></div>
-			</div>
-			<div id="btn_myinven_top" class="frame-btn-top" data-class-open="myinven_open" data-event-click="mainframe_myinven_click" data-attr-data-hint="myinven_tooltip">
-				<span>INV</span>
-			</div>
-			<div id="btn_friend_top" class="frame-btn-top" data-class-open="friend_open" data-event-click="mainframe_friend_click" data-attr-data-hint="friend_tooltip">
+            <div id="btn_bank_top" class="frame-btn-top" data-event-mousedown="mainframe_bank_click"><span>JEWEL BANK</span></div>
+			<div id="btn_friend_top" class="frame-btn-top rml-editor-22c27dc8f82f" data-class-open="friend_open" data-event-mousedown="mainframe_friend_click">
 				<span>FRIEND</span>
 				<div class="alert-dot-top" data-class-hidden="!friend_alert"></div>
 			</div>
-			<div id="btn_window_top" class="frame-btn-top" data-class-open="window_open" data-event-click="mainframe_window_click" data-attr-data-hint="window_tooltip">
+			<div id="btn_chainfo_top" class="frame-btn-top rml-editor-944eb9d5d28c" data-class-open="chainfo_open" data-event-mousedown="mainframe_chainfo_click">
+				<span>MOVE</span>
+				<div class="alert-dot-top" data-class-hidden="!chainfo_alert"></div>
+			</div>
+			<div id="btn_myinven_top" class="frame-btn-top" data-class-open="myinven_open" data-event-mousedown="mainframe_myinven_click">
+				<span>INV</span>
+			</div>
+			<div id="btn_window_top" class="frame-btn-top rml-editor-8eb35e9dfee9" data-class-open="window_open" data-event-mousedown="mainframe_window_click">
 				<span>MENU</span>
 			</div>
+            <div id="top_panel_toggle" data-event-mousedown="mainframe_panel_toggle" aria-label="Show or hide top menu"></div>
 		</div>
 	</div>
 </body>

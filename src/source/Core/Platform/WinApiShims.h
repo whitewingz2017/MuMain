@@ -152,7 +152,10 @@ inline DWORD GetCurrentThreadId()
 {
     // pthread_t is 8 bytes on LP64; fold the high half into the low half before
     // truncating so two threads are less likely to collide on the low 32 bits.
-    const std::uint64_t id = reinterpret_cast<std::uintptr_t>(pthread_self());
+    std::uint64_t id = 0;
+    const pthread_t thread = pthread_self();
+    static_assert(sizeof(thread) <= sizeof(id));
+    std::memcpy(&id, &thread, sizeof(thread));
     return static_cast<DWORD>(id ^ (id >> 32));
 }
 

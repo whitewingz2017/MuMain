@@ -1,0 +1,6 @@
+/* Mobile EXP stays above the bottom edge, independent of the profile panel. */
+#mobile_exp_strip { display: block; position: absolute; left: 1vw; right: 1vw; bottom: 0.3vh; height: 4.2vh; font-family: "Liberation Sans"; font-size: 2.1vh; color: #e5db9c; pointer-events: none; }
+#mobile_exp_text { display: block; position: absolute; left: 0; top: 0; line-height: 2.9vh; white-space: nowrap; }
+#mobile_exp_track { position: absolute; left: 0; right: 0; bottom: 0; height: 0.8vh; background-color: #132920; }
+#mobile_exp_fill { display: block; position: absolute; left: 0; top: 0; height: 100%; background-color: #2fa880; }
+.exp-tick { position: absolute; top: 0; width: 2px; height: 100%; background-color: #111b18; }

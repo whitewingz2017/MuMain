@@ -112,6 +112,8 @@ void CMixInventory::BindRmlModel(Rml::DataModelConstructor& c, MixInventoryRmlMo
     c.Bind("show_recipe", &model.showRecipe);
     c.Bind("recipe_line1", &model.recipeLine1);
     c.Bind("recipe_line2", &model.recipeLine2);
+    c.Bind("recipe_line1_fit", &model.recipeLine1Fit);
+    c.Bind("recipe_line2_fit", &model.recipeLine2Fit);
     c.Bind("show_recipe_line2", &model.showRecipeLine2);
     c.Bind("recipe_ready", &model.recipeReady);
 
@@ -124,6 +126,7 @@ void CMixInventory::BindRmlModel(Rml::DataModelConstructor& c, MixInventoryRmlMo
 
     c.Bind("show_prediction", &model.showPrediction);
     c.Bind("prediction_text", &model.predictionText);
+    c.Bind("prediction_fit", &model.predictionFit);
 
     auto mixLine = c.RegisterStruct<MixLine>();
     mixLine.RegisterMember("text", &MixLine::text);
@@ -540,6 +543,20 @@ void CMixInventory::SyncMixContentModel()
     {
         if (model.*field != newLines) { model.*field = std::move(newLines); m_RmlView.MarkDirty(boundName); }
     };
+    auto syncFit = [&](float MixInventoryRmlModel::* field, const char* boundName, float value)
+    {
+        if (model.*field != value) { model.*field = value; m_RmlView.MarkDirty(boundName); }
+    };
+    // The recipe rows and the prediction / source list are 0.8em of the probe's font
+    // (.mix-row, .mix-list-line). Each of their lines stays one row, shrunk to its box: wrapped,
+    // the list grew past the rows native gave it and ran into the descriptions placed below it
+    // (the castle senior's text at 270), which is what a phone's larger text did.
+    constexpr float kSmallTextEm = 0.8f;
+    constexpr float kRecipeBoxWidth = 160.f;
+    constexpr float kListBoxWidth = 156.f;
+    const float smallMinimumFit = std::min(1.f, minimumFit / kSmallTextEm);
+    auto smallFit = [&](const wchar_t* text, float boxWidth)
+    { return TextFitScale(fitProbe, text, boxWidth / kSmallTextEm, probeUnitsPerLayoutUnit, smallMinimumFit); };
 
     wchar_t szText[256] = {};
     const int mixType = g_MixRecipeMgr.GetMixInventoryType();
@@ -583,11 +600,15 @@ void CMixInventory::SyncMixContentModel()
 
     g_MixRecipeMgr.GetCurRecipeName(szText, 1);
     syncWide(&MixInventoryRmlModel::recipeLine1, "recipe_line1", szText);
+    syncFit(&MixInventoryRmlModel::recipeLine1Fit, "recipe_line1_fit", smallFit(szText, kRecipeBoxWidth));
     szText[0] = L'\0';
     const bool showRecipeLine2 = (g_MixRecipeMgr.GetCurRecipeName(szText, 2) == TRUE);
     syncBool(&MixInventoryRmlModel::showRecipeLine2, "show_recipe_line2", showRecipeLine2);
     if (showRecipeLine2)
+    {
         syncWide(&MixInventoryRmlModel::recipeLine2, "recipe_line2", szText);
+        syncFit(&MixInventoryRmlModel::recipeLine2Fit, "recipe_line2_fit", smallFit(szText, kRecipeBoxWidth));
+    }
 
     // Success rate -- type-gated exactly like RenderFrame()'s own second switch.
     bool showSuccess = false;
@@ -704,7 +725,7 @@ void CMixInventory::SyncMixContentModel()
             else if (iResult == SEASON3A::MIX_SOURCE_PARTIALLY) kind = "partial";
             else if (iResult == SEASON3A::MIX_SOURCE_YES) kind = "ready";
 
-            sourceLines.push_back({ StringUtils::WideToNarrow(szText), kind });
+            sourceLines.push_back({ StringUtils::WideToNarrow(szText), kind, 0, false, smallFit(szText, kListBoxWidth) });
         }
     }
     else if (g_MixRecipeMgr.IsMixInit())
@@ -720,7 +741,10 @@ void CMixInventory::SyncMixContentModel()
 
     syncBool(&MixInventoryRmlModel::showPrediction, "show_prediction", showPrediction);
     if (showPrediction)
+    {
         syncWide(&MixInventoryRmlModel::predictionText, "prediction_text", predictionText);
+        syncFit(&MixInventoryRmlModel::predictionFit, "prediction_fit", smallFit(predictionText, kListBoxWidth));
+    }
     syncLines(&MixInventoryRmlModel::sourceLines, "source_lines", sourceLines);
     syncLines(&MixInventoryRmlModel::statusLines, "status_lines", statusLines);
 
@@ -1024,17 +1048,17 @@ bool CMixInventory::AcceptsHeldItem(CPickedItem* pPickedItem)
 
 // Shared core for right-click moves: the item under the cursor in srcCtrl goes to an empty slot in dstCtrl.
 bool CMixInventory::AutoMoveItem(CInventoryCtrl* srcCtrl, STORAGE_TYPE srcType,
-    CInventoryCtrl* dstCtrl, STORAGE_TYPE dstType, bool requireMixSource)
+    CInventoryCtrl* dstCtrl, STORAGE_TYPE dstType, bool requireMixSource, ITEM* selectedItem)
 {
     if (GetMixState() != MIX_READY)
         return false;
 
     return UI::Items::Placement::AutoMoveItemAtCursor(
         srcCtrl, srcType, dstCtrl, dstType,
-        [requireMixSource](ITEM* item) { return !requireMixSource || g_MixRecipeMgr.IsMixSource(item); });
+        [requireMixSource](ITEM* item) { return !requireMixSource || g_MixRecipeMgr.IsMixSource(item); }, selectedItem);
 }
 
-bool CMixInventory::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl)
+bool CMixInventory::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl, ITEM* selectedItem)
 {
     if (sourceCtrl == nullptr)
         sourceCtrl = g_pMyInventory ? g_pMyInventory->GetInventoryCtrl() : nullptr;
@@ -1044,7 +1068,7 @@ bool CMixInventory::ProcessMyInvenItemAutoMove(CInventoryCtrl* sourceCtrl)
 
     return AutoMoveItem(sourceCtrl, STORAGE_TYPE::INVENTORY,
         m_pNewInventoryCtrl, g_MixRecipeMgr.GetMixInventoryEquipmentIndex(),
-        /*requireMixSource*/ true);
+        /*requireMixSource*/ true, selectedItem);
 }
 
 bool CMixInventory::ProcessMixItemAutoMoveToInventory()

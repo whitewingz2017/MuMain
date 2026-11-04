@@ -17,6 +17,9 @@ struct Point
     float y = 0.f;
 };
 
+// The original atlas uses world Y horizontally and world X vertically, without inversion.
+constexpr Point TexturePoint(float worldX, float worldY) { return {worldY / 256.f, worldX / 256.f}; }
+
 // CSS matrix(a, b, c, d, e, f): X = a*x + c*y + e, Y = b*x + d*y + f, for an element placed at
 // (0, 0) with transform-origin 0 0.
 struct CssMatrix
@@ -49,6 +52,15 @@ struct Screen
 
     bool operator==(const Screen&) const = default;
 };
+
+Screen AspectFitScreen(float width, float height);
+inline constexpr float MobileMapScale = 0.72f;
+// Both mobile maps open fully zoomed in; the -/+ buttons step down to their minimums.
+inline constexpr float MobileMaxZoom = 2.5f;
+inline constexpr float MobileZoomStep = 0.25f;
+inline constexpr float MobileCornerMapMinZoom = 1.f;
+inline constexpr float MobileTabMapMinZoom = 0.5f;
+Screen MobileScreen(float width, float height);
 
 // The matrix that maps an element of elementWidth x elementHeight onto the quad.
 CssMatrix ElementToQuad(const Quad& quad, float elementWidth, float elementHeight);

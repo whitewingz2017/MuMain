@@ -33,5 +33,9 @@ enum class Result
 // Runs the item effect before the model is drawn (the item effects are
 // taken from the item model database after each build of it). It may change
 // the level the model glows like.
+// Draws attached colored sprites and emits configured particles after the solid model.
+void RenderAttachments(BMD* b, OBJECT* o, int modelType, float alpha);
+void RenderPetEffects(BMD* b, OBJECT* o, int modelType, float alpha, bool defaultGlow);
+
 Result Apply(BMD* b, OBJECT* o, int modelType, float alpha, int& level);
 } // namespace Render::Items::ItemEffects

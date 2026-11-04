@@ -371,12 +371,14 @@ void EnableAlphaTest(bool DepthMask)
         mu::GetRenderer().SetFogEnabled(true);
 }
 
-void EnableAlphaBlend()
+void EnableAlphaBlend(bool sourceAlpha)
 {
-    if (AlphaBlendType != 3)
+    constexpr int AlphaGlowBlend = 8;
+    const int blendType = sourceAlpha ? AlphaGlowBlend : 3;
+    if (AlphaBlendType != blendType)
     {
-        AlphaBlendType = 3;
-        mu::GetRenderer().SetBlendMode(mu::BlendMode::Glow);
+        AlphaBlendType = blendType;
+        mu::GetRenderer().SetBlendMode(sourceAlpha ? mu::BlendMode::Additive : mu::BlendMode::Glow);
     }
     DisableCullFace();
     DisableDepthMask();

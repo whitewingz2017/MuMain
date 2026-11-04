@@ -20,7 +20,10 @@ void UI::Items::ItemCameraTarget::Sync(Rml::Element* image, bool enabled)
         m_target.SetEnabled(false);
         return;
     }
+    const auto previousOffset = m_offset;
+    const auto previousSize = m_size;
     const bool placed = UI::RmlBridge::DrawnContentBox(*image, m_offset, m_size);
+    if (m_offset != previousOffset || m_size != previousSize) m_target.Invalidate();
     const bool drawing = enabled && placed && m_size.x >= 1.f && m_size.y >= 1.f;
     m_target.SetEnabled(drawing);
     // Drawn at the size it is shown, never upscaled.

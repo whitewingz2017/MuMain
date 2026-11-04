@@ -89,6 +89,7 @@ public:
     // z-order bands, wrong if a legacy window ever needs to sit visually on top of migrated RmlUi
     // content. Revisit if that situation arises.
     bool ProcessSdlEvent(SDL_Event& event, SDL_Window* window) override;
+    bool ProcessTouchScroll(const SDL_Event& event);
 
     // Rml::Context::IsMouseInteracting() -- true while the mouse is hovering/pressed over any
     // RmlUi element. Intended as a third click-to-move gate alongside MouseOnWindow (CWin tier)
@@ -156,6 +157,8 @@ private:
     // a live WidgetTextInputContext can call back into it during document/element teardown.
     std::unique_ptr<TextInputMethodEditor_SDL> m_TextInputMethodEditor;
 
+    long long m_ScrollFinger = -1;
+    bool m_SuppressScrollMouse = false;
     Rml::Context* m_Context = nullptr; // owned by Rml::Core, released via Rml::Shutdown()
     Rml::Context* m_DebugContext = nullptr; // likewise
 };

@@ -1,220 +1,160 @@
 #include "stdafx.h"
-#include "Core/Text/TextLineWrap.h"
-#include "Render/Text/CUIRenderTextSDLTtf.h"
-#include "UI/RmlBridge/RmlNativeTextSize.h"
 #include "UI/HUD/Notices.h"
-
-#include "App/Platform/Windows/Winmain.h"    // g_hFontBold
-#include "Render/Textures/ZzzOpenglUtil.h" // EnableAlphaTest
-#include "UI/Core/WindowSystem.h"        // g_pNewUISystem
-#include "Engine/AI/ZzzAI.h"             // FPS_ANIMATION_FACTOR
-#include "Engine/Object/ZzzInterface.h"  // CutText
-#include "Core/Utilities/StringUtils.h"
-#include "Render/RmlUi/RmlUiRuntime.h"
+#include "UI/HUD/NoticeHistory.h"
 #include "UI/HUD/NoticesRmlModel.h"
-#include "UI/RmlBridge/RmlSyncField.h"
 #include "UI/RmlBridge/RmlDocumentVisibility.h"
+#include "UI/RmlBridge/RmlSyncField.h"
 #include "UI/RmlBridge/RmlThemedView.h"
-#include "UI/RmlBridge/RmlTheme.h"
-#include "UI/Scaling/UITransform.h"
+#include "UI/Core/WindowSystem.h"
+#include "Core/Utilities/StringUtils.h"
+#include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Text/CUIRenderText.h"
+#include "App/Platform/Windows/Winmain.h"
 
-#include <RmlUi/Core/ElementDocument.h>
-
-namespace
-{
-    constexpr int MAX_NOTICE = 6;
-    constexpr int NOTICE_LIFETIME = 300;
-    constexpr int NOTICE_TEXT_MAX = 256;
-
-    struct Notice
-    {
-        wchar_t Text[NOTICE_TEXT_MAX];
-        int     LifeTime;
-        BYTE    Color;
-    };
-
-    int    s_count = 0;
-    // float, not int -- FPS_ANIMATION_FACTOR is a sub-1.0 delta at high FPS; int truncation would
-    // swallow it (same root cause as CCreditWin's alpha-fade bug).
-    float  s_time = NOTICE_LIFETIME;
-    float  s_blinkPhase = 0.f;
-    Notice s_notices[MAX_NOTICE];
-
-    void BindModel(Rml::DataModelConstructor& c, UI::Notices::NoticesRmlModel& model)
-    {
-        c.Bind("text_px", &model.textPx);
-        c.Bind("line_height_px", &model.lineHeightPx);
-        auto line = c.RegisterStruct<UI::Notices::NoticeLineEntry>();
-        line.RegisterMember("text", &UI::Notices::NoticeLineEntry::text);
-        line.RegisterMember("kind", &UI::Notices::NoticeLineEntry::kind);
-        c.RegisterArray<std::vector<UI::Notices::NoticeLineEntry>>();
-        c.Bind("lines", &model.lines);
-    }
-
-    // The notices in RmlUi (notices.rml): one main-context document above every other document but
-    // the tooltip (the original drew the notices after every window). Render() fills it; Move(),
-    // which runs once per frame before the scene draws, hides it when the scene stopped calling
-    // Render() (the loading scene draws no notices).
-    UI::RmlBridge::ThemedView<UI::Notices::NoticesRmlModel> s_view{"notices", BindModel, {{"Data/Interface/RmlUi/notices.rml"}}};
-    bool s_renderedThisFrame = false;
-
-    // Shift the buffer up by one when it is full so the newest line fits.
-    void Scroll()
-    {
-        if (s_count > MAX_NOTICE - 1)
-        {
-            s_count = MAX_NOTICE - 1;
-            for (int i = 1; i < MAX_NOTICE; i++)
-            {
-                s_notices[i - 1].Color = s_notices[i].Color;
-                wcscpy(s_notices[i - 1].Text, s_notices[i].Text);
-            }
-        }
-    }
-}
+#include <RmlUi/Core/Context.h>
+#include <chrono>
 
 namespace UI::Notices
 {
-    void CopyText(wchar_t (&destination)[NOTICE_TEXT_MAX], const wchar_t* source)
+namespace
+{
+constexpr const char* Stages[] = {"stage-in", "stage-2", "stage-3", "stage-4", "stage-5"};
+NoticeHistory s_History;
+bool s_RenderedThisFrame = false;
+bool s_Dirty = true;
+bool s_ForceRefresh = true;
+std::uint64_t s_SyncedRevision = 0;
+auto s_LastMove = std::chrono::steady_clock::now();
+
+void BindModel(Rml::DataModelConstructor& constructor, NoticesRmlModel& model)
+{
+    auto line = constructor.RegisterStruct<NoticeLineEntry>();
+    line.RegisterMember("text", &NoticeLineEntry::text);
+    line.RegisterMember("kind", &NoticeLineEntry::kind);
+    line.RegisterMember("stage", &NoticeLineEntry::stage);
+    constructor.RegisterArray<std::vector<NoticeLineEntry>>();
+    constructor.Bind("lines", &model.lines);
+    constructor.Bind("outgoing_text", &model.outgoingText);
+    constructor.Bind("outgoing_kind", &model.outgoingKind);
+    constructor.Bind("outgoing_stage", &model.outgoingStage);
+}
+
+UI::RmlBridge::ThemedView<NoticesRmlModel> s_View{
+    "notices", BindModel, {{"Data/Interface/RmlUi/notices.rml"}},
+    {.afterBuild = [] { s_ForceRefresh = true; }}};
+
+std::vector<NoticeLineEntry> BuildLines(bool preparing)
+{
+    std::vector<NoticeLineEntry> lines(NoticeHistory::Capacity);
+    for (std::size_t index = 0; index < lines.size(); ++index)
     {
-        wcsncpy_s(destination, source, _TRUNCATE);
+        const auto& entry = s_History.Entries()[index];
+        if (entry.text.empty())
+            continue;
+        auto& line = lines[index];
+        line.text = StringUtils::WideToNarrow(entry.text.c_str());
+        line.kind = entry.guild ? "tone-guild" : "";
+        line.stage = preparing ? (index == 0 ? "prep" : Rml::String(Stages[index - 1]) + " snap") : Stages[index];
     }
+    return lines;
+}
 
-    void Clear()
+void SyncModel(bool preparing)
+{
+    auto& binder = s_View.Binder();
+    const auto& outgoing = s_History.Outgoing();
+    Rml::String stage = outgoing.text.empty() ? "empty" : (preparing ? "stage-5 snap" : "stage-out");
+    SyncField(binder, &NoticesRmlModel::lines, "lines", BuildLines(preparing));
+    SyncField(binder, &NoticesRmlModel::outgoingText, "outgoing_text", StringUtils::WideToNarrow(outgoing.text.c_str()));
+    SyncField(binder, &NoticesRmlModel::outgoingKind, "outgoing_kind", Rml::String(outgoing.guild ? "tone-guild" : ""));
+    SyncField(binder, &NoticesRmlModel::outgoingStage, "outgoing_stage", std::move(stage));
+}
+
+void SyncView()
+{
+    auto* document = s_View.Document();
+    if (!document)
+        return;
+    UI::RmlBridge::SyncDocumentVisibility(document,
+        s_History.HasMessages() || !s_History.Outgoing().text.empty());
+    if (!s_Dirty && !s_ForceRefresh)
+        return;
+    if (s_ForceRefresh || s_SyncedRevision != s_History.Revision())
     {
-        memset(s_notices, 0, sizeof(s_notices));
+        // Commit the old stages before transitioning the same stable rows to their new stages.
+        SyncModel(true);
+        document->GetContext()->Update();
+        s_SyncedRevision = s_History.Revision();
     }
+    SyncModel(false);
+    s_Dirty = false;
+    s_ForceRefresh = false;
+}
 
-    void Create(const wchar_t* text, int color)
+void RenderNative()
+{
+    constexpr int CentreX = 320;
+    constexpr int Top = 300;
+    constexpr int RowHeight = 13;
+    EnableAlphaTest();
+    g_pRenderText->SetFont(g_hFontBold);
+    for (std::size_t index = 0; index < NoticeHistory::Capacity; ++index)
     {
-        g_pRenderText->SetFont(g_hFontBold);
-        const SIZE size = g_pRenderText->MeasureText(text, lstrlen(text));
-
-        Scroll();
-        s_notices[s_count].Color = color;
-        if (size.cx < NOTICE_TEXT_MAX)
-        {
-            CopyText(s_notices[s_count++].Text, text);
-        }
+        const auto& entry = s_History.Entries()[index];
+        if (entry.text.empty())
+            continue;
+        if (entry.guild)
+            g_pRenderText->SetTextColor(100, 255, 200, 255);
         else
-        {
-            wchar_t topText[NOTICE_TEXT_MAX] = { 0 };
-            wchar_t bottomText[NOTICE_TEXT_MAX] = { 0 };
-            CutText(text, topText, bottomText, NOTICE_TEXT_MAX);
-            CopyText(s_notices[s_count++].Text, topText);
-            Scroll();
-            s_notices[s_count].Color = color;
-            CopyText(s_notices[s_count++].Text, bottomText);
-        }
-        s_time = NOTICE_LIFETIME;
-    }
-
-    void Move()
-    {
-        if (!s_renderedThisFrame)
-            UI::RmlBridge::SyncDocumentVisibility(s_view.Document(), false);
-        s_renderedThisFrame = false;
-
-        s_time -= FPS_ANIMATION_FACTOR;
-        if (s_time <= 0)
-        {
-            s_time = NOTICE_LIFETIME;
-            Create(L"", 0);
-        }
-    }
-
-    namespace
-    {
-
-    // The original's per-line draw: RenderText(320, 300 + i * 13) centred, bold, on a
-    // half-transparent black box sized to the text; empty lines draw nothing. The theme stacks
-    // the rows.
-    void SyncView(bool visible)
-    {
-        UI::RmlBridge::SyncDocumentVisibility(s_view.Document(), visible);
-        if (!visible)
-            return;
-
-        SyncField(s_view.Binder(), &NoticesRmlModel::textPx, "text_px",
-                  UI::RmlBridge::NativeTextPx(UI::Scaling::FontRole::Bold));
-        SyncField(s_view.Binder(), &NoticesRmlModel::lineHeightPx, "line_height_px",
-                  CUIRenderTextSDLTtf::LineHeightPx(UI::Scaling::FontRole::Bold));
-
-        std::vector<NoticeLineEntry> lines;
-        int shown = 0;
-        for (int i = 0; i < MAX_NOTICE; i++)
-        {
-            if (s_notices[i].Text[0] != L'\0')
-                shown = i + 1;
-        }
-        for (int i = 0; i < shown; i++)
-        {
-            const Notice& n = s_notices[i];
-            NoticeLineEntry line;
-            if (n.Text[0] != L'\0')
-            {
-                line.text = StringUtils::WideToNarrow(n.Text);
-                if (n.Color == 0)
-                    line.kind = (int)s_blinkPhase % 10 < 5 ? "gold-dim" : "gold";
-                else
-                    line.kind = "green";
-            }
-            lines.push_back(std::move(line));
-        }
-        SyncField(s_view.Binder(), &NoticesRmlModel::lines, "lines", std::move(lines));
-    }
-
-    void RenderNative()
-    {
-        EnableAlphaTest();
-
-        g_pRenderText->SetFont(g_hFontBold);
-
-        for (int i = 0; i < MAX_NOTICE; i++)
-        {
-            Notice* n = &s_notices[i];
-            if (n->Color == 0)
-            {
-                g_pRenderText->SetBgColor(0, 0, 0, 128);
-                if ((int)s_blinkPhase % 10 < 5)
-                {
-                    g_pRenderText->SetTextColor(255, 200, 80, 128);
-                }
-                else
-                {
-                    g_pRenderText->SetTextColor(255, 200, 80, 255);
-                }
-            }
-            else
-            {
-                g_pRenderText->SetTextColor(100, 255, 200, 255);
-                g_pRenderText->SetBgColor(0, 0, 0, 128);
-            }
-
-            g_pRenderText->RenderText(320, 300 + i * 13, n->Text, 0, 0, RT3_WRITE_CENTER);
-        }
-    }
-    } // namespace
-
-    void Render()
-    {
-        s_renderedThisFrame = true;
-
-#ifdef KJH_ADD_INGAMESHOP_UI_SYSTEM
-        if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_INGAMESHOP) == true)
-        {
-            UI::RmlBridge::SyncDocumentVisibility(s_view.Document(), false);
-            return;
-        }
-#endif // KJH_ADD_INGAMESHOP_UI_SYSTEM
-
-        s_view.Ensure();
-        if (s_view.Document() != nullptr)
-            SyncView(true);
-        else
-            RenderNative();
-
-        s_blinkPhase += FPS_ANIMATION_FACTOR;
+            g_pRenderText->SetTextColor(255, 200, 80, 255);
+        g_pRenderText->SetBgColor(0, 0, 0, 128);
+        g_pRenderText->RenderText(CentreX, Top + static_cast<int>(index) * RowHeight,
+                                 entry.text.c_str(), 0, 0, RT3_WRITE_CENTER);
     }
 }
+} // namespace
+
+void Clear()
+{
+    s_History.Clear();
+    s_LastMove = std::chrono::steady_clock::now();
+    s_Dirty = true;
+}
+
+void Create(const wchar_t* text, int color)
+{
+    if (!text || !*text)
+        return;
+    s_History.Push(text, color != 0);
+    s_LastMove = std::chrono::steady_clock::now();
+    s_Dirty = true;
+}
+
+void Move()
+{
+    if (!s_RenderedThisFrame)
+        UI::RmlBridge::SyncDocumentVisibility(s_View.Document(), false);
+    s_RenderedThisFrame = false;
+    const auto now = std::chrono::steady_clock::now();
+    const double elapsed = std::chrono::duration<double>(now - s_LastMove).count();
+    s_LastMove = now;
+    s_Dirty = s_History.Advance(elapsed) || s_Dirty;
+}
+
+void Render()
+{
+    s_RenderedThisFrame = true;
+#ifdef KJH_ADD_INGAMESHOP_UI_SYSTEM
+    if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_INGAMESHOP))
+    {
+        UI::RmlBridge::SyncDocumentVisibility(s_View.Document(), false);
+        return;
+    }
+#endif
+    s_View.Ensure();
+    if (s_View.Document())
+        SyncView();
+    else
+        RenderNative();
+}
+} // namespace UI::Notices
