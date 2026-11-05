@@ -64,7 +64,7 @@ void EnsureHeroMount()
 {
     if (SceneFlag != MAIN_SCENE || !Hero || !CharacterMachine || !Hero->Object.Live || gMapManager.InChaosCastle()) return;
     const ITEM& helper = CharacterMachine->Equipment[EQUIPMENT_HELPER];
-    const int behavior = helper.Type < 0 ? -1 : GameLogic::Cosmetics::HelperBehaviorItem(helper.Type);
+    const int behavior = helper.Type < 0 ? -1 : GameLogic::Cosmetics::RideBehaviorItem(helper.Type);
     const int model = behavior < 0 ? -1 : MountModel(behavior, helper.ExcellentFlags);
     // Without a mount in the helper slot the hero has no mount. Some ways of taking one off left it
     // behind: it kept following in town and walked under the hero outside, who was not riding it.

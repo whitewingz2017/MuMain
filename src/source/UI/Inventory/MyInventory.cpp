@@ -1309,7 +1309,7 @@ void CMyInventory::CreateEquippingEffect(ITEM* pItem)
     OBJECT* pHeroObject = &Hero->Object;
     if (false == gMapManager.InChaosCastle())
     {
-        switch (GameLogic::Cosmetics::HelperBehaviorItem(pItem->Type))
+        switch (GameLogic::Cosmetics::RideBehaviorItem(pItem->Type))
         {
         case ITEM_HELPER:
             CreateMount(MODEL_HELPER, pHeroObject->Position, pHeroObject);

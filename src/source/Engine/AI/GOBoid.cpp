@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "Core/Utilities/Random.h"
 #include "GameLogic/Pets/MountCompanions.h"
+#include "GameLogic/Pets/MountCombat.h"
 #include "GameLogic/Pets/MuunMounts.h"
 #include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "GameLogic/Cosmetics/FenrirMounts.h"
@@ -735,9 +736,9 @@ void CullMounts()
         if (!o->Visible || !IsMountDrawn(o))
             continue;
 
-        if (GameLogic::Pets::MountCompanions::InTown(o))
+        if (GameLogic::Pets::MountCompanions::InTown(o) || GameLogic::Pets::MountCombat::IsFollowing(o->Owner))
         {
-            // A town companion keeps the scale its follow gave it.
+            // A town companion, or one beside a rider who dismounted to fight, keeps the scale its follow gave it.
         }
         else if (SceneFlag == CHARACTER_SCENE)
             o->Scale = 1.2f;

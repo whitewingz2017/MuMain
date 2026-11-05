@@ -25,6 +25,19 @@ constexpr int HelperBehaviorItem(int itemType)
 {
     return IsFenrirMount(itemType) ? NormalFenrirItemType : itemType;
 }
+constexpr int NormalDarkHorseItemType = 13 * 512 + 4;
+// FinalMU pet behavior 6: a horse. It carries its rider in the Dark Horse seat; the other mounts in Fenrir's.
+constexpr int FinalMuHorseBehavior = 6;
+constexpr bool IsHorseMount(int itemType)
+{
+    const auto* imported = FindFinalMuSkin(itemType);
+    return imported && imported->mount && imported->behavior == FinalMuHorseBehavior;
+}
+// The mount a helper item is ridden as: its model, the rider's poses and the ride.
+constexpr int RideBehaviorItem(int itemType)
+{
+    return IsHorseMount(itemType) ? NormalDarkHorseItemType : HelperBehaviorItem(itemType);
+}
 constexpr int EquipmentSlot(int part)
 {
     return part >= 0 && part < ArmorPartCount ? part + FirstArmorEquipmentSlot

@@ -265,7 +265,7 @@ bool PetObject::UpdateMove(double tick, bool bForceRender)
 void PetObject::UpdateRidingMount(bool preview)
 {
     const int modelType = m_obj->Type;
-    m_obj->Type = m_itemType == GameLogic::Pets::DarkHorseItem ? MODEL_DARK_HORSE : MODEL_FENRIR_RED;
+    m_obj->Type = GameLogic::Pets::RidesAsDarkHorse(m_itemType) ? MODEL_DARK_HORSE : MODEL_FENRIR_RED;
     m_obj->AnimationFrame = m_mountFrame;
     m_obj->PriorAnimationFrame = m_mountPriorFrame;
     m_obj->CurrentAction = m_mountAction;

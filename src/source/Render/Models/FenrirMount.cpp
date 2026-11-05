@@ -52,9 +52,10 @@ bool Draw(OBJECT* mount, int state)
     SavedAppearance restore(*mount);
     const auto blend = GameLogic::Cosmetics::MountAnimationBlend(mount->AnimationFrame, sourceKeys, targetKeys);
     mount->Type = MODEL_ITEM + item;
-    constexpr float NormalFenrirScale = 0.9f;
+    // The ridden model's own scale (Dark Horse 1, Fenrir 0.9) carries the town and dismounted shrink.
+    const float normalScale = restore.type == MODEL_DARK_HORSE ? 1.f : 0.9f;
     mount->Scale = GameLogic::Pets::MountCompanions::InTown(mount)
-        ? GameLogic::Pets::MountViewScale(skin->scale, true) : skin->scale * restore.scale / NormalFenrirScale;
+        ? GameLogic::Pets::MountViewScale(skin->scale, true) : skin->scale * restore.scale / normalScale;
     mount->CurrentAction = static_cast<unsigned short>(targetAnimation);
     mount->PriorAction = mount->CurrentAction;
     mount->AnimationFrame = blend.current;

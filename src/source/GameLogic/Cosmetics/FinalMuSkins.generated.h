@@ -439,7 +439,7 @@ inline constexpr std::array<FinalMuSkin, 434> FinalMuSkins = {{
     {7022, 8, 0.600f, 0.373f, false, false, 8, 0, 31},
     {7023, 8, 0.400f, 70.000f, false, true, 8, 0, 31},
     {7024, 8, 0.950f, 70.000f, true, false, 5, 0, 31},
-    {7025, 8, 1.000f, 2.226f, true, false, 6, 0, 31},
+    {7025, 8, 0.820f, 2.226f, true, false, 6, 0, 31},
 }};
 constexpr const FinalMuSkin* FindFinalMuSkin(int type)
 {

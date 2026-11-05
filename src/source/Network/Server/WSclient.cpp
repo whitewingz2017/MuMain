@@ -2549,9 +2549,9 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
             DeleteMount(o);
             ThePetProcess().DeletePet(c, Data::Items::ToItemType(c->Helper.Type), true);
             GameLogic::Cosmetics::FenrirMounts::SetItem(o, Type);
-            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(Type));
+            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::RideBehaviorItem(Type));
             c->Helper.Level = 0;
-            switch (GameLogic::Cosmetics::HelperBehaviorItem(Type))
+            switch (GameLogic::Cosmetics::RideBehaviorItem(Type))
             {
             case ITEM_HELPER:
                 CreateMount(MODEL_HELPER, o->Position, o);

@@ -12890,7 +12890,7 @@ void SetCharacterClass(CHARACTER* c)
     }
     else
     {
-        c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(p[EQUIPMENT_HELPER].Type));
+        c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::RideBehaviorItem(p[EQUIPMENT_HELPER].Type));
     }
 
     GameLogic::Cosmetics::FenrirMounts::SetItem(&c->Object, p[EQUIPMENT_HELPER].Type);
@@ -13646,7 +13646,7 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
             HelperVariant = (Equipment[offset] & 0xE) >> 1;
             BYTE group = (Equipment[offset] & 0xF0) >> 4;
             helperItem = Data::Items::MakeItemType(group, itemNumber);
-            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(helperItem));
+            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::RideBehaviorItem(helperItem));
         }
 
         // offset += 2;

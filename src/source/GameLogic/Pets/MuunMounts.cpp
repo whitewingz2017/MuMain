@@ -35,7 +35,7 @@ void Update(CHARACTER* character, int mainItem)
     auto& ride = found->second;
     ride.item = mainItem;
     ride.riding = IsMountItem(mainItem) && !character->SafeZone && !character->Dead && !gMapManager.InChaosCastle();
-    MountCombat::SetHelper(character, ride.riding ? (mainItem == DarkHorseItem ? MODEL_DARK_HORSE_ITEM : MODEL_HORN_OF_FENRIR) : ride.helper);
+    MountCombat::SetHelper(character, ride.riding ? (RidesAsDarkHorse(mainItem) ? MODEL_DARK_HORSE_ITEM : MODEL_HORN_OF_FENRIR) : ride.helper);
     character->Helper.Level = ride.riding ? 0 : ride.level;
     if (!IsMountItem(mainItem)) rides.erase(found);
 }
