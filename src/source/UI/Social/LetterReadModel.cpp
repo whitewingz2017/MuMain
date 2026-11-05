@@ -17,6 +17,7 @@ void LetterReadModel::Bind(Rml::DataModelConstructor& c)
     c.Bind("close_label", &closeLabel);
     c.Bind("prev_label", &prevLabel);
     c.Bind("next_label", &nextLabel);
+    c.Bind("can_claim", &canClaim);
     c.Bind("root_x", &rootX);
     c.Bind("root_y", &rootY);
     c.Bind("has_title", &hasTitle);

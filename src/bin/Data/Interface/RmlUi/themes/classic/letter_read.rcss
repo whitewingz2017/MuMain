@@ -149,3 +149,6 @@ button { font-family: "token(font-body)"; font-size: 1rem; color: rgb(230, 220, 
 .scroll-pane scrollbarvertical sliderarrowinc { decorator: image(lr-scroll-down); }
 .scroll-pane scrollbarvertical sliderarrowdec:active,
 .scroll-pane scrollbarvertical sliderarrowinc:active { filter: brightness(0.7); }
+
+/* TwinMU Store Mail: the claim button sits above the footer, over the body's bottom-right corner. */
+#btn_claim { position: absolute; right: 124dp; bottom: 24dp; width: 60dp; }

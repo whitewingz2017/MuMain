@@ -33,6 +33,8 @@
         <div class="line" data-for="line : lines">{{line.text}}</div>
     </div>
     <div id="photo_slot"><img id="photo_image"/><div id="photo_help"></div></div>
+    <!-- TwinMU Store Mail: takes the letter's attached item or zen (GameLogic/Items/StoreMail). -->
+    <button id="btn_claim" class="btn" data-if="can_claim" data-event-click="letter_action('claim')">Claim</button>
     <div id="footer">
         <button class="btn" data-event-click="letter_action('reply')">{{reply_label}}</button><button class="btn" data-event-click="letter_action('delete')">{{delete_label}}</button><button class="btn narrow" data-event-click="letter_action('prev')">{{prev_label}}</button><button class="btn narrow" data-event-click="letter_action('next')">{{next_label}}</button><button class="btn" data-event-click="letter_action('close')">{{close_label}}</button>
     </div>

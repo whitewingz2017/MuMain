@@ -82,3 +82,5 @@ button { font-family: "token(font-body)"; font-size: 10dp; color: token(text-sec
 #footer .btn { width: 21%; margin-right: 1%; font-size: 9dp; }
 #footer .btn.narrow { width: 15%; }
 
+/* TwinMU Store Mail: the claim button sits above the footer, over the body's bottom-right corner. */
+#btn_claim { position: absolute; right: 4dp; bottom: 24dp; width: 60dp; font-size: 9dp; }

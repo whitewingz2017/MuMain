@@ -41,6 +41,7 @@
 #include "Engine/Object/ZzzInventory.h"
 #include "Render/Effects/ZzzEffect.h"
 #include "Render/Effects/GameMasterAura.h"
+#include "GameLogic/Events/BloodCastleQuestItem.h"
 #include "Engine/Object/ZzzOpenData.h"
 #include "Scenes/SceneCore.h"
 #include "Scenes/MainScene.h"
@@ -15787,7 +15788,7 @@ int BloodCastleQuestItem(const CHARACTER* c)
 {
     if (!gMapManager.InBloodCastle())
         return 0;
-    switch (c->EtcPart)
+    switch (GameLogic::Events::CarriedArchangelType(c))
     {
     case 1:
         return MODEL_DIVINE_STAFF_OF_ARCHANGEL;
