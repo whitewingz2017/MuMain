@@ -14,6 +14,8 @@ public:
     SkinShopPreview();
     ~SkinShopPreview();
     void Select(int type);
+    // Moves the character, its mount and the companion; the draw only draws them.
+    void Update();
     void Sync(Rml::Element* image);
     void Disable();
     void Turn(float degrees);

@@ -306,6 +306,8 @@ bool CSkinShopWindow::Update()
         m_view.MarkDirty("pending");
         UpdateDetails();
     }
+    // The preview's character is posed, lit and turned in the update; the draw only draws it.
+    if (m_preview) m_preview->Update();
     return true;
 }
 

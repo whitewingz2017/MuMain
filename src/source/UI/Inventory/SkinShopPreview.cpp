@@ -82,18 +82,24 @@ void SkinShopPreview::Sync(Rml::Element* image)
         image->SetAttribute("src", source);
 }
 
-void SkinShopPreview::DrawCompanion(CHARACTER& character)
+void SkinShopPreview::Update()
 {
+    m_viewer.Update();
     if (!m_pet) return;
     m_pet->Update(true);
     // Keep the companion beside the character so every pet fits the preview pane.
+    const auto& character = *m_viewer.GetPhotoChar();
     auto* object = m_pet->GetObject();
     VectorCopy(character.Object.Position, object->Position);
     object->Position[1] += PetSideOffset;
     object->Position[2] += GameLogic::Cosmetics::CosmeticPetHeight(object->Type - MODEL_ITEM);
     object->Angle[2] = character.Object.Angle[2];
     if (!GameLogic::Cosmetics::IsFloatingPet(object->Type - MODEL_ITEM)) object->CurrentAction = 0;
-    m_pet->Render(true);
+}
+
+void SkinShopPreview::DrawCompanion(CHARACTER&)
+{
+    if (m_pet) m_pet->Render(true);
 }
 
 void SkinShopPreview::SetLevel(int level)
