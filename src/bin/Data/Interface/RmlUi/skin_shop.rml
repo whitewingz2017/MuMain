@@ -23,7 +23,7 @@
         </div>
         <div id="shop_items" class="shop-items">
             <div class="skin-dropdown weapon-filter" data-class-hidden="category != 2">
-                <button class="btn skin-dropdown-value" data-event-click="skin_dropdown(1)">{{weapon_label}} &#9662;</button>
+                <button class="btn skin-dropdown-value" data-event-click="skin_dropdown(1)">{{weapon_label}} &#9660;</button>
                 <div class="skin-dropdown-list" data-class-hidden="open_dropdown != 1">
                     <button class="btn skin-dropdown-option" data-for="family : weapon_types"
                             data-event-click="skin_weapon_filter(family.index)">{{family.label}}</button>
@@ -61,7 +61,7 @@
             <div class="skin-note">{{note}}</div>
             <div id="skin_bonuses" class="skin-dropdown skin-bonuses">
                 <button id="skin_bonus_select" class="btn skin-dropdown-value" data-class-disabled="bonuses.size == 0 || pending"
-                        data-event-click="skin_dropdown(2)">{{bonus_label}} &#9662;</button>
+                        data-event-click="skin_dropdown(2)">{{bonus_label}} &#9660;</button>
                 <div class="skin-dropdown-list bonus-options" data-class-hidden="open_dropdown != 2">
                     <button class="btn skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
                             data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</button>

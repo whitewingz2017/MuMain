@@ -192,7 +192,8 @@ void CSkinShopWindow::RebuildItems()
     int index = 0;
     for (const auto& item : Shop::Items())
     {
-        if (Category(item) == model.category && (model.category != 2
+        // Skins the character's class can't wear aren't listed.
+        if (item.eligible && Category(item) == model.category && (model.category != 2
             || Shop::MatchesWeaponFilter(item, m_weaponFilter)))
         {
             if (count >= m_page * PageSize && count < (m_page + 1) * PageSize)
