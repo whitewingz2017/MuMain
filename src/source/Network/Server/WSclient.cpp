@@ -5,6 +5,7 @@
 #include "GameLogic/Pets/Muun.h"
 #include "GameLogic/Items/StoreMail.h"
 #include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
 #include "GameLogic/Items/ExcellentCombination.h"
 #include "GameLogic/Cosmetics/FenrirMounts.h"
 #include "GameLogic/Cosmetics/SkinShop.h"
@@ -1097,8 +1098,75 @@ int GetJoinMapServerStage(std::span<const BYTE> packet)
     return packet.size() > StageIndex ? packet[StageIndex] : 0;
 }
 
+namespace
+{
+void ApplyJoinMapCharacterValues(const PRECEIVE_JOIN_MAP_SERVER_EXTENDED& data)
+{
+    CharacterAttribute->Experience = ntoh64(data.CurrentExperience);
+    CharacterAttribute->NextExperience = ntoh64(data.ExperienceForNextLevel);
+    CharacterAttribute->LevelUpPoint = data.LevelUpPoint;
+    CharacterAttribute->Strength = data.Strength;
+    CharacterAttribute->Dexterity = data.Dexterity;
+    CharacterAttribute->Vitality = data.Vitality;
+    CharacterAttribute->Energy = data.Energy;
+    CharacterAttribute->Charisma = data.Charisma;
+    CharacterAttribute->Life = data.Life;
+    CharacterAttribute->LifeMax = data.LifeMax;
+    CharacterAttribute->Mana = data.Mana;
+    CharacterAttribute->ManaMax = data.ManaMax;
+    CharacterAttribute->SkillMana = data.SkillMana;
+    CharacterAttribute->SkillManaMax = data.SkillManaMax;
+    CharacterAttribute->Shield = data.Shield;
+    CharacterAttribute->ShieldMax = data.ShieldMax;
+    CharacterAttribute->AddPoint = data.AddPoint;
+    CharacterAttribute->MaxAddPoint = data.MaxAddPoint;
+    CharacterAttribute->wMinusPoint = data.wMinusPoint;
+    CharacterAttribute->wMaxMinusPoint = data.wMaxMinusPoint;
+    CharacterAttribute->InventoryExtensions = data.InventoryExtensions;
+    CharacterAttribute->Resets = data.Resets;
+    CharacterAttribute->AttackSpeed = data.AttackSpeed;
+    CharacterAttribute->MagicSpeed = data.MagicSpeed;
+    CharacterAttribute->MaxAttackSpeed = data.MaxAttackSpeed;
+    CharacterMachine->Gold = data.Gold;
+}
+
+// OpenMU re-sends the join map packet to a character which is already in game to refresh all of its values at
+// once, e.g. after /resetstats without logout. A map server change never lands on the active map (a map is only
+// handed to another server when the current one doesn't host it), so a packet for the active map while in game
+// is always such a refresh.
+bool IsInGameRefresh(const PRECEIVE_JOIN_MAP_SERVER_EXTENDED& data)
+{
+    return SceneFlag == MAIN_SCENE && CurrentProtocolState == RECEIVE_JOIN_MAP_SERVER && Hero != nullptr &&
+           data.Map == gMapManager.WorldActive;
+}
+
+// Updates the existing hero instead of creating a second one in another CharactersClient slot, which would leave
+// the old hero behind as a duplicate and re-run the whole map entry (world reload, cleared equipment, input lock).
+void RefreshHeroInPlace(const PRECEIVE_JOIN_MAP_SERVER_EXTENDED& data)
+{
+    ApplyJoinMapCharacterValues(data);
+    Hero->PK = data.PK;
+    Hero->CtlCode = data.CtlCode;
+    CharacterMachine->CalculateAll();
+}
+} // namespace
+
 BOOL ReceiveJoinMapServer(std::span<const BYTE> ReceiveBuffer)
 {
+    auto const Data = safe_cast<PRECEIVE_JOIN_MAP_SERVER_EXTENDED>(ReceiveBuffer, "PRECEIVE_JOIN_MAP_SERVER_EXTENDED");
+    if (Data == nullptr)
+    {
+        assert(false);
+        return false;
+    }
+
+    if (IsInGameRefresh(*Data))
+    {
+        RefreshHeroInPlace(*Data);
+        g_ConsoleDebug->Write(MCD_RECEIVE, L"0x03 [ReceiveJoinMapServer] in-game refresh");
+        return TRUE;
+    }
+
     MouseLButton = false;
     HeroIndex = Random::Rand() % MAX_CHARACTERS_CLIENT;
     CHARACTER* c = &CharactersClient[HeroIndex];
@@ -1108,39 +1176,7 @@ BOOL ReceiveJoinMapServer(std::span<const BYTE> ReceiveBuffer)
     CharacterAttribute->AbilityTime[1] = 0;
     CharacterAttribute->AbilityTime[2] = 0;
 
-    auto const Data = safe_cast<PRECEIVE_JOIN_MAP_SERVER_EXTENDED>(ReceiveBuffer, "PRECEIVE_JOIN_MAP_SERVER_EXTENDED");
-    if (Data == nullptr)
-    {
-        assert(false);
-        return false;
-    }
-
-    CharacterAttribute->Experience = ntoh64(Data->CurrentExperience);
-    CharacterAttribute->NextExperience = ntoh64(Data->ExperienceForNextLevel);
-    CharacterAttribute->LevelUpPoint = Data->LevelUpPoint;
-    CharacterAttribute->Strength = Data->Strength;
-    CharacterAttribute->Dexterity = Data->Dexterity;
-    CharacterAttribute->Vitality = Data->Vitality;
-    CharacterAttribute->Energy = Data->Energy;
-    CharacterAttribute->Charisma = Data->Charisma;
-    CharacterAttribute->Life = Data->Life;
-    CharacterAttribute->LifeMax = Data->LifeMax;
-    CharacterAttribute->Mana = Data->Mana;
-    CharacterAttribute->ManaMax = Data->ManaMax;
-    CharacterAttribute->SkillMana = Data->SkillMana;
-    CharacterAttribute->SkillManaMax = Data->SkillManaMax;
-    CharacterAttribute->Shield = Data->Shield;
-    CharacterAttribute->ShieldMax = Data->ShieldMax;
-    CharacterAttribute->AddPoint = Data->AddPoint;
-    CharacterAttribute->MaxAddPoint = Data->MaxAddPoint;
-    CharacterAttribute->wMinusPoint = Data->wMinusPoint;
-    CharacterAttribute->wMaxMinusPoint = Data->wMaxMinusPoint;
-    CharacterAttribute->InventoryExtensions = Data->InventoryExtensions;
-    CharacterAttribute->Resets = Data->Resets;
-    CharacterAttribute->AttackSpeed = Data->AttackSpeed;
-    CharacterAttribute->MagicSpeed = Data->MagicSpeed;
-    CharacterAttribute->MaxAttackSpeed = Data->MaxAttackSpeed;
-    CharacterMachine->Gold = Data->Gold;
+    ApplyJoinMapCharacterValues(*Data);
 
     // Before LoadWorld, which loads the stage's map parts.
     gMapManager.SetServerStage(GetJoinMapServerStage(ReceiveBuffer));
@@ -2349,7 +2385,10 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
 
     int Key = Data->Key;
 
-    CHARACTER* c = &CharactersClient[FindCharacterIndex(Key)];
+    const int characterIndex = FindCharacterIndex(Key);
+    if (characterIndex >= MAX_CHARACTERS_CLIENT)
+        return;
+    CHARACTER* c = &CharactersClient[characterIndex];
     OBJECT* o = &c->Object;
 
     int Type = ((Data->ItemGroup & 0xF) * MAX_ITEM_INDEX) | Data->ItemNumber;
@@ -2366,6 +2405,9 @@ void ReceiveChangePlayer(std::span<const BYTE> ReceiveBuffer)
 
     switch (Data->ItemSlot)
     {
+    case GameLogic::Pets::CompanionEquipment::Slot:
+        GameLogic::Pets::CompanionEquipment::SetAppearance(c, Data->ItemGroup == 0xFF ? -1 : Type);
+        break;
     case 0:
         if (Data->ItemGroup == 0xFF)
         {
@@ -7058,7 +7100,11 @@ void ReceiveDurability(const BYTE* ReceiveBuffer)
 {
     auto Data = (LPPHEADER_DEFAULT_VALUE_KEY)ReceiveBuffer;
 
-    if (Data->Value < MAX_EQUIPMENT)
+    if (Data->Value == GameLogic::Pets::CompanionEquipment::Slot)
+    {
+        GameLogic::Pets::CompanionEquipment::SetDurability(Data->KeyH);
+    }
+    else if (Data->Value < MAX_EQUIPMENT)
     {
         CharacterMachine->Equipment[Data->Value].Durability = Data->KeyH;
     }

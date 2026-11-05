@@ -4,8 +4,10 @@ typedef struct tagITEM ITEM;
 
 namespace GameLogic::Items
 {
-// Cosmetic items and Muun mounts use their own equipment windows.
+// Cosmetic items use Skin equipment; mounts use normal helper equipment.
 bool CanEquipInMainInventory(const ITEM* item);
+bool CanEquipForClass(int itemType, int baseClass, int stepClass);
+bool IsCompanionItem(int itemType);
 
 // Maps where the character must keep flight equipment on. Only Icarus: the
 // server requires it there (OpenMU: CanFly), not in the Kanturu event map.

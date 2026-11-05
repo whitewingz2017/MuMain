@@ -39,9 +39,7 @@ using namespace mu::ui::window;
 
 namespace
 {
-    // The stats in CharacterStatAttribute order (strength, agility, vitality, energy, command):
-    // their label, and the stat's name in the server's "/add <stat> <amount>" chat command, which
-    // adds several points at once (OpenMU's AddStatChatCommandPlugIn, enabled by default).
+    // Labels and server commands follow CharacterStatAttribute order.
     constexpr int StatCount = 5;
     const wchar_t* StatLabel(int stat)
     {
@@ -49,10 +47,10 @@ namespace
                                             I18N::Game::Command};
         return labels[stat];
     }
-    constexpr const wchar_t* StatCommandNames[StatCount] = {L"str", L"agi", L"vit", L"ene", L"cmd"};
+    constexpr const wchar_t* StatCommandNames[StatCount] = {L"/addstr", L"/addagi", L"/addvit", L"/addene", L"/addcmd"};
+    constexpr int StatCommandBufferLength = 32;
 
-    // One point is the stat packet; more go as one chat command, which the server's stat
-    // increase answers with the whole amount (ReceiveAddPointExtended()).
+    // Bulk allocation uses this server's individual stat commands.
     void AddStatPoints(int stat, int amount)
     {
         if (amount == 1)
@@ -60,8 +58,8 @@ namespace
             SocketClient->ToGameServer()->SendIncreaseCharacterStatPoint(static_cast<CharacterStatAttribute>(stat));
             return;
         }
-        wchar_t command[32];
-        mu_swprintf(command, L"/add %ls %d", StatCommandNames[stat], amount);
+        wchar_t command[StatCommandBufferLength];
+        mu_swprintf(command, L"%ls %d", StatCommandNames[stat], amount);
         SocketClient->ToGameServer()->SendPublicChatMessage(MU_C16(Hero->ID), MU_C16(command));
     }
 

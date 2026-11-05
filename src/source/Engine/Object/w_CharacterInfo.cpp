@@ -20,6 +20,8 @@ void CHARACTER::InitializeObject()
 {
     Object.Initialize();
     CosmeticWingClock.Reset();
+    MountResumeAt = 0;
+    CombatMountHelper = -1;
 }
 
 void CHARACTER::Initialize()

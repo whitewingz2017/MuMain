@@ -7,6 +7,7 @@
 
 #include "stdafx.h"
 #include "Core/Utilities/DrawSpawnCheck.h"
+#include "GameLogic/Pets/MountCombat.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
@@ -332,6 +333,7 @@ void SetAction(OBJECT* o, int Action, bool bBlending)
     BMD* b = &Models[o->Type];
     if (Action >= b->NumActions)
         return;
+    Action = GameLogic::Pets::MountCombat::OnAction(o, Action);
     if (o->CurrentAction != Action)
     {
         o->PriorAction = o->CurrentAction;

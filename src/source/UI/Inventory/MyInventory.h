@@ -79,6 +79,7 @@ namespace mu::ui::window
 
 
         EQUIPMENT_ITEM m_EquipmentSlots[MAX_EQUIPMENT_INDEX];
+        EQUIPMENT_ITEM m_CompanionSlot{};
         int	m_iPointedSlot;
 
         MYSHOP_MODE m_MyShopMode;
@@ -91,6 +92,7 @@ namespace mu::ui::window
         bool m_SkinPage = false;
         void ToggleEquipmentPage();
         bool ProcessSkinSlots();
+        bool ProcessCompanionSlot();
 
         // The whole window is RmlUi: the equipped and the grid's items are live 3D, drawn into the
         // document's #item_view (m_ItemTarget).
@@ -129,6 +131,7 @@ namespace mu::ui::window
             // Per EQUIPMENT_* slot: "no-art", or its tint ("broken", "durability-20/30/50",
             // "unequipable"), and "refused" while the item on the cursor cannot go in.
             std::vector<Rml::String> slotStates = std::vector<Rml::String>(MAX_EQUIPMENT_INDEX);
+            Rml::String companionState;
             UI::Items::ItemGridCells gridCells;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, MyInventoryRmlModel& model);
@@ -172,6 +175,12 @@ namespace mu::ui::window
 
         // Moves the equipment slots and item grid to where the theme draws their anchors.
         void SyncNativeLayout();
+        void SyncCompanionLayout(Rml::ElementDocument* document);
+        void SyncCompanionState();
+        void RenderCompanion() const;
+        void RenderEquipment(float scale) const;
+        void SyncItemTargets();
+        void UpdatePointedSlot();
 
         void SetRepairMode(bool bRepair);
 
@@ -259,6 +268,7 @@ namespace mu::ui::window
         // The equipped and the grid's items, into the document's #item_view. Last, so it is
         // destroyed first.
         UI::Items::ItemCameraTarget m_ItemTarget{[this](const Rml::Vector2f&, const Rml::Vector2f&) { Render3D(); }};
+        UI::Items::ItemCameraTarget m_CompanionTarget{[this](const Rml::Vector2f&, const Rml::Vector2f&) { RenderCompanion(); }};
     };
 
 } // namespace mu::ui::window

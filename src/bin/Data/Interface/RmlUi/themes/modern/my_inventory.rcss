@@ -216,3 +216,8 @@
 .skin-shop-open { position: absolute; left: 10px; top: 164px; width: 62px; height: 22px; box-sizing: border-box; padding: 0; color: #eac45c; border: 1px #685333; background-color: #15140ff0; font-family: "Liberation Sans"; font-size: 12px; line-height: 20px; text-align: center; pointer-events: auto; }
 
 .skin-storage-open { position: absolute; left: 77px; top: 164px; width: 103px; height: 22px; padding: 0; color: #eac45c; background-color: #15140ff0; border: 1px #685333; font-size: 12px; line-height: 20px; text-align: center; pointer-events: auto; }
+
+/* One small companion slot beside the mount slot, as marked in the Gear reference. */
+#slot_companion { left: 61px; top: 44px; width: 22px; height: 22px; z-index: 1; decorator: none; border: 1px #627b86; background-color: #102129; }
+.skin-page #slot_helper, .skin-page #slot_companion { visibility: hidden; }
+#companion_view { z-index: 1; }

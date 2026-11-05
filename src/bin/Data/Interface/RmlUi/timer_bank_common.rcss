@@ -1,7 +1,7 @@
 /* Brown ornamental frame and red title rail shared by timer and bank lists. */
 .timer-bank-frame, .timer-bank-title, .timer-bank-close { display: none; }
 #panel.timer-bank { left: 50%; top: 50%; margin: 0; transform: translate(-50%, -50%); width: 340dp; max-width: 92vw; height: 82vh; max-height: 90vh; padding: 0; border: 0; background-color: transparent; decorator: none; }
-#panel.timer-bank.jewel-bank { width: 560dp; }
+#panel.timer-bank.jewel-bank { width: 624dp; }
 #panel.timer-bank .window-shell-sprite-back, #panel.timer-bank .window-shell-sprite-top, #panel.timer-bank .window-shell-sprite-middle, #panel.timer-bank .window-shell-sprite-bottom, #panel.timer-bank .window-shell-header-title, #panel.timer-bank .modern-shell-edge, #panel.timer-bank .modern-groove, #panel.timer-bank .legacy-shell-edge, #panel.timer-bank .window-shell-header-rail, #panel.timer-bank .gmd-divider { display: none; }
 #panel.timer-bank .window-shell-content { position: static; left: auto; right: auto; top: auto; bottom: auto; margin: 0; box-sizing: border-box; width: 100%; height: 100%; padding: 65dp 23dp 24dp 23dp; background-color: transparent; border: 0; decorator: none; display: flex; flex-direction: column; align-items: stretch; }
 #panel.timer-bank .timer-bank-frame { display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
@@ -22,6 +22,10 @@
 .gmd-row-actions { display: none; }
 #panel.timer-bank .gmd-row-actions { display: flex; flex-direction: row; position: absolute; right: 3dp; top: 2dp; width: 160dp; height: 26dp; }
 #panel.timer-bank .gmd-row-actions button { box-sizing: border-box; min-height: 0; width: 77dp; height: 26dp; margin: 0 0 0 3dp; padding: 0; text-align: center; font-size: 10dp; line-height: 24dp; border: 1dp #745c32; background-color: #272419; color: #f1ce72; decorator: none; }
+#panel.timer-bank.jewel-bank .has-step-actions .gmd-btn-label { margin-right: 289dp; }
+#panel.timer-bank.jewel-bank .has-step-actions .gmd-btn-detail { right: 234dp; }
+#panel.timer-bank .has-step-actions .gmd-row-actions { width: 224dp; }
+#panel.timer-bank .gmd-row-actions .gmd-step-action { width: 29dp; }
 #panel.timer-bank .gmd-button-cell.compact { position: relative; left: auto; right: auto; top: auto; bottom: auto; width: 31%; margin-right: 2%; }
 #panel.timer-bank .compact .gmd-btn-label { margin: 0; text-align: center; }
 #panel.timer-bank .compact .gmd-btn-detail { display: none; }

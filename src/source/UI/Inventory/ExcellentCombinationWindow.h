@@ -23,21 +23,35 @@ public:
     float GetKeyEventOrder() override { return 100.f; }
     float GetLayerDepth() override { return UI::RmlBridge::SkinShopLayerDepth; }
 private:
+    struct OptionRow {
+        Rml::String text;
+        bool potential=false;
+    };
     struct Model {
-        Rml::String title="Excellent Option Combination", status="Drag items from your bag onto the two input slots.", cost="Required Zen: 1,000,000";
+        Rml::String title="Set Stacking", status="Drag an Excellent item from your bag onto Main Gear.", cost;
+        std::vector<OptionRow> options;
         bool hasTitle=true, positioned=false, canCombine=false;
+        bool hasPrimary=false, hasSecondary=false, affordable=false;
+        int activeSlot=0;
         float rootX=0, rootY=0;
     };
     void Bind(Rml::DataModelConstructor&, Model&);
     void Select(int slot, int inventorySlot, ITEM* item);
+    bool ValidateSelection();
+    void SyncSelection();
+    void SyncState();
+    void SyncCost();
+    void AppendOptions(const ITEM& item, bool potential);
     void DrawItem(int slot, const Rml::Vector2f&, const Rml::Vector2f&);
     CManager* m_manager=nullptr;
     int m_inspected=-1;
     std::array<int,2> m_slots{-1,-1};
-    std::array<ITEM,3> m_items{};
-    std::array<bool,3> m_present{};
-    std::array<std::unique_ptr<UI::Items::ItemCameraTarget>,3> m_targets;
+    std::array<ITEM,2> m_items{};
+    std::array<bool,2> m_present{};
+    std::array<std::unique_ptr<UI::Items::ItemCameraTarget>,2> m_targets;
     std::uint64_t m_revision=0;
+    std::uint64_t m_gold=static_cast<std::uint64_t>(-1);
+    int m_cost=-1;
     UI::RmlBridge::ThemedView<Model> m_view{"excellent_combination",
         [this](Rml::DataModelConstructor& c, Model& m) { Bind(c,m); },
         {{"Data/Interface/RmlUi/excellent_combination.rml"}}};

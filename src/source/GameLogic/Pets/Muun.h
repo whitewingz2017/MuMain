@@ -12,8 +12,9 @@ constexpr int FirstType = 13 * 512 + 450;
 constexpr int SpeciesCapacity = 30;
 constexpr bool IsType(int type)
 {
+    if (IsMountItem(type)) return false;
     if (type >= FirstType && type < FirstType + SpeciesCapacity) return true;
-    if (type == 13 * 512 + 200 || IsMountItem(type)) return true;
+    if (type == 13 * 512 + 200) return true;
     for (const auto& pet : GameLogic::Cosmetics::FinalMuSkins)
         if (pet.type == type) return pet.part == 8;
     return false;

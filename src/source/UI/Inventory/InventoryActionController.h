@@ -46,6 +46,7 @@ private:
                      int iSourceIndex, int iTargetIndex) const;
     bool TryStackItems(CInventoryCtrl* targetControl, ITEM* pPickItem, int iSourceIndex, int iTargetIndex) const;
     bool RepairItemAtMousePoint(CInventoryCtrl* targetControl) const;
+    bool TryEquipExtraItem(ITEM* pItem, int iSrcIndex) const;
     bool TryConsumeItem(CInventoryCtrl* targetControl, ITEM* pItem, int iIndex) const;
     bool TryTransferBetweenInventorySections(CInventoryCtrl* sourceControl) const;
 

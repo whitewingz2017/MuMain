@@ -3121,13 +3121,13 @@ bool UI::Items::ShouldAnimatePreview(bool pointerInside, bool pickedItemActive, 
 }
 
 static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags,
-                           int ancientDiscriminator, bool PickUp, bool hovered);
+                           int ancientDiscriminator, bool PickUp, bool hovered, bool fitSlot = false);
 
-void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool PickUp)
+void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool PickUp, bool fitSlot)
 {
     const bool hovered = g_fWindowMouseX >= sx && g_fWindowMouseX < sx + Width && g_fWindowMouseY >= sy &&
                          g_fWindowMouseY < sy + Height;
-    RenderItem3DAt(sx, sy, Width, Height, Type, Level, excellentFlags, ancientDiscriminator, PickUp, hovered);
+    RenderItem3DAt(sx, sy, Width, Height, Type, Level, excellentFlags, ancientDiscriminator, PickUp, hovered, fitSlot);
 }
 
 void RenderItem3DWithHover(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags,
@@ -3136,8 +3136,16 @@ void RenderItem3DWithHover(float sx, float sy, float Width, float Height, int Ty
     RenderItem3DAt(sx, sy, Width, Height, Type, Level, excellentFlags, ancientDiscriminator, false, hovered);
 }
 
+static void ItemPreviewPosition(float sx, float sy, float width, float height, int type, int level, bool fitted, vec3_t position)
+{
+    const auto anchor = fitted ? Render::Items::Display::Anchor{0.5f, 0.5f}
+        : Render::Items::Display::GetInventoryAnchor(type, level);
+    CameraProjection::ScreenToWorldRay(g_Camera, static_cast<int>(sx + width * anchor.x),
+        static_cast<int>(sy + height * anchor.y), position, false);
+}
+
 static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags,
-                           int ancientDiscriminator, bool PickUp, bool hovered)
+                           int ancientDiscriminator, bool PickUp, bool hovered, bool fitSlot)
 {
     // Item previews are screen-space: keep Classic texture sampling.
     const mu::ScopedScreenSpaceSampling screenSpaceSampling;
@@ -3146,15 +3154,10 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
 
     // Item previews draw without the item models' attached sprites and particles.
     const Render::Items::ScopedItemEffects itemEffects(false);
-    // Skins and Fenrir skins are fitted into their slot around its centre.
-    const bool fitSkin = GameLogic::Cosmetics::ArmorPart(Type) >= 0 || GameLogic::Cosmetics::IsFenrirMount(Type);
-    const Render::Items::Display::Anchor anchor = fitSkin ? Render::Items::Display::Anchor{0.5f, 0.5f}
-                                                          : Render::Items::Display::GetInventoryAnchor(Type, Level);
-    sx += Width * anchor.x;
-    sy += Height * anchor.y;
-
+    // Skins, Fenrir skins and slot-fitted previews are fitted into their slot around its centre.
+    const bool fitSkin = fitSlot || GameLogic::Cosmetics::ArmorPart(Type) >= 0 || GameLogic::Cosmetics::IsFenrirMount(Type);
     vec3_t Position;
-    CameraProjection::ScreenToWorldRay(g_Camera, (int)(sx), (int)(sy), Position, false);
+    ItemPreviewPosition(sx, sy, Width, Height, Type, Level, fitSkin, Position);
     // The Lucky Coin turns as its registration window says.
     if (Type == ITEM_POTION + 100)
     {

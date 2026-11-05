@@ -6,7 +6,8 @@
 #include "Core/Utilities/StringUtils.h"
 #include "Dotnet/Connection.h"
 #include "Network/Server/WSclient.h"
-#include "GameLogic/Pets/w_PetProcess.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
+#include "GameLogic/Items/EquipmentRestrictions.h"
 #include <SDL3/SDL.h>
 
 #include "json.hpp"
@@ -51,21 +52,11 @@ std::vector<std::string> ReadStatistics(const nlohmann::json& json)
     return confirmedStatistics;
 }
 
-void RestorePet(int previousPet, int nextPet)
-{
-    if (previousPet != nextPet && IsCosmeticPet(previousPet))
-        ThePetProcess().DeletePet(Hero, previousPet, false);
-    // A full inventory refresh also deletes the follower when only another skin changed.
-    if (IsCosmeticPet(nextPet) && !ThePetProcess().HasPet(Hero, nextPet))
-        ThePetProcess().CreatePet(nextPet, MODEL_ITEM + nextPet, Hero->Object.Position, Hero);
-}
+
 }
 
 void Reset()
 {
-    const int pet = armor[8];
-    if (Hero && IsCosmeticPet(pet))
-        ThePetProcess().DeletePet(Hero, pet, false);
     armor.fill(-1);
     flags.fill(0);
     statistics.clear();
@@ -103,6 +94,7 @@ bool Request(std::uint8_t operation, int inventorySlot, int part)
 
 void Update()
 {
+    GameLogic::Pets::CompanionEquipment::Update();
     if (SceneFlag != MAIN_SCENE || !Hero)
     {
         Reset();
@@ -113,9 +105,6 @@ void Update()
         Request(0);
         return;
     }
-    // Warps and transformation changes rebuild the hero and drop its follower.
-    if (const int pet = VisualItem(8); IsCosmeticPet(pet) && !ThePetProcess().HasPet(Hero, pet))
-        ThePetProcess().CreatePet(pet, MODEL_ITEM + pet, Hero->Object.Position, Hero);
 }
 
 void Receive(std::span<const std::uint8_t> packet)
@@ -140,7 +129,8 @@ void Receive(std::span<const std::uint8_t> packet)
         if (part < 0 || part >= SkinSlotCount || type < 0 || type > INT_MAX || confirmed[part] != -1) return;
         // A skin this client has no model for (the server got new skins first) is shown as no
         // skin; rejecting the whole answer dropped every skin and the skin pages with it.
-        if (!FitsPart(static_cast<int>(type), static_cast<int>(part)))
+        if (!FitsPart(static_cast<int>(type), static_cast<int>(part))
+            && !(part == GameLogic::Pets::CompanionEquipment::Part && GameLogic::Items::IsCompanionItem(static_cast<int>(type))))
             continue;
         confirmed[part] = static_cast<int>(type);
         if (item.contains("BonusFlags"))
@@ -180,11 +170,9 @@ void Receive(std::span<const std::uint8_t> packet)
     storageSupported = hasStorage;
     ++revision;
     statistics = ReadStatistics(json);
-    const int previousPet = VisualItem(8);
     armor = confirmed;
     flags = confirmedFlags;
     ready = true;
-    RestorePet(previousPet, VisualItem(8));
     pending = 0;
     if (json.contains("Status") && json["Status"].is_string() && json["Status"] != "Ready")
     {

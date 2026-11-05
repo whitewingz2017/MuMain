@@ -5,7 +5,8 @@
 
 namespace GameLogic::Pets
 {
-void RemovePetObjects(std::list<std::shared_ptr<PetObject>>& pets, CHARACTER* owner, int itemType, bool allDelete)
+void RemovePetObjects(std::list<std::shared_ptr<PetObject>>& pets, CHARACTER* owner, int itemType, bool allDelete,
+                      int equipmentSlot)
 {
     if (owner == nullptr)
         return;
@@ -14,8 +15,9 @@ void RemovePetObjects(std::list<std::shared_ptr<PetObject>>& pets, CHARACTER* ow
     for (auto iter = pets.begin(); iter != pets.end();)
     {
         const auto& pet = *iter;
-        const bool matches = pet && (itemType == AnyItem ? pet->IsSameOwner(&owner->Object)
-                                                         : pet->IsSameObject(&owner->Object, itemType));
+        const bool matches = pet && (allDelete || pet->EquipmentSlot() == equipmentSlot)
+                             && (itemType == AnyItem ? pet->IsSameOwner(&owner->Object)
+                                                     : pet->IsSameObject(&owner->Object, itemType));
         if (!matches)
         {
             ++iter;

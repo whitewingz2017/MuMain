@@ -47,6 +47,7 @@ namespace mu::ui::window
             std::wstring detail;
             std::wstring secondaryLabel, tertiaryLabel;
             std::function<void()> onSecondary, onTertiary;
+            std::function<void()> onIncrement, onDecrement;
             std::function<std::wstring()> liveDetail; // Countdown text, sampled while the dialog is visible.
             Rml::String iconDecorator;
             std::wstring tooltip;          // optional hover text; empty = no tooltip
@@ -153,6 +154,7 @@ namespace mu::ui::window
             Rml::String label;
             Rml::String detail, iconDecorator;
             Rml::String secondaryLabel, tertiaryLabel;
+            bool hasStepActions = false;
             Rml::String tooltip;
             std::vector<LineEntry> lines;
             bool hasLines = false;  // toggles .gmd-button-cell's extra bottom margin (RCSS)
@@ -164,6 +166,7 @@ namespace mu::ui::window
             bool linesBelow = false;
             bool dismiss = false;
         };
+        MenuButtonEntry ToButtonEntry(const GenericMenuConfig::MenuButton& button) const;
         struct GenericMenuRmlModel
         {
             bool hasTitle = false;
@@ -188,6 +191,7 @@ namespace mu::ui::window
             float rootY = 0.f;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, GenericMenuRmlModel& model);
+        void BindButtonEvents(Rml::DataModelConstructor& c);
         void SyncButtonIcons();
         UI::RmlBridge::ThemedView<GenericMenuRmlModel> m_RmlView{"generic_menu_dialog",
             [this](Rml::DataModelConstructor& c, GenericMenuRmlModel& model) { BindRmlModel(c, model); },

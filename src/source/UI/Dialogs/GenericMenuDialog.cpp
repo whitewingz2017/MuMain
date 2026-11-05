@@ -49,6 +49,7 @@ void CGenericMenuDialog::BindRmlModel(Rml::DataModelConstructor& c, GenericMenuR
     button.RegisterMember("detail", &MenuButtonEntry::detail);
     button.RegisterMember("secondary_label", &MenuButtonEntry::secondaryLabel);
     button.RegisterMember("tertiary_label", &MenuButtonEntry::tertiaryLabel);
+    button.RegisterMember("has_step_actions", &MenuButtonEntry::hasStepActions);
     button.RegisterMember("icon_decorator", &MenuButtonEntry::iconDecorator);
     button.RegisterMember("tooltip", &MenuButtonEntry::tooltip);
     // Reuses the LineEntry/std::vector<LineEntry> array type already registered above for
@@ -82,6 +83,11 @@ void CGenericMenuDialog::BindRmlModel(Rml::DataModelConstructor& c, GenericMenuR
     c.Bind("root_x", &model.rootX);
     c.Bind("root_y", &model.rootY);
 
+    BindButtonEvents(c);
+}
+
+void CGenericMenuDialog::BindButtonEvents(Rml::DataModelConstructor& c)
+{
     // Position argument is the clicked button's own data-for index (it_index) -- a
     // proven RmlUi pattern already used by char_make.rml/server_select.rml/
     // my_quest_info.rml/main_frame.rml, not a fixed-slot workaround.
@@ -102,7 +108,8 @@ void CGenericMenuDialog::BindRmlModel(Rml::DataModelConstructor& c, GenericMenuR
             event.StopPropagation();
             if (!m_bActive || args.size() != 2) return;
             const int index = args[0].Get<int>(-1), action = args[1].Get<int>(-1);
-            if (index < 0 || index >= static_cast<int>(m_Active.buttons.size()) || action < 1 || action > 2 || !m_Active.buttons[index].enabled) return;
+            constexpr int FirstRowAction = 1, LastRowAction = 4;
+            if (index < 0 || index >= static_cast<int>(m_Active.buttons.size()) || action < FirstRowAction || action > LastRowAction || !m_Active.buttons[index].enabled) return;
             m_bButtonClicked = true; m_iClickedButtonIndex = index; m_iClickedButtonAction = action;
         });
     // A close action outside the button list: the same as Esc.
@@ -190,7 +197,9 @@ void CGenericMenuDialog::Resolve(int buttonIndex)
     if (buttonIndex >= 0 && buttonIndex < static_cast<int>(cfg.buttons.size()))
     {
         const auto& button = cfg.buttons[buttonIndex];
-        const auto& callback = m_iClickedButtonAction == 1 ? button.onSecondary : m_iClickedButtonAction == 2 ? button.onTertiary : button.onClick;
+        const std::function<void()>* callbacks[] = {
+            &button.onClick, &button.onSecondary, &button.onTertiary, &button.onIncrement, &button.onDecrement};
+        const auto& callback = *callbacks[m_iClickedButtonAction];
         if (callback) callback();
     }
     else if (cfg.onCancel)
@@ -273,6 +282,30 @@ void CGenericMenuDialog::SyncButtonIcons()
             sync(m_RmlView.Document()->GetElementById("menu_icon_" + std::to_string(i)));
 }
 
+CGenericMenuDialog::MenuButtonEntry CGenericMenuDialog::ToButtonEntry(const GenericMenuConfig::MenuButton& button) const
+{
+    MenuButtonEntry entry;
+    entry.label = StringUtils::WideToNarrow(button.label.c_str());
+    entry.detail = StringUtils::WideToNarrow(button.liveDetail ? button.liveDetail().c_str() : button.detail.c_str());
+    entry.secondaryLabel = StringUtils::WideToNarrow(button.secondaryLabel.c_str());
+    entry.tertiaryLabel = StringUtils::WideToNarrow(button.tertiaryLabel.c_str());
+    entry.hasStepActions = button.onIncrement && button.onDecrement;
+    entry.iconDecorator = button.iconDecorator;
+    entry.tooltip = StringUtils::WideToNarrow(button.tooltip.c_str());
+    entry.lines.reserve(button.lines.size());
+    for (const auto& line : button.lines)
+        entry.lines.push_back(ToLineEntry(line));
+    entry.hasLines = !button.lines.empty();
+    entry.hasIcon = static_cast<bool>(button.syncIcon);
+    entry.enabled = button.enabled;
+    entry.compact = button.compact;
+    entry.cols2 = (m_Active.columns == 2) && !button.compact;
+    entry.narrow = button.narrow;
+    entry.linesBelow = button.linesBelow;
+    entry.dismiss = button.dismiss;
+    return entry;
+}
+
 void CGenericMenuDialog::SyncRmlModel()
 {
     if (!m_RmlView.Document()) return;
@@ -332,27 +365,7 @@ void CGenericMenuDialog::SyncRmlModel()
     std::vector<MenuButtonEntry> newButtons;
     newButtons.reserve(m_Active.buttons.size());
     for (const auto& button : m_Active.buttons)
-    {
-        MenuButtonEntry entry;
-        entry.label = StringUtils::WideToNarrow(button.label.c_str());
-        entry.detail = StringUtils::WideToNarrow(button.liveDetail ? button.liveDetail().c_str() : button.detail.c_str());
-        entry.secondaryLabel = StringUtils::WideToNarrow(button.secondaryLabel.c_str());
-        entry.tertiaryLabel = StringUtils::WideToNarrow(button.tertiaryLabel.c_str());
-        entry.iconDecorator = button.iconDecorator;
-        entry.tooltip = StringUtils::WideToNarrow(button.tooltip.c_str());
-        entry.lines.reserve(button.lines.size());
-        for (const auto& line : button.lines)
-            entry.lines.push_back(ToLineEntry(line));
-        entry.hasLines = !button.lines.empty();
-        entry.hasIcon = static_cast<bool>(button.syncIcon);
-        entry.enabled = button.enabled;
-        entry.compact = button.compact;
-        entry.cols2 = (m_Active.columns == 2) && !button.compact;
-        entry.narrow = button.narrow;
-        entry.linesBelow = button.linesBelow;
-        entry.dismiss = button.dismiss;
-        newButtons.push_back(std::move(entry));
-    }
+        newButtons.push_back(ToButtonEntry(button));
     bool buttonsChanged = newButtons.size() != model.buttons.size();
     for (size_t i = 0; i < newButtons.size() && !buttonsChanged; ++i)
     {
@@ -360,7 +373,7 @@ void CGenericMenuDialog::SyncRmlModel()
         const auto& b = model.buttons[i];
         buttonsChanged = a.secondaryLabel != b.secondaryLabel || a.tertiaryLabel != b.tertiaryLabel || a.label != b.label || a.tooltip != b.tooltip || a.detail != b.detail || a.iconDecorator != b.iconDecorator ||
                          a.enabled != b.enabled || a.compact != b.compact || a.cols2 != b.cols2 ||
-                         a.narrow != b.narrow || a.hasIcon != b.hasIcon ||
+                         a.narrow != b.narrow || a.hasIcon != b.hasIcon || a.hasStepActions != b.hasStepActions ||
                          a.linesBelow != b.linesBelow || a.dismiss != b.dismiss || a.lines.size() != b.lines.size();
         for (size_t j = 0; j < a.lines.size() && !buttonsChanged; ++j)
             buttonsChanged = !SameLine(a.lines[j], b.lines[j]);

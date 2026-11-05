@@ -30,6 +30,7 @@ extern bool SelectFlag;
 #include "GameLogic/Items/ChangeRingManager.h"
 #include "GameLogic/Items/EquipmentRestrictions.h"
 #include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
 #include "UI/Inventory/SkinShop.h"
 #include "UI/Inventory/SkinInventoryWindow.h"
 #include "GameLogic/Social/MonkSystem.h"
@@ -181,6 +182,7 @@ void CMyInventory::BindRmlModel(Rml::DataModelConstructor& c, MyInventoryRmlMode
     c.Bind("option_labels_fit", &model.optionLabelsFit);
     c.RegisterArray<std::vector<Rml::String>>();
     c.Bind("slot_states", &model.slotStates);
+    c.Bind("companion_state", &model.companionState);
     UI::Items::RegisterItemGridCells(c);
     c.Bind("grid_cells", &model.gridCells);
 
@@ -252,6 +254,7 @@ void CMyInventory::BuildRmlUi()
 void CMyInventory::Release()
 {
     m_ItemTarget.Disable();
+    m_CompanionTarget.Disable();
     UnequipAllItems();
     DeleteAllItems();
 
@@ -366,25 +369,11 @@ bool CMyInventory::IsEquipable(int iIndex, ITEM* pItem) const
         return false;
 
     const ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
+    if (!GameLogic::Items::CanEquipForClass(pItem->Type, gCharacterManager.GetBaseClass(Hero->Class),
+        gCharacterManager.GetStepClass(Hero->Class)))
+        return false;
+
     bool bEquipable = false;
-    if (pItemAttr->RequireClass[gCharacterManager.GetBaseClass(Hero->Class)])
-        bEquipable = true;
-
-    else if (gCharacterManager.GetBaseClass(Hero->Class) == CLASS_DARK && pItemAttr->RequireClass[CLASS_WIZARD]
-        && pItemAttr->RequireClass[CLASS_KNIGHT])
-        bEquipable = true;
-
-    const BYTE byFirstClass = gCharacterManager.GetBaseClass(Hero->Class);
-    const BYTE byStepClass = gCharacterManager.GetStepClass(Hero->Class);
-    if (pItemAttr->RequireClass[byFirstClass] > byStepClass)
-    {
-        return false;
-    }
-
-    if (bEquipable == false)
-        return false;
-
-    bEquipable = false;
     if (pItemAttr->m_byItemSlot == iIndex)
         bEquipable = true;
 
@@ -571,6 +560,7 @@ void CMyInventory::DeleteAllItems() const
 void CMyInventory::SyncNativeLayout()
 {
     Rml::ElementDocument* document = m_RmlView.Document();
+    SyncCompanionLayout(document);
     for (const SlotAnchor& anchor : SlotAnchors)
     {
         auto& slot = m_EquipmentSlots[anchor.slot];
@@ -598,12 +588,27 @@ void CMyInventory::SyncNativeLayout()
         m_pNewInventoryCtrl->FollowGridPx(document, "item_grid");
 }
 
+void CMyInventory::SyncCompanionLayout(Rml::ElementDocument* document)
+{
+    Rml::Vector2f companionOffset, companionSize;
+    Rml::Element* companion = document ? document->GetElementById("slot_companion_item") : nullptr;
+    m_CompanionSlot = {};
+    if (companion && UI::RmlBridge::DrawnBox(*companion, Rml::BoxArea::Border, companionOffset, companionSize))
+    {
+        m_CompanionSlot.x = m_CompanionSlot.itemX = companionOffset.x;
+        m_CompanionSlot.y = m_CompanionSlot.itemY = companionOffset.y;
+        m_CompanionSlot.width = m_CompanionSlot.itemWidth = companionSize.x;
+        m_CompanionSlot.height = m_CompanionSlot.itemHeight = companionSize.y;
+    }
+}
+
 bool CMyInventory::GetEquipmentSlotCenter(int slot, POINT& center) const
 {
-    if (slot < 0 || slot >= MAX_EQUIPMENT_INDEX)
+    if (slot != GameLogic::Pets::CompanionEquipment::Slot && (slot < 0 || slot >= MAX_EQUIPMENT_INDEX))
         return false;
 
-    const EQUIPMENT_ITEM& equipmentSlot = m_EquipmentSlots[slot];
+    const EQUIPMENT_ITEM& equipmentSlot = slot == GameLogic::Pets::CompanionEquipment::Slot
+        ? m_CompanionSlot : m_EquipmentSlots[slot];
     if (equipmentSlot.width <= 0.f || equipmentSlot.height <= 0.f)
         return false;
     center.x = static_cast<LONG>(equipmentSlot.x + equipmentSlot.width / 2.f);
@@ -638,9 +643,11 @@ void CMyInventory::SetRepairMode(bool bRepair)
 
 bool CMyInventory::UpdateMouseEvent()
 {
-    // An item released on a skin slot goes to that slot. The bag below the slots takes a drop
-    // wherever the dragged item's picture overlaps it, so it used to keep 2x2 skins (sets,
-    // weapons, pets) and wings that were dropped on their slot.
+    if (!m_SkinPage && m_iPointedSlot == GameLogic::Pets::CompanionEquipment::Slot && IsRelease(VK_LBUTTON))
+        return !ProcessCompanionSlot();
+    // An item released on a skin slot goes to that slot. The bag below the slots
+    // takes a drop wherever the dragged item's picture overlaps it, so it used to keep 2x2 skins
+    // (sets, weapons, pets) and wings that were dropped on their slot.
     if (m_SkinPage && m_iPointedSlot >= 0 && CInventoryCtrl::GetPickedItem() && IsRelease(VK_LBUTTON))
         return !ProcessSkinSlots();
 
@@ -853,6 +860,25 @@ bool CMyInventory::UpdateKeyEvent()
     return true;
 }
 
+void CMyInventory::UpdatePointedSlot()
+{
+    m_iPointedSlot = -1;
+    Rml::ElementDocument* document = m_RmlView.Document();
+    for (const SlotAnchor& anchor : SlotAnchors)
+    {
+        const std::string itemId = std::string(anchor.id) + "_item";
+        if (document != nullptr && UI::RmlBridge::IsPointerWithin(document->GetElementById(itemId)))
+        {
+            m_iPointedSlot = anchor.slot;
+            break;
+        }
+    }
+
+    if (!m_SkinPage && document && UI::RmlBridge::IsPointerWithin(document->GetElementById("slot_companion_item")))
+        m_iPointedSlot = GameLogic::Pets::CompanionEquipment::Slot;
+
+}
+
 bool CMyInventory::Update()
 {
     GameLogic::Cosmetics::Update();
@@ -863,17 +889,7 @@ bool CMyInventory::Update()
 
     if (IsVisible())
     {
-        m_iPointedSlot = -1;
-        Rml::ElementDocument* document = m_RmlView.Document();
-        for (const SlotAnchor& anchor : SlotAnchors)
-        {
-            const std::string itemId = std::string(anchor.id) + "_item";
-            if (document != nullptr && UI::RmlBridge::IsPointerWithin(document->GetElementById(itemId)))
-            {
-                m_iPointedSlot = anchor.slot;
-                break;
-            }
-        }
+        UpdatePointedSlot();
 
         if (m_iPointedSlot == -1)
         {
@@ -910,9 +926,15 @@ void CMyInventory::SyncOptionLabelsFit(const wchar_t* setOptionLabel, const wcha
     }
 }
 
-void CMyInventory::SyncRmlModel()
+void CMyInventory::SyncItemTargets()
 {
     m_ItemTarget.Sync(m_RmlView.Document() ? m_RmlView.Document()->GetElementById("item_view") : nullptr, IsVisible());
+    m_CompanionTarget.Sync(m_RmlView.Document() ? m_RmlView.Document()->GetElementById("companion_view") : nullptr, IsVisible() && !m_SkinPage);
+}
+
+void CMyInventory::SyncRmlModel()
+{
+    SyncItemTargets();
     if (!m_RmlView.Document()) return;
     UI::RmlBridge::SyncDocumentVisibility(m_RmlView.Document(), IsVisible());
     if (!IsVisible())
@@ -1063,13 +1085,27 @@ bool CMyInventory::Render()
     return true;
 }
 
-// Into #item_view (m_ItemTarget), in window pixels: the equipped items, then the grid's.
+// A separate foreground target keeps other equipment from covering the extra pet.
+void CMyInventory::RenderCompanion() const
+{
+    const ITEM& companion = GameLogic::Pets::CompanionEquipment::Get();
+    if (!m_SkinPage && companion.Type >= 0 && m_CompanionSlot.itemWidth > 0.f)
+        RenderItem3D(m_CompanionSlot.itemX, m_CompanionSlot.itemY, m_CompanionSlot.itemWidth,
+            m_CompanionSlot.itemHeight, companion.Type, companion.Level, companion.ExcellentFlags,
+            companion.AncientDiscriminator, false, true);
+}
+
 void CMyInventory::Render3D()
 {
     if (m_pNewInventoryCtrl && m_pNewInventoryCtrl->IsVisible())
         m_pNewInventoryCtrl->Render3D();
     Rml::Element* panel = m_RmlView.Document() != nullptr ? m_RmlView.Document()->GetElementById("panel") : nullptr;
     const float scale = panel != nullptr ? UI::RmlBridge::DrawnScale(*panel) : 1.f;
+    RenderEquipment(scale);
+}
+
+void CMyInventory::RenderEquipment(float scale) const
+{
     for (int i = 0; i < MAX_EQUIPMENT_INDEX; i++)
     {
         ITEM skinItem{};
@@ -1441,8 +1477,24 @@ void CMyInventory::UnloadImages()
     DeleteBitmap(IMAGE_INVENTORY_ITEM_BOOT);
 }
 
+void CMyInventory::SyncCompanionState()
+{
+    Rml::String companionState;
+    if (GameLogic::Pets::CompanionEquipment::Get().Type >= 0
+        && GameLogic::Pets::CompanionEquipment::Get().Durability <= 0)
+        companionState = "broken";
+    if (auto* picked = CInventoryCtrl::GetPickedItem(); picked && !GameLogic::Items::IsCompanionItem(picked->GetItem()->Type))
+        companionState += " refused";
+    if (m_RmlView.GetModel().companionState != companionState)
+    {
+        m_RmlView.GetModel().companionState = companionState;
+        m_RmlView.MarkDirty("companion_state");
+    }
+}
+
 void CMyInventory::SyncSlotStates()
 {
+    SyncCompanionState();
     auto& states = m_RmlView.GetModel().slotStates;
     bool changed = false;
     for (int i = 0; i < MAX_EQUIPMENT_INDEX; i++)
@@ -1529,9 +1581,8 @@ bool CMyInventory::ProcessSkinSlots()
     {
         if (picked->GetSourceStorageType() == STORAGE_TYPE::INVENTORY
             && GameLogic::Cosmetics::FitsPart(picked->GetItem()->Type, part)
-            && (!GameLogic::Cosmetics::IsFemaleArmor(picked->GetItem()->Type)
-                || gCharacterManager.GetBaseClass(Hero->Class) == CLASS_ELF
-                || gCharacterManager.GetBaseClass(Hero->Class) == CLASS_SUMMONER))
+            && GameLogic::Items::CanEquipForClass(picked->GetItem()->Type, gCharacterManager.GetBaseClass(Hero->Class),
+                gCharacterManager.GetStepClass(Hero->Class)))
             GameLogic::Cosmetics::Request(1, picked->GetSourceLinealPos(), part);
         CInventoryCtrl::BackupPickedItem();
     }
@@ -1540,8 +1591,27 @@ bool CMyInventory::ProcessSkinSlots()
     return true;
 }
 
+bool CMyInventory::ProcessCompanionSlot()
+{
+    if (auto* picked = CInventoryCtrl::GetPickedItem())
+    {
+        const ITEM* item = picked->GetItem();
+        if (picked->GetSourceStorageType() == STORAGE_TYPE::INVENTORY && item
+            && GameLogic::Items::IsCompanionItem(item->Type)
+            && GameLogic::Items::CanEquipForClass(item->Type, gCharacterManager.GetBaseClass(Hero->Class),
+                gCharacterManager.GetStepClass(Hero->Class)))
+            GameLogic::Cosmetics::Request(1, picked->GetSourceLinealPos(), GameLogic::Pets::CompanionEquipment::Part);
+        CInventoryCtrl::BackupPickedItem();
+    }
+    else if (GameLogic::Pets::CompanionEquipment::Get().Type >= 0)
+        GameLogic::Cosmetics::Request(2, 0, GameLogic::Pets::CompanionEquipment::Part);
+    return true;
+}
+
 bool CMyInventory::EquipmentWindowProcess()
 {
+    if (m_iPointedSlot == GameLogic::Pets::CompanionEquipment::Slot)
+        return IsRelease(VK_LBUTTON) && ProcessCompanionSlot();
     if (m_SkinPage)
         return ProcessSkinSlots();
     if (m_iPointedSlot != -1 && IsRelease(VK_LBUTTON))
@@ -1719,6 +1789,13 @@ bool CMyInventory::WindowProcess()
 
 void CMyInventory::RenderItemToolTip(int iSlotIndex) const
 {
+    if (iSlotIndex == GameLogic::Pets::CompanionEquipment::Slot)
+    {
+        ITEM item = GameLogic::Pets::CompanionEquipment::Get();
+        if (item.Type >= 0)
+            RenderItemInfoAtPx(m_CompanionSlot.x, m_CompanionSlot.y, &item, false);
+        return;
+    }
     if (m_SkinPage)
     {
         const int part = GameLogic::Cosmetics::SkinPartForEquipment(iSlotIndex);
@@ -1896,6 +1973,8 @@ int CMyInventory::GetNumItemByType(short sItemType) const
 
 BYTE CMyInventory::GetDurabilityPointedItem() const
 {
+    if (m_iPointedSlot == GameLogic::Pets::CompanionEquipment::Slot)
+        return GameLogic::Pets::CompanionEquipment::Get().Durability;
     const ITEM* pItem = nullptr;
 
     if (m_iPointedSlot != -1)

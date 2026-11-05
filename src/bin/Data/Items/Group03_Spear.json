@@ -426,13 +426,8 @@
       "sellable": false,
       "repairable": false,
       "classRequirements": {
-        "darkWizard": 3,
         "darkKnight": 3,
-        "fairyElf": 3,
-        "magicGladiator": 3,
-        "darkLord": 3,
-        "summoner": 3,
-        "rageFighter": 3
+        "magicGladiator": 3
       },
       "description": [
         {
@@ -455,13 +450,8 @@
       "sellable": false,
       "repairable": false,
       "classRequirements": {
-        "darkWizard": 3,
         "darkKnight": 3,
-        "fairyElf": 3,
-        "magicGladiator": 3,
-        "darkLord": 3,
-        "summoner": 3,
-        "rageFighter": 3
+        "magicGladiator": 3
       },
       "description": [
         {
@@ -484,13 +474,8 @@
       "sellable": false,
       "repairable": false,
       "classRequirements": {
-        "darkWizard": 3,
         "darkKnight": 3,
-        "fairyElf": 3,
-        "magicGladiator": 3,
-        "darkLord": 3,
-        "summoner": 3,
-        "rageFighter": 3
+        "magicGladiator": 3
       },
       "description": [
         {
@@ -513,13 +498,8 @@
       "sellable": false,
       "repairable": false,
       "classRequirements": {
-        "darkWizard": 3,
         "darkKnight": 3,
-        "fairyElf": 3,
-        "magicGladiator": 3,
-        "darkLord": 3,
-        "summoner": 3,
-        "rageFighter": 3
+        "magicGladiator": 3
       },
       "description": [
         {
@@ -542,13 +522,8 @@
       "sellable": false,
       "repairable": false,
       "classRequirements": {
-        "darkWizard": 3,
         "darkKnight": 3,
-        "fairyElf": 3,
-        "magicGladiator": 3,
-        "darkLord": 3,
-        "summoner": 3,
-        "rageFighter": 3
+        "magicGladiator": 3
       },
       "description": [
         {

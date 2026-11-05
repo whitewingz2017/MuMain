@@ -4,11 +4,20 @@
 #include "Dotnet/Connection.h"
 #include "Network/Server/WSclient.h"
 #include "Engine/Object/ZzzCharacter.h"
+#include "Engine/Object/ZzzInfomation.h"
 #include <SDL3/SDL.h>
 #include "json.hpp"
 namespace GameLogic::Items::ExcellentCombination {
 namespace { State state; std::uint32_t sequence=0, pending=0; Uint64 sentAt=0; std::wstring owner; constexpr Uint64 TimeoutMs=8000; }
 const State& Get() { return state; }
+bool IsEligible(const ITEM* item) {
+    constexpr int ExcellentOptionMask = 63;
+    return item && item->Type >= 0 && item->Type < MAX_ITEM
+        && ItemAttribute[item->Type].m_byItemSlot <= EQUIPMENT_RING_LEFT
+        && (item->ExcellentFlags & ExcellentOptionMask) != 0
+        && item->AncientDiscriminator == 0 && item->SocketCount == 0
+        && !g_SocketItemMgr.IsSocketItem(item);
+}
 void Clear() { pending=0; state.pending=false; state.valid=false; state.success=false; state.status.clear(); ++state.revision; }
 bool Request(bool combine, int primary, int secondary) {
     if (state.pending || !SocketClient || !SocketClient->IsConnected() || SceneFlag!=MAIN_SCENE || !Hero || primary<0 || primary>255 || secondary<0 || secondary>255) return false;

@@ -21,6 +21,8 @@
 #include "UI/Core/UIManager.h"
 #include "GameLogic/Items/ChangeRingManager.h"
 #include "GameLogic/Items/ItemCategories.h"
+#include "GameLogic/Items/EquipmentRestrictions.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
 #include "World/MapInfra/PortalMgr.h"
 #include "GameLogic/Quests/CSQuest.h"
 #include "I18N/All.h"
@@ -406,19 +408,26 @@ bool CInventoryActionController::IsSlotOccupied(int nSlot) const
     return (pEquipment->Type != -1);
 }
 
-bool CInventoryActionController::TryEquipItem(CInventoryCtrl* targetControl, ITEM* pItem, int iSrcIndex) const
+bool CInventoryActionController::TryEquipExtraItem(ITEM* pItem, int iSrcIndex) const
 {
-    if (const int part = GameLogic::Cosmetics::ArmorPart(pItem->Type); part >= 0)
+    if (const int part = GameLogic::Items::IsCompanionItem(pItem->Type) && IsSlotOccupied(EQUIPMENT_HELPER)
+        ? GameLogic::Pets::CompanionEquipment::Part : GameLogic::Cosmetics::ArmorPart(pItem->Type); part >= 0)
     {
-        if (GameLogic::Cosmetics::IsFemaleArmor(pItem->Type)
-            && gCharacterManager.GetBaseClass(Hero->Class) != CLASS_ELF
-            && gCharacterManager.GetBaseClass(Hero->Class) != CLASS_SUMMONER)
+        if (!GameLogic::Items::CanEquipForClass(pItem->Type, gCharacterManager.GetBaseClass(Hero->Class),
+            gCharacterManager.GetStepClass(Hero->Class)))
             return true;
-        const int destination = GameLogic::Cosmetics::AvailablePart(pItem->Type,
+        const int destination = part == GameLogic::Pets::CompanionEquipment::Part ? part
+            : GameLogic::Cosmetics::AvailablePart(pItem->Type,
             GameLogic::Cosmetics::EquippedArmor(5) >= 0, GameLogic::Cosmetics::EquippedArmor(6) >= 0);
         GameLogic::Cosmetics::Request(1, iSrcIndex, destination);
         return true;
     }
+    return false;
+}
+
+bool CInventoryActionController::TryEquipItem(CInventoryCtrl* targetControl, ITEM* pItem, int iSrcIndex) const
+{
+    if (TryEquipExtraItem(pItem, iSrcIndex)) return true;
     const ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
     int nDstIndex = pItemAttr->m_byItemSlot;
 

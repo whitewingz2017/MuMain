@@ -2,6 +2,7 @@
 
 #include "Core/Utilities/SpinLock.h"
 #include "GameLogic/Cosmetics/WingAnimationClock.h"
+#include <cstdint>
 
 typedef struct _PATH_t
 {
@@ -224,6 +225,8 @@ public:
     PART_t		Wing;
     GameLogic::Cosmetics::WingAnimationClock CosmeticWingClock;
     PART_t		Helper;
+    std::uint64_t MountResumeAt = 0;
+    int CombatMountHelper = -1;
     PART_t		Flag;
     PATH_t      Path;
 

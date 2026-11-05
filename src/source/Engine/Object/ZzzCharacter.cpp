@@ -7,6 +7,8 @@
 
 #include "stdafx.h"
 #include "Core/Utilities/Random.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
+#include "GameLogic/Pets/MountCombat.h"
 #include "GameLogic/Pets/MuunMounts.h"
 #include "Render/Models/CosmeticAnimation.h"
 #include "GameLogic/Cosmetics/CosmeticArmor.h"
@@ -38,6 +40,7 @@
 #include "Engine/Object/ZzzInterface.h"
 #include "Engine/Object/ZzzInventory.h"
 #include "Render/Effects/ZzzEffect.h"
+#include "Render/Effects/GameMasterAura.h"
 #include "Engine/Object/ZzzOpenData.h"
 #include "Scenes/SceneCore.h"
 #include "Scenes/MainScene.h"
@@ -6413,6 +6416,7 @@ void MoveMonsterClient(CHARACTER* c, OBJECT* o)
 
 void MoveCharacterClient(CHARACTER* cc)
 {
+    GameLogic::Pets::MountCombat::Update(cc);
     OBJECT* co = &cc->Object;
     if (co->Live)
     {
@@ -10071,19 +10075,6 @@ static void RenderCharacterWithEquipment(const CHARACTER* c, const OBJECT* o, in
 
         if (!g_isCharacterBuff(o, eBuff_Cloaking))
         {
-            vec3_t vLight;
-            Vector(0.3f, 0.2f, 1.f, vLight);
-            RenderAurora(BITMAP_MAGIC + 1, RENDER_BRIGHT, o->Position[0], o->Position[1], 2.5f, 2.5f, vLight);
-
-            Vector(1.0f, 1.0f, 1.f, vLight);
-            const float fLumi = sinf(WorldTime * 0.0015f) * 0.3f + 0.5f;
-            EnableAlphaBlend();
-            Vector(fLumi * vLight[0], fLumi * vLight[1], fLumi * vLight[2], vLight);
-            RenderTerrainAlphaBitmap(BITMAP_GM_AURORA, o->Position[0], o->Position[1], 1.5f, 1.5f, vLight,
-                                     WorldTime * 0.01f);
-            RenderTerrainAlphaBitmap(BITMAP_GM_AURORA, o->Position[0], o->Position[1], 1.f, 1.f, vLight,
-                                     -WorldTime * 0.01f);
-            // RenderAurora ( BITMAP_GM_AURORA, RENDER_BRIGHT, o->Position[0], o->Position[1], 1.5f, 1.5f, vLight );
 
             DisableAlphaBlend();
         }
@@ -10348,20 +10339,7 @@ void UpdateCharacterBodyEffects(CHARACTER* c, OBJECT* o)
         }
     }
 
-    if (o->Kind == KIND_PLAYER && o->Type == MODEL_PLAYER && o->SubType == MODEL_GM_CHARACTER &&
-        !g_isCharacterBuff(o, eBuff_Cloaking))
-    {
-        vec3_t vLight, vPos;
-        Vector(0.4f, 0.6f, 0.8f, vLight);
-        VectorCopy(o->Position, vPos);
-        vPos[2] += 100.f;
-        CreateSprite(BITMAP_LIGHT, vPos, 6.0f, vLight, o, 0.5f);
-
-        float fLumi;
-        fLumi = sinf(WorldTime * 0.05f) * 0.4f + 0.9f;
-        Vector(fLumi * 0.3f, fLumi * 0.5f, fLumi * 0.8f, vLight);
-        CreateSprite(BITMAP_LIGHT, vPos, 2.0f, vLight, o);
-    }
+    // The GM aura and its lights are drawn by Render::Effects::GameMasterAura.
 }
 } // namespace
 
@@ -12389,10 +12367,13 @@ void RenderCharactersClient()
         {
             if (o->Visible)
             {
+                Render::Effects::GameMasterAura::RenderBehind(c, o);
                 if (i != SelectedCharacter && i != SelectedNpc)
                     RenderCharacter(c, o);
                 else
                     RenderCharacter(c, o, true);
+
+                Render::Effects::GameMasterAura::Render(c, o);
 
 #ifdef _EDITOR
                 if (s_bShowCharacterPickBoxes)
@@ -12446,6 +12427,7 @@ void DeleteCharacter(int Key)
         if (o->Live && c->Key == Key)
         {
             o->Live = false;
+            GameLogic::Pets::CompanionEquipment::SetAppearance(c, -1);
 
             BoneManager::UnregisterBone(c);
 
@@ -12461,6 +12443,7 @@ void DeleteCharacter(int Key)
 void DeleteCharacter(CHARACTER* c, OBJECT* o)
 {
     o->Live = false;
+    GameLogic::Pets::CompanionEquipment::SetAppearance(c, -1);
 
     BoneManager::UnregisterBone(c);
 
@@ -12673,7 +12656,7 @@ void CreateCharacterPointer(CHARACTER* c, int Type, unsigned char PositionX, uns
     c->Weapon[1].Type = -1;
     c->Weapon[1].Level = 0;
     c->Wing.Type = -1;
-    c->Helper.Type = -1;
+    GameLogic::Pets::MountCombat::Reset(c);
 
     o->Position[0] = (float)((c->PositionX) * TERRAIN_SCALE) + 0.5f * TERRAIN_SCALE;
     o->Position[1] = (float)((c->PositionY) * TERRAIN_SCALE) + 0.5f * TERRAIN_SCALE;

@@ -33,7 +33,7 @@ constexpr int EquipmentSlot(int part)
 constexpr int SkinPartForEquipment(int slot)
 {
     return slot == 3 ? 1
-        : slot == 0 ? 5 : slot == 1 ? 6 : slot == 7 ? 7 : slot == 8 ? 8 : -1;
+        : slot == 0 ? 5 : slot == 1 ? 6 : slot == 7 ? 7 : -1;
 }
 constexpr int ArmorPart(int itemType)
 {

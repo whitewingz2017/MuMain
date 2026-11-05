@@ -127,6 +127,8 @@ void PetProcess::Init()
         m_petsInfo.emplace(itemType, cosmetic);
     };
     for (int i = 0; i < 6; ++i) addCosmetic(GameLogic::Pets::Muun::FirstType + i, 0.65f);
+    addCosmetic(ITEM_HELPER, 0.8f);
+    addCosmetic(ITEM_IMP, 0.8f);
     addCosmetic(GameLogic::Cosmetics::CosmeticPetItemType, 0.5f);
     addCosmetic(GameLogic::Pets::DarkHorseItem, 1.f);
     addCosmetic(GameLogic::Pets::FenrirItem, 0.9f);
@@ -180,9 +182,9 @@ std::size_t PetProcess::CountPets(CHARACTER* owner) const
                          { return pet && pet->GetObject() != nullptr && pet->IsSameOwner(&owner->Object); });
 }
 
-void PetProcess::UnRegister(CHARACTER* Owner, int itemType, bool isUnregistAll)
+void PetProcess::UnRegister(CHARACTER* Owner, int itemType, bool isUnregistAll, int equipmentSlot)
 {
-    GameLogic::Pets::RemovePetObjects(m_petsList, Owner, itemType, isUnregistAll);
+    GameLogic::Pets::RemovePetObjects(m_petsList, Owner, itemType, isUnregistAll, equipmentSlot);
 }
 
 bool PetProcess::LoadData()
@@ -303,13 +305,14 @@ bool PetProcess::IsPet(int itemType)
     return TRUE;
 }
 
-bool PetProcess::CreatePet(int itemType, int modelType, vec3_t Position, CHARACTER* Owner, int SubType, int LinkBone)
+bool PetProcess::CreatePet(int itemType, int modelType, vec3_t Position, CHARACTER* Owner, int SubType, int LinkBone, int equipmentSlot)
 {
     if (NULL == Owner) return FALSE;
     // Inventory, appearance and Muun refreshes can announce the same follower.
-    if (HasPet(Owner, itemType)) return TRUE;
+    if (HasPet(Owner, itemType, equipmentSlot)) return TRUE;
 
     PetObjectPtr _tempPet = PetObject::Make();
+    _tempPet->SetEquipmentSlot(equipmentSlot);
     if (_tempPet->Create(itemType, modelType, Position, Owner, SubType, LinkBone))
     {
         auto iter = m_petsInfo.find(itemType);
@@ -341,17 +344,18 @@ bool PetProcess::CreatePet(int itemType, int modelType, vec3_t Position, CHARACT
     return FALSE;
 }
 
-bool PetProcess::HasPet(CHARACTER* owner, int itemType) const
+bool PetProcess::HasPet(CHARACTER* owner, int itemType, int equipmentSlot) const
 {
     return owner && std::any_of(m_petsList.begin(), m_petsList.end(),
-        [owner, itemType](const auto& pet) { return pet && pet->IsAlive() && pet->IsSameObject(&owner->Object, itemType); });
+        [owner, itemType, equipmentSlot](const auto& pet) { return pet && pet->IsAlive()
+            && pet->EquipmentSlot() == equipmentSlot && pet->IsSameObject(&owner->Object, itemType); });
 }
 
-void PetProcess::DeletePet(CHARACTER* Owner, int itemType, bool allDelete)
+void PetProcess::DeletePet(CHARACTER* Owner, int itemType, bool allDelete, int equipmentSlot)
 {
     if (NULL == Owner) return;
 
-    UnRegister(Owner, itemType, allDelete);
+    UnRegister(Owner, itemType, allDelete, equipmentSlot);
 }
 
 void PetProcess::SetCommandPet(CHARACTER* Owner, int targetKey, PetObject::ActionType cmdType)

@@ -38,7 +38,7 @@
 		     -- proven pattern, see ../../generic_menu_dialog.rml's own comment. gmd-button-cell
 		     wraps each button with its own optional description lines -- see
 		     ../../generic_menu_dialog.rml's own comment for why (nested data-for). -->
-		<div class="gmd-button-cell" data-for="button : buttons" data-class-has-actions="button.secondary_label != ''" data-class-compact="button.compact" data-class-has-lines="button.has_lines" data-class-cols-2="button.cols2"
+		<div class="gmd-button-cell" data-for="button : buttons" data-class-has-step-actions="button.has_step_actions" data-class-has-actions="button.secondary_label != ''" data-class-compact="button.compact" data-class-has-lines="button.has_lines" data-class-cols-2="button.cols2"
 		     data-class-dismiss="button.dismiss">
 			<div class="gmd-line" data-for="line : button.lines" data-class-bold="line.bold">{{line.text}}</div>
 			<div class="btn gmd-btn" data-class-compact="button.compact" data-class-cols-2="button.cols2" data-class-disabled="!button.enabled"
@@ -51,6 +51,8 @@
 				<div class="gmd-skill-icon" data-if="button.icon_decorator != ''" data-style-decorator="button.icon_decorator"></div><div class="gmd-btn-label">{{button.label}}</div><div class="gmd-btn-detail" data-if="button.detail != ''">{{button.detail}}</div>
             </div>
             <div class="gmd-row-actions" data-if="button.secondary_label != ''">
+                <button class="gmd-step-action" data-if="button.has_step_actions" data-event-click="gmd_button_action(it_index, 3)" data-attr-data-hint="button.tooltip">+</button>
+                <button class="gmd-step-action" data-if="button.has_step_actions" data-event-click="gmd_button_action(it_index, 4)" data-attr-data-hint="button.tooltip">-</button>
                 <button data-event-click="gmd_button_action(it_index, 1)">{{button.secondary_label}}</button>
                 <button data-event-click="gmd_button_action(it_index, 2)">{{button.tertiary_label}}</button>
             </div>

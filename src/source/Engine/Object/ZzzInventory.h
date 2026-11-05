@@ -216,7 +216,7 @@ bool ShouldAnimatePreview(bool pointerInside, bool pickedItemActive, bool render
 }
 
 // The box in window pixels; the item animates while the pointer is over it.
-void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool PickUp = false);
+void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool PickUp = false, bool fitSlot = false);
 // For a slot that already knows whether it is hovered -- an RmlUi element -- instead of testing the
 // legacy mouse globals against the rectangle, which need not be where the item is shown.
 void RenderItem3DWithHover(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool hovered);

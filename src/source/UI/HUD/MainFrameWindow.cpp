@@ -1,6 +1,10 @@
 
 #include "stdafx.h"
 #include "UI/Bank/JewelBank.h"
+#include "UI/Dialogs/RedeemCodeDialog.h"
+#include "UI/Inventory/ExcellentCombinationWindow.h"
+#include "UI/Inventory/MuunInventoryWindow.h"
+#include "GameLogic/Events/EventSchedule.h"
 #include <algorithm>
 #include "I18N/All.h"
 
@@ -285,8 +289,7 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickMyInven(); });
     c.BindEventCallback("mainframe_friend_click",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickFriend(); });
-    c.BindEventCallback("mainframe_bank_click",
-                        [](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { UI::Bank::Open(); });
+    BindTopMenuActions(c);
     c.BindEventCallback("mainframe_window_click",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickWindow(); });
     c.BindEventCallback("mainframe_party_click",
@@ -295,6 +298,37 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
                         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickGuild(); });
     c.BindEventCallback("mainframe_command_click",
                         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickCommand(); });
+}
+
+void mu::ui::window::CMainFrameWindow::BindTopMenuActions(Rml::DataModelConstructor& c)
+{
+    c.BindEventCallback("mainframe_bank_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) == 0) UI::Bank::Open();
+        });
+    c.BindEventCallback("mainframe_combine_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) != 0) return;
+            if (g_pExcellentCombinationWindow) g_pExcellentCombinationWindow->Open();
+        });
+    c.BindEventCallback("mainframe_code_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) == 0) UI::RedeemCodes::Open();
+        });
+    c.BindEventCallback("mainframe_events_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) == 0) GameLogic::Events::Schedule::Open();
+        });
+    c.BindEventCallback("mainframe_muun_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) != 0) return;
+            if (g_pMuunInventoryWindow) g_pMuunInventoryWindow->Open();
+        });
 }
 
 void mu::ui::window::CMainFrameWindow::OnRmlReloaded()

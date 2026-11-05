@@ -28,6 +28,8 @@ public:
     OBJECT* GetObject() { return m_obj; }
     bool IsSameOwner(OBJECT* Owner);
     bool IsSameObject(OBJECT* Owner, int itemType);
+    int EquipmentSlot() const { return m_equipmentSlot; }
+    void SetEquipmentSlot(int slot) { m_equipmentSlot = slot; }
     // Update kills a pet whose owner vanished (warp, scope exit, transform rebuild); the owner slot is reused.
     bool IsAlive() const { return m_obj && m_obj->Live; }
     void SetActions(ActionType type, Weak_Ptr(PetAction) action, float speed);
@@ -72,6 +74,7 @@ private:
     OBJECT* m_obj;
     int m_targetKey;
     int m_itemType;
+    int m_equipmentSlot = 0;
     float m_baseScale = 0.7f;
     unsigned long long m_muunAttackUntil = 0;
     int m_muunTarget = -1;

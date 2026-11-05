@@ -29,6 +29,7 @@ inline std::optional<DropRequest> RequestForDrop(const State& state, bool fromBa
 {
     if (!state.enabled || state.pending || source < 0 || source > 255 || target < 0 || target >= state.capacity)
         return std::nullopt;
+    if (IsMountItem(type)) return std::nullopt;
     const auto destination = std::find_if(state.items.begin(), state.items.end(), [target](const auto& i) { return i.slot == target; });
     const auto ruleFor = [&state](int itemType) -> const Species* {
         for (const auto& rule : state.species) if (rule.type == itemType) return &rule;

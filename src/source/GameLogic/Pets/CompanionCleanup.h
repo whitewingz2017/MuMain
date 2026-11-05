@@ -8,5 +8,7 @@ class CHARACTER;
 
 namespace GameLogic::Pets
 {
-void RemovePetObjects(std::list<std::shared_ptr<PetObject>>& pets, CHARACTER* owner, int itemType, bool allDelete);
+// equipmentSlot: which equipment slot spawned the pet (TwinMU companion slot); every slot when allDelete.
+void RemovePetObjects(std::list<std::shared_ptr<PetObject>>& pets, CHARACTER* owner, int itemType, bool allDelete,
+                      int equipmentSlot = 0);
 }

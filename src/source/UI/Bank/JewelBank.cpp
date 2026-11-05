@@ -43,6 +43,25 @@ void Actions(const GameLogic::Bank::JewelRow& row)
     config.buttons.push_back(std::move(back));
     g_pGenericMenuDialog->Show(std::move(config));
 }
+mu::ui::window::GenericMenuConfig::MenuButton JewelButton(const GameLogic::Bank::JewelRow& row)
+{
+    mu::ui::window::GenericMenuConfig::MenuButton button;
+    button.label = StringUtils::NarrowToWide(row.name);
+    button.detail = std::to_wstring(row.balance);
+    button.tooltip = L"Inventory: " + std::to_wstring(row.inventory) + L". + deposits 1; - withdraws 1. Click the jewel for more amounts.";
+    auto icon = std::make_shared<UI::Items::ItemCameraTarget>(
+        [type = row.item](const Rml::Vector2f& offset, const Rml::Vector2f& size)
+        { RenderItem3DWithHover(offset.x, offset.y, size.x, size.y, type, 0, 0, 0, false); });
+    icon->SetContinuous(false);
+    button.syncIcon = [icon](Rml::Element* image) { icon->Sync(image, image != nullptr); };
+    button.onClick = [row] { Actions(row); };
+    button.secondaryLabel = L"Deposit"; button.tertiaryLabel = L"Withdraw";
+    button.onSecondary = [item = row.item, amount = transferQuantity] { Request(1, item, amount); };
+    button.onTertiary = [item = row.item, amount = transferQuantity] { Request(2, item, amount); };
+    button.onIncrement = [item = row.item] { Request(1, item, 1); };
+    button.onDecrement = [item = row.item] { Request(2, item, 1); };
+    return button;
+}
 }
 void Open() { Request(0); }
 void Show(const GameLogic::Bank::Snapshot& snapshot)
@@ -66,22 +85,7 @@ void Show(const GameLogic::Bank::Snapshot& snapshot)
         config.buttons.push_back(std::move(quantity));
     }
     for (const auto& row : snapshot.rows)
-    {
-        GenericMenuConfig::MenuButton button;
-        button.label = StringUtils::NarrowToWide(row.name);
-        button.detail = std::to_wstring(row.balance);
-        button.tooltip = L"Inventory: " + std::to_wstring(row.inventory) + L". Click to deposit or withdraw.";
-        auto icon = std::make_shared<UI::Items::ItemCameraTarget>(
-            [type = row.item](const Rml::Vector2f& offset, const Rml::Vector2f& size)
-            { RenderItem3DWithHover(offset.x, offset.y, size.x, size.y, type, 0, 0, 0, false); });
-        icon->SetContinuous(false);
-        button.syncIcon = [icon](Rml::Element* image) { icon->Sync(image, image != nullptr); };
-        button.onClick = [row] { Actions(row); };
-        button.secondaryLabel = L"Deposit"; button.tertiaryLabel = L"Withdraw";
-        button.onSecondary = [item = row.item, amount = transferQuantity] { Request(1, item, amount); };
-        button.onTertiary = [item = row.item, amount = transferQuantity] { Request(2, item, amount); };
-        config.buttons.push_back(std::move(button));
-    }
+        config.buttons.push_back(JewelButton(row));
     GenericMenuConfig::MenuButton refresh;
     refresh.label = L"Refresh"; refresh.compact = true; refresh.onClick = Open;
     config.buttons.push_back(std::move(refresh));

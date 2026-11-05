@@ -7364,22 +7364,44 @@
     {
       "number": 309,
       "name": {
-        "en": "Mount Phantom Horse Skin"
+        "en": "Mount Phantom Horse"
       },
-      "width": 1,
-      "height": 1,
-      "durability": 1,
+      "width": 2,
+      "height": 2,
+      "durability": 255,
       "droppable": false,
       "sellable": false,
       "repairable": false,
       "description": [
         {
           "text": {
-            "en": "Cosmetic item. Use to equip in Skin."
+            "en": "Rideable mount. Equip in the Gear helper slot."
           },
           "color": "blue"
         }
-      ]
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
     },
     {
       "number": 310,
@@ -8652,22 +8674,44 @@
     {
       "number": 369,
       "name": {
-        "en": "Mount Malfurion Skin"
+        "en": "Mount Malfurion"
       },
-      "width": 1,
-      "height": 1,
-      "durability": 1,
+      "width": 2,
+      "height": 2,
+      "durability": 255,
       "droppable": false,
       "sellable": false,
       "repairable": false,
       "description": [
         {
           "text": {
-            "en": "Cosmetic item. Use to equip in Skin."
+            "en": "Rideable mount. Equip in the Gear helper slot."
           },
           "color": "blue"
         }
-      ]
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
     },
     {
       "number": 450,

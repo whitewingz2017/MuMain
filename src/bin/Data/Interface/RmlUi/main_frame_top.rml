@@ -33,6 +33,10 @@
 			<div id="btn_window_top" class="frame-btn-top" data-class-open="window_open" data-event-click="mainframe_window_click" data-attr-data-hint="window_tooltip">
 				<span>MENU</span>
 			</div>
+			<div id="btn_combine_top" class="frame-btn-top" data-event-click="mainframe_combine_click"><span>COMBINE</span></div>
+			<div id="btn_code_top" class="frame-btn-top" data-event-click="mainframe_code_click"><span>CODE</span></div>
+			<div id="btn_events_top" class="frame-btn-top" data-event-click="mainframe_events_click"><span>EVENTS</span></div>
+			<div id="btn_muun_top" class="frame-btn-top" data-event-click="mainframe_muun_click"><span>MUUN</span></div>
 		</div>
 	</div>
 </body>

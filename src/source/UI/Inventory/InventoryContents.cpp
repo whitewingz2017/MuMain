@@ -3,6 +3,7 @@
 #include "UI/Inventory/InventoryContents.h"
 
 #include "GameLogic/Items/InventoryUtils.h"
+#include "GameLogic/Pets/CompanionEquipment.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Inventory/InventoryCtrl.h"
 
@@ -10,6 +11,7 @@ namespace UI::Inventory
 {
 void ClearAllItems()
 {
+    GameLogic::Pets::CompanionEquipment::Clear();
     g_pMyInventory->UnequipAllItems();
     g_pMyInventory->DeleteAllItems();
     g_pMyInventoryExt->DeleteAllItems();
@@ -18,6 +20,11 @@ void ClearAllItems()
 
 void RemoveItem(int index)
 {
+    if (index == GameLogic::Pets::CompanionEquipment::Slot)
+    {
+        GameLogic::Pets::CompanionEquipment::Clear();
+        return;
+    }
     if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
         g_pMyInventory->UnequipItem(index);
     else if (IsMainInventorySlot(index))
@@ -30,14 +37,13 @@ void RemoveItem(int index)
 
 void RemoveDroppedItem(int index)
 {
-    if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
-        g_pMyInventory->UnequipItem(index);
-    else
-        g_pMyInventory->DeleteItem(index);
+    RemoveItem(index);
 }
 
 bool InsertItem(int index, std::span<const std::uint8_t> itemData)
 {
+    if (index == GameLogic::Pets::CompanionEquipment::Slot)
+        return GameLogic::Pets::CompanionEquipment::Receive(itemData);
     if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
         return g_pMyInventory->EquipItem(index, itemData);
     if (IsMainInventorySlot(index))
@@ -70,6 +76,9 @@ int TransferSourceIndex()
 bool ReceivePlayerTransfer(int index, std::span<const std::uint8_t> itemData)
 {
     DiscardPickedItem();
+
+    if (index == GameLogic::Pets::CompanionEquipment::Slot)
+        return InsertItem(index, itemData);
 
     if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
     {
@@ -106,6 +115,8 @@ bool HasPickedItem()
 
 ITEM* FindPlayerItem(int index)
 {
+    if (index == GameLogic::Pets::CompanionEquipment::Slot)
+        return &GameLogic::Pets::CompanionEquipment::Get();
     if (!IsPlayerInventorySlot(index))
         return nullptr;
 
@@ -117,6 +128,8 @@ ITEM* FindPlayerItem(int index)
 
 ITEM* FindMainInventoryItem(int index)
 {
+    if (index == GameLogic::Pets::CompanionEquipment::Slot)
+        return &GameLogic::Pets::CompanionEquipment::Get();
     return g_pMyInventory->FindItem(index);
 }
 

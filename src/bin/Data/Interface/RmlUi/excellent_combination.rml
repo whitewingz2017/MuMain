@@ -1,8 +1,42 @@
-<rml><head><title>Excellent Option Combination</title><link type="text/rcss" href="base.rcss"/><link type="text/rcss" href="../../excellent_combination_common.rcss"/><link type="text/rcss" href="excellent_combination.rcss"/><link type="text/template" href="window_shell.rml"/></head>
+<rml>
+<head>
+    <title>Set Stacking</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="../../excellent_combination_common.rcss"/>
+    <link type="text/rcss" href="excellent_combination.rcss"/>
+    <link type="text/template" href="window_shell.rml"/>
+</head>
 <body template="window_shell" data-model="excellent_combination">
-<button id="combination_close" class="btn combination-close" data-event-click="combination_close">X</button>
-<div class="combination-input primary"><span>Primary Item</span><div id="combination_slot_0" class="combination-slot" data-event-click="combination_inspect(0)"><img id="combination_item_0"/></div></div>
-<div class="combination-input secondary"><span>Secondary Item</span><div id="combination_slot_1" class="combination-slot" data-event-click="combination_inspect(1)"><img id="combination_item_1"/></div></div>
-<div class="combination-arrow">&gt;</div><div class="combination-result"><span>Result Item</span><div id="combination_slot_2" class="combination-slot" data-event-click="combination_inspect(2)"><img id="combination_item_2"/></div><span class="combination-preview-note">Excellent options may change.</span></div>
-<div class="combination-footer"><span>{{cost}}</span><button class="btn" data-class-disabled="!can_combine" data-event-click="combination_execute">Combine</button></div><div class="combination-status">{{status}}</div>
-</body></rml>
+    <button id="combination_close" class="btn combination-close" data-event-click="combination_close">X</button>
+    <div class="combination-inputs">
+        <div class="combination-input primary">
+            <div class="combination-gear-label">Main Gear</div>
+            <div id="combination_slot_0" class="combination-slot" data-class-selected="active_slot == 0" data-event-click="combination_inspect(0)">
+                <span class="combination-add" data-if="!has_primary">+</span>
+                <img id="combination_item_0" data-class-hidden="!has_primary"/>
+            </div>
+        </div>
+        <div class="combination-arrow">&#171;</div>
+        <div class="combination-input secondary">
+            <div class="combination-gear-label">Secondary Gear</div>
+            <div id="combination_slot_1" class="combination-slot" data-class-selected="active_slot == 1" data-event-click="combination_inspect(1)">
+                <span class="combination-add" data-if="!has_secondary">+</span>
+                <img id="combination_item_1" data-class-hidden="!has_secondary"/>
+            </div>
+        </div>
+    </div>
+    <div class="combination-rate" data-if="has_primary">Success Rate <span>100%</span></div>
+    <div class="combination-effects-title"><span>&#9670;</span> Stack Effect</div>
+    <div id="combination_effects" class="combination-effects">
+        <div class="combination-option" data-for="option : options" data-class-potential="option.potential">
+            <div class="combination-option-text">{{option.text}}</div>
+            <span class="combination-option-note" data-if="option.potential">After stacking</span>
+        </div>
+    </div>
+    <div class="combination-status">{{status}}</div>
+    <div class="combination-footer">
+        <div class="combination-cost-row"><span>Cost</span><div class="combination-cost" data-class-affordable="affordable">{{cost}}</div></div>
+        <button class="btn combination-execute" data-class-disabled="!can_combine" data-event-click="combination_execute">Stack</button>
+    </div>
+</body>
+</rml>

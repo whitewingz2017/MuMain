@@ -193,6 +193,7 @@ namespace mu::ui::window
             Rml::String itemSlot0Count, itemSlot1Count, itemSlot2Count, itemSlot3Count;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, MainFrameRmlModel& model);
+        void BindTopMenuActions(Rml::DataModelConstructor& c);
         void OnRmlReloaded();
         // The HUD, and its top-right button row on the same model: a document of its own so it
         // stacks under the windows docked over that corner while the bars stay over them
