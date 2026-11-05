@@ -2044,6 +2044,35 @@
       "glow": {
         "level": 8
       }
+    },
+    {
+      "number": 252,
+      "file": "Data/Custom/ResonanceCore/ResonanceCore.bmd",
+      "textureFolders": [
+        "Custom/ResonanceCore"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.95
+        ],
+        "rotation": [
+          270,
+          0,
+          45
+        ],
+        "scale": 0.0035
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          45
+        ]
+      },
+      "glow": {
+        "level": 8
+      }
     }
   ]
 }

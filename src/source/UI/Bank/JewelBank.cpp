@@ -17,17 +17,20 @@ void Request(std::uint8_t operation, std::uint16_t item = 0, std::uint32_t amoun
     if (GameLogic::Bank::Request(operation, item, amount)) return;
     mu::ui::window::GenericMenuConfig config;
     config.title = L"Jewel Bank";
+    config.kind = "jewel-bank";
     config.lines.push_back({L"Jewel Bank requires an active game connection. Reconnect, then try again."});
     mu::ui::window::GenericMenuConfig::MenuButton close;
     close.label = L"Close"; close.compact = true; close.dismiss = true;
     config.buttons.push_back(std::move(close));
-    if (mu::ui::window::g_pGenericMenuDialog) mu::ui::window::g_pGenericMenuDialog->Show(std::move(config));
+    if (mu::ui::window::g_pGenericMenuDialog) mu::ui::window::g_pGenericMenuDialog->ShowOrRefresh(std::move(config));
 }
 void Actions(const GameLogic::Bank::JewelRow& row)
 {
     using namespace mu::ui::window;
     GenericMenuConfig config;
     config.title = StringUtils::NarrowToWide(row.name);
+    config.kind = "jewel-bank";
+    config.keepOpen = true;
     config.lines.push_back({L"Bank: " + std::to_wstring(row.balance) + L" | Inventory: " + std::to_wstring(row.inventory)});
     constexpr std::array<const wchar_t*, 6> labels = {L"Deposit all", L"Withdraw 1", L"Withdraw 10", L"Withdraw 20", L"Withdraw 30", L"Withdraw all"};
     constexpr std::array<unsigned, 6> amounts = {0, 1, 10, 20, 30, 0};
@@ -41,7 +44,7 @@ void Actions(const GameLogic::Bank::JewelRow& row)
     GenericMenuConfig::MenuButton back;
     back.label = L"Back"; back.compact = true; back.onClick = Open;
     config.buttons.push_back(std::move(back));
-    g_pGenericMenuDialog->Show(std::move(config));
+    g_pGenericMenuDialog->ShowOrRefresh(std::move(config));
 }
 mu::ui::window::GenericMenuConfig::MenuButton JewelButton(const GameLogic::Bank::JewelRow& row)
 {
@@ -71,6 +74,7 @@ void Show(const GameLogic::Bank::Snapshot& snapshot)
     GenericMenuConfig config;
     config.title = L"Jewels Bank";
     config.kind = "jewel-bank";
+    config.keepOpen = true;
     config.lines.push_back({StringUtils::NarrowToWide(snapshot.status)});
     for (const int direction : {-1, 0, 1})
     {
@@ -92,6 +96,6 @@ void Show(const GameLogic::Bank::Snapshot& snapshot)
     GenericMenuConfig::MenuButton close;
     close.label = L"Close"; close.compact = true; close.dismiss = true;
     config.buttons.push_back(std::move(close));
-    g_pGenericMenuDialog->Show(std::move(config));
+    g_pGenericMenuDialog->ShowOrRefresh(std::move(config));
 }
 }

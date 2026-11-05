@@ -168,6 +168,24 @@ void CGenericMenuDialog::Show(GenericMenuConfig cfg)
     }
 }
 
+void CGenericMenuDialog::ShowOrRefresh(GenericMenuConfig cfg)
+{
+    if (!m_bActive || cfg.kind.empty() || cfg.kind != m_Active.kind)
+    {
+        Show(std::move(cfg));
+        return;
+    }
+
+    // Reuse unchanged row icons so refreshing balances does not blank their render targets.
+    for (size_t i = 0; i < cfg.buttons.size() && i < m_Active.buttons.size(); ++i)
+        if (cfg.buttons[i].label == m_Active.buttons[i].label &&
+            cfg.buttons[i].syncIcon && m_Active.buttons[i].syncIcon)
+            cfg.buttons[i].syncIcon = std::move(m_Active.buttons[i].syncIcon);
+
+    m_Active = std::move(cfg);
+    SyncRmlModel();
+}
+
 void CGenericMenuDialog::ShowNext()
 {
     if (m_Queue.empty())
@@ -190,16 +208,29 @@ void CGenericMenuDialog::ShowNext()
     }
 }
 
+std::function<void()> CGenericMenuDialog::ButtonCallback(const GenericMenuConfig::MenuButton& button) const
+{
+    const std::function<void()>* callbacks[] = {
+        &button.onClick, &button.onSecondary, &button.onTertiary, &button.onIncrement, &button.onDecrement};
+    return *callbacks[m_iClickedButtonAction];
+}
+
 void CGenericMenuDialog::Resolve(int buttonIndex)
 {
+    if (m_Active.keepOpen && buttonIndex >= 0 && buttonIndex < static_cast<int>(m_Active.buttons.size()) &&
+        !m_Active.buttons[buttonIndex].dismiss)
+    {
+        // Copy before invoking: the callback may replace the active menu and its callbacks.
+        const auto callback = ButtonCallback(m_Active.buttons[buttonIndex]);
+        if (callback) callback();
+        return;
+    }
+
     GenericMenuConfig cfg = std::move(m_Active);
 
     if (buttonIndex >= 0 && buttonIndex < static_cast<int>(cfg.buttons.size()))
     {
-        const auto& button = cfg.buttons[buttonIndex];
-        const std::function<void()>* callbacks[] = {
-            &button.onClick, &button.onSecondary, &button.onTertiary, &button.onIncrement, &button.onDecrement};
-        const auto& callback = *callbacks[m_iClickedButtonAction];
+        const auto callback = ButtonCallback(cfg.buttons[buttonIndex]);
         if (callback) callback();
     }
     else if (cfg.onCancel)

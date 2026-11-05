@@ -5341,6 +5341,25 @@
       "droppable": true,
       "sellable": false,
       "repairable": false
+    },
+    {
+      "number": 252,
+      "name": {
+        "en": "Resonance Core"
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Raises Excellent Combination success rate. Consumed on success or failure."
+          }
+        }
+      ],
+      "width": 1,
+      "height": 1,
+      "durability": 255,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false
     }
   ]
 }

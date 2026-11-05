@@ -68,9 +68,7 @@ namespace mu::ui::window
             bool dismiss = false;           // only closes the menu, as Esc does; a theme with a
                                             // close action of its own may leave it out
             std::function<void(Rml::Element*)> syncIcon;
-            std::function<void()> onClick;  // fires, then the dialog closes -- every native
-                                            // button in this family destroys its own box on click,
-                                            // none need a KeepOpen()-style veto
+            std::function<void()> onClick;
         };
         std::vector<MenuButton> buttons; // 1..N, data-driven -- no hardcoded max
 
@@ -89,6 +87,7 @@ namespace mu::ui::window
         // its RenderTexts() and buttons drew), by name: "chaos-mix", "npc-menu", ... A theme may
         // lay the menu out like that box, by kind (legacy does); empty = not described / flow.
         std::string kind;
+        bool keepOpen = false; // Action buttons leave the menu visible; dismiss and Esc still close it.
         // Which menu this is, by name ("trainer", "seed-master", "personal-shop-price-type", ...):
         // for a theme to target one menu (data-id on the body). Unlike `kind`, it changes nothing
         // in the layout, so it also names menus no native box drew. Every caller sets it.
@@ -116,6 +115,8 @@ namespace mu::ui::window
 
         // Shows now if idle, otherwise queues (see class comment).
         void Show(GenericMenuConfig cfg);
+        // Refreshes the same active kind, retaining icons for unchanged row labels; otherwise queues/shows.
+        void ShowOrRefresh(GenericMenuConfig cfg);
 
         bool Render() override;
         bool Update() override;
@@ -138,8 +139,8 @@ namespace mu::ui::window
         void SyncRmlModel();
         void SyncCanvasTop();
         void ShowNext();           // pops m_Queue (if non-empty) and opens the document
-        void Resolve(int buttonIndex); // -1 = cancel/no button; hides the document, invokes the
-                                       // chosen callback, then ShowNext()
+        std::function<void()> ButtonCallback(const GenericMenuConfig::MenuButton& button) const;
+        void Resolve(int buttonIndex); // -1 = cancel; keepOpen actions invoke their callback in place.
 
         struct LineEntry
         {

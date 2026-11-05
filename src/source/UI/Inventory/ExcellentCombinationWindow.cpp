@@ -19,30 +19,59 @@ CExcellentCombinationWindow::~CExcellentCombinationWindow() { Release(); }
 void CExcellentCombinationWindow::Create(CManager* manager) {
     m_manager=manager;
     for(int i=0;i<static_cast<int>(m_targets.size());++i) { m_targets[i]=std::make_unique<UI::Items::ItemCameraTarget>([this,i](const auto& p,const auto& s){DrawItem(i,p,s);}); m_targets[i]->SetContinuous(false); }
+    for(auto& target:m_coreTargets) {
+        target=std::make_unique<UI::Items::ItemCameraTarget>([this](const auto& p,const auto& size){DrawCore(p,size);});
+        target->SetContinuous(false);
+    }
     m_view.Ensure(); manager->AddUIObj(INTERFACE_EXCELLENT_COMBINATION,this); Show(false);
 }
 void CExcellentCombinationWindow::Release() {
-    Show(false); m_view.Release(); for(auto& target:m_targets) target.reset();
+    Show(false); m_view.Release(); for(auto& target:m_targets) target.reset(); for(auto& target:m_coreTargets) target.reset();
     if(m_manager) m_manager->RemoveUIObj(this); m_manager=nullptr;
 }
 void CExcellentCombinationWindow::Bind(Rml::DataModelConstructor& c,Model& m) {
     c.Bind("title",&m.title);c.Bind("has_title",&m.hasTitle);c.Bind("positioned",&m.positioned);c.Bind("root_x",&m.rootX);c.Bind("root_y",&m.rootY);
     c.Bind("status",&m.status);c.Bind("cost",&m.cost);c.Bind("can_combine",&m.canCombine);
     c.Bind("has_primary",&m.hasPrimary);c.Bind("has_secondary",&m.hasSecondary);c.Bind("active_slot",&m.activeSlot);c.Bind("affordable",&m.affordable);
+    BindCoreControls(c,m);
     auto option=c.RegisterStruct<OptionRow>();option.RegisterMember("text",&OptionRow::text);option.RegisterMember("potential",&OptionRow::potential);
     c.RegisterArray<std::vector<OptionRow>>();c.Bind("options",&m.options);
     c.BindEventCallback("combination_close",[this](auto,auto&,const auto&){Show(false);});
     c.BindEventCallback("combination_inspect",[this](auto,auto&,const Rml::VariantList& a){if(a.size()==1) m_inspected=a[0].Get<int>(-1);});
-    c.BindEventCallback("combination_execute",[this](auto,auto&,const auto&){if(m_view.GetModel().canCombine && ValidateSelection()) Combination::Request(true,m_slots[0],m_slots[1]);});
+    c.BindEventCallback("combination_execute",[this](auto,auto&,const auto&){if(m_view.GetModel().canCombine && ValidateSelection()) Combination::Request(true,m_slots[0],m_slots[1],m_view.GetModel().selectedCores);});
+}
+void CExcellentCombinationWindow::BindCoreControls(Rml::DataModelConstructor& c,Model& m) {
+    c.Bind("core_picker",&m.corePicker);c.Bind("core_ready",&m.coreReady);
+    c.Bind("base_rate",&m.baseRate);c.Bind("bonus_rate",&m.bonusRate);c.Bind("maximum_rate",&m.maximumRate);
+    c.Bind("available_cores",&m.availableCores);c.Bind("selected_cores",&m.selectedCores);
+    c.Bind("core_draft",&m.coreDraft);c.Bind("draft_bonus",&m.draftBonus);c.Bind("core_limit",&m.coreLimit);
+    c.BindEventCallback("cores_open",[this](auto,auto&,const auto&){
+        if(Combination::Get().pending) return;
+        auto& m=m_view.GetModel();m.corePicker=true;SetCoreDraft(m.selectedCores);m_view.MarkDirty("core_picker");
+        Combination::RequestConfiguration();SyncState();
+    });
+    c.BindEventCallback("cores_cancel",[this](auto,auto&,const auto&){CloseCorePicker();});
+    c.BindEventCallback("cores_step",[this](auto,auto&,const Rml::VariantList& a){
+        if(a.size()==1 && m_view.GetModel().coreReady) SetCoreDraft(m_view.GetModel().coreDraft+a[0].Get<int>());
+    });
+    c.BindEventCallback("cores_slide",[this](auto,auto& event,const auto&){SetCoreDraft(static_cast<int>(event.template GetParameter<float>("value",0)));});
+    c.BindEventCallback("cores_confirm",[this](auto,auto&,const auto&){
+        auto& m=m_view.GetModel();if(!m.coreReady) return;
+        m.selectedCores=m.coreDraft;m.bonusRate=m.draftBonus;m.corePicker=false;
+        for(const char* field:{"selected_cores","bonus_rate","core_picker"})m_view.MarkDirty(field);
+        if(ValidateSelection()) Combination::Request(false,m_slots[0],m_slots[1],m.selectedCores);
+        SyncState();
+    });
 }
 void CExcellentCombinationWindow::Open() {
     CInventoryCtrl::BackupPickedItem(); Combination::Clear(); m_slots={-1,-1};m_present.fill(false);m_inspected=-1;
     g_pNewUISystem->Show(INTERFACE_INVENTORY);m_view.Ensure();
-    SyncState();SyncCost();Show(true);
+    m_view.GetModel().selectedCores=0;m_view.GetModel().corePicker=false;
+    Combination::RequestConfiguration();SyncState();SyncCost();Show(true);
 }
 void CExcellentCombinationWindow::Show(bool visible) {
     CObject::Show(visible); if(visible && m_view.Document()) m_view.Document()->Show(); else m_view.Hide();
-    if(!visible) { for(auto& target:m_targets) if(target) target->Disable(); Combination::Clear();m_present.fill(false); }
+    if(!visible) { for(auto& target:m_targets) if(target) target->Disable(); for(auto& target:m_coreTargets) if(target) target->Disable(); Combination::Clear();m_present.fill(false); }
 }
 void CExcellentCombinationWindow::Select(int slot,int inventorySlot,ITEM* item) {
     if(slot<0 || slot>1 || Combination::Get().pending) return;
@@ -53,7 +82,7 @@ void CExcellentCombinationWindow::Select(int slot,int inventorySlot,ITEM* item) 
     }
     m_slots[slot]=inventorySlot;m_present[slot]=item!=nullptr;
     if(item) m_items[slot]=*item;
-    if(m_present[0] && m_present[1]) Combination::Request(false,m_slots[0],m_slots[1]);
+    if(m_present[0] && m_present[1]) Combination::Request(false,m_slots[0],m_slots[1],m_view.GetModel().selectedCores);
     SyncState();
 }
 bool CExcellentCombinationWindow::ValidateSelection() {
@@ -88,16 +117,37 @@ void CExcellentCombinationWindow::SyncSelection() {
 void CExcellentCombinationWindow::SyncState() {
     const auto& state=Combination::Get();
     m_revision=state.revision;
-    if(state.success) {
+    if(state.completed) {
         m_present[1]=false;m_slots[1]=-1;
         const auto* item=g_pMyInventory->FindItem(m_slots[0]);
         m_present[0]=item!=nullptr;
         if(item)m_items[0]=*item;
     }
-    auto& m=m_view.GetModel();m.canCombine=state.valid && !state.pending && m_present[0] && m_present[1];
+    auto& m=m_view.GetModel();
+    m.baseRate=state.baseRate;m.maximumRate=state.maximumRate;m.availableCores=state.availableCores;
+    m.coreLimit=std::min(state.availableCores,(state.maximumRate-state.baseRate+state.bonusPerCore-1)/state.bonusPerCore);
+    if(state.completed) m.selectedCores=0;
+    else if(state.valid) m.selectedCores=state.selectedCores;
+    m.selectedCores=std::clamp(m.selectedCores,0,m.coreLimit);
+    m.bonusRate=std::min(state.maximumRate-state.baseRate,m.selectedCores*state.bonusPerCore);
+    m.coreReady=state.configured && !state.pending;
+    if(m.corePicker) SetCoreDraft(m.coreDraft);
+    for(const char* field:{"base_rate","maximum_rate","available_cores","selected_cores","bonus_rate","core_limit","core_ready"})m_view.MarkDirty(field);
+    m.canCombine=state.valid && !state.pending && !m.corePicker && m_present[0] && m_present[1];
     m.status=state.status.empty() ? (m_present[0] ? "Drag a second Excellent item onto Secondary Gear." : "Drag an Excellent item from your bag onto Main Gear.") : state.status;
     for(const char* field:{"can_combine","status"})m_view.MarkDirty(field);
     SyncSelection();
+}
+void CExcellentCombinationWindow::CloseCorePicker() {
+    auto& m=m_view.GetModel();if(!m.corePicker) return;
+    m.corePicker=false;m_view.MarkDirty("core_picker");Combination::Clear();
+    if(ValidateSelection()) Combination::Request(false,m_slots[0],m_slots[1],m.selectedCores);
+    SyncState();
+}
+void CExcellentCombinationWindow::SetCoreDraft(int count) {
+    auto& m=m_view.GetModel();m.coreDraft=std::clamp(count,0,m.coreLimit);
+    m.draftBonus=std::min(m.maximumRate-m.baseRate,m.coreDraft*Combination::Get().bonusPerCore);
+    m_view.MarkDirty("core_draft");m_view.MarkDirty("draft_bonus");
 }
 void CExcellentCombinationWindow::SyncCost() {
     if(!CharacterMachine)return;
@@ -122,21 +172,30 @@ bool CExcellentCombinationWindow::UpdateMouseEvent() {
     if(!IsVisible() || !m_view.Document())return true;
     auto* doc=m_view.Document();if(IsPress(VK_LBUTTON))m_inspected=-1; if(!UI::RmlBridge::IsPointerWithin(doc->GetElementById("panel")))return true;
     auto* picked=CInventoryCtrl::GetPickedItem();
-    if(picked && IsRelease(VK_LBUTTON) && picked->GetSourceStorageType()==STORAGE_TYPE::INVENTORY) {
+    if(!m_view.GetModel().corePicker && picked && IsRelease(VK_LBUTTON) && picked->GetSourceStorageType()==STORAGE_TYPE::INVENTORY) {
         for(int i=0;i<2;++i)if(UI::RmlBridge::IsPointerWithin(doc->GetElementById("combination_slot_"+std::to_string(i))))Select(i,picked->GetSourceLinealPos(),picked->GetItem());
         CInventoryCtrl::BackupPickedItem();
     }
     return false;
 }
-bool CExcellentCombinationWindow::UpdateKeyEvent(){if(!IsVisible())return true;if(IsPress(VK_ESCAPE))Show(false);return false;}
+bool CExcellentCombinationWindow::UpdateKeyEvent(){if(!IsVisible())return true;if(IsPress(VK_ESCAPE)) {if(m_view.GetModel().corePicker) CloseCorePicker(); else Show(false);}return false;}
 void CExcellentCombinationWindow::DrawItem(int slot,const Rml::Vector2f& p,const Rml::Vector2f& s){
     if(!m_present[slot])return;const auto& item=m_items[slot];const Render::Items::ScopedItemEffects effects(false);
     RenderItem3DWithHover(p.x,p.y,s.x,s.y,item.Type,item.Level,item.ExcellentFlags,item.AncientDiscriminator,false);
 }
+void CExcellentCombinationWindow::DrawCore(const Rml::Vector2f& p,const Rml::Vector2f& size) {
+    const Render::Items::ScopedItemEffects effects(false);
+    RenderItem3DWithHover(p.x,p.y,size.x,size.y,Combination::ResonanceCoreType,0,0,0,false);
+}
 bool CExcellentCombinationWindow::Render(){
     auto* doc=m_view.Document();if(!doc)return true;
     for(int i=0;i<static_cast<int>(m_targets.size());++i){auto* image=doc->GetElementById("combination_item_"+std::to_string(i));m_targets[i]->Sync(image,IsVisible()&&m_present[i]);
-        if(IsVisible() && m_present[i] && !CInventoryCtrl::GetPickedItem() && (m_inspected==i || UI::RmlBridge::IsPointerWithin(doc->GetElementById("combination_slot_"+std::to_string(i)))))RenderItemInfoAtPx(MouseX,MouseY,&m_items[i],false);
-    }return true;
+        if(IsVisible() && !m_view.GetModel().corePicker && m_present[i] && !CInventoryCtrl::GetPickedItem() && (m_inspected==i || UI::RmlBridge::IsPointerWithin(doc->GetElementById("combination_slot_"+std::to_string(i)))))RenderItemInfoAtPx(MouseX,MouseY,&m_items[i],false);
+    }
+    constexpr std::array<const char*,2> CoreImages{"combination_core_item","core_picker_item"};
+    for(size_t i=0;i<m_coreTargets.size();++i) {
+        m_coreTargets[i]->Sync(doc->GetElementById(CoreImages[i]),IsVisible() && (i==0 || m_view.GetModel().corePicker));
+    }
+    return true;
 }
 }

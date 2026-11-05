@@ -1,1 +1,5 @@
 /* Shared combination layout, active theme chrome. */
+
+.core-slider-rail { background-color: #10130f; border-color: #4a4738; }
+#core_slider sliderbar { background-color: #393226; border: 1dp #8c7953; border-radius: 3dp; decorator: linear-gradient(to bottom, #7a694a, #393226 50%, #211e17); }
+#core_slider sliderbar:hover, #core_slider sliderbar:active { border-color: #d3b77a; }

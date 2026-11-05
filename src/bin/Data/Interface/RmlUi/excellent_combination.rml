@@ -25,18 +25,39 @@
             </div>
         </div>
     </div>
-    <div class="combination-rate" data-if="has_primary">Success Rate <span>100%</span></div>
+    <div class="combination-rate" data-if="has_primary">Success Rate <span>{{base_rate}}%</span> <span class="core-bonus">+{{bonus_rate}}%</span></div>
+    <button id="combination_cores" class="btn combination-cores" data-class-disabled="!core_ready" data-event-click="cores_open"><img id="combination_core_item"/>{{selected_cores}}</button>
+    <div class="combination-core-name">Resonance Core</div>
     <div class="combination-effects-title"><span>&#9670;</span> Stack Effect</div>
-    <div id="combination_effects" class="combination-effects">
+    <div id="combination_effects" class="combination-effects scroll-pane">
         <div class="combination-option" data-for="option : options" data-class-potential="option.potential">
             <div class="combination-option-text">{{option.text}}</div>
             <span class="combination-option-note" data-if="option.potential">After stacking</span>
         </div>
     </div>
     <div class="combination-status">{{status}}</div>
+    <div class="combination-failure-rule">Failure keeps Main Gear. Secondary Gear, cores and Zen are consumed.</div>
     <div class="combination-footer">
         <div class="combination-cost-row"><span>Cost</span><div class="combination-cost" data-class-affordable="affordable">{{cost}}</div></div>
         <button class="btn combination-execute" data-class-disabled="!can_combine" data-event-click="combination_execute">Stack</button>
+    </div>
+    <div class="core-overlay" data-if="core_picker">
+        <div id="core_picker" class="core-picker">
+            <button id="core_cancel" class="btn core-cancel" data-event-click="cores_cancel">X</button>
+            <div class="core-picker-title">Resonance Core</div>
+            <div class="core-picker-rate">Success Rate <span>{{base_rate}}%</span> <span class="core-bonus">+{{draft_bonus}}%</span></div>
+            <div class="core-picker-controls">
+                <button id="core_minus" class="btn" data-event-click="cores_step(-1)" data-attrif-disabled="!core_ready || core_draft == 0">&#8722;</button>
+                <div class="core-slider">
+                    <div class="core-slider-rail"></div>
+                    <input id="core_slider" type="range" min="0" step="1" data-attr-max="core_limit" data-value="core_draft" data-event-change="cores_slide" data-attrif-disabled="!core_ready || core_limit == 0"/>
+                </div>
+                <button id="core_plus" class="btn" data-event-click="cores_step(1)" data-attrif-disabled="!core_ready || core_draft == core_limit">+</button>
+            </div>
+            <div class="core-picker-count"><img id="core_picker_item"/><div>Total {{available_cores}}<br/>Cost {{core_draft}}</div></div>
+            <button id="core_confirm" class="btn" data-event-click="cores_confirm" data-attrif-disabled="!core_ready">Confirm</button>
+            <div class="core-picker-max">Max success rate: {{maximum_rate}}%</div>
+        </div>
     </div>
 </body>
 </rml>
