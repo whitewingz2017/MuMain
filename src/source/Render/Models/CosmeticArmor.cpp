@@ -56,7 +56,7 @@ int WeaponModel(CHARACTER* character, int hand)
 {
     if (!character || hand < 0 || hand >= 2) return -1;
     const bool preview = previewCharacter && character == previewCharacter;
-    if (EquipmentSkinsVisible(character, &character->Object, preview))
+    if (EquipmentSkinsVisible(character, &character->Object, preview) && (preview || character->Weapon[hand].Type >= 0))
     {
         constexpr int FirstWeaponPart = 5;
         const int skin = VisibleItem(character, FirstWeaponPart + hand);
@@ -119,7 +119,8 @@ void WithEquipment(CHARACTER* character, OBJECT* object, int selection,
         for (int part = 5; part <= 7; ++part)
         {
             const int skin = VisibleItem(character, part);
-            if (skin < 0) continue;
+            // A skin covers the equipped item: with nothing equipped in the slot, nothing shows.
+            if (skin < 0 || (!preview && slots[part - 5]->Type < 0)) continue;
             restore[part - 5]->Save();
             OverrideEquipment(*slots[part - 5], skin, preview ? previewLevel : 0);
             wingSkin = wingSkin || part == 7;

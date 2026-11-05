@@ -12067,11 +12067,21 @@ std::vector<PART_t*> DarksideDrawnParts(CHARACTER* c)
 
 void PlanAttachments(CHARACTER* c);
 
+void PlanAndSpawnAttachedParts(CHARACTER* c);
+
 // Plans the parts the character's draw attaches from its state, then advances, poses and spawns each, once per update.
+// Equipment skins are planned in place of the weapons and wing they cover, as the draw shows them: the covered item's
+// own effects (a Wing of Storm's clouds) are not spawned under the skin.
 void UpdateAttachedParts(CHARACTER* c)
 {
     if (!Engine::Object::Attachments::BeginPlan(c))
         return;
+    Render::Models::CosmeticArmor::WithEquipment(c, &c->Object, 0, [](CHARACTER* character, OBJECT*, int)
+                                                 { PlanAndSpawnAttachedParts(character); });
+}
+
+void PlanAndSpawnAttachedParts(CHARACTER* c)
+{
     PrepareCarriedParts(c);
     PlanAttachments(c);
     Engine::Object::Attachments::ForEachPlanned(
