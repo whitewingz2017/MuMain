@@ -30,7 +30,8 @@ inline bool MatchesWeaponFilter(const Item& item, int family)
 }
 
 bool Load();
-bool Purchase(const Item& item, int bonus);
+// level: the item level previewed (0 to 15), which the bought skin gets.
+bool Purchase(const Item& item, int bonus, int level);
 void Receive(std::span<const std::uint8_t> packet);
 void Update();
 void Reset();

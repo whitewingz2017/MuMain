@@ -270,7 +270,7 @@ void CSkinShopWindow::UpdateDetails()
 void CSkinShopWindow::Buy()
 {
     if (!m_view.GetModel().canBuy || m_selected < 0 || m_selected >= static_cast<int>(Shop::Items().size())) return;
-    if (Shop::Purchase(Shop::Items()[m_selected], m_bonus))
+    if (Shop::Purchase(Shop::Items()[m_selected], m_bonus, m_view.GetModel().previewLevel))
     {
         m_view.GetModel().status = "Purchasing...";
         m_view.MarkDirty("status");

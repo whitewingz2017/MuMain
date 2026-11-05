@@ -14,7 +14,9 @@ namespace GameLogic::Cosmetics::SkinShop
 {
 namespace
 {
-constexpr int RequestSize = 16;
+// The level byte follows the 16-byte request the server read before it took a level.
+constexpr int RequestSize = 17;
+constexpr int MaxLevel = 15;
 constexpr int HeaderSize = 5;
 constexpr int MaxCatalogItems = 1024;
 constexpr int MaxBonusChoices = 6;
@@ -93,7 +95,7 @@ bool ReadCatalog(const nlohmann::json& json, std::vector<Item>& catalog, std::ma
     return true;
 }
 
-bool Send(bool load, int type, int bonus, int price)
+bool Send(bool load, int type, int bonus, int price, int level)
 {
     if (pending || !Ready() || !SocketClient || !SocketClient->IsConnected()) return false;
     pending = ++sequence;
@@ -108,20 +110,21 @@ bool Send(bool load, int type, int bonus, int price)
         packet[8 + byte] = (price >> (8 * byte)) & 255;
         packet[12 + byte] = (pending >> (8 * byte)) & 255;
     }
+    packet[16] = static_cast<BYTE>(level);
     SocketClient->Send(packet, sizeof(packet));
     return true;
 }
 }
 
-bool Load() { return Send(true, 0, 0, 0); }
+bool Load() { return Send(true, 0, 0, 0, 0); }
 
-bool Purchase(const Item& item, int bonus)
+bool Purchase(const Item& item, int bonus, int level)
 {
-    if (item.price <= 0 || !item.eligible || item.price > balance) return false;
+    if (item.price <= 0 || !item.eligible || item.price > balance || level < 0 || level > MaxLevel) return false;
     const auto choices = Bonuses(item);
     if (choices.empty() ? bonus != 0 : std::none_of(choices.begin(), choices.end(),
         [bonus](const Bonus& entry) { return entry.number == bonus; })) return false;
-    return Send(false, item.type, bonus, item.price);
+    return Send(false, item.type, bonus, item.price, level);
 }
 
 void Receive(std::span<const std::uint8_t> packet)
