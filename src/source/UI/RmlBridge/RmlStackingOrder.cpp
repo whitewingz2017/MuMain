@@ -46,6 +46,8 @@ constexpr DocumentPlacement Placements[] = {
     // The duel and soccer boards drew under every panel.
     {"duel_window.rml", 1.1f, MainScene},
     {"blood_castle_time.rml", 1.2f, MainScene},
+    // TwinMU Blood Castle / Devil Square objective panel: with the event time HUDs, under every window.
+    {"event_progress.rml", 1.2f, MainScene},
     {"doppelganger_frame.rml", 1.2f, MainScene},
     {"empire_guardian_enter.rml", 1.2f, MainScene},
     {"empire_guardian_timer.rml", 1.2f, MainScene},

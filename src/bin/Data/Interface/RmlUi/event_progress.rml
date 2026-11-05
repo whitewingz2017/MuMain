@@ -1,0 +1,27 @@
+<rml>
+<head>
+	<title>Event progress</title>
+	<link type="text/rcss" href="base.rcss"/>
+	<link type="text/rcss" href="../../event_progress_common.rcss"/>
+	<link type="text/rcss" href="event_progress.rcss"/>
+</head>
+<body data-model="event_progress">
+	<!-- TwinMU Blood Castle / Devil Square objective panel (UI/Events/EventProgressWindow): the
+	     event and its clock, the objectives in order, and Devil Square's points and rank. Shown
+	     only inside either event map; takes no pointer events. -->
+	<div id="event_panel">
+		<div class="event-caption">Event</div>
+		<div class="event-heading"><span id="event_name">{{name}}</span><span id="event_time">{{time}}</span></div>
+		<div class="event-divider"></div>
+		<div class="event-objective" data-for="row : objectives" data-class-active="row.state == 'active'" data-class-complete="row.state == 'complete'" data-class-timed="row.countdown != ''">
+			<span class="event-bullet"></span><span class="event-label">{{row.label}}</span><span class="event-countdown" data-if="row.countdown != ''">{{row.countdown}}</span>
+		</div>
+		<div class="event-divider" data-if="scores"></div>
+		<div id="event_scores" data-if="scores">
+			<div class="event-score-row">Your points<span id="event_points">{{points}}</span></div>
+			<div class="event-score-row">Your rank<span id="event_rank">{{rank}}</span></div>
+		</div>
+		<div id="event_notice" data-if="notice != ''">{{notice}}</div>
+	</div>
+</body>
+</rml>

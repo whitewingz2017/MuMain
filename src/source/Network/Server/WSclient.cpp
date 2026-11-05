@@ -10,6 +10,7 @@
 #include "GameLogic/Cosmetics/SkinShop.h"
 #include "GameLogic/Bank/JewelBank.h"
 #include "GameLogic/Events/EventSchedule.h"
+#include "GameLogic/Events/EventProgress.h"
 #include "Core/Text/GroupedNumbers.h"
 #include "App/Control/ControlTaps.h"
 #include "Core/Utilities/Log/MuLogger.h"
@@ -13375,6 +13376,11 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
     if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFA && ReceiveBuffer[4] == 0x19)
     {
         GameLogic::Bank::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFA && ReceiveBuffer[4] == 0x30)
+    {
+        GameLogic::Events::ReceiveDevilSquareProgress(received_span);
         return;
     }
     if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFB && ReceiveBuffer[4] == 0x21)

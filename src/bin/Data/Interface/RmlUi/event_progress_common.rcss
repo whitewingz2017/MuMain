@@ -1,0 +1,21 @@
+/* Shared layout of the Blood Castle / Devil Square objective panel (event_progress.rml): a
+   translucent column at the screen's right edge, under the top-right corner. */
+body { width: 100%; height: 100%; margin: 0; pointer-events: none; }
+#event_panel { position: absolute; right: 8dp; top: 150dp; width: 200dp; padding: 8dp; background-color: #10182099; font-family: "Liberation Sans"; font-size: 11dp; color: #918d82; pointer-events: none; }
+.event-caption, .event-heading, .event-divider, .event-objective, .event-score-row, #event_scores, #event_notice { display: block; }
+.event-caption { font-size: 8dp; color: #b6ab86; letter-spacing: 1dp; margin-bottom: 4dp; text-transform: uppercase; }
+.event-heading { position: relative; min-height: 20dp; line-height: 18dp; padding-right: 42dp; color: #e5d5b4; font-size: 13dp; text-transform: uppercase; }
+#event_name { display: block; }
+#event_time { display: block; position: absolute; right: 0; top: 0; font-size: 11dp; }
+.event-divider { height: 1px; background-color: #827449; margin-top: 5dp; margin-bottom: 5dp; }
+.event-objective { position: relative; min-height: 18dp; padding-left: 14dp; line-height: 16dp; margin-bottom: 3dp; }
+.event-objective.timed { padding-right: 46dp; }
+.event-bullet { display: block; position: absolute; left: 0; top: 5dp; width: 5dp; height: 5dp; border: 1px #bb9c56; border-radius: 4dp; }
+.event-objective.active { color: #fffaf0; }
+.event-objective.active .event-bullet { background-color: #bb9c56; }
+.event-objective.complete { color: #77796e; }
+.event-objective.complete .event-label { text-decoration: line-through; }
+.event-countdown { display: block; position: absolute; right: 0; top: 0; font-size: 10dp; color: #a89a79; }
+.event-score-row { position: relative; min-height: 18dp; line-height: 16dp; color: #b5b09f; }
+#event_points, #event_rank { display: block; position: absolute; right: 0; top: 0; color: #e5d5b4; }
+#event_notice { margin-top: 4dp; font-size: 10dp; color: #b9ac80; }

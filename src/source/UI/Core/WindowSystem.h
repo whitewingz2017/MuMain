@@ -27,6 +27,7 @@
 #include "UI/Inventory/PurchaseShopInventory.h"
 #include "UI/Character/CharacterInfoWindow.h"
 #include "UI/Character/CombatStatisticsWindow.h"
+#include "UI/Events/EventProgressWindow.h"
 #include "UI/Quests/MyQuestInfoWindow.h"
 #include "UI/Party/PartyInfoWindow.h"
 #include "UI/Party/PartyListWindow.h"
@@ -175,6 +176,7 @@ namespace mu::ui::window
         CPurchaseShopInventory* m_pNewPurchaseShopInventory;
         CCharacterInfoWindow* m_pNewCharacterInfoWindow;
         CCombatStatisticsWindow* m_pCombatStatistics = nullptr;
+        CEventProgressWindow* m_pEventProgress = nullptr;
         CMyQuestInfoWindow* m_pNewMyQuestInfoWindow;
         CPartyInfoWindow* m_pNewPartyInfoWindow;
         CPartyListWindow* m_pNewPartyListWindow;

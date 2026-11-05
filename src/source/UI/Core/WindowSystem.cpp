@@ -292,6 +292,8 @@ bool CSystem::LoadMainSceneInterface()
 
     m_pCombatStatistics = new CCombatStatisticsWindow;
     m_pCombatStatistics->Create(m_pNewUIMng);
+    m_pEventProgress = new CEventProgressWindow;
+    m_pEventProgress->Create(m_pNewUIMng);
 
     m_pNewCharacterInfoWindow = new CCharacterInfoWindow;
     if (m_pNewCharacterInfoWindow->Create(m_pNewUIMng) == false)
@@ -668,6 +670,7 @@ void CSystem::UnloadMainSceneInterface()
     SAFE_DELETE(m_pNewNPCQuest);
     SAFE_DELETE(m_pNewMyQuestInfoWindow);
     SAFE_DELETE(m_pCombatStatistics);
+    SAFE_DELETE(m_pEventProgress);
     SAFE_DELETE(m_pNewCharacterInfoWindow);
     SAFE_DELETE(m_pNewPurchaseShopInventory);
     SAFE_DELETE(m_pNewMyShopInventory);

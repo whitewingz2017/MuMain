@@ -3,6 +3,7 @@
 #include "I18N/All.h"
 
 #include "NewBloodCastleSystem.h"
+#include "GameLogic/Events/EventProgress.h"
 #include "UI/Dialogs/CustomMessageBox.h"
 #include "UI/Core/WindowSystem.h"
 #include "Audio/DSPlaySound.h"
@@ -29,12 +30,15 @@ void CNewBloodCastleSystem::SetMatchResult(const int iNumDevilRank, const int iM
     }
 
     m_iNumResult = Success;
+    GameLogic::Events::CompleteBloodCastleProgress(Success != 0);
     memcpy(m_MatchResult, pMatchResult, sizeof(MatchResult));
     mu::ui::window::CreateMessageBox(MSGBOX_LAYOUT_CLASS(mu::ui::window::CBloodCastleResultMsgBoxLayout));
 }
 
 void CNewBloodCastleSystem::SetMatchGameCommand(const LPPRECEIVE_MATCH_GAME_STATE data)
 {
+    GameLogic::Events::UpdateBloodCastleProgress(data->m_byPlayState, data->m_wRemainSec,
+        data->m_wCurKillMonster, data->m_wMaxKillMonster, data->m_byItemType);
     switch (data->m_byPlayState)
     {
     case 0:
