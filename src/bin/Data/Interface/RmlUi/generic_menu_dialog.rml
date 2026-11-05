@@ -5,7 +5,8 @@
 	<link type="text/rcss" href="skill_icons.rcss"/>
 	<link type="text/rcss" href="master_skill_icons.rcss"/>
 	<link type="text/rcss" href="generic_menu_dialog.rcss"/>
-<link type="text/rcss" href="timer_bank_common.rcss"/>
+<!-- Links resolve from the theme folder (themes/<theme>/); the shared sheet is two up. -->
+	<link type="text/rcss" href="../../timer_bank_common.rcss"/>
 	<link type="text/template" href="window_shell.rml"/>
 </head>
 <!-- Sibling primitive to generic_confirm_dialog.rml -- see GenericMenuDialog.h's own class
@@ -23,7 +24,7 @@
       data-class-highlight-title="highlight_title"
       data-class-native-frame="kind != ''" data-attr-data-kind="kind" data-attr-data-id="menu_id"
       data-style---canvas-top="canvas_top + 'dp'">
-    <img class="timer-bank-frame" data-if="kind == 'event-timers' || kind == 'jewel-bank'" src="../Muun/list_frame.tga"/>
+    <img class="timer-bank-frame" data-if="kind == 'event-timers' || kind == 'jewel-bank'" src="../../../Muun/list_frame.tga"/>
     <div class="timer-bank-title" data-if="kind == 'event-timers' || kind == 'jewel-bank'">{{title}}</div>
     <button class="timer-bank-close" data-if="kind == 'event-timers' || kind == 'jewel-bank'" data-event-click="gmd_cancel">X</button>
 

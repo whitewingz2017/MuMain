@@ -105,6 +105,7 @@ void CSkinShopWindow::BindActions(Rml::DataModelConstructor& constructor)
         m_view.MarkDirty("weapon_label");
         m_page = 0;
         RebuildItems();
+        Select(-1);
     });
     constructor.BindEventCallback("skin_close", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { Show(false); });
     constructor.BindEventCallback("skin_refresh", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { Load(); });
@@ -116,6 +117,7 @@ void CSkinShopWindow::BindActions(Rml::DataModelConstructor& constructor)
         m_view.MarkDirty("category");
         m_page = 0;
         RebuildItems();
+        Select(-1);
     });
     constructor.BindEventCallback("skin_page", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList& args) {
         const int delta = args.size() == 1 ? args[0].Get<int>(0) : 0;
@@ -168,6 +170,8 @@ void CSkinShopWindow::Show(bool visible)
     {
         for (auto& target : m_itemTargets) if (target) target->Disable();
         m_preview.reset();
+        // Reopened, the shop starts with nothing previewed, as its new preview does.
+        m_selected = m_selectedType = -1;
     }
 }
 
@@ -188,18 +192,29 @@ void CSkinShopWindow::RebuildItems()
     model.items.clear();
     m_visible.fill(-1);
     for (auto& target : m_itemTargets) target->Invalidate();
+    const auto& items = Shop::Items();
+    // Skins the character's class can't wear aren't listed.
+    const auto listed = [&](const Shop::Item& item)
+    {
+        return item.eligible && Category(item) == model.category
+            && (model.category != 2 || Shop::MatchesWeaponFilter(item, m_weaponFilter));
+    };
+    // The previewed skin stays selected across pages and reloads; a reload may move its index.
+    m_selected = -1;
+    for (int i = 0; i < static_cast<int>(items.size()); ++i)
+        if (items[i].type == m_selectedType) m_selected = i;
+    const int listedCount = static_cast<int>(std::count_if(items.begin(), items.end(), listed));
+    m_page = std::clamp(m_page, 0, std::max(0, (listedCount - 1) / PageSize));
     int count = 0;
     int index = 0;
-    for (const auto& item : Shop::Items())
+    for (const auto& item : items)
     {
-        // Skins the character's class can't wear aren't listed.
-        if (item.eligible && Category(item) == model.category && (model.category != 2
-            || Shop::MatchesWeaponFilter(item, m_weaponFilter)))
+        if (listed(item))
         {
             if (count >= m_page * PageSize && count < (m_page + 1) * PageSize)
             {
                 m_visible[model.items.size()] = index;
-                model.items.push_back({index, StringUtils::WideToNarrow(item.name.c_str()), std::to_string(item.price) + " WCoinC", false});
+                model.items.push_back({index, StringUtils::WideToNarrow(item.name.c_str()), std::to_string(item.price) + " WCoinC", index == m_selected});
             }
             ++count;
         }
@@ -209,13 +224,15 @@ void CSkinShopWindow::RebuildItems()
     model.next = count > (m_page + 1) * PageSize;
     model.page = std::to_string(m_page + 1) + " / " + std::to_string(std::max(1, (count + PageSize - 1) / PageSize));
     for (const char* field : {"items", "previous", "next", "page"}) m_view.MarkDirty(field);
-    Select(-1);
+    // A reloaded catalog without the previewed skin clears the preview.
+    if (m_selected < 0 && m_selectedType >= 0) Select(-1);
 }
 
 void CSkinShopWindow::Select(int index)
 {
     if (index >= 0 && std::find(m_visible.begin(), m_visible.end(), index) == m_visible.end()) return;
     m_selected = index;
+    m_selectedType = index < 0 ? -1 : Shop::Items()[index].type;
     m_bonus = 0;
     m_view.GetModel().previewLevel = 0;
     m_view.MarkDirty("preview_level");
@@ -296,8 +313,9 @@ bool CSkinShopWindow::Update()
         model.status = Shop::Status() == L"Ready" ? "Select an item, preview, then choose its bonus." : StringUtils::WideToNarrow(Shop::Status().c_str());
         m_view.MarkDirty("balance");
         m_view.MarkDirty("status");
-        m_page = 0;
+        // A purchase (or a refresh) keeps the category, page and previewed skin.
         RebuildItems();
+        UpdateDetails();
     }
     auto& model = m_view.GetModel();
     if (model.pending != Shop::Pending())

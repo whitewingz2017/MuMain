@@ -77,6 +77,8 @@ private:
     CManager* m_manager = nullptr;
     int m_page = 0;
     int m_selected = -1;
+    // The selected skin's item type: a reloaded catalog may list it at another index.
+    int m_selectedType = -1;
     int m_bonus = 0;
     int m_weaponFilter = 0;
     unsigned m_revision = 0;
