@@ -24,18 +24,26 @@
 .shop-turn .shop-control { width: 28dp; min-width: 28dp; padding: 4dp; }
 .skin-purchase { display: flex; flex-direction: column; align-items: stretch; flex: 0 0 auto; padding-top: 4dp; }
 .skin-note { display: block; min-height: 26dp; font-size: 11dp; line-height: 13dp; white-space: normal; }
-.skin-dropdown { display: block; position: relative; flex: 0 0 auto; min-width: 0; }
+/* The option window's dropdown: a dark value box with a thin border, as wide as its text (not the
+   column), and a floating list at least as wide, opening over what lies below or above it. */
+.skin-dropdown { display: block; position: relative; flex: 0 0 auto; align-self: flex-start; min-width: 0; }
 .weapon-filter { margin-bottom: 4dp; }
-.btn.skin-dropdown-value { display: block; width: 100%; height: auto; min-height: 28dp; padding: 5dp; font-size: 12dp; line-height: 16dp; text-align: left; white-space: normal; }
-.skin-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 3; max-height: 32vh; overflow: hidden auto; background-color: #111b1f; border: 1dp #b79a53; padding: 2dp; }
+.skin-dropdown-value { display: block; position: relative; box-sizing: border-box; width: auto; height: 22dp; padding: 0 22dp 0 6dp; line-height: 20dp; font-size: 12dp; white-space: nowrap; cursor: pointer; pointer-events: auto; background-color: #0c0e0b; border: 1dp #514a35; color: #d9d0b8; }
+.skin-dropdown-value:hover { border-color: #8a7a52; }
+.skin-dropdown-value.open { border-color: #e6bb53; }
+.skin-caret { position: absolute; right: 8dp; top: 6dp; width: 5dp; height: 5dp; border-right: 2dp #d9d0b8; border-bottom: 2dp #d9d0b8; transform: rotate(45deg); pointer-events: none; }
+.skin-dropdown-value.open .skin-caret { top: 9dp; transform: rotate(-135deg); border-color: #e6bb53; }
+.skin-dropdown-list { display: block; position: absolute; top: 100%; left: 0; z-index: 3; box-sizing: border-box; min-width: 100%; max-height: 32vh; overflow: hidden auto; background-color: #0c0e0b; border: 1dp #514a35; pointer-events: auto; }
 .skin-dropdown-list.hidden, .weapon-filter.hidden { display: none; }
 .bonus-options { top: auto; bottom: 100%; }
-.btn.skin-dropdown-option { display: block; width: 100%; height: auto; min-height: 28dp; padding: 5dp; font-size: 12dp; line-height: 16dp; text-align: left; white-space: normal; }
+.skin-dropdown-option { display: block; padding: 2dp 6dp; font-size: 12dp; line-height: 16dp; white-space: nowrap; cursor: pointer; pointer-events: auto; color: #d9d0b8; }
+.skin-dropdown-option:hover { color: #ffffff; background-color: #514a35; }
+.skin-dropdown-option.selected { color: #ffffff; background-color: #8f6922; border-color: transparent; }
 .skin-dropdown-list scrollbarvertical, .skin-list scrollbarvertical { width: 8dp; margin: 0; }
 .skin-dropdown-list scrollbarvertical slidertrack, .skin-list scrollbarvertical slidertrack { background-color: #171b1e; }
 .skin-dropdown-list scrollbarvertical sliderbar, .skin-list scrollbarvertical sliderbar { background-color: #b79a53; }
 .btn.skin-buy { height: 30dp; width: 100%; margin-top: 4dp; padding: 5dp; font-size: 12dp; line-height: 18dp; color: #efbe50; }
 .shop-status { flex: 0 0 26dp; margin-top: 4dp; font-size: 11dp; line-height: 13dp; white-space: normal; }
-.shop-category, .shop-control, .skin-card, .skin-dropdown-value, .skin-dropdown-option, .skin-buy { box-sizing: border-box; position: relative; left: auto; right: auto; top: auto; bottom: auto; background-color: #171b1ee8; border: 1dp #655940; color: #e9dfc8; pointer-events: auto; }
+.shop-category, .shop-control, .skin-card, .skin-buy { box-sizing: border-box; position: relative; left: auto; right: auto; top: auto; bottom: auto; background-color: #171b1ee8; border: 1dp #655940; color: #e9dfc8; pointer-events: auto; }
 .selected { border-color: #e6bb53; background-color: #354c45; }
 .disabled { opacity: 0.4; pointer-events: none; }

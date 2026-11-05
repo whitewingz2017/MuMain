@@ -22,11 +22,13 @@
             <button class="btn shop-category" data-class-selected="category == 5" data-event-click="skin_category(5)">Mounts</button>
         </div>
         <div id="shop_items" class="shop-items">
+            <!-- The option window's dropdown: a value box sized to its text, and its list as a sibling. -->
             <div class="skin-dropdown weapon-filter" data-class-hidden="category != 2">
-                <button class="btn skin-dropdown-value" data-event-click="skin_dropdown(1)">{{weapon_label}} &#9660;</button>
+                <div class="skin-dropdown-value" data-class-open="open_dropdown == 1"
+                     data-event-click="skin_dropdown(1)">{{weapon_label}}<div class="skin-caret"></div></div>
                 <div class="skin-dropdown-list" data-class-hidden="open_dropdown != 1">
-                    <button class="btn skin-dropdown-option" data-for="family : weapon_types"
-                            data-event-click="skin_weapon_filter(family.index)">{{family.label}}</button>
+                    <div class="skin-dropdown-option" data-for="family : weapon_types"
+                         data-event-click="skin_weapon_filter(family.index)">{{family.label}}</div>
                 </div>
             </div>
             <div id="skin_list" class="skin-list">
@@ -60,11 +62,12 @@
         <div id="skin_purchase" class="skin-purchase">
             <div class="skin-note">{{note}}</div>
             <div id="skin_bonuses" class="skin-dropdown skin-bonuses">
-                <button id="skin_bonus_select" class="btn skin-dropdown-value" data-class-disabled="bonuses.size == 0 || pending"
-                        data-event-click="skin_dropdown(2)">{{bonus_label}} &#9660;</button>
+                <div id="skin_bonus_select" class="skin-dropdown-value" data-class-open="open_dropdown == 2"
+                     data-class-disabled="bonuses.size == 0 || pending"
+                     data-event-click="skin_dropdown(2)">{{bonus_label}}<div class="skin-caret"></div></div>
                 <div class="skin-dropdown-list bonus-options" data-class-hidden="open_dropdown != 2">
-                    <button class="btn skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
-                            data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</button>
+                    <div class="skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
+                         data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</div>
                 </div>
             </div>
             <button id="skin_buy" class="btn skin-buy" data-class-disabled="!can_buy" data-event-click="skin_buy">Buy {{price}}</button>
