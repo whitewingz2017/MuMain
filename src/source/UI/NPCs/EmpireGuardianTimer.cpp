@@ -103,7 +103,9 @@ void CEmpireGuardianTimer::SyncView()
         default:
             break;
         }
-        const int iSecond = static_cast<int>(m_dTime / 1000);
+        const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - m_TimeSampled).count();
+        const int iSecond = static_cast<int>(std::max<std::int64_t>(0, static_cast<std::int64_t>(m_dTime) - elapsed + 999) / 1000);
         const int iMinute = iSecond / 60;
         const char* timeState = caption.state;
         if (2 < iMinute)

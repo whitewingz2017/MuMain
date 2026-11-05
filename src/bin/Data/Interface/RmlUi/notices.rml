@@ -1,20 +1,15 @@
 <rml>
 <head>
-	<title>Notices</title>
-	<link type="text/rcss" href="base.rcss"/>
-	<link type="text/rcss" href="notices.rcss"/>
+    <title>Announcements</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="notices.rcss"/>
 </head>
 <body data-model="notices">
-	<!-- The centre-screen notice lines (UI::Notices): up to six rows on the HUD board, each line on
-	     a box sized to its text; an empty row keeps its place. The theme stacks and centres them;
-	     the colour follows the line's kind. Text is .sharp-text at the native size. Takes no
-	     pointer events. -->
-	<div id="board" class="hud-board">
-		<div id="notice_lines" class="sharp-text sharp-flow" data-style-font-size="text_px + 'px'"
-		     data-style---line-px="line_height_px + 'px'">
-			<div class="notice-row" data-for="line : lines"><span data-if="line.kind != ''"
-			     data-attr-class="'notice-text notice-text--' + line.kind">{{line.text}}</span></div>
-		</div>
-	</div>
+    <!-- Viewport-centred stack at 66% height. Stable rows preserve entry, shrink and exit
+         transitions while the history shifts; RCSS owns all dimensions and effects. -->
+    <div id="notice_root" class="notice-root">
+        <div data-for="line : lines" data-attr-class="'notice-line ' + line.stage + ' ' + line.kind">{{line.text}}</div>
+        <div data-attr-class="'notice-line ' + outgoing_stage + ' ' + outgoing_kind">{{outgoing_text}}</div>
+    </div>
 </body>
 </rml>

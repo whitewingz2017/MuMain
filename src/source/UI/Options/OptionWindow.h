@@ -283,6 +283,7 @@ namespace mu::ui::window
             bool windowedMode = false;
             Rml::String windowedModeLabel;
 
+            int chatTextSize = 2;
             int soundVolume = 0;
             Rml::String soundVolumeLabel;
             int musicVolume = 0;

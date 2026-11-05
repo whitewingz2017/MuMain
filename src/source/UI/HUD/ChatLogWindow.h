@@ -12,6 +12,7 @@
 #pragma warning(disable : 4786)
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace Rml
 {
@@ -31,12 +32,14 @@ namespace mu::ui::window
         type_string	m_strID, m_strText;
         MESSAGE_TYPE m_MsgType;
         DWORD m_dwIndentSize;
+        std::uint64_t m_CreatedMs = 0;
+        bool m_GlobalPost = false;
 
     public:
         TMessageText() : m_MsgType(TYPE_UNKNOWN), m_dwIndentSize(0) {}
         ~TMessageText() { Release(); }
 
-        bool Create(const type_string& strID, const type_string& strText, MESSAGE_TYPE MsgType)
+        bool Create(const type_string& strID, const type_string& strText, MESSAGE_TYPE MsgType, bool globalPost = false)
         {
             if (MsgType >= NUMBER_OF_TYPES)
                 return false;
@@ -44,6 +47,8 @@ namespace mu::ui::window
             m_strID = strID;
             m_strText = strText;
             m_MsgType = MsgType;
+            m_CreatedMs = GetTickCount64();
+            m_GlobalPost = globalPost;
 
             return true;
         }
@@ -56,6 +61,9 @@ namespace mu::ui::window
 
         const type_string& GetID() const { return m_strID; }
         const type_string& GetText() const { return m_strText; }
+        void SetCreatedMs(std::uint64_t time) { m_CreatedMs = time; }
+        std::uint64_t GetCreatedMs() const { return m_CreatedMs; }
+        bool IsGlobalPost() const { return m_GlobalPost; }
         MESSAGE_TYPE GetType() const { return m_MsgType; }
     };
 
@@ -67,8 +75,13 @@ namespace mu::ui::window
     struct ChatLogLineEntry
     {
         Rml::String text;
+        Rml::String sender;
+        Rml::String prefix;
         Rml::String kind;
         bool hasId = false;
+        float opacity = 1.f;
+        float entryProgress = 1.f;
+        float exitProgress = 0.f;
     };
 
     // RmlUi owns this window's whole presentation now: the background fill, every message line,
@@ -77,8 +90,8 @@ namespace mu::ui::window
     // pins the view to the bottom when a new message arrives.
     struct ChatLogRmlModel
     {
-        float panelHeight = 100.0f;  // dp -- 15 * showing lines + 10, native's own UpdateWndSize()
-        float clientHeight = 90.0f;  // dp -- the scrolling well inside it
+        float textScale = 1.f;
+        int visibleLines = 6;
         // The user's transparency setting on its own, 0..1. Frame state is showFrame below and
         // the backdrop's colour is the theme's -- three separate owners, not one composed string.
         float backAlpha = 0.f;
@@ -87,13 +100,6 @@ namespace mu::ui::window
         // because the lines themselves are pointer-events:none (see chat_log.rcss).
         int pointedIndex = -1;
         Rml::Vector<ChatLogLineEntry> lines;
-
-        // The native renderer's line geometry in physical px (the legacy theme's chat_log.rml):
-        // the text size, each line's background height (the measured text) and the 15-unit row
-        // pitch of the dp-sized well.
-        float textPx = 0.f;
-        float linePx = 0.f;
-        float rowPx = 0.f;
     };
 
     class CChatLogWindow : public CObject
@@ -136,6 +142,7 @@ namespace mu::ui::window
         type_vector_msgs	m_vecUnionMsgs;
         type_vector_msgs	m_vecGensMsgs;
         type_vector_msgs	m_VecSystemMsgs;
+        type_vector_msgs m_vecLootMsgs, m_vecExperienceMsgs;
         type_vector_msgs	m_vecErrorMsgs;
         type_vector_msgs	m_vecGMMsgs;
         type_vector_filters	m_vecFilters;
@@ -156,11 +163,12 @@ namespace mu::ui::window
 
         void BuildRmlUi();
         void SyncRmlModel();
-        void SyncNativeLineGeometry();
         // Rebuilds the bound line list from the currently-selected message vector. Kept
         // index-aligned with that vector (undrawable entries become blanks rather than being
         // skipped) because chat_line_rightclick() resolves a sender by array index.
         void RebuildLineModel();
+        void UpdateLineAnimation();
+        void AnchorAboveInput(Rml::Context* context);
         // Pins #lines to the bottom after the model's line list changes, so a new message scrolls
         // into view exactly as native's own "follow the tail" behaviour did. Skipped while the
         // user has scrolled up, same as native.
@@ -184,10 +192,8 @@ namespace mu::ui::window
             [this](Rml::DataModelConstructor& c, ChatLogRmlModel& model) { BindRmlModel(c, model); },
             {{"Data/Interface/RmlUi/chat_log.rml"}},
             {.afterReload = [this] { OnRmlReloaded(); }}};
-        // The log's bottom edge (screen pixels) and scale where it is placed; the resize bands
-        // measure from them.
-        float m_PanelBottomPx = 0.f;
-        float m_PanelScale = 0.f;
+        // Invalidate workspace placement when compact typography changes the measured box.
+        float m_LastPanelHeight = 0.f;
         bool m_bLinesDirty = true;
         bool m_bFollowTail = true;
         // One-shot, set when the line list changes and consumed after RmlUi has
@@ -276,13 +282,6 @@ namespace mu::ui::window
         // this is a per-line colour, not a panel fill.
         float backAlpha = 0.6f; // the player's own transparency setting, 0 .. 1
         Rml::Vector<ChatLogLineEntry> lines;
-
-        // The native renderer's geometry under the window's layout, in physical px (the legacy
-        // theme's system_log.rml): the row pitch, each line's background
-        // height and the text size.
-        float rowPx = 0.f;
-        float linePx = 0.f;
-        float textPx = 0.f;
     };
 
     class CSystemLogWindow : public CObject
@@ -319,7 +318,6 @@ namespace mu::ui::window
 
         void BuildRmlUi();
         void SyncRmlModel();
-        void SyncNativeGeometry();
         void RebuildLineModel();
 
         void BindRmlModel(Rml::DataModelConstructor& c, SystemLogRmlModel& model);
@@ -332,6 +330,7 @@ namespace mu::ui::window
         bool m_bLinesDirty = true;
         float m_LastPanelHeight = -1.f;
         void TrackPanelSize();
+        void UpdateLineAnimation();
 
         void RemoveFrontLine();
         int GetCurrentRenderEndLine() const;

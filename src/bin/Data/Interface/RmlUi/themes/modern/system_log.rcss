@@ -7,7 +7,7 @@
 	left: 4dp;
 	top: 84dp;
 	width: 273dp;
-	font-family: "token(font-body)";
+	font-family: "token(font-chat)";
 	font-size: 11dp;
 	pointer-events: none;
 	display: flex;
@@ -54,3 +54,21 @@
 
 .syslog-line { min-height: 1.2em; }
 .syslog-line.empty { border-left-color: transparent; }
+
+/* Semantic colors match the MuOnlineS6 chat palette. */
+.syslog-line--chat { color: #e1e1e1; }
+.syslog-line--whisper { color: #ff32aa; }
+.syslog-line--party { color: #00e1ff; }
+.syslog-line--guild { color: #00e6aa; }
+.syslog-line--union { color: #f5cd28; }
+.syslog-line--gens { color: #96e164; }
+.syslog-line--gm { color: #ffcd37; }
+.syslog-line--system { color: #50a5ff; }
+.syslog-line--error { color: #ff372d; }
+.syslog-line--loot { color: #beb4ff; }
+.syslog-line--experience { color: #e19bdc; }
+
+.syslog-back { display: none; }
+.syslog-line { border-left-width: 0; padding: 0 2dp; font-size: 9.5dp; line-height: 12dp; }
+.syslog-text { font-effect: outline(1px #000000); }
+.syslog-line--level-up { color: #ffd34e; }

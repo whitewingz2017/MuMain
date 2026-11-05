@@ -3,16 +3,16 @@
 	<title>System Log</title>
 	<link type="text/rcss" href="base.rcss"/>
 	<link type="text/rcss" href="system_log.rcss"/>
+	<link type="text/rcss" href="../../chat_text.rcss"/>
 </head>
-<!-- Legacy override: laid out like the original's RenderMessages() under the HUD layout -- the
-     row pitch, each line's background height and the text size are the
-     native renderer's, computed in C++ (CSystemLogWindow::SyncNativeGeometry()) in physical px. -->
+<!-- Compact Dream text is sized by chat_text.rcss; world anchoring remains in the theme. -->
 <body data-model="system_log">
-	<div id="panel" data-style-font-size="text_px + 'px'"
-	     data-style---line-px="line_px + 'px'" data-style---row-px="row_px + 'px'">
+	<div id="panel">
 		<div data-for="line : lines"
+                 data-style-opacity="line.opacity" data-style---entry-progress="line.entry_progress"
+                 data-style---exit-progress="line.exit_progress"
 		     data-attr-class="'syslog-line syslog-line--' + line.kind" data-class-empty="line.text == ''"
-		     data-style-font-size="text_px + 'px'"><div data-if="line.text != ''" class="syslog-back" data-style-opacity="back_alpha"></div><span class="syslog-text">{{line.text}}</span></div>
+		    ><div data-if="line.text != ''" class="syslog-back" data-style-opacity="back_alpha"></div><span class="syslog-text"><span class="chat-prefix" data-if="line.prefix != ''">{{line.prefix}} </span><span class="chat-name" data-if="line.sender != ''">{{line.sender}}: </span><span class="chat-body">{{line.text}}</span></span></div>
 	</div>
 </body>
 </rml>

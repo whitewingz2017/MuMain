@@ -7,6 +7,7 @@
 #include "UI/Core/WindowObject.h"
 #include "UI/Events/EventTimerView.h"
 #include "UI/Events/BloodCastleTime.h"
+#include <chrono>
 
 namespace mu::ui::window
 {
@@ -44,6 +45,7 @@ private:
 
     wchar_t m_szTime[256]; // 시간
     int m_iTime;           // 시간
+    std::chrono::steady_clock::time_point m_TimeSampled = std::chrono::steady_clock::now();
     int m_iTimeState;      // 시간상태( 기본, 임박 )
     int m_iMaxKillMonster; // 죽여야하는 몬스터숫자
     int m_iKilledMonster;  // 현재 죽인 몬스터숫자

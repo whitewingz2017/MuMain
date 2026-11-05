@@ -15,7 +15,7 @@
 	   BOTTOM edge -- this panel grows upward from the chat input box, exactly as native does. */
 	bottom: 97dp;
 	width: 281dp;
-	font-family: "token(font-body)";
+	font-family: "token(font-chat)";
 	font-size: 1rem;
 	pointer-events: none;
 }
@@ -145,3 +145,16 @@
 	background-color: rgba(30, 30, 30, 180);
 	color: rgb(255, 128, 255);
 }
+
+/* Semantic colors match the MuOnlineS6 chat palette. */
+.chat-line--chat { color: #e1e1e1; }
+.chat-line--whisper { color: #ff32aa; }
+.chat-line--party { color: #00e1ff; }
+.chat-line--guild { color: #00e6aa; }
+.chat-line--union { color: #f5cd28; }
+.chat-line--gens { color: #96e164; }
+.chat-line--gm { color: #ffcd37; }
+.chat-line--system { color: #50a5ff; }
+.chat-line--error { color: #ff372d; }
+.chat-line--loot { color: #beb4ff; }
+.chat-line--experience { color: #e19bdc; }

@@ -1,0 +1,40 @@
+@spritesheet buff-collapse-toggle {
+    src: "../Pegasus_BUFFICON.tga";
+    buff-collapse-arrow: 0px 0px 21px 20px;
+}
+@spritesheet buff-expand-toggle {
+    src: "../Pegasus_BUFFICON_01.tga";
+    buff-expand-arrow: 0px 0px 21px 20px;
+}
+
+.buff-slot { flex-shrink: 0; }
+/* A 10dp arrow on the last buff's top-right corner, as the original drew it (7px into the
+   last 20px icon, 5px above it): pulled back over the icon past the 5dp gap, raised by 5dp. */
+#buff_toggle {
+    position: relative;
+    z-index: 1;
+    width: 10dp;
+    height: 10dp;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin: -5dp 0 0 -15dp;
+    padding: 0;
+    border-width: 0;
+    background-color: transparent;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#buff_toggle_art {
+    width: 10dp;
+    height: 10dp;
+    pointer-events: none;
+    decorator: image(buff-collapse-arrow);
+}
+#panel.collapsed { column-gap: 0; }
+#panel.collapsed .buff-slot { width: 10dp; }
+#panel.collapsed .buff-icon-art { pointer-events: none; }
+/* Collapsed slots are 10dp wide with no gap; the arrow stays 6dp into the last icon. */
+#panel.collapsed #buff_toggle { margin-left: -4dp; }
+#panel.collapsed #buff_toggle_art { decorator: image(buff-expand-arrow); }

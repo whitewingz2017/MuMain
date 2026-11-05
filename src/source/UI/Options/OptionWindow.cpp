@@ -387,6 +387,7 @@ void mu::ui::window::COptionWindow::BindRmlModel(Rml::DataModelConstructor& c, O
     c.Bind("windowed_mode", &model.windowedMode);
     c.Bind("windowed_mode_label", &model.windowedModeLabel);
 
+    c.Bind("chat_text_size", &model.chatTextSize);
     c.Bind("sound_volume", &model.soundVolume);
     c.Bind("sound_volume_label", &model.soundVolumeLabel);
     c.Bind("music_volume", &model.musicVolume);
@@ -952,6 +953,19 @@ void mu::ui::window::COptionWindow::RmlGaugeEvent(Rml::Event& event, int gauge)
         if (const auto next = UI::RmlBridge::ApplyLevelGaugeEvent(event, m_iRenderLevel, 4, renderFromPointer))
             RmlRenderLevelChanged(*next);
         break;
+    case 3:
+    {
+        using namespace CfgDefaults;
+        auto& config = GameConfig::GetInstance();
+        const int level = (config.GetChatTextScalePercent() - CfgMinChatTextScalePercent) / CfgChatTextScaleStep;
+        const int maxLevel = (CfgMaxChatTextScalePercent - CfgMinChatTextScalePercent) / CfgChatTextScaleStep;
+        if (const auto next = UI::RmlBridge::ApplyLevelGaugeEvent(event, level, maxLevel, volumeFromPointer))
+        {
+            config.SetChatTextScalePercent(CfgMinChatTextScalePercent + *next * CfgChatTextScaleStep);
+            config.Save();
+        }
+        break;
+    }
     default:
         break;
     }
@@ -1765,6 +1779,8 @@ void mu::ui::window::COptionWindow::SyncRmlModel()
     if (model.renderAllEffects != m_bRenderAllEffects) { model.renderAllEffects = m_bRenderAllEffects; m_RmlView.MarkDirty("render_all_effects"); }
     if (model.windowedMode != m_bWindowedMode) { model.windowedMode = m_bWindowedMode; m_RmlView.MarkDirty("windowed_mode"); }
 
+    const int chatTextSize = (GameConfig::GetInstance().GetChatTextScalePercent() - CfgDefaults::CfgMinChatTextScalePercent) / CfgDefaults::CfgChatTextScaleStep;
+    if (model.chatTextSize != chatTextSize) { model.chatTextSize = chatTextSize; m_RmlView.MarkDirty("chat_text_size"); }
     if (model.soundVolume != m_iVolumeLevel) { model.soundVolume = m_iVolumeLevel; m_RmlView.MarkDirty("sound_volume"); }
     if (model.musicVolume != m_iMusicLevel) { model.musicVolume = m_iMusicLevel; m_RmlView.MarkDirty("music_volume"); }
     if (model.renderLevel != m_iRenderLevel) { model.renderLevel = m_iRenderLevel; m_RmlView.MarkDirty("render_level"); }

@@ -1,16 +1,15 @@
 #pragma once
 
-// On-screen notice banner: the scrolling system messages drawn over the HUD
-// (events, server announcements, etc.). Extracted from ZzzInterface.cpp.
+// Animated server, guild and event announcements, newest first above the HUD.
 namespace UI::Notices
 {
-    // Push a notice line. Long text is split across two lines automatically.
+    // Push a notice; long lines wrap in the theme. Nonzero colour selects the guild tone.
     void Create(const wchar_t* text, int color);
 
     // Drop all current notices.
     void Clear();
 
-    // Per-frame timing: expires the oldest notice over time.
+    // Per-frame timing: advances the history after 15 idle seconds and retires outgoing text.
     void Move();
 
     // Draw the active notices.

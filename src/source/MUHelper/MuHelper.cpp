@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <limits>
+extern int HeroIndex;
 #include "GameLogic/Automation/Attack.h"
 #include "GameLogic/Automation/HelperPickupFilter.h"
 #include "GameLogic/Automation/Movement.h"
@@ -268,18 +270,12 @@ namespace MUHelper
         }
 
         CHARACTER* pTarget = FindCharacterByKey(iTargetId);
-        if (!pTarget || pTarget == Hero)
+        if (!pTarget || pTarget == Hero || !IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live)
         {
             return;
         }
 
-        int iDistance = ComputeDistanceFromTarget(pTarget);
-
-        if ((iDistance > m_iHuntingDistance) && !(bIsAttacking && m_config.bLongRangeCounterAttack))
-        {
-            return;
-        }
-
+        // Visible monsters are tracked even outside the radius: walking closer must not need another spawn packet.
         _targetsLock.lock();
 
         m_setTargets.insert(iTargetId);
@@ -292,8 +288,10 @@ namespace MUHelper
         _targetsLock.unlock();
 
         // Only an attack on the hero may redirect combat; a sighting must not.
-        if (bIsAttacking && m_config.bUseSelfDefense && HasPaidSelfDefense(m_config) && IsMonster(pTarget) &&
-            !IsTargetCoolingDown(iTargetId))
+        // Only while nothing is targeted, so a second attacker does not pull the helper off its fight.
+        if (bIsAttacking && m_config.bUseSelfDefense && HasPaidSelfDefense(m_config) && m_iCurrentTarget == -1 &&
+            !IsTargetCoolingDown(iTargetId) &&
+            (ComputeDistanceFromTarget(pTarget) <= m_iHuntingDistance || m_config.bLongRangeCounterAttack))
         {
             m_iCurrentTarget = iTargetId;
         }
@@ -360,12 +358,9 @@ namespace MUHelper
         const POINT posHero = { Hero->PositionX, Hero->PositionY };
 
         const POINT posCurrent = { pTarget->PositionX, pTarget->PositionY };
-        const POINT posNext    = { pTarget->TargetX,   pTarget->TargetY };
 
-        return std::min(
-            ComputeDistanceBetween(posHero, posCurrent),
-            ComputeDistanceBetween(posHero, posNext)
-        );
+        // A destination inside the radius does not put the monster itself inside it.
+        return ComputeDistanceBetween(posHero, posCurrent);
     }
 
     int CMuHelper::ComputeDistanceBetween(POINT posA, POINT posB)
@@ -390,9 +385,13 @@ namespace MUHelper
         for (const int& iMonsterId : setTargets)
         {
             int iIndex = FindCharacterIndex(iMonsterId);
+            if (iIndex == MAX_CHARACTERS_CLIENT)
+            {
+                continue;
+            }
             CHARACTER* pTarget = &CharactersClient[iIndex];
 
-            if (!IsMonster(pTarget) || IsTargetCoolingDown(iMonsterId))
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live || IsTargetCoolingDown(iMonsterId))
             {
                 continue;
             }
@@ -408,10 +407,11 @@ namespace MUHelper
         return iClosestMonsterId;
     }
 
-    int CMuHelper::GetFarthestAttackingTarget()
+    // The nearest monster that is attacking the hero now.
+    int CMuHelper::GetNearestAttackingTarget()
     {
-        int iFarthestMonsterId = -1;
-        int iMaxDistance = -1;
+        int iNearestMonsterId = -1;
+        int iMinDistance = std::numeric_limits<int>::max();
 
         std::set<int> setTargets;
         {
@@ -423,22 +423,27 @@ namespace MUHelper
         for (const int& iMonsterId : setTargets)
         {
             int iIndex = FindCharacterIndex(iMonsterId);
+            if (iIndex == MAX_CHARACTERS_CLIENT)
+            {
+                continue;
+            }
             CHARACTER* pTarget = &CharactersClient[iIndex];
 
-            if (!IsMonster(pTarget) || IsTargetCoolingDown(iMonsterId))
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live ||
+                pTarget->TargetCharacter != HeroIndex || IsTargetCoolingDown(iMonsterId))
             {
                 continue;
             }
 
             int iDistance = ComputeDistanceFromTarget(pTarget);
-            if (iDistance > iMaxDistance)
+            if (iDistance < iMinDistance)
             {
-                iMaxDistance = iDistance;
-                iFarthestMonsterId = iMonsterId;
+                iMinDistance = iDistance;
+                iNearestMonsterId = iMonsterId;
             }
         }
 
-        return iFarthestMonsterId;
+        return iNearestMonsterId;
     }
 
     void CMuHelper::CleanupTargets()
@@ -460,7 +465,14 @@ namespace MUHelper
             }
 
             CHARACTER* pTarget = &CharactersClient[iIndex];
-            if (pTarget->Dead > 0 || !pTarget->Object.Live)
+            // A monster that turned to someone else no longer counts as attacking the hero.
+            if (pTarget->TargetCharacter != HeroIndex)
+            {
+                _targetsLock.lock();
+                m_setTargetsAttacking.erase(iMonsterId);
+                _targetsLock.unlock();
+            }
+            if (!IsMonster(pTarget) || pTarget->Dead > 0 || !pTarget->Object.Live)
             {
                 DeleteTarget(iMonsterId);
             }
@@ -841,7 +853,7 @@ namespace MUHelper
                 m_iCurrentTarget = -1; // Still tracked, but no longer chased out of hunting range.
         }
         if (m_config.bLongRangeCounterAttack)
-            m_iCurrentTarget = GetFarthestAttackingTarget();
+            m_iCurrentTarget = GetNearestAttackingTarget();
         if (m_iCurrentTarget == -1)
             m_iCurrentTarget = GetNearestTarget();
         return m_iCurrentTarget != -1;
@@ -853,6 +865,12 @@ namespace MUHelper
         {
             if (m_setTargets.empty())
                 m_iComboState = 0;
+            return 0;
+        }
+
+        // Finish the sent walk before aiming or casting from the next position.
+        if (Hero->Movement)
+        {
             return 0;
         }
 

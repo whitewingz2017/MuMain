@@ -79,7 +79,7 @@ private:
     int SimulateBasicAttack(int iTarget);
     int SimulateComboAttack();
     int GetNearestTarget();
-    int GetFarthestAttackingTarget();
+    int GetNearestAttackingTarget();
     void CleanupTargets();
     bool IsWithinHuntingRange(int iTargetId);
     void ForgetTarget(int iTargetId, bool bUnreachable);

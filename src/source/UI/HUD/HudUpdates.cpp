@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "UI/Chat/ChatMessages.h"
+#include "Core/Text/GroupedNumbers.h"
 
 #include "UI/HUD/HudUpdates.h"
 
@@ -27,6 +29,7 @@ void ShowMapName()
 
 void ShowExperienceGain(std::int64_t previous, std::int64_t gained, bool master)
 {
+    if (gained > 0) UI::Chat::PostSystem((master ? L"Master EXP +" : L"EXP +") + Core::Text::GroupedNumbers(std::to_wstring(gained)), mu::ui::window::TYPE_EXPERIENCE_MESSAGE);
     if (master)
     {
         g_pMainFrame->SetPreExp_Wide(previous);

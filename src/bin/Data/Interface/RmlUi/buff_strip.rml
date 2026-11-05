@@ -3,6 +3,8 @@
 	<title>Buff Strip</title>
 	<link type="text/rcss" href="base.rcss"/>
 	<link type="text/rcss" href="buff_strip.rcss"/>
+	<!-- Links resolve from the theme folder (themes/<theme>/); the shared sheet is two up. -->
+	<link type="text/rcss" href="../../buff_strip_common.rcss"/>
 </head>
 <body class="native-text" data-model="buff_strip">
 	<!-- Buff icon strip; #panel wraps the slots into rows (buff_strip.rcss). #strip_slot is the box
@@ -10,13 +12,17 @@
 	     leave free (--world-left / --world-right), at the HUD's scale, so it moves as docks open. A
 	     theme places #panel in it, or ignores it with position: fixed. -->
 	<div id="strip_slot">
-		<div id="panel">
+		<div id="panel" data-class-collapsed="collapsed">
 			<!-- A right-click offers to cancel the buffs the player can end early; hovering one shows
 			     its name, description and duration in the shared tooltip (CBuffStrip). -->
 			<div class="buff-slot" data-for="buff : buffs" data-event-mouseup="buff_cancel(it_index)"
 			     data-event-mouseover="buff_hover(it_index)" data-event-mouseout="buff_leave">
 				<div class="buff-icon-art" data-style-decorator="buff.decorator"></div>
 			</div>
+			<button id="buff_toggle" data-if="can_collapse" data-event-click="buff_toggle"
+			        aria-label="Collapse or expand buff icons" data-attr-aria-expanded="!collapsed">
+				<div id="buff_toggle_art"></div>
+			</button>
 		</div>
 	</div>
 </body>

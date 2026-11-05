@@ -96,7 +96,7 @@ constexpr std::array kEntries = {
     Entry{L"guildwar", Event::GuildWar, kNoWindow, L"guild war time, 0:42 left, and its result, 3 : 5 lost"},
     Entry{L"kanturu", Event::KanturuEntry, mu::ui::window::INTERFACE_KANTURU2ND_ENTERNPC,
           L"Kanturu entry window, the tower open: its subject and two state texts"},
-    Entry{L"notices", Event::Notices, kNoWindow, L"centre-screen notices, two gold and a green one"},
+    Entry{L"notices", Event::Notices, kNoWindow, L"animated notices, five shrinking gold and guild rows"},
 };
 
 void Log(const std::wstring& text, mu::ui::window::MESSAGE_TYPE type = mu::ui::window::TYPE_SYSTEM_MESSAGE)
@@ -401,7 +401,9 @@ void Seed(Event event)
     case Event::Notices:
         UI::Notices::Create(L"Castle Siege preparations are in progress.", 0);
         UI::Notices::Create(L"Blood Castle entrance is open and closes in 1 minute(s).", 0);
-        UI::Notices::Create(L"[GM] The server restarts in 10 minutes.", 1);
+        UI::Notices::Create(L"[Guild] Assemble at Lorencia!", 1);
+        UI::Notices::Create(L"A player has defeated the Golden Dragon!", 0);
+        UI::Notices::Create(L"[GM] The server restarts in 10 minutes.", 0);
         break;
     case Event::CrownSwitchBox: UI::Siege::ShowCrownNotice(UI::Siege::CrownNotice::SwitchActivatedByOther, L"Ironclad", L"Ravens", 30000); break;
     default: break;

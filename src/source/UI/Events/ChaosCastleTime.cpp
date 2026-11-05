@@ -101,6 +101,10 @@ void CChaosCastleTime::SyncView()
 {
     // The original's Render(): the kill count once a target was received, "Time left", the time.
     const bool shown = IsVisible();
+    const int elapsed = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(
+        std::chrono::steady_clock::now() - m_TimeSampled).count());
+    const int remaining = std::max(0, m_iTime - elapsed);
+    mu_swprintf(m_szTime, L"%02d:%02d", remaining / 60, remaining % 60);
     std::wstring kills;
     if (shown)
     {
@@ -136,10 +140,11 @@ void CChaosCastleTime::ClosingProcess()
 
 void CChaosCastleTime::SetTime(int iTime)
 {
-    m_iTime = iTime;
+    m_iTime = std::max(0, iTime);
+    m_TimeSampled = std::chrono::steady_clock::now();
 
     int iMinute = m_iTime / 60;
-    mu_swprintf(m_szTime, L" %.2d:%.2d:%.2d", iMinute, m_iTime % 60, (int)WorldTime % 60);
+    mu_swprintf(m_szTime, L"%02d:%02d", iMinute, m_iTime % 60);
 
     if (iMinute < 5)
     {
