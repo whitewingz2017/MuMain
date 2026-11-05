@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -686,8 +686,7 @@ static std::uint8_t g_tabBar = 0;
             if (hasPrice && itemPrice.Kind != GameLogic::PersonalShop::PriceKind::Zen)
             {
                 // The server tells the player when the jewels or coins are not enough.
-                std::swprintf(textBuffer, kTooltipBufferCapacity, L"%d %ls", itemPrice.Amount,
-                              GameLogic::PersonalShop::GetCurrencyName(itemPrice));
+                std::swprintf(textBuffer, kTooltipBufferCapacity, L"%ls", GameLogic::PersonalShop::FormatPrice(itemPrice).c_str());
                 appendLine(TEXT_COLOR_YELLOW, true, false, priceFormat.c_str(), textBuffer);
                 appendEmptyLine();
             }
@@ -722,7 +721,9 @@ static std::uint8_t g_tabBar = 0;
             }
             else if (g_IsPurchaseShop == PSHOPWNDTYPE_SALE)
             {
-                appendLine(TEXT_COLOR_RED, true, false, I18N::Game::RightClickForPriceSetting);
+                appendLine(TEXT_COLOR_RED, true, false,
+                    I18N::Game::RightClickForPriceSetting
+                );
                 appendEmptyLine();
             }
         }

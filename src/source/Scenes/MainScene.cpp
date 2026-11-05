@@ -24,6 +24,7 @@
 #include "GameLogic/Social/PartyManager.h"
 #include "GameLogic/Events/Cinematic/CDirection.h"
 #include "GameLogic/Pets/w_PetProcess.h"
+#include "GameLogic/Pets/MountCompanions.h"
 #include "Core/Utilities/Log/muConsoleDebug.h"
 #include "Core/Utilities/Log/MuLogger.h"
 #include "Core/Utilities/FrameProfiler.h"
@@ -278,6 +279,7 @@ static void UpdateUIAndInput()
  * @note Some updates are conditional based on camera mode (e.g., items only update when not in top-view).
  * @note Includes editor object updates when ENABLE_EDIT is defined.
  */
+
 static void UpdateGameEntities()
 {
     {
@@ -302,6 +304,7 @@ static void UpdateGameEntities()
         MoveHero();
         MoveCharactersClient();
     }
+    GameLogic::Pets::MountCompanions::EnsureHeroMount();
     MoveMounts();
     ThePetProcess().UpdatePets();
     MovePoints();

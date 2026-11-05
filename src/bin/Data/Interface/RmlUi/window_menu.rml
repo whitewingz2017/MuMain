@@ -5,7 +5,7 @@
 	<link type="text/rcss" href="window_menu.rcss"/>
 </head>
 <body data-model="window_menu">
-	<!-- The window menu (CWindowMenu), opened from the bottom HUD: six rows above its right end. Drawn on
+	<!-- The window menu (CWindowMenu), opened from the bottom HUD: its rows above its right end. Drawn on
 	     the HUD board: #screen is the 640x480 reference screen at the bottom HUD's scale, centred
 	     like the HUD, and #panel sits at the original's reference point inside it.
 
@@ -18,9 +18,9 @@
 		<div id="panel">
 			<div id="back"></div>
 			<div id="frame_up"></div>
-			<div class="frame-middles"><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div></div>
+			<div class="frame-middles"><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div><div class="frame-middle"></div></div>
 			<div id="frame_down"></div>
-			<div class="lines"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+			<div class="lines"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div>
 
 			<div id="rows">
 				<div class="menu-row" data-for="row : rows" data-event-click="windowmenu_select(row.index)">

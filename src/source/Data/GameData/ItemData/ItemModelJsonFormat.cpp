@@ -5,7 +5,9 @@
 #include "ItemModelDisplayJson.h"
 #include "ItemModelGlowJson.h"
 #include "ItemModelMaterialJson.h"
+#include "ItemModelValueReader.h"
 #include "ItemTextureFiles.h"
+#include "Core/Globals/_TextureIndex.h"
 
 #include "Data/GameData/Common/DataPaths.h"
 
@@ -30,6 +32,9 @@ constexpr const char* TextureFolders = "textureFolders";
 constexpr const char* NoneBlendMeshes = "noneBlendMeshes";
 constexpr const char* RenderStyle = "renderStyle";
 constexpr const char* ItemEffect = "itemEffect";
+constexpr const char* StaticEffects = "staticEffects";
+constexpr const char* ParticleEffects = "particleEffects";
+constexpr const char* MeshEffects = "meshEffects";
 } // namespace Keys
 
 // The fields of a model entry and of a shared model; others are warned about.
@@ -40,11 +45,12 @@ const std::set<std::string, std::less<>> ItemModelKeys{Keys::Number,
                                                        Keys::NoneBlendMeshes,
                                                        DisplayJson::InventoryKey,
                                                        DisplayJson::GroundKey,
+                                                       DisplayJson::EquipmentKey,
                                                        DisplayJson::ClothKey,
                                                        GlowJson::GlowKey,
                                                        MaterialJson::MaterialKey,
                                                        Keys::RenderStyle,
-                                                       Keys::ItemEffect};
+                                                       Keys::ItemEffect, Keys::StaticEffects, Keys::ParticleEffects, Keys::MeshEffects};
 const std::set<std::string, std::less<>> SharedModelKeys{Keys::Name, Keys::File, Keys::TextureFolders,
                                                          Keys::NoneBlendMeshes};
 
@@ -66,6 +72,196 @@ void WriteModelFile(const std::string& file, const std::vector<std::string>& tex
     if (!noneBlendMeshes.empty())
     {
         json[Keys::NoneBlendMeshes] = noneBlendMeshes;
+    }
+}
+
+bool IsStaticEffectTexture(int texture)
+{
+    switch (texture)
+    {
+    case BITMAP_LIGHT:
+    case BITMAP_LIGHT + 1:
+    case BITMAP_LIGHT + 2:
+    case BITMAP_LIGHT + 3:
+    case BITMAP_FLARE:
+    case BITMAP_LUCKY_SEAL_EFFECT44:
+    case BITMAP_ENERGY_FIELD:
+    case BITMAP_LIGHTMARKS:
+    case BITMAP_PIN_STAR:
+    case BITMAP_LIGHT_RED:
+    case BITMAP_FIRE_HIK1_MONO:
+    case BITMAP_SHINY:
+    case BITMAP_SHINY + 1:
+    case BITMAP_SHINY + 5:
+    case BITMAP_SHINY + 6:
+    case BITMAP_MAGIC:
+    case BITMAP_FLARE_BLUE:
+    case BITMAP_FLARE_RED:
+    case BITMAP_HOLE:
+    case BITMAP_CHROME_ENERGY2:
+    case BITMAP_EFFECT - 1:
+    case BITMAP_SUMMON_IMPACT:
+    case BITMAP_ROOLOFPAPER_EFFECT_R:
+    case BITMAP_PIN_LIGHT:
+    case BITMAP_ORORA:
+    case BITMAP_LIGHTMARKS_FOREIGN:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool IsParticleEffectTexture(int texture, int subType)
+{
+    if (texture == BITMAP_LIGHT || texture == BITMAP_FREETICKET_R || texture == BITMAP_LUCKY_SEAL_EFFECT44)
+        return true;
+    if (texture == BITMAP_FIRE_HIK2_MONO) return subType == 0;
+    if (texture == BITMAP_FIRE + 1 || texture == BITMAP_FIRE + 3) return subType == 2;
+    if (texture == BITMAP_SHINY) return subType == 3 || subType == 5;
+    if (texture == BITMAP_SHINY + 6) return subType == 0 || subType == 1;
+    if (texture == BITMAP_MAGIC) return subType == 1;
+    if (texture == BITMAP_SPARK + 1) return subType == 10;
+    // These additional FinalMU particles are safe without an owner only in subtype zero.
+    if (subType != 0) return false;
+    switch (texture)
+    {
+    case BITMAP_SMOKE:
+    case BITMAP_CHERRYBLOSSOM_EVENT_PETAL:
+    case BITMAP_SMOKELINE2:
+    case BITMAP_LIGHTNING_MEGA2:
+    case BITMAP_LIGHTNING_MEGA1:
+    case BITMAP_FIRE_HIK1:
+    case BITMAP_FIRE_HIK1_MONO:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool ReadAttachmentOffset(ModelJson::ItemModelValueReader& reader, std::array<double, 3>& offset)
+{
+    if (!reader.Has("offset")) return true;
+    constexpr double MaxOffset = 10000.0;
+    return reader.ReadNumbers("offset", offset, offset.size())
+        && std::all_of(offset.begin(), offset.end(), [](double value) { return std::abs(value) <= MaxOffset; });
+}
+
+void ReadStaticEffects(const OrderedJson& json, ItemModelDefinition& model, const ModelJson::ReportIssue& report)
+{
+    ModelJson::ItemModelValueReader reader(json, "model", report);
+    const auto* rows = reader.ReadJson(Keys::StaticEffects);
+    if (!rows) return;
+    constexpr int MaxEffects = 256;
+    constexpr int MaxBone = 255;
+    constexpr double MaxRotation = 36000.0;
+    constexpr double MaxSpriteSize = 100.0;
+    if (!rows->is_array() || rows->size() > MaxEffects)
+    {
+        reader.Fatal(Keys::StaticEffects, "must be an array of at most 256 sprites");
+        return;
+    }
+    for (const auto& row : *rows)
+    {
+        ModelJson::ItemModelValueReader value(row, Keys::StaticEffects, report);
+        ItemStaticEffect effect;
+        if (!row.is_object() || !value.ReadIndex("bone", effect.bone, MaxBone)
+            || !value.ReadIndex("texture", effect.texture, BITMAP_EFFECT_TEXTURE_END)
+            || !IsStaticEffectTexture(effect.texture)
+            || !value.ReadNumbers("color", effect.color, effect.color.size())
+            || !value.ReadNumber("size", effect.size, true)
+            || effect.size > MaxSpriteSize
+            || !ReadAttachmentOffset(value, effect.offset)
+            || (value.Has("rotation") && !value.ReadNumber("rotation", effect.rotation, false))
+            || std::abs(effect.rotation) > MaxRotation)
+        {
+            reader.Fatal(Keys::StaticEffects, "invalid bone, texture, color or size");
+            continue;
+        }
+        model.staticEffects.push_back(effect);
+    }
+}
+
+void ReadParticleEffects(const OrderedJson& json, ItemModelDefinition& model, const ModelJson::ReportIssue& report)
+{
+    ModelJson::ItemModelValueReader reader(json, "model", report);
+    const auto* rows = reader.ReadJson(Keys::ParticleEffects);
+    if (!rows) return;
+    constexpr int MaxEffects = 256;
+    constexpr int MaxBone = 255;
+    constexpr int MaxSubType = 10;
+    constexpr double MaxParticleSize = 100.0;
+    if (!rows->is_array() || rows->size() > MaxEffects)
+    {
+        reader.Fatal(Keys::ParticleEffects, "must be an array of at most 256 particles");
+        return;
+    }
+    for (const auto& row : *rows)
+    {
+        ModelJson::ItemModelValueReader value(row, Keys::ParticleEffects, report);
+        ItemParticleEffect effect;
+        if (!row.is_object() || !value.ReadIndex("bone", effect.bone, MaxBone)
+            || !value.ReadIndex("texture", effect.texture, BITMAP_EFFECT_TEXTURE_END)
+            || !value.ReadNumbers("color", effect.color, effect.color.size())
+            || !value.ReadIndex("subType", effect.subType, MaxSubType)
+            || !IsParticleEffectTexture(effect.texture, effect.subType)
+            || !value.ReadNumber("size", effect.size, false) || std::abs(effect.size) > MaxParticleSize
+            || !ReadAttachmentOffset(value, effect.offset))
+        {
+            reader.Fatal(Keys::ParticleEffects, "invalid bone, texture, color, subtype or size");
+            continue;
+        }
+        model.particleEffects.push_back(effect);
+    }
+}
+
+void ReadMeshEffects(const OrderedJson& json, ItemModelDefinition& model, const ModelJson::ReportIssue& report)
+{
+    ModelJson::ItemModelValueReader reader(json, "model", report);
+    const auto* rows = reader.ReadJson(Keys::MeshEffects);
+    if (!rows) return;
+    constexpr int MaxMeshes = 32;
+    constexpr int MaxRenderFlags = 131071;
+    if (!rows->is_array() || rows->size() > MaxMeshes)
+    {
+        reader.Fatal(Keys::MeshEffects, "must be an array of at most 32 mesh effects");
+        return;
+    }
+    for (const auto& row : *rows)
+    {
+        ModelJson::ItemModelValueReader value(row, Keys::MeshEffects, report);
+        ItemMeshEffect effect;
+        if (!row.is_object() || !value.ReadIndex("mesh", effect.mesh, MaxMeshes - 1)
+            || !value.ReadIndex("flags", effect.flags, MaxRenderFlags)
+            || !value.ReadNumbers("color", effect.color, effect.color.size()))
+        {
+            reader.Fatal(Keys::MeshEffects, "invalid mesh, flags or color");
+            continue;
+        }
+        model.meshEffects.push_back(effect);
+    }
+}
+
+void WriteModelEffects(const ItemModelDefinition& model, OrderedJson& json)
+{
+    if (!model.staticEffects.empty())
+    {
+        json[Keys::StaticEffects] = OrderedJson::array();
+        for (const auto& effect : model.staticEffects)
+            json[Keys::StaticEffects].push_back({{"bone", effect.bone}, {"texture", effect.texture},
+                {"color", effect.color}, {"size", effect.size}, {"offset", effect.offset}, {"rotation", effect.rotation}});
+    }
+    if (!model.particleEffects.empty())
+    {
+        json[Keys::ParticleEffects] = OrderedJson::array();
+        for (const auto& effect : model.particleEffects)
+            json[Keys::ParticleEffects].push_back({{"bone", effect.bone}, {"texture", effect.texture},
+                {"color", effect.color}, {"subType", effect.subType}, {"size", effect.size}, {"offset", effect.offset}});
+    }
+    if (!model.meshEffects.empty())
+    {
+        json[Keys::MeshEffects] = OrderedJson::array();
+        for (const auto& effect : model.meshEffects)
+            json[Keys::MeshEffects].push_back({{"mesh", effect.mesh}, {"flags", effect.flags}, {"color", effect.color}});
     }
 }
 
@@ -93,6 +289,7 @@ OrderedJson WriteModel(const ItemModelDefinition& model)
     {
         json[Keys::ItemEffect] = model.itemEffect;
     }
+    WriteModelEffects(model, json);
     return json;
 }
 
@@ -301,6 +498,9 @@ bool ItemModelReader::Read(const OrderedJson& json, ItemModelDefinition& model)
     MaterialJson::Read(json, model, report);
     ReadLookName(json, Keys::RenderStyle, model.renderStyle);
     ReadLookName(json, Keys::ItemEffect, model.itemEffect);
+    ReadStaticEffects(json, model, report);
+    ReadParticleEffects(json, model, report);
+    ReadMeshEffects(json, model, report);
     WarnAboutUnknownKeys(json, ItemModelKeys);
     return !m_hasFatal;
 }

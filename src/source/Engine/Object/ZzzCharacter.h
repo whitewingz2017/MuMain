@@ -110,6 +110,8 @@ bool CheckFullSet(CHARACTER* c);
 [[nodiscard]] bool IsFullSet(const CHARACTER* c);
 
 void MoveCharacterPosition(CHARACTER* c);
+// The client character whose object `o` is, or nullptr (a mount, an item, a map object).
+CHARACTER* CharacterOfObject(const OBJECT* o);
 void ChangeCharacterExt(int Key, BYTE* Equipment, CHARACTER* pCharacter = NULL, OBJECT* pHelper = NULL);
 void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCharacter = nullptr,
                            OBJECT* pHelper = nullptr);

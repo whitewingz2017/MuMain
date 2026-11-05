@@ -2,6 +2,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "UI/Inventory/InventoryActionController.h"
 #include "UI/Inventory/MyInventory.h"
 #include "UI/Inventory/InventoryCtrl.h"
@@ -132,7 +133,7 @@ bool CInventoryActionController::TryMoveItem(CInventoryCtrl* targetControl, CPic
     const auto sourceStorageType = pPickedItem->GetSourceStorageType();
     const auto targetStorageType = targetControl->GetStorageType();
 
-    if (iTargetIndex != iSourceIndex)
+    if (iTargetIndex != iSourceIndex || sourceStorageType != targetStorageType)
     {
         return SendRequestEquipmentItem(sourceStorageType, iSourceIndex, pPickItem, targetStorageType, iTargetIndex);
     }
@@ -206,14 +207,14 @@ bool CInventoryActionController::HandleMixAutoMove(CInventoryCtrl* targetControl
     return g_pMixInventory->ProcessMyInvenItemAutoMove(targetControl);
 }
 
-bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) const
+bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl, ITEM* selectedItem, bool confirmAll) const
 {
     if (CInventoryCtrl::GetPickedItem())
     {
         return false;
     }
 
-    if (!targetControl->ContainsPointer())
+    if (!selectedItem && !targetControl->ContainsPointer())
     {
         return false;
     }
@@ -223,7 +224,7 @@ bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) 
         return false;
     }
 
-    ITEM* pItem = targetControl->FindItemAtPointer();
+    ITEM* pItem = selectedItem ? selectedItem : targetControl->FindItemAtPointer();
     if (pItem == nullptr)
     {
         return false;
@@ -257,6 +258,8 @@ bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) 
         return false;
     }
 
+    const bool highValue = GameLogic::Items::IsHighValueItem(pItem);
+    const DWORD itemKey = pPickedItem->GetItem()->Key;
     targetControl->RemoveItem(pItem);
     pPickedItem->HidePickedItem();
 
@@ -267,11 +270,11 @@ bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) 
         return false;
     }
 
-    if (GameLogic::Items::IsHighValueItem(pItem))
+    if (confirmAll || highValue)
     {
         GenericDialogConfig cfg;
         cfg.showCancel = true;
-        if (ITEM* pPreviewItem = pPickedItem->GetItem())
+        if (!confirmAll) if (ITEM* pPreviewItem = pPickedItem->GetItem())
         {
             cfg.item3D = *pPreviewItem;
         }
@@ -280,11 +283,17 @@ bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) 
             { I18N::Game::CheckTheItemPlease, true },
             { I18N::Game::AreYouSureYouWantToSellIt, true },
         };
-        cfg.onPrimary = []
+        if (confirmAll)
+        {
+            cfg.primaryLabel = L"Sell";
+            cfg.lines = {{L"Are you sure to sell this?"}};
+        }
+        cfg.onPrimary = [itemKey, sourceIndex]
         {
             CPickedItem* pPickedItem = CInventoryCtrl::GetPickedItem();
             int iSourceIndex = pPickedItem ? pPickedItem->GetSourceLinealPos() : -1;
-            if (iSourceIndex >= MAX_EQUIPMENT_INDEX && iSourceIndex < MAX_MY_INVENTORY_EX_INDEX)
+            if (GameLogic::Items::CanConfirmSale(pPickedItem ? pPickedItem->GetItem() : nullptr,
+                iSourceIndex, sourceIndex, itemKey, g_pNewUISystem->IsVisible(INTERFACE_NPCSHOP), g_pNPCShop->IsSellingItem()))
             {
                 SocketClient->ToGameServer()->SendSellItemToNpcRequest(iSourceIndex);
                 g_pNPCShop->SetSellingItem(true);
@@ -399,6 +408,17 @@ bool CInventoryActionController::IsSlotOccupied(int nSlot) const
 
 bool CInventoryActionController::TryEquipItem(CInventoryCtrl* targetControl, ITEM* pItem, int iSrcIndex) const
 {
+    if (const int part = GameLogic::Cosmetics::ArmorPart(pItem->Type); part >= 0)
+    {
+        if (GameLogic::Cosmetics::IsFemaleArmor(pItem->Type)
+            && gCharacterManager.GetBaseClass(Hero->Class) != CLASS_ELF
+            && gCharacterManager.GetBaseClass(Hero->Class) != CLASS_SUMMONER)
+            return true;
+        const int destination = GameLogic::Cosmetics::AvailablePart(pItem->Type,
+            GameLogic::Cosmetics::EquippedArmor(5) >= 0, GameLogic::Cosmetics::EquippedArmor(6) >= 0);
+        GameLogic::Cosmetics::Request(1, iSrcIndex, destination);
+        return true;
+    }
     const ITEM_ATTRIBUTE* pItemAttr = &ItemAttribute[pItem->Type];
     int nDstIndex = pItemAttr->m_byItemSlot;
 
@@ -445,12 +465,18 @@ bool CInventoryActionController::TryEquipItem(CInventoryCtrl* targetControl, ITE
     targetControl->RemoveItem(pItem);
     pPickedItem->HidePickedItem();
 
-    SendRequestEquipmentItem(STORAGE_TYPE::INVENTORY, iSrcIndex, pItem, STORAGE_TYPE::INVENTORY, nDstIndex);
+    if (!SendRequestEquipmentItem(STORAGE_TYPE::INVENTORY, iSrcIndex, pPickedItem->GetItem(), STORAGE_TYPE::INVENTORY, nDstIndex))
+        CInventoryCtrl::BackupPickedItem();
     return true;
 }
 
 bool CInventoryActionController::TryDropItem(CInventoryCtrl* targetControl, ITEM* pItem) const
 {
+    if (pItem->Jewel_Of_Harmony_Option != 0 || (pItem->Type == ITEM_LOST_MAP && gMapManager.IsCursedTemple()))
+    {
+        g_pSystemLogBox->AddText(I18N::Game::ThisItemCannotBeDropped, TYPE_ERROR_MESSAGE);
+        return true;
+    }
     if (Hero->Dead != 0)
     {
         return false;
@@ -560,7 +586,7 @@ bool CInventoryActionController::ApplyJewels(CInventoryCtrl* targetControl, CPic
         bSuccess = false;
     }
 
-    if (pPickItem->Type == ITEM_JEWEL_OF_BLESS && iType == ITEM_HORN_OF_FENRIR && iDurability != 255)
+    if (pPickItem->Type == ITEM_JEWEL_OF_BLESS && GameLogic::Cosmetics::HelperBehaviorItem(iType) == ITEM_HORN_OF_FENRIR && iDurability != 255)
     {
         const int iTargetIndex = targetControl->GetIndex(pItem->x, pItem->y);
 

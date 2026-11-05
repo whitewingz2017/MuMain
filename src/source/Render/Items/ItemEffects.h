@@ -42,4 +42,8 @@ bool Spawns(int modelType);
 
 // Spawns them from the model's pose, in the update; b is placed where the model is drawn.
 void Spawn(BMD* b, OBJECT* o, int modelType, float (*bones)[3][4]);
+
+// Draws attached colored sprites and emits configured particles after the solid model.
+void RenderAttachments(BMD* b, OBJECT* o, int modelType, float alpha);
+void RenderPetEffects(BMD* b, OBJECT* o, int modelType, float alpha, bool defaultGlow);
 } // namespace Render::Items::ItemEffects

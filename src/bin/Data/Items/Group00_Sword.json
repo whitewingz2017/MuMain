@@ -1026,6 +1026,1291 @@
       "classRequirements": {
         "rageFighter": 1
       }
-    }
-  ]
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Sword Skin"
+      },
+      "width": 2,
+      "height": 4,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Sacred Glove Skin"
+      },
+      "width": 1,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mythical Sonic Blade Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Mythical Asura Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Mythical Cyclone Sword Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Mythical Blast Breaker Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Mythical Rex Glove Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Legendary Sword of Mercy Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Legendary Blood Sword Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Legendary Saw Glove Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Immortal Hand of Suffering Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Final Infinity Sword Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Final Tyberium Hand Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 311,
+      "name": {
+        "en": "Immortal Excalibur Sword Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 312,
+      "name": {
+        "en": "Immortal Sword of Justice Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 313,
+      "name": {
+        "en": "Immortal Blade of Pain Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 314,
+      "name": {
+        "en": "Immortal Sword of Avenging Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 315,
+      "name": {
+        "en": "Final Cynetic Sword Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 316,
+      "name": {
+        "en": "Sword Skin 1 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 317,
+      "name": {
+        "en": "Sword Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 318,
+      "name": {
+        "en": "Sword Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 319,
+      "name": {
+        "en": "Sword Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 320,
+      "name": {
+        "en": "Sword Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 321,
+      "name": {
+        "en": "Sword Skin 6 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 322,
+      "name": {
+        "en": "Sword Skin 7 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 323,
+      "name": {
+        "en": "Sword Skin 8 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 324,
+      "name": {
+        "en": "Sword Skin 9 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 325,
+      "name": {
+        "en": "Sword Skin 10 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 326,
+      "name": {
+        "en": "Sword Skin 11 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 327,
+      "name": {
+        "en": "Sword Skin 12 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 328,
+      "name": {
+        "en": "Sword Skin 13 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 329,
+      "name": {
+        "en": "Sword Skin 14 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 330,
+      "name": {
+        "en": "Sword Skin 15 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 331,
+      "name": {
+        "en": "Sword Skin 16 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 332,
+      "name": {
+        "en": "Sword Skin 17 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 333,
+      "name": {
+        "en": "Sword Skin 18 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 334,
+      "name": {
+        "en": "Sword Skin 19 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 335,
+      "name": {
+        "en": "Sword Skin 20 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 336,
+      "name": {
+        "en": "Sword Skin 21 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 337,
+      "name": {
+        "en": "Sword Skin 22 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 338,
+      "name": {
+        "en": "Sword Skin 23 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 339,
+      "name": {
+        "en": "Sword Skin 24 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 340,
+      "name": {
+        "en": "Sword Skin 25 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 341,
+      "name": {
+        "en": "Sword Skin 26 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 342,
+      "name": {
+        "en": "Sword Skin 27 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 343,
+      "name": {
+        "en": "Sword Skin 28 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 344,
+      "name": {
+        "en": "Sword Skin 29 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 345,
+      "name": {
+        "en": "Sword Skin 30 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    }]
 }

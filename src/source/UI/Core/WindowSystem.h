@@ -26,6 +26,7 @@
 #include "UI/Inventory/MyShopInventory.h"
 #include "UI/Inventory/PurchaseShopInventory.h"
 #include "UI/Character/CharacterInfoWindow.h"
+#include "UI/Character/CombatStatisticsWindow.h"
 #include "UI/Quests/MyQuestInfoWindow.h"
 #include "UI/Party/PartyInfoWindow.h"
 #include "UI/Party/PartyListWindow.h"
@@ -89,6 +90,10 @@
 
 namespace mu::ui::window
 {
+    class CSkinShopWindow;
+    class CSkinInventoryWindow;
+    class CMuunInventoryWindow;
+    class CExcellentCombinationWindow;
     class CSystem
     {
         CManager* m_pNewUIMng;
@@ -169,6 +174,7 @@ namespace mu::ui::window
         CMyShopInventory* m_pNewMyShopInventory;
         CPurchaseShopInventory* m_pNewPurchaseShopInventory;
         CCharacterInfoWindow* m_pNewCharacterInfoWindow;
+        CCombatStatisticsWindow* m_pCombatStatistics = nullptr;
         CMyQuestInfoWindow* m_pNewMyQuestInfoWindow;
         CPartyInfoWindow* m_pNewPartyInfoWindow;
         CPartyListWindow* m_pNewPartyListWindow;
@@ -228,6 +234,10 @@ namespace mu::ui::window
         CMuHelperSkillPicker* m_pMuHelperSkillPicker;
         CGenericConfirmDialog* m_pGenericConfirmDialog;
         CGenericMenuDialog* m_pGenericMenuDialog;
+        CSkinShopWindow* m_pSkinShopWindow = nullptr;
+        CSkinInventoryWindow* m_pSkinInventoryWindow = nullptr;
+        CMuunInventoryWindow* m_pMuunInventoryWindow = nullptr;
+        CExcellentCombinationWindow* m_pExcellentCombinationWindow = nullptr;
 
         bool CreateChatCommandWindow();
 

@@ -751,6 +751,324 @@
       "classRequirements": {
         "fairyElf": 2
       }
-    }
-  ]
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Bow Skin"
+      },
+      "width": 2,
+      "height": 4,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "fairyElf": 1
+      }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mythical Demon Hunter Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "fairyElf": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Legendary Long Mind Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "fairyElf": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Final Quantum Bow Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "fairyElf": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Immortal Blind Bow Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "fairyElf": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Bow Custom Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Bow Custom Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Bow Custom Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Bow Custom Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Bow Custom Skin 6 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Bow Custom Skin 7 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Bow Custom Skin 8 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    }]
 }

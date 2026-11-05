@@ -1,10 +1,15 @@
-﻿//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //  GOBoid.cpp
 //
 //////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Core/Utilities/Random.h"
+#include "GameLogic/Pets/MountCompanions.h"
+#include "GameLogic/Pets/MuunMounts.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
+#include "Render/Models/FenrirMount.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
@@ -41,6 +46,7 @@ static const int BIRD_ACTION_GROUND = 1;
 
 void DeleteMount(OBJECT* Owner)
 {
+    GameLogic::Cosmetics::FenrirMounts::Clear(Owner);
     for (int i = 0; i < MAX_MOUNTS; i++)
     {
         OBJECT* o = &Mounts[i];
@@ -64,7 +70,7 @@ bool IsMount(ITEM* pItem)
         || pItem->Type == ITEM_HORN_OF_UNIRIA
         || pItem->Type == ITEM_HORN_OF_DINORANT
         || GameLogic::Items::IsDarkLordPet(pItem)
-        || pItem->Type == ITEM_HORN_OF_FENRIR
+        || GameLogic::Cosmetics::HelperBehaviorItem(pItem->Type) == ITEM_HORN_OF_FENRIR
         )
     {
         return true;
@@ -144,7 +150,8 @@ void CreateMount(int Type, vec3_t Position, OBJECT* Owner, int SubType, int Link
 {
     if (gMapManager.InChaosCastle() == true) return;
 
-    if (Owner->Type != MODEL_PLAYER && Type != MODEL_HELPER)
+    // A transformation ring keeps its wearer a player; the mount then follows on foot.
+    if (Owner->Type != MODEL_PLAYER && Owner->Kind != KIND_PLAYER && Type != MODEL_HELPER)
         return;
 
     for (int i = 0; i < MAX_MOUNTS; i++)
@@ -156,6 +163,15 @@ void CreateMount(int Type, vec3_t Position, OBJECT* Owner, int SubType, int Link
             return;
         }
     }
+}
+
+
+// Advances a mount's animation by one frame at its own speed.
+static void PlayMountAnimation(OBJECT* o)
+{
+    BMD* b = &Models[o->Type];
+    b->CurrentAction = o->CurrentAction;
+    b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, o->Velocity, o->Position, o->Angle);
 }
 
 bool MoveMount(OBJECT* o, bool bForceRender)
@@ -174,6 +190,12 @@ bool MoveMount(OBJECT* o, bool bForceRender)
         }
 
         Alpha(o);
+        if (GameLogic::Pets::MountCompanions::FollowInTown(o, bForceRender))
+        {
+            // Following on foot skips the ride code below, which is where the frame normally advances.
+            PlayMountAnimation(o);
+            return true;
+        }
 
         int     j;
         float   FlyRange = 0.0f;
@@ -216,6 +238,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
             VectorCopy(o->Owner->HeadAngle, o->HeadAngle);
             VectorCopy(o->Owner->Position, o->Position);
             VectorCopy(o->Owner->Angle, o->Angle);
+            GameLogic::Pets::MountCompanions::SyncFenrirRider(o);
 
             if ((o->Owner->CurrentAction >= PLAYER_FENRIR_ATTACK && o->Owner->CurrentAction <= PLAYER_FENRIR_ATTACK_BOW)
                 || IsAliceRideAction_Fenrir(o->Owner->CurrentAction) == true
@@ -644,7 +667,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
         }
         b->CurrentAction = o->CurrentAction;
 
-        b->PlayAnimation(&o->AnimationFrame, &o->PriorAnimationFrame, &o->PriorAction, o->Velocity, o->Position, o->Angle);
+        PlayMountAnimation(o);
 
         if (o->Type == MODEL_HELPER || o->Type == MODEL_IMP)
         {
@@ -697,7 +720,7 @@ static unsigned int s_mountCullFrame = 0;
 // Whether the mount draws at all, for its rider.
 static bool IsMountDrawn(const OBJECT* o)
 {
-    return o->Owner->Type == MODEL_PLAYER || o->Type == MODEL_HELPER;
+    return o->Owner->Type == MODEL_PLAYER || o->Owner->Kind == KIND_PLAYER || o->Type == MODEL_HELPER;
 }
 
 void CullMounts()
@@ -712,7 +735,11 @@ void CullMounts()
         if (!o->Visible || !IsMountDrawn(o))
             continue;
 
-        if (SceneFlag == CHARACTER_SCENE)
+        if (GameLogic::Pets::MountCompanions::InTown(o))
+        {
+            // A town companion keeps the scale its follow gave it.
+        }
+        else if (SceneFlag == CHARACTER_SCENE)
             o->Scale = 1.2f;
         else if (o->Type != MODEL_FENRIR_BLACK && o->Type != MODEL_FENRIR_BLUE && o->Type != MODEL_FENRIR_RED &&
                  o->Type != MODEL_FENRIR_GOLD)
@@ -723,6 +750,9 @@ void CullMounts()
 
 bool RenderMount(const OBJECT* o, bool bForceRender)
 {
+    // A rider on a Muun mount leaves the regular mount undrawn.
+    if (!bForceRender && SceneFlag == MAIN_SCENE && GameLogic::Pets::MuunMounts::IsRiding(o->Owner))
+        return TRUE;
     // A forced mount (a preview's) draws wherever it stands, at the scale its owner gave it.
     if (!o->Live || (!bForceRender && !o->Visible) || !IsMountDrawn(o))
         return TRUE;
@@ -732,7 +762,8 @@ bool RenderMount(const OBJECT* o, bool bForceRender)
     {
         State = 10;
     }
-    RenderObject(o, false, 0, State);
+    if (!Render::Models::FenrirMount::Draw(const_cast<OBJECT*>(o), State))
+        RenderObject(o, false, 0, State);
     return TRUE;
 }
 

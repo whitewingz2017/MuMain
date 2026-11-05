@@ -1,0 +1,16 @@
+#panel { position: absolute; left: 3vw; top: 10vh; width: 58vw; height: 78vh; margin: 0; transform: none; font-family: "Liberation Sans"; color: #e8dfc7; font-size: 12dp; }
+#panel .window-shell-content { pointer-events: auto; }
+#panel .btn { position: relative; box-sizing: border-box; width: auto; height: 28dp; line-height: 18dp; padding: 4dp 8dp; font-size: 12dp; }
+#panel .combination-close { position: absolute; top: 5dp; right: 8dp; width: 28dp; z-index: 2; }
+.combination-input { position: absolute; left: 8%; width: 30%; height: 30%; text-align: center; }
+.primary { top: 13%; }.secondary { top: 48%; }
+.combination-input span, .combination-result span { display: block; height: 20dp; }
+.combination-slot { display: block; position: relative; width: 100%; height: calc(100% - 20dp); box-sizing: border-box; border: 1dp #766344; background-color: #091115dd; }
+.combination-slot img { position: absolute; left: 5%; top: 5%; width: 90%; height: 90%; pointer-events: none; }
+.combination-arrow { position: absolute; top: 40%; left: 44%; font-size: 24dp; color: #d9b24c; }
+.combination-result { position: absolute; top: 28%; left: 57%; width: 32%; height: 35%; text-align: center; }
+.combination-preview-note { visibility: hidden; font-size: 9dp; color: #bfb9a4; }
+.combination-footer { position: absolute; left: 8%; right: 8%; bottom: 12%; display: flex; align-items: center; justify-content: space-between; }
+.combination-status { position: absolute; left: 8%; right: 8%; bottom: 2%; height: 8%; font-size: 10dp; line-height: 13dp; white-space: normal; }
+
+.combination-result:hover .combination-preview-note { visibility: visible; }

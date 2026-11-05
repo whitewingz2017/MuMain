@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "GameLogic/Items/StoreMail.h"
 #include "UI/Social/LetterReadView.h"
 
 #include "UI/Social/SocialWindowManager.h"
@@ -139,6 +140,8 @@ bool LetterReadView::Sync(bool shown)
         model.title = Text(m_Title.c_str());
         m_View.MarkDirty("title");
     }
+    const bool canClaim = GameLogic::PersonalShop::HasMailAttachment(m_Owner.LetterIndex());
+    if (model.canClaim != canClaim) { model.canClaim = canClaim; m_View.MarkDirty("can_claim"); }
     const bool wasVisible = m_View.Document()->IsVisible();
     SyncWorkspace();
     SyncGeometry();
@@ -217,7 +220,8 @@ void LetterReadView::ProcessActions()
 
 void LetterReadView::ActionRequested(const Action& a)
 {
-    if (a.name == "reply")
+    if (a.name == "claim") m_Owner.ClaimAttachment();
+    else if (a.name == "reply")
         m_Owner.Reply();
     else if (a.name == "delete")
         m_Owner.AskDelete();

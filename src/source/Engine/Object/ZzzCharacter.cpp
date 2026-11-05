@@ -7,6 +7,10 @@
 
 #include "stdafx.h"
 #include "Core/Utilities/Random.h"
+#include "GameLogic/Pets/MuunMounts.h"
+#include "Render/Models/CosmeticAnimation.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Cosmetics/FenrirMounts.h"
 #include <execution>
 #include <algorithm>
 #include <span>
@@ -20,6 +24,7 @@
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Renderer/MuRenderer.h"
 #include "Render/Models/ZzzBMD.h"
+#include "Render/Models/CosmeticArmor.h"
 #include "Core/Utilities/FrameProfiler.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
@@ -483,7 +488,7 @@ void SetPlayerStop(CHARACTER* c)
     }
 }
 
-void SetPlayerWalk(CHARACTER* c)
+static void UpdateRunningState(CHARACTER* c)
 {
     if (c->SafeZone)
     {
@@ -502,6 +507,7 @@ void SetPlayerWalk(CHARACTER* c)
         {
             if (gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK || gCharacterManager.GetBaseClass(c->Class) == CLASS_DARK_LORD
                 || gCharacterManager.GetBaseClass(c->Class) == CLASS_RAGEFIGHTER
+                || gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER
                 || ((gMapManager.WorldActive != WD_7ATLANSE && !gMapManager.InHellas() && gMapManager.WorldActive != WD_67DOPPLEGANGER3) && c->BodyPart[BODYPART_BOOTS].Type != -1 && c->BodyPart[BODYPART_BOOTS].Level >= 5)
                 || ((gMapManager.WorldActive == WD_7ATLANSE || gMapManager.InHellas()
                     || gMapManager.WorldActive == WD_67DOPPLEGANGER3
@@ -520,6 +526,11 @@ void SetPlayerWalk(CHARACTER* c)
                 c->Run += FPS_ANIMATION_FACTOR;
             }
         }
+}
+
+void SetPlayerWalk(CHARACTER* c)
+{
+    UpdateRunningState(c);
     OBJECT* o = &c->Object;
     if (c->Object.Type == MODEL_PLAYER)
     {
@@ -3967,6 +3978,13 @@ void PlayAttackHitSound(CHARACTER* attacker, OBJECT* o)
 }
 } // namespace
 
+static void SetSkillEffectWeapon(CHARACTER* character, OBJECT* object)
+{
+    const int model = Render::Models::CosmeticArmor::WeaponModel(character, 0);
+    object->Weapon = Data::Items::ToItemType(model);
+    object->WeaponLevel = model == character->Weapon[0].Type ? character->Weapon[0].Level : 0;
+}
+
 void MoveCharacter(CHARACTER* c, OBJECT* o)
 {
     if (o->Type == MODEL_WARCRAFT)
@@ -4086,16 +4104,14 @@ void MoveCharacter(CHARACTER* c, OBJECT* o)
         case AT_SKILL_RAGEFUL_BLOW_STR:
         case AT_SKILL_RAGEFUL_BLOW_MASTERY:
         {
-            o->Weapon = Data::Items::ToItemType(c->Weapon[0].Type);
-            o->WeaponLevel = (BYTE)c->Weapon[0].Level;
+            SetSkillEffectWeapon(c, o);
             CreateEffect(MODEL_SKILL_FURY_STRIKE, o->Position, o->Angle, o->Light, 0, o, o->PKKey, FindHotKey((c->Skill)));
             PlayBuffer(SOUND_FURY_STRIKE1);
             break;
         }
         case AT_SKILL_STRIKE_OF_DESTRUCTION:
         case AT_SKILL_STRIKE_OF_DESTRUCTION_STR:
-            o->Weapon = Data::Items::ToItemType(c->Weapon[0].Type);
-            o->WeaponLevel = (BYTE)c->Weapon[0].Level;
+            SetSkillEffectWeapon(c, o);
             Vector(0.f, 0.f, 0.f, o->Light);
             o->Light[0] = (float)(c->SkillX + 0.5f) * TERRAIN_SCALE;
             o->Light[1] = (float)(c->SkillY + 0.5f) * TERRAIN_SCALE;
@@ -4105,13 +4121,11 @@ void MoveCharacter(CHARACTER* c, OBJECT* o)
             break;
         case AT_SKILL_FIRE_SLASH:
         case AT_SKILL_FIRE_SLASH_STR:
-            o->Weapon = Data::Items::ToItemType(c->Weapon[0].Type);
-            o->WeaponLevel = (BYTE)c->Weapon[0].Level;
+            SetSkillEffectWeapon(c, o);
             break;
         case AT_SKILL_POWER_SLASH:
         case AT_SKILL_POWER_SLASH_STR:
-            o->Weapon = Data::Items::ToItemType(c->Weapon[0].Type);
-            o->WeaponLevel = (BYTE)c->Weapon[0].Level;
+            SetSkillEffectWeapon(c, o);
             break;
         case AT_SKILL_SWELL_LIFE:
         case AT_SKILL_SWELL_LIFE_STR:
@@ -4337,8 +4351,7 @@ void MoveCharacter(CHARACTER* c, OBJECT* o)
         case AT_SKILL_TWISTING_SLASH_STR:
         case AT_SKILL_TWISTING_SLASH_STR_MG:
         case AT_SKILL_TWISTING_SLASH_MASTERY:
-            o->Weapon = Data::Items::ToItemType(c->Weapon[0].Type);
-            o->WeaponLevel = (BYTE)c->Weapon[0].Level;
+            SetSkillEffectWeapon(c, o);
             CreateEffect(MODEL_SKILL_WHEEL1, o->Position, o->Angle, o->Light, 0, o, o->PKKey, FindHotKey((c->Skill)));
 
             if (SceneFlag != LOG_IN_SCENE)
@@ -6215,8 +6228,13 @@ void MoveCharacterVisual(CHARACTER* c, OBJECT* o)
     }
 }
 
+// Riding pets felt slow next to the walk pace; every ridden mount moves two steps faster.
+// The server's MovementSpeedConstants.RiddenMountSpeedBonus has to match.
+constexpr float RiddenMountSpeedBonus = 2.f;
+
 float CharacterMoveSpeed(CHARACTER* c)
 {
+    const int helperType = GameLogic::Pets::MuunMounts::MovementHelper(c);
     OBJECT* o = &c->Object;
     auto Speed = (float)c->MoveSpeed;
     if (o->Type == MODEL_PLAYER && o->Kind == KIND_PLAYER)
@@ -6232,7 +6250,7 @@ float CharacterMoveSpeed(CHARACTER* c)
             return Speed;
         }
 
-        if (c->Helper.Type == MODEL_HORN_OF_FENRIR && !c->SafeZone && !isholyitem)
+        if (helperType == MODEL_HORN_OF_FENRIR && !c->SafeZone && !isholyitem)
         {
             if (c->Run < FENRIR_RUN_DELAY / 2)
                 Speed = 15;
@@ -6245,14 +6263,15 @@ float CharacterMoveSpeed(CHARACTER* c)
                 else
                     Speed = 17;
             }
+            Speed += RiddenMountSpeedBonus;
         }
-        else if (c->Helper.Type == MODEL_DARK_HORSE_ITEM && !c->SafeZone && !isholyitem)
+        else if (helperType == MODEL_DARK_HORSE_ITEM && !c->SafeZone && !isholyitem)
         {
             c->Run = 40;
-            Speed = 17;
+            Speed = 17 + RiddenMountSpeedBonus;
         }
         else if (!(c->Object.SubType == MODEL_CURSEDTEMPLE_ALLIED_PLAYER || c->Object.SubType == MODEL_CURSEDTEMPLE_ILLUSION_PLAYER)
-            && (c->Wing.Type != -1 || (c->Helper.Type >= MODEL_HORN_OF_UNIRIA && c->Helper.Type <= MODEL_HORN_OF_DINORANT)) && !c->SafeZone
+            && (c->Wing.Type != -1 || (helperType >= MODEL_HORN_OF_UNIRIA && helperType <= MODEL_HORN_OF_DINORANT)) && !c->SafeZone
             && !isholyitem)
         {
             if (c->Wing.Type == MODEL_WINGS_OF_DRAGON
@@ -6903,6 +6922,8 @@ LinkPlacement PlaceLinkedPart(float x, float y, float z, const CHARACTER* c, BYT
         VectorAdd(placement.origin, BossHeadPosition, placement.origin);
         Vector(0.f, 0.f, WorldTime, placement.angle);
     }
+    // A TwinMU item model's own equipment offset, rotation and scale.
+    Render::Models::CosmeticAnimation::AdjustAttachment(Type, placement.parent);
     return placement;
 }
 bool DrawsHeldWeapon(const CHARACTER* c, int hand);
@@ -6981,6 +7002,9 @@ void AdvanceLinkedPart(CHARACTER* c, PART_t* f, int Type, bool Link, float playS
         }
     }
     b->CurrentAction = LinkedPartAction(c, f);
+    // TwinMU cosmetic equipment runs on its own animation clock.
+    if (Render::Models::CosmeticAnimation::AnimateCosmeticPart(*c, *f, Type))
+        return;
     if (!Link || (Type < MODEL_BOW || Type >= MODEL_BOW + MAX_ITEM_INDEX) || Type == MODEL_STINGER_BOW)
     {
         if (!g_isCharacterBuff(o, eDeBuff_Stun) && !g_isCharacterBuff(o, eDeBuff_Sleep))
@@ -7108,6 +7132,10 @@ vec34_t* RenderLinkObject(float x, float y, float z, const CHARACTER* c, const P
         bones = Engine::Object::Attachments::Bones(*slot);
     else
     {
+        // An equipment skin swapped in for this draw was never planned: it takes its own animation step here.
+        if (slot == nullptr &&
+            Render::Models::CosmeticAnimation::AnimateCosmeticPart(*const_cast<CHARACTER*>(c), *const_cast<PART_t*>(f), Type))
+            b->CurrentAction = 0;
         // Shown elsewhere than planned, the part keeps the update's animation step, in bones of this draw's own.
         Engine::Object::Attachments::Posed posed = PosedAt(f, b->CurrentAction, placement);
         if (slot != nullptr)
@@ -9587,7 +9615,17 @@ void RenderChristmasCompanions(const CHARACTER* c, vec3_t light, bool Translate,
     }
 }
 
+static void RenderCharacterWithEquipment(const CHARACTER* c, const OBJECT* o, int Select);
+
 void RenderCharacter(const CHARACTER* c, const OBJECT* o, int Select)
+{
+    // TwinMU equipment skins replace the hero's weapons and wings for this draw only.
+    Render::Models::CosmeticArmor::WithEquipment(const_cast<CHARACTER*>(c), const_cast<OBJECT*>(o), Select,
+                                                 [](CHARACTER* character, OBJECT* object, int selection)
+                                                 { RenderCharacterWithEquipment(character, object, selection); });
+}
+
+static void RenderCharacterWithEquipment(const CHARACTER* c, const OBJECT* o, int Select)
 {
     if (g_isCharacterBuff(o, eBuff_CrywolfNPCHide))
     {
@@ -9650,7 +9688,9 @@ void RenderCharacter(const CHARACTER* c, const OBJECT* o, int Select)
         if (DrawsPlayerBodyShadow(c, o))
         {
             const ShadowPass shadow;
-            for (int i = MAX_BODYPART - 1; i >= 0; i--)
+            // Cosmetic armor casts the shadow of the armor it shows.
+            const bool cosmeticShadow = Render::Models::CosmeticArmor::Render(const_cast<CHARACTER*>(c));
+            for (int i = MAX_BODYPART - 1; i >= 0 && !cosmeticShadow; i--)
             {
                 const PART_t* p = &c->BodyPart[i];
                 if (p->Type != -1)
@@ -9947,7 +9987,11 @@ void RenderCharacter(const CHARACTER* c, const OBJECT* o, int Select)
             Render::Lighting::LightMood::ScaleOwnHeroLight(o->Position[0], o->Position[1], AbilityLight, bodyLight);
     }
 
-    if (o->Kind == KIND_NPC && gMapManager.WorldActive == WD_0LORENCIA && o->Type == MODEL_PLAYER &&
+    if (Render::Models::CosmeticArmor::Render(const_cast<CHARACTER*>(c), Select))
+    {
+        // Cosmetic armor replaces only the body pass; weapons and wings retain their own passes.
+    }
+    else if (o->Kind == KIND_NPC && gMapManager.WorldActive == WD_0LORENCIA && o->Type == MODEL_PLAYER &&
         (o->SubType >= MODEL_SKELETON1 && o->SubType <= MODEL_SKELETON3))
     {
         RenderPartObject(&c->Object, o->SubType, NULL, bodyLight, o->Alpha, c->Level, 0, 0, false, false, Translate,
@@ -12825,7 +12869,7 @@ void SetCharacterClass(CHARACTER* c)
     }
     else
     {
-        c->Weapon[0].Type = Data::Items::ToModelSlot(p[EQUIPMENT_WEAPON_RIGHT].Type);
+        c->Weapon[0].Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::EquipmentVisualItem(p[EQUIPMENT_WEAPON_RIGHT].Type));
     }
 
     if (p[EQUIPMENT_WEAPON_LEFT].Type == -1)
@@ -12834,7 +12878,7 @@ void SetCharacterClass(CHARACTER* c)
     }
     else
     {
-        c->Weapon[1].Type = Data::Items::ToModelSlot(p[EQUIPMENT_WEAPON_LEFT].Type);
+        c->Weapon[1].Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::EquipmentVisualItem(p[EQUIPMENT_WEAPON_LEFT].Type));
     }
 
     if (p[EQUIPMENT_WING].Type == -1)
@@ -12852,9 +12896,10 @@ void SetCharacterClass(CHARACTER* c)
     }
     else
     {
-        c->Helper.Type = Data::Items::ToModelSlot(p[EQUIPMENT_HELPER].Type);
+        c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(p[EQUIPMENT_HELPER].Type));
     }
 
+    GameLogic::Cosmetics::FenrirMounts::SetItem(&c->Object, p[EQUIPMENT_HELPER].Type);
     c->Weapon[0].Level = p[EQUIPMENT_WEAPON_RIGHT].Level;
     c->Weapon[1].Level = p[EQUIPMENT_WEAPON_LEFT].Level;
     c->Weapon[0].ExcellentFlags = p[EQUIPMENT_WEAPON_RIGHT].ExcellentFlags;
@@ -12968,6 +13013,7 @@ void SetCharacterClass(CHARACTER* c)
     }
 
     CharacterMachine->CalculateAll();
+    GameLogic::Pets::MuunMounts::EquipmentChanged(c);
 }
 
 void SetChangeClass(CHARACTER* c)
@@ -13547,7 +13593,7 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
             }
             else
             {
-                c->Weapon[i].Type = Data::Items::ToModelSlot(Data::Items::MakeItemType(group, number));
+                c->Weapon[i].Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::EquipmentVisualItem(Data::Items::MakeItemType(group, number)));
                 c->Weapon[i].Level = LevelConvert(glowLevel);
                 c->Weapon[i].ExcellentFlags = isExcellent;
                 c->Weapon[i].AncientDiscriminator = isAncient;
@@ -13567,9 +13613,10 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
         
         if (Equipment[offset] != 0xFF && Equipment[offset + 1] != 0xFF)
         {
-            short number = Equipment[offset + 1] + ((Equipment[offset] & 0xF) << 4);
+            // The low nibble holds bits 8-11 of the number (custom wing skins are 300+).
+            short number = Equipment[offset + 1] + ((Equipment[offset] & 0xF) << 8);
             BYTE group = (Equipment[offset] & 0xF0) >> 4;
-            if (number > MAX_ITEM_INDEX)
+            if (number >= MAX_ITEM_INDEX)
             {
                 // not supported
             }
@@ -13592,6 +13639,7 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
     }
 
     // Helper:
+    int helperItem = -1;
     int HelperVariant = 0;
     {
         c->Helper.Type = -1;
@@ -13603,12 +13651,14 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
             short itemNumber = number & (MAX_ITEM_INDEX-1);
             HelperVariant = (Equipment[offset] & 0xE) >> 1;
             BYTE group = (Equipment[offset] & 0xF0) >> 4;
-            c->Helper.Type = Data::Items::ToModelSlot(Data::Items::MakeItemType(group, itemNumber));
+            helperItem = Data::Items::MakeItemType(group, itemNumber);
+            c->Helper.Type = Data::Items::ToModelSlot(GameLogic::Cosmetics::HelperBehaviorItem(helperItem));
         }
 
         // offset += 2;
     }
 
+    GameLogic::Cosmetics::FenrirMounts::SetItem(o, helperItem);
     switch (c->Helper.Type)
     {
     case MODEL_GUARDIAN_ANGEL:
@@ -13672,6 +13722,8 @@ void ReadEquipmentExtended(int Key, BYTE flags, BYTE* Equipment, CHARACTER* pCha
     if (!c->Change)
         ChangeChaosCastleUnit(c);
     SetCharacterScale(c);
+    if (pHelper == nullptr)
+        GameLogic::Pets::MuunMounts::EquipmentChanged(c);
 }
 
 extern int HeroIndex;
@@ -15981,4 +16033,15 @@ bool IsPlayer(CHARACTER* c)
 bool IsMonster(CHARACTER* c)
 {
     return c && c->Object.Kind == KIND_MONSTER;
+}
+
+CHARACTER* CharacterOfObject(const OBJECT* o)
+{
+    const auto offset = reinterpret_cast<const char*>(o) - reinterpret_cast<const char*>(&CharactersClient[0].Object);
+    if (offset < 0 || offset % static_cast<std::ptrdiff_t>(sizeof(CHARACTER)) != 0)
+    {
+        return nullptr;
+    }
+    const auto index = offset / static_cast<std::ptrdiff_t>(sizeof(CHARACTER));
+    return index < MAX_CHARACTERS_CLIENT ? &CharactersClient[index] : nullptr;
 }

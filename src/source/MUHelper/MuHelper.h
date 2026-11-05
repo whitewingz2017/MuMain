@@ -55,6 +55,8 @@ public:
 
     // One helper step at `now`; TimerProc passes the current time.
     void Tick(std::chrono::steady_clock::time_point now);
+    // The monster the helper is hunting, -1 while it is off.
+    int GetTargetKey() const { return m_bActive ? m_iCurrentTarget : -1; }
 
 private:
     void Work();

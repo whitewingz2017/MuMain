@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "Core/Text/GroupedNumbers.h"
 #include "UI/Chat/Chat.h"
 #include "UI/Character/CharacterInfoWindow.h"
 #include "UI/Core/WindowSystem.h"
@@ -25,16 +26,80 @@
 #include "UI/RmlBridge/RmlWindowClose.h"
 #include "UI/RmlBridge/RmlNativeTextSize.h"
 #include "UI/RmlBridge/RmlTheme.h"
+#include "UI/Dialogs/GenericConfirmDialog.h"
 
 #include <RmlUi/Core/DataModelHandle.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
+
+#include <algorithm>
 
 using namespace SEASON3B;
 using namespace mu::ui::window;
 
 namespace
 {
+    // The stats in CharacterStatAttribute order (strength, agility, vitality, energy, command):
+    // their label, and the stat's name in the server's "/add <stat> <amount>" chat command, which
+    // adds several points at once (OpenMU's AddStatChatCommandPlugIn, enabled by default).
+    constexpr int StatCount = 5;
+    const wchar_t* StatLabel(int stat)
+    {
+        const wchar_t* labels[StatCount] = {I18N::Game::STR, I18N::Game::AGI, I18N::Game::STA, I18N::Game::ENG,
+                                            I18N::Game::Command};
+        return labels[stat];
+    }
+    constexpr const wchar_t* StatCommandNames[StatCount] = {L"str", L"agi", L"vit", L"ene", L"cmd"};
+
+    // One point is the stat packet; more go as one chat command, which the server's stat
+    // increase answers with the whole amount (ReceiveAddPointExtended()).
+    void AddStatPoints(int stat, int amount)
+    {
+        if (amount == 1)
+        {
+            SocketClient->ToGameServer()->SendIncreaseCharacterStatPoint(static_cast<CharacterStatAttribute>(stat));
+            return;
+        }
+        wchar_t command[32];
+        mu_swprintf(command, L"/add %ls %d", StatCommandNames[stat], amount);
+        SocketClient->ToGameServer()->SendPublicChatMessage(MU_C16(Hero->ID), MU_C16(command));
+    }
+
+    constexpr int MaximumPointsPerRequest = 65535; // the server's amount is 16 bits
+
+    // Asks how many of the free points go into the stat, the free points offered as Max.
+    void AskStatPoints(int stat)
+    {
+        wchar_t freePoints[64];
+        mu_swprintf(freePoints, I18N::Game::PointD, CharacterAttribute->LevelUpPoint);
+
+        GenericDialogConfig cfg;
+        cfg.title = StatLabel(stat);
+        cfg.lines = {{freePoints, false}};
+        cfg.showCancel = true;
+        cfg.input = GenericDialogConfig::InputField{};
+        cfg.input->mode = GenericDialogConfig::InputField::Mode::Text;
+        cfg.input->maxLength = 5;
+        cfg.input->numericOnly = true;
+        cfg.input->initialText = L"1";
+        cfg.input->maxValue = []
+        { return static_cast<std::uint64_t>(std::min<int>(CharacterAttribute->LevelUpPoint, MaximumPointsPerRequest)); };
+        cfg.onPrimary = [stat]
+        {
+            const std::wstring typed = g_pGenericConfirmDialog->GetInputText();
+            const int amount = std::min({typed.empty() ? 0 : _wtoi(typed.c_str()),
+                                         static_cast<int>(CharacterAttribute->LevelUpPoint), MaximumPointsPerRequest});
+            if (amount <= 0)
+            {
+                g_pGenericConfirmDialog->KeepOpen();
+                return;
+            }
+            AddStatPoints(stat, amount);
+            PlayBuffer(SOUND_CLICK01);
+        };
+        g_pGenericConfirmDialog->Show(std::move(cfg));
+    }
+
     float GetMasterSkillValue(ActionSkillType skill)
     {
         return CharacterAttribute->MasterSkillInfo[skill].GetSkillValue();
@@ -123,6 +188,10 @@ void mu::ui::window::CCharacterInfoWindow::BindRmlModel(Rml::DataModelConstructo
                                                     static_cast<int>(WindowHeight));
     c.Bind("text_px", &model.textPx);
 
+    c.BindEventCallback("chainfo_statistics", [](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&)
+    {
+        g_pNewUISystem->Show(INTERFACE_COMBAT_STATISTICS);
+    });
     c.Bind("can_level_up", &model.canLevelUp);
     c.Bind("show_charisma", &model.showCharisma);
 
@@ -309,8 +378,13 @@ void mu::ui::window::CCharacterInfoWindow::RmlClickIncreaseStat(int stat)
     if (stat < 0 || stat >= iCount)
         return;
 
-    SocketClient->ToGameServer()->SendIncreaseCharacterStatPoint(static_cast<CharacterStatAttribute>(stat));
     PlayBuffer(SOUND_CLICK01);
+    if (CharacterAttribute->LevelUpPoint == 1)
+    {
+        AddStatPoints(stat, 1);
+        return;
+    }
+    AskStatPoints(stat);
 }
 
 void mu::ui::window::CCharacterInfoWindow::RmlClickQuest()
@@ -400,8 +474,6 @@ void mu::ui::window::CCharacterInfoWindow::SyncRmlModel()
     if (!m_RmlView.Document() || !IsVisible())
         return;
 
-    auto& model = m_RmlView.GetModel();
-
     UI::RmlBridge::SyncNativeTextSize(m_RmlView.Binder());
 
     SyncField(m_RmlView.Binder(), &CharacterInfoRmlModel::canLevelUp, "can_level_up", CharacterAttribute->LevelUpPoint > 0);
@@ -488,7 +560,7 @@ void mu::ui::window::CCharacterInfoWindow::BuildTableTexts()
     SyncField(m_RmlView.Binder(), &CharacterInfoRmlModel::levelUpPointText, "levelup_point_text",
               std::move(levelUpPointText));
 
-    SyncField(m_RmlView.Binder(), &CharacterInfoRmlModel::expText, "exp_text", StringUtils::WideToNarrow(strExp));
+    SyncField(m_RmlView.Binder(), &CharacterInfoRmlModel::expText, "exp_text", StringUtils::WideToNarrow(Core::Text::GroupedNumbers(strExp).c_str()));
 
     int iAddPoint, iMinusPoint;
 

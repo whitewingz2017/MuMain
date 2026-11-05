@@ -7,6 +7,7 @@
 #include "Core/Utilities/DrawSpawnCheck.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Models/ZzzBMD.h"
+#include "Render/Models/CosmeticArmor.h"
 #include "Engine/Object/ZzzInfomation.h"
 #include "Engine/Object/ZzzObject.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -7694,6 +7695,9 @@ void MoveEffects()
 // An effect drawn as its owner's weapon draws a copy that takes the weapon item's attributes.
 void RenderWheelWeapon(const OBJECT* effect)
 {
+    const int Type = Render::Models::CosmeticArmor::SkillWeaponModel(effect->Owner);
+    if (Type < 0)
+        return;
     OBJECT weapon = *effect;
     const Random::DrawnAs drawnAs(&weapon, effect);
     OBJECT* o = &weapon;
@@ -7703,7 +7707,6 @@ void RenderWheelWeapon(const OBJECT* effect)
 
     float Alpha = o->Alpha;
 
-    int Type = Data::Items::ToModelSlot(effect->Owner->Weapon);
     BMD* b = &Models[Type];
     b->CurrentAction = 0;
     b->Skin = gCharacterManager.GetBaseClass(Hero->Class);
@@ -7716,7 +7719,9 @@ void RenderWheelWeapon(const OBJECT* effect)
     vec3_t Light;
     RequestModelTerrainLight(o->Position[0], o->Position[1], Light);
     VectorAdd(Light, o->Light, Light);
-    RenderPartObject(o, Type, NULL, Light, Alpha, effect->Owner->WeaponLevel, 0, 0, true, true, true);
+    const int level =
+        Type == Data::Items::ToModelSlot(effect->Owner->Weapon) ? effect->Owner->WeaponLevel : 0;
+    RenderPartObject(o, Type, NULL, Light, Alpha, level, 0, 0, true, true, true);
 }
 
 void RenderFuryStrike(const OBJECT* effect)
@@ -7731,7 +7736,9 @@ void RenderFuryStrike(const OBJECT* effect)
 
         Vector(0.f, 100.f, 0.f, p);
 
-        int Type = Data::Items::ToModelSlot(effect->Owner->Weapon);
+        const int Type = Render::Models::CosmeticArmor::SkillWeaponModel(effect->Owner);
+        if (Type < 0)
+            return;
         BMD* b = &Models[Type];
         b->CurrentAction = 0;
         b->Skin = gCharacterManager.GetBaseClass(Hero->Class);
@@ -7748,7 +7755,9 @@ void RenderFuryStrike(const OBJECT* effect)
         VectorCopy(o->Angle, Angle);
 
         b->Animation(BoneTransform, o->AnimationFrame, o->PriorAnimationFrame, o->PriorAction, Angle, o->HeadAngle, false, false);
-        RenderPartObject(o, Type, NULL, Light, Alpha, effect->Owner->WeaponLevel, 0, 0, true, true, true);
+        const int level =
+            Type == Data::Items::ToModelSlot(effect->Owner->Weapon) ? effect->Owner->WeaponLevel : 0;
+        RenderPartObject(o, Type, NULL, Light, Alpha, level, 0, 0, true, true, true);
     }
 }
 

@@ -14,6 +14,7 @@
 #include <vector>
 
 namespace Rml { class ElementDocument; }
+namespace Rml { class Element; }
 
 namespace mu::ui::window
 {
@@ -43,6 +44,11 @@ namespace mu::ui::window
         struct MenuButton
         {
             std::wstring label;
+            std::wstring detail;
+            std::wstring secondaryLabel, tertiaryLabel;
+            std::function<void()> onSecondary, onTertiary;
+            std::function<std::wstring()> liveDetail; // Countdown text, sampled while the dialog is visible.
+            Rml::String iconDecorator;
             std::wstring tooltip;          // optional hover text; empty = no tooltip
             std::vector<Line> lines;        // optional description text rendered directly above
                                             // this button (not the shared summary above) --
@@ -60,6 +66,7 @@ namespace mu::ui::window
             bool linesBelow = false;        // `lines` sit under the button (CTrainerRecoverMsgBox)
             bool dismiss = false;           // only closes the menu, as Esc does; a theme with a
                                             // close action of its own may leave it out
+            std::function<void(Rml::Element*)> syncIcon;
             std::function<void()> onClick;  // fires, then the dialog closes -- every native
                                             // button in this family destroys its own box on click,
                                             // none need a KeepOpen()-style veto
@@ -144,9 +151,12 @@ namespace mu::ui::window
         struct MenuButtonEntry
         {
             Rml::String label;
+            Rml::String detail, iconDecorator;
+            Rml::String secondaryLabel, tertiaryLabel;
             Rml::String tooltip;
             std::vector<LineEntry> lines;
             bool hasLines = false;  // toggles .gmd-button-cell's extra bottom margin (RCSS)
+            bool hasIcon = false;
             bool enabled = true;
             bool compact = false;
             bool cols2 = false;     // GenericMenuConfig::columns == 2 && !compact -- see its comment
@@ -178,6 +188,7 @@ namespace mu::ui::window
             float rootY = 0.f;
         };
         void BindRmlModel(Rml::DataModelConstructor& c, GenericMenuRmlModel& model);
+        void SyncButtonIcons();
         UI::RmlBridge::ThemedView<GenericMenuRmlModel> m_RmlView{"generic_menu_dialog",
             [this](Rml::DataModelConstructor& c, GenericMenuRmlModel& model) { BindRmlModel(c, model); },
             {{"Data/Interface/RmlUi/generic_menu_dialog.rml"}},
@@ -186,6 +197,7 @@ namespace mu::ui::window
 
         bool m_bButtonClicked = false;
         int m_iClickedButtonIndex = -1;
+        int m_iClickedButtonAction = 0;
 
         std::deque<GenericMenuConfig> m_Queue;
         GenericMenuConfig m_Active;

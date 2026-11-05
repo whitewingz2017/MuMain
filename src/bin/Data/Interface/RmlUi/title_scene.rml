@@ -1,12 +1,17 @@
 <rml>
 <head>
-	<title>Title Loading Bar</title>
-	<link type="text/rcss" href="base.rcss"/>
-	<link type="text/rcss" href="title_scene.rcss"/>
+    <title>Game Loading</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="title_scene.rcss"/>
 </head>
 <body>
-	<!-- RmlUi's built-in <progress> element, replacing CGaugeBar; C++ calls SetValue()/SetMax()
-	     on it directly, no data-model binding. -->
-	<progress id="gauge_fill" class="gauge-fill" direction="right" value="0" max="1"/>
+    <div id="loading_background"><div id="background_left"></div><div id="background_right"></div></div>
+    <div id="loading_bottom">
+        <div id="loading_track">
+            <progress id="gauge_fill" direction="right" value="0" max="1"/>
+            <div id="gauge_head"></div>
+        </div>
+    </div>
+    <div id="loading_percent"></div>
 </body>
 </rml>

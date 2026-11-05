@@ -5317,6 +5317,30 @@
       "width": 1,
       "height": 1,
       "repairable": false
+    },
+    {
+      "number": 250,
+      "name": {
+        "en": "Muun Evolution Stone"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false
+    },
+    {
+      "number": 251,
+      "name": {
+        "en": "Muun Egg"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false
     }
   ]
 }

@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "GameLogic/Items/StoreMail.h"
 #include "UI/Inventory/PurchaseShopInventory.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/RmlBridge/RmlPointer.h"
@@ -207,12 +208,17 @@ bool mu::ui::window::CPurchaseShopInventory::PurchaseShopInventoryProcess()
         ITEM* pItem = (iCurSquareIndex != -1) ? m_pNewInventoryCtrl->FindItem(iCurSquareIndex) : nullptr;
         if (iCurSquareIndex != -1 && pItem != nullptr)
         {
-            ChangeSourceIndex(iCurSquareIndex);
+            const int slot = m_pNewInventoryCtrl->GetIndexByItem(pItem);
+            GameLogic::PersonalShop::ItemPrice price;
+            if (!GetPersonalItemPrice(slot, price, PSHOPWNDTYPE_PURCHASE)) return true;
+            ChangeSourceIndex(slot);
 
             GenericDialogConfig cfg;
             cfg.showCancel = true;
             cfg.item3D = *pItem;
-            cfg.lines = { { I18N::Game::DoYouWantToBuyAnItem, false } };
+            wchar_t payment[MAX_TEXT_LENGTH]{};
+            mu_swprintf(payment, L"%ls", GameLogic::PersonalShop::FormatPrice(price).c_str());
+            cfg.lines = { { I18N::Game::DoYouWantToBuyAnItem, false }, { payment, true } };
             cfg.onPrimary = []
             {
                 ITEM* pItem = g_pPurchaseShopInventory->FindItem(g_pPurchaseShopInventory->GetSourceIndex());
@@ -222,7 +228,9 @@ bool mu::ui::window::CPurchaseShopInventory::PurchaseShopInventoryProcess()
                     int sourceIndex = g_pPurchaseShopInventory->GetItemInventoryIndex(pItem);
                     if (sourceIndex >= 0)
                     {
-                        SocketClient->ToGameServer()->SendPlayerShopItemBuyRequest(pCha->Key, MU_C16(pCha->ID), sourceIndex);
+                        if (GameLogic::PersonalShop::SupportsCombinedPrices())
+                            GameLogic::PersonalShop::SendMailPurchase(pCha->Key, pCha->ID, sourceIndex);
+                        else SocketClient->ToGameServer()->SendPlayerShopItemBuyRequest(pCha->Key, MU_C16(pCha->ID), sourceIndex);
                     }
                 }
             };
@@ -307,6 +315,7 @@ void mu::ui::window::CPurchaseShopInventory::ClosingProcess()
     }
 
     m_ShopCharacterIndex = -1;
+    m_InspectedSlot = -1;
 
     g_pMyInventory->ChangeMyShopButtonStateOpen();
 }

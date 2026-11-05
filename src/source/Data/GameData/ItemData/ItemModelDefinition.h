@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ItemParticleEffect.h"
+#include "ItemMeshLayer.h"
+
 #include <array>
 #include <optional>
 #include <string>
@@ -43,6 +46,15 @@ struct ItemGroundDisplay
     double bodyHeight = 0.0;
 
     bool operator==(const ItemGroundDisplay&) const = default;
+};
+
+// Adjustment relative to an equipped item's normal attachment bone.
+struct ItemEquipmentDisplay
+{
+    std::array<double, 3> rotation{};
+    std::array<double, 3> offset{};
+    double scale = 1.0;
+    bool operator==(const ItemEquipmentDisplay&) const = default;
 };
 
 // The meshes of the model a glow is drawn on. Without meshes and without a
@@ -103,13 +115,46 @@ struct ItemGlowColors
     std::array<float, 3> ancientColor{};
 };
 
+struct ItemMeshAnimation
+{
+    int mesh = 0;
+    int columns = 4;
+    int rows = 4;
+    int frames = 16;
+    bool operator==(const ItemMeshAnimation&) const = default;
+};
+
 // How the surface of an item model reacts to light under Enhanced lighting.
 struct ItemMaterial
 {
     // Strength of the view-dependent highlight, 0 (none, the default) to 1.
     double specular = 0.0;
+    // Light-on-black meshes replace their opaque pass with additive blending.
+    std::vector<int> additiveMeshes;
+    std::vector<ItemMeshAnimation> animations;
+    std::vector<ItemMeshLayer> layers;
 
     bool operator==(const ItemMaterial&) const = default;
+};
+
+// A static light sprite attached to a model bone.
+struct ItemStaticEffect
+{
+    int bone = 0;
+    int texture = 32002;
+    std::array<double, 3> color{};
+    double size = 1.0;
+    std::array<double, 3> offset{};
+    double rotation = 0.0;
+    bool operator==(const ItemStaticEffect&) const = default;
+};
+
+struct ItemMeshEffect
+{
+    int mesh = 0;
+    int flags = 0;
+    std::array<double, 3> color{};
+    bool operator==(const ItemMeshEffect&) const = default;
 };
 
 // The model of one item: which .bmd file is opened for it, where its
@@ -134,6 +179,7 @@ struct ItemModelDefinition
     std::vector<int> noneBlendMeshes;
     ItemInventoryDisplay inventory;
     ItemGroundDisplay ground;
+    std::optional<ItemEquipmentDisplay> equipment;
     // A cape worn as cloth: putting it on or taking it off deletes the cloth
     // of the character. Which capes are drawn as cloth is decided in code.
     bool cloth = false;
@@ -146,6 +192,9 @@ struct ItemModelDefinition
     // bones, a pulsing glow mesh, its own drawing, ...): the name of an item
     // effect (Render/Items/ItemEffects). Empty: none.
     std::string itemEffect;
+    std::vector<ItemStaticEffect> staticEffects;
+    std::vector<ItemParticleEffect> particleEffects;
+    std::vector<ItemMeshEffect> meshEffects;
 
     bool Exists() const
     {

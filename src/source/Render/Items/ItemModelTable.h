@@ -20,11 +20,13 @@ public:
     explicit ItemModelTable(Take take) : m_take(take) {}
 
     // The value of the item a model slot is drawn like (GetItemTypeOfModel);
-    // T{} for models that are not items and for slots without a model.
+    // T{} for models that are not items, for slots without a model, and for
+    // items past the loaded model data (e.g. a skin the server knows first).
     T Find(int modelType)
     {
         const int itemType = GetItemTypeOfModel(modelType);
-        return itemType >= 0 ? Values()[itemType] : T{};
+        const std::vector<T>& values = Values();
+        return itemType >= 0 && itemType < static_cast<int>(values.size()) ? values[itemType] : T{};
     }
 
 private:

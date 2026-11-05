@@ -17,6 +17,7 @@ namespace Data::Items::DisplayJson
 {
 constexpr const char* InventoryKey = "inventory";
 constexpr const char* GroundKey = "ground";
+constexpr const char* EquipmentKey = "equipment";
 constexpr const char* ClothKey = "cloth";
 
 // Keys of the lists that are written on one line.

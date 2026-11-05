@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <span>
+#include <string>
 #include <vector>
 
 // The prices of items in personal shops. Zen always works; prices in items
@@ -26,6 +27,15 @@ constexpr bool IsAccountCoin(uint16_t priceItemType)
            priceItemType < FirstAccountCoinPriceItemType + AccountCoinCount;
 }
 
+inline constexpr uint16_t CombinedPriceMarker = 0xFFEF;
+inline constexpr size_t MaximumPriceParts = 8;
+struct PaymentPart
+{
+    uint16_t type = 0;
+    int amount = 0;
+    bool operator==(const PaymentPart&) const = default;
+};
+
 enum class PriceKind : uint8_t
 {
     Zen,
@@ -43,6 +53,7 @@ struct ItemPrice
     /// (group in the highest 4 bits, number in the others), the reserved
     /// value of the coin for coin prices, 0 for zen.
     uint16_t PriceItemType = 0;
+    std::vector<PaymentPart> Components;
 };
 
 /// The price fields of the extended protocol, which the shop item list
@@ -56,6 +67,8 @@ struct EncodedPrice
 
 ItemPrice DecodeExtendedPrice(uint32_t moneyPrice, uint16_t priceItemType, uint16_t requiredItemAmount);
 EncodedPrice EncodeExtendedPrice(const ItemPrice& price);
+bool SupportsCombinedPrices();
+std::wstring FormatPrice(const ItemPrice& price);
 
 /// Stores the price types which the server allows in addition to zen.
 void SetAllowedPriceTypes(std::span<const uint16_t> priceItemTypes);

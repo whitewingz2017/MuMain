@@ -1,0 +1,76 @@
+<rml>
+<head>
+    <title>Skin Shop</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="../../skin_shop_common.rcss"/>
+    <link type="text/rcss" href="skin_shop.rcss"/>
+    <link type="text/template" href="window_shell.rml"/>
+</head>
+<body template="window_shell" data-model="skin_shop">
+    <div class="shop-summary">
+        <span class="shop-balance">{{balance}}</span>
+        <button class="btn shop-control" data-class-disabled="pending" data-event-click="skin_refresh">Refresh</button>
+        <button class="btn shop-control" data-event-click="skin_close">Close</button>
+    </div>
+    <div id="shop_columns" class="shop-columns">
+        <div id="shop_categories" class="shop-categories">
+            <button class="btn shop-category" data-class-selected="category == 0" data-event-click="skin_category(0)">Sets</button>
+            <button class="btn shop-category" data-class-selected="category == 1" data-event-click="skin_category(1)">Wings</button>
+            <button class="btn shop-category" data-class-selected="category == 2" data-event-click="skin_category(2)">Weapons</button>
+            <button class="btn shop-category" data-class-selected="category == 3" data-event-click="skin_category(3)">Shields</button>
+            <button class="btn shop-category" data-class-selected="category == 4" data-event-click="skin_category(4)">Pets</button>
+            <button class="btn shop-category" data-class-selected="category == 5" data-event-click="skin_category(5)">Mounts</button>
+        </div>
+        <div id="shop_items" class="shop-items">
+            <div class="skin-dropdown weapon-filter" data-class-hidden="category != 2">
+                <button class="btn skin-dropdown-value" data-event-click="skin_dropdown(1)">{{weapon_label}} &#9662;</button>
+                <div class="skin-dropdown-list" data-class-hidden="open_dropdown != 1">
+                    <button class="btn skin-dropdown-option" data-for="family : weapon_types"
+                            data-event-click="skin_weapon_filter(family.index)">{{family.label}}</button>
+                </div>
+            </div>
+            <div id="skin_list" class="skin-list">
+                <button class="btn skin-card" data-for="item : items" data-class-selected="item.selected"
+                        data-event-click="skin_select(item.index)" data-attr-aria-label="item.label">
+                    <img class="skin-item-image" data-attr-id="'skin_item_' + it_index"/>
+                    <span class="skin-item-name">{{item.label}}</span>
+                    <span class="skin-item-price">{{item.price}}</span>
+                </button>
+            </div>
+            <div class="shop-pagination">
+                <button class="btn shop-control" data-class-disabled="!previous || pending" data-event-click="skin_page(-1)">Previous</button>
+                <span>{{page}}</span>
+                <button class="btn shop-control" data-class-disabled="!next || pending" data-event-click="skin_page(1)">Next</button>
+            </div>
+        </div>
+        <div class="shop-preview-column">
+        <div id="shop_preview" class="shop-preview">
+            <div class="skin-selected-name">{{selected_name}}</div>
+            <img id="skin_character" class="skin-character"/>
+            <div class="shop-turn">
+                <button class="btn shop-control" data-event-click="skin_turn(-1)">&#9664;</button>
+                <div class="shop-level">
+                    <button class="btn shop-control" data-event-click="skin_level(-1)" data-class-disabled="preview_level == 0">-</button>
+                    <span>Preview +{{preview_level}}</span>
+                    <button class="btn shop-control" data-event-click="skin_level(1)" data-class-disabled="preview_level == 15">+</button>
+                </div>
+                <button class="btn shop-control" data-event-click="skin_turn(1)">&#9654;</button>
+            </div>
+        </div>
+        <div id="skin_purchase" class="skin-purchase">
+            <div class="skin-note">{{note}}</div>
+            <div id="skin_bonuses" class="skin-dropdown skin-bonuses">
+                <button id="skin_bonus_select" class="btn skin-dropdown-value" data-class-disabled="bonuses.size == 0 || pending"
+                        data-event-click="skin_dropdown(2)">{{bonus_label}} &#9662;</button>
+                <div class="skin-dropdown-list bonus-options" data-class-hidden="open_dropdown != 2">
+                    <button class="btn skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
+                            data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</button>
+                </div>
+            </div>
+            <button id="skin_buy" class="btn skin-buy" data-class-disabled="!can_buy" data-event-click="skin_buy">Buy {{price}}</button>
+        </div>
+        </div>
+    </div>
+    <div class="shop-status">{{status}}</div>
+</body>
+</rml>

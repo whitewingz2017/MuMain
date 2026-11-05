@@ -92,8 +92,8 @@ void CLoginWin::Create()
         m_Password[0] = L'\0';
     }
 
-    // Tracks login.rcss's #panel width/height (329 x 245 original pixels) by the same ratio rather than a fixed
-    // 329x245, so UpdateMouseEvent()'s hit-test rect (m_Size) doesn't go stale against RmlUi's
+    // Tracks login.rcss's #panel width/height (329 x 275 original pixels) by the same ratio rather than a fixed
+    // 329x275, so UpdateMouseEvent()'s hit-test rect (m_Size) doesn't go stale against RmlUi's
     // auto-fitting visuals.
     RefreshLayout();
     m_ptPos.x = m_ptPos.y = 0;
@@ -128,13 +128,56 @@ void CLoginWin::Create()
     // Builds once; Create() re-runs on every resolution change and only repositions it afterward
     // (see SetPosition()).
     m_RmlView.Ensure();
+    RefreshSavedAccounts();
 
     CSceneUICoordinator::Instance().GetNewStyleMng().AddUIObj(mu::ui::window::INTERFACE_LOGIN, this);
     Show(false);
 }
 
+void CLoginWin::RefreshSavedAccounts()
+{
+    auto& model = m_RmlView.GetModel();
+    model.savedAccounts.clear();
+    for (const auto& name : GameConfig::GetInstance().GetSavedAccountNames())
+        model.savedAccounts.push_back(StringUtils::WideToNarrow(name.c_str()));
+    model.savedAccountLabel = model.savedAccounts.empty() ? "No saved accounts" : "Choose account";
+    for (const auto& name : model.savedAccounts)
+        if (name == model.username) model.savedAccountLabel = name;
+    model.accountListOpen = false;
+    m_RmlView.MarkDirty("saved_accounts");
+    m_RmlView.MarkDirty("saved_account_label");
+    m_RmlView.MarkDirty("account_list_open");
+}
+
+void CLoginWin::SelectSavedAccount(int index)
+{
+    if (index < 0 || UI::Login::RememberPasswordChoiceState() == UI::Login::RememberPasswordChoice::Pending) return;
+    std::wstring user, password;
+    auto& config = GameConfig::GetInstance();
+    if (!config.SelectSavedAccount(static_cast<std::size_t>(index), user, password)) return;
+    auto& model = m_RmlView.GetModel();
+    model.username = StringUtils::WideToNarrow(user.c_str());
+    model.password = StringUtils::WideToNarrow(password.c_str());
+    m_RememberMe = 1;
+    m_bRememberMeChecked = true;
+    m_bSavePasswordChecked = !password.empty();
+    wcsncpy_s(m_prevUsername, _countof(m_prevUsername), user.c_str(), _TRUNCATE);
+    wcsncpy_s(m_prevPassword, _countof(m_prevPassword), password.c_str(), _TRUNCATE);
+    m_RmlView.MarkDirty("username");
+    m_RmlView.MarkDirty("password");
+    RefreshSavedAccounts();
+}
+
 void CLoginWin::BindRmlModel(Rml::DataModelConstructor& c, LoginRmlModel& model)
 {
+    c.RegisterArray<std::vector<Rml::String>>();
+    c.Bind("saved_accounts", &model.savedAccounts);
+    c.Bind("saved_account_label", &model.savedAccountLabel);
+    c.Bind("account_list_open", &model.accountListOpen);
+    c.BindEventCallback("login_toggle_accounts", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&)
+        { if (m_RmlView.GetModel().savedAccounts.empty()) return; m_RmlView.GetModel().accountListOpen = !m_RmlView.GetModel().accountListOpen; m_RmlView.MarkDirty("account_list_open"); });
+    c.BindEventCallback("login_choose_account", [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList& args)
+        { if (args.size() == 1) SelectSavedAccount(args[0].Get<int>(-1)); });
     c.Bind("remember_me_checked", &model.rememberMeChecked);
     c.Bind("save_password_checked", &model.savePasswordChecked);
     c.Bind("server_name", &model.serverName);
@@ -165,14 +208,14 @@ void CLoginWin::OnRmlReloaded()
     const SIZE previousSize = m_Size;
     const float uiScale = LoginUIScaleRatio();
     m_Size.cx = ScaledOffset(329, uiScale);
-    m_Size.cy = ScaledOffset(245, uiScale);
+    m_Size.cy = ScaledOffset(275, uiScale);
     SetPosition(m_ptPos.x + (previousSize.cx - m_Size.cx) / 2, m_ptPos.y + (previousSize.cy - m_Size.cy) * 2 / 3);
 }
 
 void CLoginWin::RefreshLayout()
 {
     constexpr int panelWidth = 329;
-    constexpr int panelHeight = 245;
+    constexpr int panelHeight = 275;
     const float uiScale = LoginUIScaleRatio();
     m_Size.cx = ScaledOffset(panelWidth, uiScale);
     m_Size.cy = ScaledOffset(panelHeight, uiScale);
@@ -206,7 +249,7 @@ void CLoginWin::Show(bool bShow)
     // text input now that the fields are RmlUi's -- no separate widget state to drive (#447).
     if (m_RmlView.Document())
     {
-        if (bShow) { SyncRmlModel(); m_RmlView.Document()->Show(); }
+        if (bShow) { RefreshSavedAccounts(); SyncRmlModel(); m_RmlView.Document()->Show(); }
         else       m_RmlView.Document()->Hide();
     }
 }
@@ -271,18 +314,20 @@ void CLoginWin::SubmitCancel()
 
 void CLoginWin::ApplyRememberMeChange()
 {
-	GameConfig& config = GameConfig::GetInstance();
-	m_RememberMe = m_bRememberMeChecked;
-	config.SetRememberMe(m_RememberMe != 0);
-
-	// Switching off "remember me" revokes everything: drop the stored
-	// credentials from config.ini now so they can't linger if the game is
-	// closed before the next login.
-	if (!m_RememberMe)
-	{
-		m_bSavePasswordChecked = false;
-		config.ClearCredentials();
-	}
+    GameConfig& config = GameConfig::GetInstance();
+    if (m_bRememberMeChecked)
+    {
+        m_bRememberMeChecked = false;
+        m_PendingAccountConsent = true;
+        UI::Login::OpenRememberPasswordPrompt(true);
+        return;
+    }
+    m_RememberMe = 0;
+    config.SetRememberMe(false);
+    m_bSavePasswordChecked = false;
+    config.ForgetSavedAccount(StringUtils::NarrowToWide(m_RmlView.GetModel().username));
+    config.ClearCredentials();
+    RefreshSavedAccounts();
 }
 
 void CLoginWin::ApplySavePasswordChange()
@@ -293,6 +338,7 @@ void CLoginWin::ApplySavePasswordChange()
 	{
 		// Player unticked it: drop the stored password from config.ini now.
 		config.SetSavePassword(false);
+        config.ForgetSavedAccount(StringUtils::NarrowToWide(m_RmlView.GetModel().username), true);
 		config.SetEncryptedPassword(L"");
 		config.Save();
 		return;
@@ -310,6 +356,7 @@ void CLoginWin::ApplySavePasswordChange()
 		m_bRememberMeChecked = true;
 		config.SetRememberMe(true);
 	}
+    m_PendingAccountConsent = false;
 	UI::Login::OpenRememberPasswordPrompt();
 }
 
@@ -347,15 +394,20 @@ void CLoginWin::ApplyRememberPasswordChoice()
     UI::Login::ClearRememberPasswordChoice();
 
     const bool bAccepted = (choice == UI::Login::RememberPasswordChoice::Ok);
+    if (m_PendingAccountConsent)
+    {
+        m_PendingAccountConsent = false;
+        m_RememberMe = m_bRememberMeChecked = bAccepted;
+        GameConfig::GetInstance().SetRememberMe(bAccepted);
+        return;
+    }
     GameConfig::GetInstance().SetSavePassword(bAccepted);
     m_bSavePasswordChecked = bAccepted;
 }
 
 void CLoginWin::RevokeSavedCredentialsIfEdited()
 {
-    // Editing the account or password drops any stored credentials and revokes
-    // the save-password consent, so an out-of-date password never lingers in
-    // config.ini for the next person on this machine.
+    // Editing revokes consent for this draft, while explicitly saved accounts remain selectable.
     const auto& model = m_RmlView.GetModel();
     const std::wstring curUser = StringUtils::NarrowToWide(model.username);
     const std::wstring curPass = StringUtils::NarrowToWide(model.password);
@@ -447,8 +499,13 @@ void CLoginWin::FocusPassword(bool selectAll)
     FocusCredentialField("input_password", selectAll);
 }
 
+void CLoginWin::AdjustForKeyboard()
+{
+}
+
 void CLoginWin::SyncRmlModel()
 {
+    AdjustForKeyboard();
     if (!m_RmlView.Document()) return;
 
     const bool rememberChecked = m_bRememberMeChecked;
@@ -486,7 +543,7 @@ void CLoginWin::SyncRmlModel()
     };
     syncLabel(&LoginRmlModel::accountLabel, "account_label", I18N::Game::Account);
     syncLabel(&LoginRmlModel::passwordLabel, "password_label", I18N::Game::Password);
-    syncLabel(&LoginRmlModel::rememberMeLabel, "remember_me_label", I18N::Game::LoginRememberUsername);
+    syncLabel(&LoginRmlModel::rememberMeLabel, "remember_me_label", L"Save Account");
     syncLabel(&LoginRmlModel::savePasswordLabel, "save_password_label", I18N::Game::LoginRememberPassword);
     syncLabel(&LoginRmlModel::trustWarning, "trust_warning", I18N::Game::LoginTrustWarning);
     syncLabel(&LoginRmlModel::okLabel, "ok_label", I18N::Game::OK);

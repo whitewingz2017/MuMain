@@ -46,6 +46,7 @@ namespace CfgKeys
     // Rml::Context::SetDensityIndependentPixelRatio(). Only RCSS authored in `dp` units responds
     // to this; existing `px`-authored windows are unaffected until retrofitted.
     inline constexpr wchar_t CfgKeyUIScalePercent[] = L"UIScalePercent";
+    inline constexpr wchar_t CfgKeyChatTextScalePercent[] = L"ChatTextScalePercent";
     // Animates characters on worker threads when many are in view. Off unless set here or
     // started with --enable-taskpool; manual config.ini edit only.
     inline constexpr wchar_t CfgKeyEnableAnimationTaskPool[] = L"EnableAnimationTaskPool";
@@ -89,6 +90,7 @@ namespace CfgKeys
     // Active texture pack, a folder in Data/TexturePacks; empty = the original textures. Read once
     // at startup -- see Render::Textures::TexturePack.
     inline constexpr wchar_t CfgKeyTexturePack[] = L"TexturePack";
+    inline constexpr wchar_t CfgKeyLowWorldTextures[] = L"LowWorldTextures";
 }
 
 namespace CfgDefaults
@@ -128,6 +130,10 @@ namespace CfgDefaults
     // (UI::Options::UIScalePercentChoices()); a hand-edited config.ini may hold anything in
     // [CfgMinUIScalePercent, CfgMaxUIScalePercent].
     inline constexpr int CfgDefaultUIScalePercent = 100;
+    inline constexpr int CfgDefaultChatTextScalePercent = 100;
+    inline constexpr int CfgMinChatTextScalePercent = 80;
+    inline constexpr int CfgMaxChatTextScalePercent = 180;
+    inline constexpr int CfgChatTextScaleStep = 10;
 
     // Bounds GameConfig clamps to, on load and on set. Below 75% text gets too small to read;
     // above 150% a docked panel no longer fits a small window.

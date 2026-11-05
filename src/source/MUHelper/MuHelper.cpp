@@ -52,6 +52,14 @@ namespace MUHelper
 
     CMuHelper g_MuHelper;
 
+    // Self-defense is a paid TwinMU service: usable only while the server's paid expiry lies ahead.
+    static bool HasPaidSelfDefense(const ConfigData& config)
+    {
+        const auto now = std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        return config.pvpPaidUntilUnix > static_cast<std::uint64_t>(now);
+    }
+
     void CALLBACK CMuHelper::TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
     {
         g_MuHelper.Tick(std::chrono::steady_clock::now());
@@ -60,9 +68,11 @@ namespace MUHelper
     void CMuHelper::Save(const ConfigData& config)
     {
         Load(config);
+        // A requested purchase only becomes usable after the server returns its paid expiry.
+        m_config.bUseSelfDefense = config.bUseSelfDefense && HasPaidSelfDefense(config);
 
         PRECEIVE_MUHELPER_DATA netData;
-        ConfigDataSerDe::Serialize(m_config, netData);
+        ConfigDataSerDe::Serialize(config, netData);
 
         SocketClient->ToGameServer()->SendMuHelperSaveDataRequest(reinterpret_cast<BYTE*>(&netData), sizeof(netData));
     }
@@ -282,7 +292,8 @@ namespace MUHelper
         _targetsLock.unlock();
 
         // Only an attack on the hero may redirect combat; a sighting must not.
-        if (bIsAttacking && m_config.bUseSelfDefense && IsMonster(pTarget) && !IsTargetCoolingDown(iTargetId))
+        if (bIsAttacking && m_config.bUseSelfDefense && HasPaidSelfDefense(m_config) && IsMonster(pTarget) &&
+            !IsTargetCoolingDown(iTargetId))
         {
             m_iCurrentTarget = iTargetId;
         }

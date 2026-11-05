@@ -1,7 +1,18 @@
-﻿// w_BasePet.cpp: implementation of the BasePet class.
+// w_BasePet.cpp: implementation of the BasePet class.
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include <SDL3/SDL.h>
+#include <cmath>
+#include "GameLogic/Pets/Muun.h"
+#include "GameLogic/Pets/MuunMounts.h"
+#include "Engine/AI/GOBoid.h"
+#include "GameLogic/Pets/CosmeticPetMovement.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
+#include "GameLogic/Cosmetics/CosmeticAnimationRules.h"
+#include "Engine/Object/ZzzCharacter.h"
+#include "Render/Items/ItemEffects.h"
+#include "Render/Items/ScopedItemEffects.h"
 #include "w_BasePet.h"
 #include "Render/Terrain/ZzzLodTerrain.h"
 #include "Engine/Object/ZzzObject.h"
@@ -38,6 +49,7 @@ void PetObject::SetScale(float scale)
     if (NULL == m_obj)
         return;
 
+    m_baseScale = scale;
     m_obj->Scale = scale;
 }
 
@@ -125,7 +137,7 @@ void PetObject::Release()
 
 void PetObject::Update(bool bForceRender)
 {
-    if (!m_obj->Live || NULL == m_obj->Owner || NULL == m_obj)
+    if (!m_obj || !m_obj->Live || !m_obj->Owner)
         return;
 
     if (SceneFlag == MAIN_SCENE)
@@ -150,6 +162,7 @@ void PetObject::Update(bool bForceRender)
     {
         const mu::ScopedBloomExclusion classicPets;
         UpdateDrawnObjectHold(m_obj);
+        AnimateCosmetic();
         PlaceObjectModel(m_obj, &Models[m_obj->Type]);
         CreateEffect(tick, bForceRender);
     }
@@ -168,6 +181,18 @@ void PetObject::Render(bool bForceRender) const
         return;
     const int State = g_isCharacterBuff(m_obj->Owner, eBuff_Cloaking) ? 10 : 0;
     RenderObject(m_obj, FALSE, 0, State);
+    if (State == 0)
+        RenderCosmeticEffects(bForceRender);
+}
+
+void PetObject::RenderCosmeticEffects(bool preview) const
+{
+    if (!GameLogic::Cosmetics::IsCosmeticPet(m_itemType) && !GameLogic::Pets::IsMountItem(m_itemType)) return;
+    const auto* skin = GameLogic::Cosmetics::FindFinalMuSkin(m_itemType);
+    const bool defaultGlow = skin && (skin->behavior == GameLogic::Cosmetics::FinalMuFollowerBehavior || m_pOwner->SafeZone);
+    Render::Items::ScopedItemEffects scope(Render::Items::ScopedItemEffects::Enabled(),
+        preview || Render::Items::ScopedItemEffects::LocalParticles());
+    Render::Items::ItemEffects::RenderPetEffects(&Models[m_obj->Type], m_obj, m_obj->Type, m_obj->Alpha, defaultGlow);
 }
 
 bool PetObject::IsSameOwner(OBJECT* Owner)
@@ -201,6 +226,11 @@ void PetObject::SetCommand(int targetKey, ActionType cmdType)
 
 bool PetObject::UpdateMove(double tick, bool bForceRender)
 {
+    if (GameLogic::Pets::Muun::IsType(m_itemType))
+    {
+        UpdateMuunMovement(tick, bForceRender);
+        return true;
+    }
     if (m_oldMoveType != m_moveType)
     {
         m_oldMoveType = m_moveType;
@@ -231,6 +261,102 @@ bool PetObject::UpdateMove(double tick, bool bForceRender)
     return TRUE;
 }
 
+void PetObject::UpdateRidingMount(bool preview)
+{
+    const int modelType = m_obj->Type;
+    m_obj->Type = m_itemType == GameLogic::Pets::DarkHorseItem ? MODEL_DARK_HORSE : MODEL_FENRIR_RED;
+    m_obj->AnimationFrame = m_mountFrame;
+    m_obj->PriorAnimationFrame = m_mountPriorFrame;
+    m_obj->CurrentAction = m_mountAction;
+    m_obj->PriorAction = m_mountPriorAction;
+    MoveMount(m_obj, preview);
+    m_mountFrame = m_obj->AnimationFrame;
+    m_mountPriorFrame = m_obj->PriorAnimationFrame;
+    m_mountAction = m_obj->CurrentAction;
+    m_mountPriorAction = m_obj->PriorAction;
+    const auto& source = Models[m_obj->Type];
+    m_obj->Type = modelType;
+    m_obj->Scale = m_baseScale;
+    const auto& target = Models[modelType];
+    if (source.NumActions <= m_mountAction || target.NumActions <= 0) return;
+    const int action = GameLogic::Cosmetics::MountAnimationAction(m_mountAction, target.NumActions);
+    const auto& sourceAction = source.Actions[m_mountAction];
+    const auto& targetAction = target.Actions[action];
+    const auto blend = GameLogic::Cosmetics::MountAnimationBlend(m_mountFrame,
+        sourceAction.NumAnimationKeys - (sourceAction.LockPositions ? 1 : 0),
+        targetAction.NumAnimationKeys - (targetAction.LockPositions ? 1 : 0));
+    m_obj->CurrentAction = static_cast<unsigned short>(action);
+    m_obj->PriorAction = m_obj->CurrentAction;
+    m_obj->AnimationFrame = blend.current;
+    m_obj->PriorAnimationFrame = blend.prior;
+}
+
+void PetObject::UpdateMuunMovement(double tick, bool preview)
+{
+    m_obj->Scale = GameLogic::Pets::IsMountItem(m_itemType)
+        ? GameLogic::Pets::MountViewScale(m_baseScale, m_pOwner->SafeZone) : m_baseScale;
+    m_muunFollow = !preview;
+    if (GameLogic::Pets::MuunMounts::IsRiding(&m_pOwner->Object, m_itemType))
+    {
+        UpdateRidingMount(preview);
+        m_idleSince = tick;
+        m_animatedAction = -1;
+        return;
+    }
+    const bool floating = GameLogic::Cosmetics::IsFloatingPet(m_itemType);
+    const auto* skin = GameLogic::Cosmetics::FindFinalMuSkin(m_itemType);
+    if (m_muunFollow)
+    {
+        const int target = SDL_GetTicks() < m_muunAttackUntil ? m_muunTarget : -1;
+        GameLogic::Pets::MoveMuunFollower(m_obj, m_idleSince, tick, floating, target);
+        return;
+    }
+    GameLogic::Pets::MoveGroundCosmetic(m_obj, preview, !floating);
+    const int actionCount = Models[m_obj->Type].NumActions;
+    if (skin && skin->behavior == GameLogic::Cosmetics::FinalMuFollowerBehavior)
+    {
+        const bool moving = m_obj->CurrentAction != 0;
+        if (moving) m_idleSince = tick;
+        m_obj->CurrentAction = static_cast<unsigned short>(
+            GameLogic::Cosmetics::FinalMuFollowerAction(moving, tick - m_idleSince, actionCount));
+        return;
+    }
+}
+
+void PetObject::AnimateCosmetic()
+{
+    if ((!GameLogic::Cosmetics::IsCosmeticPet(m_itemType) && !GameLogic::Pets::Muun::IsType(m_itemType)) || !m_timer) return;
+    if (GameLogic::Pets::MuunMounts::IsRiding(&m_pOwner->Object, m_itemType)) return;
+    const auto& model = Models[m_obj->Type];
+    if (model.NumActions <= 0) return;
+    const int actionIndex = GameLogic::Cosmetics::IsFloatingPet(m_itemType)
+        && !GameLogic::Cosmetics::FindFinalMuSkin(m_itemType) ? 0
+        : std::min<int>(m_obj->CurrentAction, model.NumActions - 1);
+    const auto& action = model.Actions[actionIndex];
+    constexpr float CosmeticSpeed = 0.3f;
+    const float speed = m_muunFollow ? m_obj->Velocity : CosmeticSpeed;
+    const double tick = m_timer->GetTimeElapsed();
+    const int cycleKeys = action.NumAnimationKeys - (action.LockPositions ? 1 : 0);
+    if (m_animatedAction != actionIndex)
+    {
+        m_animatedAction = actionIndex;
+        m_animationPhase = 0.f;
+    }
+    else if (cycleKeys > 1)
+    {
+        // Accumulated, so a speed change does not jump the animation.
+        constexpr double NormalFramesPerSecond = 25.0, MillisecondsPerSecond = 1000.0;
+        const double advance = (tick - m_animationTick) * NormalFramesPerSecond * speed / MillisecondsPerSecond;
+        m_animationPhase = static_cast<float>(std::fmod(m_animationPhase + advance, static_cast<double>(cycleKeys)));
+    }
+    m_animationTick = tick;
+    const auto blend = GameLogic::Cosmetics::LoopAnimationBlend(m_animationPhase, cycleKeys);
+    m_obj->CurrentAction = static_cast<unsigned short>(actionIndex);
+    m_obj->PriorAction = m_obj->CurrentAction;
+    m_obj->AnimationFrame = blend.current;
+    m_obj->PriorAnimationFrame = blend.prior;
+}
+
 bool PetObject::UpdateModel(double tick, bool bForceRender)
 {
     auto iter = m_actionMap.find(m_moveType);
@@ -244,6 +370,7 @@ bool PetObject::UpdateModel(double tick, bool bForceRender)
         petAction.lock()->Model(m_obj, m_pOwner, m_targetKey, tick, bForceRender);
     }
 
+    if (GameLogic::Cosmetics::IsCosmeticPet(m_itemType) || GameLogic::Pets::Muun::IsType(m_itemType)) return TRUE;
     BMD* b = &Models[m_obj->Type];
     b->CurrentAction = m_obj->CurrentAction;
     b->PlayAnimation(&m_obj->AnimationFrame, &m_obj->PriorAnimationFrame, &m_obj->PriorAction, m_obj->Velocity,
@@ -282,4 +409,10 @@ bool PetObject::CreateEffect(double tick, bool bForceRender)
     }
 
     return TRUE;
+}
+
+void PetObject::ShowMuunAttack(int targetIndex)
+{
+    if (!GameLogic::Pets::Muun::IsType(m_itemType) || targetIndex < 0 || targetIndex >= MAX_CHARACTERS_CLIENT) return;
+    m_muunTarget = targetIndex; m_muunAttackUntil = SDL_GetTicks() + 600;
 }

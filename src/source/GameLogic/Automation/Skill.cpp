@@ -4,6 +4,8 @@
 #include "GameLogic/Automation/Attack.h"
 #include "GameLogic/Automation/Movement.h"
 #include "GameLogic/Combat/SkillExecution.h"
+#include "GameLogic/Combat/ScopedGroundAim.h"
+#include <cmath>
 #include "GameLogic/Skills/SkillManager.h"
 #include "Engine/AI/ZzzAI.h"
 #include "Engine/Object/ZzzCharacter.h"
@@ -78,6 +80,7 @@ static SkillResult AimAtSelf(int targetKey, bool allowPlayers)
 
     TargetX = Hero->PositionX;
     TargetY = Hero->PositionY;
+    VectorCopy(Hero->Object.Position, Hero->TargetPosition);
     // The aim only, as in the untargeted branch: the player's selection is
     // not this function's to clear.
     g_MovementSkill.m_iTarget = -1;
@@ -153,6 +156,18 @@ static SkillResult AimAtTarget(int targetKey, bool allowPlayers, int huntingDist
     return SkillResult::NotReady;
 }
 
+static SkillResult ExecuteAimedSkill(ActionSkillType skill, float distance, bool selfAim)
+{
+    const int previousSelection = SelectedCharacter;
+    if (selfAim) SelectedCharacter = -1;
+    // Class-specific checks must keep a self buff on the caster, not the cursor or selected monster.
+    GameLogic::Combat::ScopedGroundAim aim(selfAim ? Hero : nullptr);
+    const int executed = GameLogic::Combat::ExecuteSkill(Hero, skill, distance);
+    if (selfAim) SelectedCharacter = previousSelection;
+    if (executed == SkillExecutionRefused) return SkillResult::Refused;
+    return executed == SkillExecutionCast ? SkillResult::Cast : SkillResult::NotReady;
+}
+
 SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey, bool allowPlayers, int huntingDistance)
 {
     // Let the current action finish before the timer can replace its path or swing.
@@ -173,6 +188,7 @@ SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey,
     {
         TargetX = Hero->PositionX;
         TargetY = Hero->PositionY;
+        VectorCopy(Hero->Object.Position, Hero->TargetPosition);
         // The aim, and only the aim: without this an untargeted skill would
         // be cast at whatever the previous targeted one aimed at.
         // `SelectedCharacter` is the player's own selection and the helper
@@ -207,15 +223,11 @@ SkillResult CastSkill(ActionSkillType skill, bool targetRequired, int targetKey,
     g_MovementSkill.m_iSkill = skill;
     g_MovementSkill.m_bMagic = true;
 
-    const int executed = GameLogic::Combat::ExecuteSkill(Hero, skill, skillDistance);
+    const SkillResult result =
+        ExecuteAimedSkill(skill, skillDistance, !targetRequired || IsSelfPositionSkill(skill));
     // With auto-attack on, ExecuteSkill arms the per-frame repeat (Attacking = 2), which would recast
     // this skill before the caller picks the next one; -1 is the state with auto-attack off.
     Attacking = -1;
-    if (executed == SkillExecutionRefused)
-    {
-        return SkillResult::Refused;
-    }
-
-    return executed == SkillExecutionCast ? SkillResult::Cast : SkillResult::NotReady;
+    return result;
 }
 } // namespace GameLogic::Automation

@@ -1,13 +1,75 @@
-/* Modern theme for TitleSceneUI's splash-screen loading bar -- flat/gradient fill via the internal
-   `fill` element <progress> generates; same positioning as legacy. */
-
-.gauge-fill {
-	position: absolute;
-	/* left/top/width/height pushed from C++. */
+/* KMUA2 title art is shared by both themes; viewport sizing covers any aspect ratio. */
+@spritesheet title-left-sheet { src: "../../../KMUA2_Back01.jpg"; title-left: 0px 0px 1024px 1024px; }
+@spritesheet title-right-sheet { src: "../../../KMUA2_Back02.jpg"; title-right: 0px 0px 1024px 1024px; }
+@spritesheet title-bottom-sheet { src: "../../../KMUA2_Loading.tga"; title-bottom: 0px 0px 1024px 119px; }
+@spritesheet title-bar-sheet { src: "../../../KMUA2_Bar.jpg"; title-bar: 0px 0px 750px 4px; }
+@spritesheet title-percent-sheet { src: "../../../KMUA2_Porcento.tga"; title-percent: 0px 0px 19px 14px; }
+@spritesheet title-digits-sheet {
+    src: "../../../newui_number1.tga";
+    title-digit-0: 0px 0px 12px 14px;
+    title-digit-1: 12px 0px 12px 14px;
+    title-digit-2: 24px 0px 12px 14px;
+    title-digit-3: 36px 0px 12px 14px;
+    title-digit-4: 48px 0px 12px 14px;
+    title-digit-5: 60px 0px 12px 14px;
+    title-digit-6: 72px 0px 12px 14px;
+    title-digit-7: 84px 0px 12px 14px;
+    title-digit-8: 96px 0px 12px 14px;
+    title-digit-9: 108px 0px 12px 14px;
 }
-/* Reuses main_frame.rcss's modern-theme AG-gauge amber gradient (literal hex, matching that
-   file's convention for gauge fills). */
-.gauge-fill fill {
-	background-color: token(resource-ag);
-	decorator: linear-gradient(to bottom, #d4a94f, token(resource-ag) 45%, #5c4118);
+@spritesheet title-head-sheet {
+    src: "../../../KMUA2_BarFrame.tga";
+    title-head-0: 0px 0px 128px 128px;
+    title-head-1: 128px 0px 128px 128px;
+    title-head-2: 256px 0px 128px 128px;
+    title-head-3: 384px 0px 128px 128px;
+    title-head-4: 0px 128px 128px 128px;
+    title-head-5: 128px 128px 128px 128px;
+    title-head-6: 256px 128px 128px 128px;
+    title-head-7: 384px 128px 128px 128px;
+    title-head-8: 0px 256px 128px 128px;
+    title-head-9: 128px 256px 128px 128px;
+    title-head-10: 256px 256px 128px 128px;
+    title-head-11: 384px 256px 128px 128px;
+    title-head-12: 0px 384px 128px 128px;
+    title-head-13: 128px 384px 128px 128px;
+    title-head-14: 256px 384px 128px 128px;
 }
+body { width: 100%; height: 100%; overflow: hidden; background-color: #08090c; pointer-events: none; }
+#loading_background { position: absolute; left: 50%; top: 50%; width: max(100vw, 200vh); height: max(100vh, 50vw); transform: translate(-50%, -50%); }
+#background_left, #background_right { position: absolute; top: 0; width: 50%; height: 100%; }
+#background_left { left: 0; decorator: image(title-left); }
+#background_right { left: 50%; decorator: image(title-right); }
+#loading_bottom { position: absolute; left: 0; bottom: 0; width: 100%; height: 15.42vh; decorator: image(title-bottom); }
+/* Rail interior: rows 46-53 of the 119px panel, between its arrow caps. */
+#loading_track { position: absolute; left: 4.3%; top: 38.655%; width: 91.4%; height: 6.723%; }
+#gauge_fill { position: absolute; left: 0; top: 0; width: 100%; height: 100%; fill-image: title-bar; }
+#gauge_head { position: absolute; left: 0; top: 50%; width: 16.875vh; height: 16.875vh; transform: translate(-50%, -56.25%); }
+#loading_percent { position: absolute; right: 5vw; bottom: 2.5vh; height: 2.92vh; display: flex; align-items: center; }
+.digit { display: block; width: 1.75vh; height: 2.92vh; margin-right: -0.3vh; }
+.percent-sign { display: block; width: 2.5vh; height: 2.92vh; margin-left: 0.5vh; decorator: image(title-percent); }
+.digit-0 { decorator: image(title-digit-0); }
+.digit-1 { decorator: image(title-digit-1); }
+.digit-2 { decorator: image(title-digit-2); }
+.digit-3 { decorator: image(title-digit-3); }
+.digit-4 { decorator: image(title-digit-4); }
+.digit-5 { decorator: image(title-digit-5); }
+.digit-6 { decorator: image(title-digit-6); }
+.digit-7 { decorator: image(title-digit-7); }
+.digit-8 { decorator: image(title-digit-8); }
+.digit-9 { decorator: image(title-digit-9); }
+#gauge_head.head-frame-0 { decorator: image(title-head-0); }
+#gauge_head.head-frame-1 { decorator: image(title-head-1); }
+#gauge_head.head-frame-2 { decorator: image(title-head-2); }
+#gauge_head.head-frame-3 { decorator: image(title-head-3); }
+#gauge_head.head-frame-4 { decorator: image(title-head-4); }
+#gauge_head.head-frame-5 { decorator: image(title-head-5); }
+#gauge_head.head-frame-6 { decorator: image(title-head-6); }
+#gauge_head.head-frame-7 { decorator: image(title-head-7); }
+#gauge_head.head-frame-8 { decorator: image(title-head-8); }
+#gauge_head.head-frame-9 { decorator: image(title-head-9); }
+#gauge_head.head-frame-10 { decorator: image(title-head-10); }
+#gauge_head.head-frame-11 { decorator: image(title-head-11); }
+#gauge_head.head-frame-12 { decorator: image(title-head-12); }
+#gauge_head.head-frame-13 { decorator: image(title-head-13); }
+#gauge_head.head-frame-14 { decorator: image(title-head-14); }

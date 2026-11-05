@@ -14,6 +14,9 @@ namespace UI::RmlBridge
 // The panels that stand over the HUD and its logs (the command windows).
 inline constexpr float ForegroundPanelLayerDepth = 10.65f;
 
+// The modal skin shop covers inventory and HUD while leaving tooltips and confirmations above it.
+inline constexpr float SkinShopLayerDepth = 10.68f;
+
 // The scene whose windows a document belongs to. The original drew CNewUIManager's windows only in
 // the main scene, a document renders in every scene: outside the main scene the main-scene
 // documents are suspended (RmlTheme.h, SuspendMainSceneDocumentsOutsideMainScene()). The login,

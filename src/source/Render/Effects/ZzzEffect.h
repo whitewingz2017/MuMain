@@ -8,6 +8,8 @@ struct SpriteDraw;
 class EffectDrawer;
 } // namespace Render::EffectDrawing
 
+#include <functional>
+
 extern OBJECT Effects[];
 extern OBJECT Sprites[];
 extern JOINT Joints[];
@@ -40,6 +42,9 @@ void ClearSprites();
 void RenderSprites(BYTE byRenderOneMore = 0);
 // The draw a live sprite asks for: its quad, its blend and whether bloom leaves it alone.
 Render::EffectDrawing::SpriteDraw DescribeSprite(const OBJECT& sprite, bool bloomExcluded);
+// Draw only sprites produced by this preview, under its camera, without consuming world sprites.
+void RenderWithSpriteCamera(const std::function<void()>& draw);
+void RenderWithSprites(const std::function<void()>& draw);
 
 void AnimationFlag();
 

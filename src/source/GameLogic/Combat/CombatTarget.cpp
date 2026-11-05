@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameLogic/Combat/CombatTarget.h"
+#include "GameLogic/Combat/ScopedGroundAim.h"
 
 // Includes mirror ZzzInterface.cpp, the unit this was extracted from.
 #include "Core/Platform/Imm.h"
@@ -52,6 +53,7 @@ namespace GameLogic::Combat
 {
 bool CheckTarget(CHARACTER* c)
 {
+    if (HasGroundAim(c)) return true;
     if (SelectedCharacter >= 0 && SelectedCharacter < MAX_CHARACTERS_CLIENT)
     {
         TargetX = (int)(CharactersClient[SelectedCharacter].Object.Position[0] / TERRAIN_SCALE);

@@ -8,7 +8,7 @@
         "en": "Light Spear",
         "de": "Leichter Speer",
         "es": "Jabalina de Luz",
-        "pt": "Lança de luz"
+        "pt": "Lan\u00e7a de luz"
       },
       "width": 2,
       "height": 4,
@@ -39,7 +39,7 @@
         "en": "Spear",
         "de": "Speer",
         "es": "Jabalina",
-        "pt": "Lança"
+        "pt": "Lan\u00e7a"
       },
       "width": 2,
       "height": 4,
@@ -68,8 +68,8 @@
       "name": {
         "en": "Dragon Lance",
         "de": "Drachenlanze",
-        "es": "Lanza Dragón",
-        "pt": "Lança do dragão"
+        "es": "Lanza Drag\u00f3n",
+        "pt": "Lan\u00e7a do drag\u00e3o"
       },
       "width": 2,
       "height": 4,
@@ -129,7 +129,7 @@
         "en": "Serpent Spear",
         "de": "Schlangenspeer",
         "es": "Jabalina Serpiente",
-        "pt": "Lança da serpente"
+        "pt": "Lan\u00e7a da serpente"
       },
       "width": 2,
       "height": 4,
@@ -159,7 +159,7 @@
       "name": {
         "en": "Double Poleaxe",
         "de": "Doppelstangenaxt",
-        "es": "Hacha Doble de Mástil",
+        "es": "Hacha Doble de M\u00e1stil",
         "pt": "Gadanha dupla"
       },
       "width": 2,
@@ -249,8 +249,8 @@
       "number": 8,
       "name": {
         "en": "Great Scythe",
-        "de": "Großartige Sense",
-        "es": "Gran Guadaña",
+        "de": "Gro\u00dfartige Sense",
+        "es": "Gran Guada\u00f1a",
         "pt": "Grande foice"
       },
       "width": 2,
@@ -312,8 +312,8 @@
       "name": {
         "en": "Dragon Spear",
         "de": "Drachenspeer",
-        "es": "Jabalina Dragón",
-        "pt": "Lança do dragão"
+        "es": "Jabalina Drag\u00f3n",
+        "pt": "Lan\u00e7a do drag\u00e3o"
       },
       "width": 2,
       "height": 4,
@@ -365,6 +365,199 @@
         "darkKnight": 2,
         "magicGladiator": 1
       }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Immortal Mort Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Immortal Finger Of Dead Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Spear Skin 1 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Spear Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Spear Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Spear Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Spear Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
     }
   ]
 }

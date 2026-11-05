@@ -10,9 +10,9 @@
 #panel {
 	position: absolute;
 	left: 528px;
-	top: 284px;
+	top: 184px;
 	width: 112px;
-	height: 146px;
+	height: 246px;
 	font-family: "token(font-body)";
 	background-color: token(surface-panel);
 	border: 1px token(border-frame);
@@ -73,3 +73,18 @@
 .lines .line:nth-child(3) { top: 73px; }
 .lines .line:nth-child(4) { top: 93px; }
 .lines .line:nth-child(5) { top: 113px; }
+
+/* TwinMU: 11 rows (Redeem Code, Excellent Combination, Event Timers, Muun Inventory, Jewel Bank);
+   the frame grows upward so its bottom edge stays at 480 - 50. */
+.frame-middles .frame-middle:nth-child(5) { top: 105px; }
+.frame-middles .frame-middle:nth-child(6) { top: 120px; }
+.frame-middles .frame-middle:nth-child(7) { top: 135px; }
+.frame-middles .frame-middle:nth-child(8) { top: 150px; }
+.frame-middles .frame-middle:nth-child(9) { top: 165px; }
+.frame-middles .frame-middle:nth-child(10) { top: 180px; }
+.frame-middles .frame-middle:nth-child(11) { top: 195px; }
+.lines .line:nth-child(6) { top: 133px; }
+.lines .line:nth-child(7) { top: 153px; }
+.lines .line:nth-child(8) { top: 173px; }
+.lines .line:nth-child(9) { top: 193px; }
+.lines .line:nth-child(10) { top: 213px; }

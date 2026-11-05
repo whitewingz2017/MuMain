@@ -2,6 +2,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "Render/Items/ScopedItemEffects.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "UI/Placement/WindowPlacement.h"
 #include "UI/Core/UIManager.h"
 #include "Render/Textures/ZzzOpenglUtil.h"
@@ -1465,7 +1467,7 @@ static std::wstring StandardItemName(const ITEM& item, int level, bool full)
     if (full && g_csItemOption.GetSetItemName(setName, item.Type, item.AncientDiscriminator))
         name = setName;
     name += ItemAttribute[item.Type].Name;
-    if (full && item.ExcellentFlags > 0)
+    if (full && item.ExcellentFlags > 0 && GameLogic::Cosmetics::ArmorPart(item.Type) < 0)
         name = std::wstring(I18N::Game::Excellent) + L" " + name;
     if (level > 0)
         name += L" +" + std::to_wstring(level);
@@ -1475,6 +1477,9 @@ static std::wstring StandardItemName(const ITEM& item, int level, bool full)
 // The item's standard name color: an ancient, socket, excellent, +7 and up, or optioned item's, else white.
 static int StandardItemNameColor(const ITEM& item, int level)
 {
+    // A TwinMU cosmetic skin's name is white, whatever options it carries.
+    if (GameLogic::Cosmetics::ArmorPart(item.Type) >= 0)
+        return TEXT_COLOR_WHITE;
     if (item.AncientDiscriminator > 0)
         return TEXT_COLOR_GREEN_BLUE;
     if (g_SocketItemMgr.IsSocketItem(&item))
@@ -1539,6 +1544,8 @@ static ItemTooltipName GetItemTooltipName(const ITEM& item, int level, const Ite
     const auto base = line->hasColor ? line->color : static_cast<Data::Items::ItemTextColor>(name.color);
     name.color =
         static_cast<int>(Engine::Items::TooltipValues::GetTooltipColor(line->colors, base, item.Type, level, values));
+    if (GameLogic::Cosmetics::ArmorPart(item.Type) >= 0)
+        name.color = TEXT_COLOR_WHITE;
     return name;
 }
 
@@ -1637,7 +1644,7 @@ static ItemTooltipBuild BuildItemTooltipText(const ITEM* ip, bool Sell, int Inve
 
     if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_NPCSHOP) && !GameLogic::Items::IsSellingBan(ip))
     {
-        wchar_t Text[100];
+        wchar_t Text[MAX_TEXT_LENGTH];
         {
             if (Sell)
             {
@@ -1668,14 +1675,16 @@ static ItemTooltipBuild BuildItemTooltipText(const ITEM* ip, bool Sell, int Inve
     {
         {
             GameLogic::PersonalShop::ItemPrice itemPrice;
-            int indexInv = g_pMyShopInventory->GetInventoryCtrl()->GetIndexByItem(ip);
-            wchar_t Text[100];
+            int indexInv = Inventype == mu::ui::window::TOOLTIP_TYPE_PURCHASE_SHOP
+                               ? g_pPurchaseShopInventory->GetInventoryCtrl()->GetIndexByItem(ip)
+                               : g_pMyShopInventory->GetInventoryCtrl()->GetIndexByItem(ip);
+            wchar_t Text[MAX_TEXT_LENGTH];
 
             const bool hasPrice = GetPersonalItemPrice(indexInv, itemPrice, g_IsPurchaseShop);
             if (hasPrice && itemPrice.Kind != GameLogic::PersonalShop::PriceKind::Zen)
             {
                 // The server tells the player when the jewels or coins are not enough.
-                mu_swprintf(Text, L"%d %ls", itemPrice.Amount, GameLogic::PersonalShop::GetCurrencyName(itemPrice));
+                mu_swprintf(Text, L"%ls", GameLogic::PersonalShop::FormatPrice(itemPrice).c_str());
                 mu_swprintf(TextList[TextNum], I18N::Game::SellingPriceS, Text);
                 TextListColor[TextNum] = TEXT_COLOR_YELLOW;
                 TextBold[TextNum] = true;
@@ -2061,7 +2070,7 @@ static ItemTooltipBuild BuildItemTooltipText(const ITEM* ip, bool Sell, int Inve
     }
     WriteItemDescription(*ip, Level, values, true, descriptionRowsLeft);
 
-    if (ip->Type == ITEM_HORN_OF_FENRIR)
+    if (GameLogic::Cosmetics::HelperBehaviorItem(ip->Type) == ITEM_HORN_OF_FENRIR)
     {
         GetSpecialOptionText(0, TextList[TextNum], AT_SKILL_PLASMA_STORM_FENRIR, 0, 0);
         TextListColor[TextNum] = TEXT_COLOR_BLUE;
@@ -2410,7 +2419,7 @@ RepairInfoText BuildRepairInfoText(const ITEM* ip)
 
         mu_swprintf(TextList[TextNum], L"\n"); TextNum++; SkipNum++;
 
-        wchar_t Text[100];
+        wchar_t Text[MAX_TEXT_LENGTH];
 
         maxDurability = CalcMaxDurability(ip, p, Level);
         if (ip->Durability < maxDurability)
@@ -2619,7 +2628,7 @@ struct GroundItemLabelDescriptor
     wchar_t Name[80]{};
     bool Bold = false;
     DWORD TextColor = 0xFFFFFFFF;
-    DWORD BgColor = 0xFF000000;
+    DWORD BgColor = 0xA0000000;
     // The style the look came from; nullptr while none.
     const Data::Items::GroundLabelStyle* Style = nullptr;
 };
@@ -3036,7 +3045,7 @@ constexpr float SelectedItemTurnSpeed = 0.45f;
 } // namespace
 
 void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancientDiscriminator, vec3_t Target,
-                        int Select, bool PickUp)
+                        int Select, bool PickUp, float slotWidth, float slotHeight)
 {
     int Level = ItemLevel;
     vec3_t Direction, Position;
@@ -3073,10 +3082,14 @@ void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancient
         ItemLevel = 0;
     }
 
-    VectorAdd(Position, display.offset.data(), Position);
+    if (slotWidth <= 0)
+        VectorAdd(Position, display.offset.data(), Position);
 
     const vec3_t headAngle = {0.f, 0.f, 0.f};
     b->Animation(BoneTransform, 0.f, 0.f, 0, angle, headAngle, false, false);
+    if (slotWidth > 0)
+        Render::Items::Display::FitInventoryModel(*b, Models[Type], BoneTransform, Position, Scale, slotWidth,
+                                                  slotHeight);
 
     CHARACTER Armor;
     OBJECT* o = &Armor.Object;
@@ -3131,7 +3144,12 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
 
     const bool Success = UI::Items::ShouldAnimatePreview(hovered, g_pPickedItem != nullptr, PickUp);
 
-    const Render::Items::Display::Anchor anchor = Render::Items::Display::GetInventoryAnchor(Type, Level);
+    // Item previews draw without the item models' attached sprites and particles.
+    const Render::Items::ScopedItemEffects itemEffects(false);
+    // Skins and Fenrir skins are fitted into their slot around its centre.
+    const bool fitSkin = GameLogic::Cosmetics::ArmorPart(Type) >= 0 || GameLogic::Cosmetics::IsFenrirMount(Type);
+    const Render::Items::Display::Anchor anchor = fitSkin ? Render::Items::Display::Anchor{0.5f, 0.5f}
+                                                          : Render::Items::Display::GetInventoryAnchor(Type, Level);
     sx += Width * anchor.x;
     sy += Height * anchor.y;
 
@@ -3156,7 +3174,7 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
                  Render::Items::Display::FindInventoryModel(Type, Level))
     {
         RenderObjectScreen(model->modelType, model->drawLevel, excellentFlags, ancientDiscriminator, Position, Success,
-                           PickUp);
+                           PickUp, fitSkin ? Width : 0, fitSkin ? Height : 0);
     }
 }
 

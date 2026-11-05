@@ -16,10 +16,15 @@ CHARACTER::~CHARACTER()
     Destroy();
 }
 
-void CHARACTER::Initialize()
+void CHARACTER::InitializeObject()
 {
     Object.Initialize();
+    CosmeticWingClock.Reset();
+}
 
+void CHARACTER::Initialize()
+{
+    InitializeObject();
     Blood = false;
     Ride = false;
     SkillSuccess = false;

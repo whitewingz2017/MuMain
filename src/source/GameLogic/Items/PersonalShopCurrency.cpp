@@ -77,6 +77,11 @@ void SetAllowedPriceTypes(std::span<const uint16_t> priceItemTypes)
     AllowedPriceTypes.assign(priceItemTypes.begin(), priceItemTypes.end());
 }
 
+bool SupportsCombinedPrices()
+{
+    return std::find(AllowedPriceTypes.begin(), AllowedPriceTypes.end(), CombinedPriceMarker) != AllowedPriceTypes.end();
+}
+
 bool AreOtherPricesThanZenAllowed()
 {
     return !AllowedPriceTypes.empty();
@@ -98,7 +103,7 @@ std::vector<ItemPrice> GetAllowedPriceTypes()
     std::vector<ItemPrice> result{ItemPrice{}};
     for (const uint16_t priceItemType : priceItemTypes)
     {
-        result.push_back(ToPrice(priceItemType, 0));
+        if (priceItemType != CombinedPriceMarker) result.push_back(ToPrice(priceItemType, 0));
     }
 
     return result;

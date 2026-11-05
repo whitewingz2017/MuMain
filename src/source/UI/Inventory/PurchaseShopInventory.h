@@ -5,6 +5,7 @@
 #pragma once
 
 #include "UI/Inventory/ItemCameraTarget.h"
+#include "GameLogic/Items/PersonalShopCurrency.h"
 #include "UI/Inventory/ItemGridModel.h"
 #include "Render/RmlUi/RmlUiRuntime.h"
 #include "UI/Core/WindowObject.h"
@@ -93,6 +94,9 @@ namespace mu::ui::window
         void RenderItems();
         UI::Items::ItemCameraTarget m_ItemTarget{[this](const Rml::Vector2f&, const Rml::Vector2f&) { RenderItems(); }};
 
+        int m_InspectedSlot = -1;
+        DWORD m_InspectedKey = 0;
+        GameLogic::PersonalShop::ItemPrice m_InspectedPrice{};
         void BuildRmlUi();
         void SyncRmlModel();
     };

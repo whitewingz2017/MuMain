@@ -35,7 +35,7 @@ body {
 #panel {
 	position: absolute;
 	width: 329rem;
-	height: 245rem;
+	height: 275rem;
 	font-family: "token(font-body)";
 	color: token(text-primary);
 	decorator: image(login-back-image);
@@ -51,8 +51,8 @@ body {
 	position: absolute;
 }
 .label-server  { left: 111rem; top: 80rem; }
-.label-account { left: 30rem; top: 113rem; }
-.label-password{ left: 30rem; top: 139rem; }
+.label-account { left: 30rem; top: 143rem; }
+.label-password{ left: 30rem; top: 169rem; }
 
 /* Username/password fields. Placement/size only -- appearance comes from base.rcss's shared
    .text-field, minus the fill/border, since .input-frame's sprite art already draws each field's visual. Box sits
@@ -70,8 +70,8 @@ body {
 	box-shadow: none;
 	decorator: none;
 }
-.login-field-account  { left: 115rem; top: 112rem; }
-.login-field-password { left: 115rem; top: 137rem; }
+.login-field-account  { left: 115rem; top: 142rem; }
+.login-field-password { left: 115rem; top: 167rem; }
 
 .input-frame {
 	position: absolute;
@@ -80,16 +80,16 @@ body {
 	decorator: image(login-input-frame-image);
 	pointer-events: none;
 }
-.input-account  { left: 109rem; top: 106rem; }
-.input-password { left: 109rem; top: 131rem; }
+.input-account  { left: 109rem; top: 136rem; }
+.input-password { left: 109rem; top: 161rem; }
 
 .checkbox-row {
 	position: absolute;
 	cursor: pointer;
 	pointer-events: auto;
 }
-.checkbox-remember-me  { left: 109rem; top: 156rem; }
-.checkbox-save-password{ left: 109rem; top: 176rem; }
+.checkbox-remember-me  { left: 109rem; top: 186rem; }
+.checkbox-save-password{ left: 109rem; top: 206rem; }
 
 .checkbox-box {
 	display: inline-block;
@@ -163,12 +163,20 @@ body {
 	decorator: image(login-cancel-active);
 }
 
-/* Sits below #panel's own bottom edge by design (top: 252 vs a 245-tall panel), not bottom-anchored
+/* Sits below #panel's own bottom edge by design (top: 282 vs a 275-tall panel), not bottom-anchored
    to it -- this is overflow content, not a panel-relative element like the buttons. */
 .trust-warning {
 	position: absolute;
 	left: 30rem;
-	top: 252rem;
+	top: 282rem;
 	width: 280rem;
 	color: token(accent-gold);
 }
+
+/* The saved-account dropdown stays centered above the login fields. */
+#saved_accounts_row { position: absolute; left: 27rem; top: 100rem; width: 275rem; height: 26rem; font-size: 11rem; pointer-events: auto; }
+.saved-accounts-title { position: absolute; left: 0; top: 4rem; width: 85rem; color: #f2d891; }
+#saved_account_toggle { position: absolute; left: 85rem; top: 0; width: 180rem; height: 24rem; line-height: 24rem; text-align: center; background-color: #141714; border: 1rem #8e7951; cursor: pointer; }
+#saved_account_list { position: absolute; left: 85rem; top: 25rem; width: 180rem; max-height: 150rem; overflow-y: auto; background-color: #101410; border: 1rem #8e7951; }
+.saved-account-option { display: block; padding: 6rem; color: #f0dfb4; cursor: pointer; }
+.saved-account-option:hover { background-color: #3b3926; }

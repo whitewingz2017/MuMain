@@ -5,14 +5,23 @@
     {
       "number": 0,
       "file": "Data/Player/GloveMale01.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "material": {
@@ -22,14 +31,23 @@
     {
       "number": 1,
       "file": "Data/Player/GloveMale02.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -42,28 +60,46 @@
     {
       "number": 2,
       "file": "Data/Player/GloveMale03.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 3,
       "file": "Data/Player/GloveMale04.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -74,14 +110,23 @@
     {
       "number": 4,
       "file": "Data/Player/GloveMale05.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -92,28 +137,46 @@
     {
       "number": 5,
       "file": "Data/Player/GloveMale06.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 6,
       "file": "Data/Player/GloveMale07.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -126,28 +189,46 @@
     {
       "number": 7,
       "file": "Data/Player/GloveMale08.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 8,
       "file": "Data/Player/GloveMale09.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "material": {
@@ -157,14 +238,23 @@
     {
       "number": 9,
       "file": "Data/Player/GloveMale10.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -179,42 +269,69 @@
     {
       "number": 10,
       "file": "Data/Player/GloveElf01.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 11,
       "file": "Data/Player/GloveElf02.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 12,
       "file": "Data/Player/GloveElf03.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -224,14 +341,23 @@
     {
       "number": 13,
       "file": "Data/Player/GloveElf04.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -241,14 +367,23 @@
     {
       "number": 14,
       "file": "Data/Player/GloveElf05.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -259,14 +394,23 @@
     {
       "number": 15,
       "file": "Data/Player/GloveMale16.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -281,14 +425,23 @@
     {
       "number": 16,
       "file": "Data/Player/GloveMale17.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -301,14 +454,23 @@
     {
       "number": 17,
       "file": "Data/Player/GloveMale18.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -323,14 +485,23 @@
     {
       "number": 18,
       "file": "Data/Player/GloveMale19.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -341,14 +512,23 @@
     {
       "number": 19,
       "file": "Data/Player/GloveMaleTest20.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -359,14 +539,23 @@
     {
       "number": 20,
       "file": "Data/Player/GloveMale21.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -380,14 +569,23 @@
     {
       "number": 21,
       "file": "Data/Player/GloveMale22.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -401,14 +599,23 @@
     {
       "number": 22,
       "file": "Data/Player/GloveMale23.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -418,14 +625,23 @@
     {
       "number": 23,
       "file": "Data/Player/GloveMale24.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -439,14 +655,23 @@
     {
       "number": 24,
       "file": "Data/Player/GloveMale25.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -456,14 +681,23 @@
     {
       "number": 25,
       "file": "Data/Player/GloveMale26.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -476,14 +710,23 @@
     {
       "number": 26,
       "file": "Data/Player/GloveMale27.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -496,14 +739,23 @@
     {
       "number": 27,
       "file": "Data/Player/GloveMale28.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -516,14 +768,23 @@
     {
       "number": 28,
       "file": "Data/Player/GloveMale29.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -536,14 +797,23 @@
     {
       "number": 29,
       "file": "Data/Player/HDK_GloveMale01.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -556,14 +826,23 @@
     {
       "number": 30,
       "file": "Data/Player/HDK_GloveMale02.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -573,14 +852,23 @@
     {
       "number": 31,
       "file": "Data/Player/HDK_GloveMale03.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -590,14 +878,23 @@
     {
       "number": 32,
       "file": "Data/Player/HDK_GloveMale04.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -610,14 +907,23 @@
     {
       "number": 33,
       "file": "Data/Player/HDK_GloveMale05.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -630,14 +936,23 @@
     {
       "number": 34,
       "file": "Data/Player/CW_GloveMale01.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -650,14 +965,23 @@
     {
       "number": 35,
       "file": "Data/Player/CW_GloveMale02.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -667,14 +991,23 @@
     {
       "number": 36,
       "file": "Data/Player/CW_GloveMale03.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -685,14 +1018,23 @@
     {
       "number": 37,
       "file": "Data/Player/CW_GloveMale04.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -705,14 +1047,23 @@
     {
       "number": 38,
       "file": "Data/Player/CW_GloveMale05.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0032,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -725,14 +1076,23 @@
     {
       "number": 39,
       "file": "Data/Player/GloveMale40.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -743,14 +1103,23 @@
     {
       "number": 40,
       "file": "Data/Player/GloveMale41.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -761,14 +1130,23 @@
     {
       "number": 41,
       "file": "Data/Player/GloveMale42.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -779,14 +1157,23 @@
     {
       "number": 42,
       "file": "Data/Player/GloveMale43.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -797,14 +1184,23 @@
     {
       "number": 43,
       "file": "Data/Player/GloveMale44.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -815,14 +1211,23 @@
     {
       "number": 44,
       "file": "Data/Player/GloveMale45.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -834,14 +1239,23 @@
     {
       "number": 45,
       "file": "Data/Player/GloveMale46.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -854,14 +1268,23 @@
     {
       "number": 46,
       "file": "Data/Player/GloveMale47.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -874,14 +1297,23 @@
     {
       "number": 47,
       "file": "Data/Player/GloveMale48.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -891,14 +1323,23 @@
     {
       "number": 48,
       "file": "Data/Player/GloveMale49.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -908,14 +1349,23 @@
     {
       "number": 49,
       "file": "Data/Player/GloveMale50.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -925,14 +1375,23 @@
     {
       "number": 50,
       "file": "Data/Player/GloveMale51.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -942,14 +1401,23 @@
     {
       "number": 51,
       "file": "Data/Player/GloveMale52.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -962,14 +1430,23 @@
     {
       "number": 52,
       "file": "Data/Player/GloveMale53.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -979,14 +1456,23 @@
     {
       "number": 53,
       "file": "Data/Player/GloveMale54.bmd",
-      "textureFolders": ["Player"],
+      "textureFolders": [
+        "Player"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       },
       "glow": {
@@ -996,141 +1482,3301 @@
     {
       "number": 62,
       "file": "Data/Player/LuckyItem/62/new_Glove01.bmd",
-      "textureFolders": ["Player/LuckyItem/62"],
+      "textureFolders": [
+        "Player/LuckyItem/62"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 63,
       "file": "Data/Player/LuckyItem/63/new_Glove02.bmd",
-      "textureFolders": ["Player/LuckyItem/63"],
+      "textureFolders": [
+        "Player/LuckyItem/63"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 64,
       "file": "Data/Player/LuckyItem/64/new_Glove03.bmd",
-      "textureFolders": ["Player/LuckyItem/64"],
+      "textureFolders": [
+        "Player/LuckyItem/64"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 65,
       "file": "Data/Player/LuckyItem/65/new_Glove04.bmd",
-      "textureFolders": ["Player/LuckyItem/65"],
+      "textureFolders": [
+        "Player/LuckyItem/65"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 66,
       "file": "Data/Player/LuckyItem/66/new_Glove05.bmd",
-      "textureFolders": ["Player/LuckyItem/66"],
+      "textureFolders": [
+        "Player/LuckyItem/66"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 67,
       "file": "Data/Player/LuckyItem/67/new_Glove06.bmd",
-      "textureFolders": ["Player/LuckyItem/67"],
+      "textureFolders": [
+        "Player/LuckyItem/67"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 68,
       "file": "Data/Player/LuckyItem/68/new_Glove07.bmd",
-      "textureFolders": ["Player/LuckyItem/68"],
+      "textureFolders": [
+        "Player/LuckyItem/68"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 69,
       "file": "Data/Player/LuckyItem/69/new_Glove08.bmd",
-      "textureFolders": ["Player/LuckyItem/69"],
+      "textureFolders": [
+        "Player/LuckyItem/69"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 70,
       "file": "Data/Player/LuckyItem/70/new_Glove09.bmd",
-      "textureFolders": ["Player/LuckyItem/70"],
+      "textureFolders": [
+        "Player/LuckyItem/70"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
       }
     },
     {
       "number": 71,
       "file": "Data/Player/LuckyItem/71/new_Glove10.bmd",
-      "textureFolders": ["Player/LuckyItem/71"],
+      "textureFolders": [
+        "Player/LuckyItem/71"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
+        "anchor": [
+          0.5,
+          0.9
+        ],
         "scale": 0.0038,
         "bodyHeight": -70
       },
       "ground": {
-        "rotation": [270, 0, -45],
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
         "bodyHeight": -70
+      }
+    },
+    {
+      "number": 315,
+      "file": "Data/Custom/Skins/Set315/GloveMale315.bmd",
+      "textureFolders": [
+        "Custom/Skins/Set315"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.9
+        ],
+        "scale": 0.0038,
+        "bodyHeight": -70
+      },
+      "glow": {
+        "excellent": false
+      }
+    },
+    {
+      "number": 100,
+      "file": "Data/Custom/Skins/Set100/GloveMale100.bmd",
+      "textureFolders": [
+        "Custom/Skins/Set100"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.9
+        ],
+        "scale": 0.0038,
+        "bodyHeight": -70
+      },
+      "glow": {
+        "excellent": false
+      }
+    },
+    {
+      "number": 300,
+      "file": "Data/Custom/Skins/FinalMU/10_300/eXG_Gloves101.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_300"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor100"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 301,
+      "file": "Data/Custom/Skins/FinalMU/10_301/eXG_Gloves102.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_301"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor101"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 302,
+      "file": "Data/Custom/Skins/FinalMU/10_302/eXG_Gloves103.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_302"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor102"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 303,
+      "file": "Data/Custom/Skins/FinalMU/10_303/eXG_Gloves104.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_303"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor103"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 304,
+      "file": "Data/Custom/Skins/FinalMU/10_304/eXG_Gloves113.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_304"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor104"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 305,
+      "file": "Data/Custom/Skins/FinalMU/10_305/eXG_Gloves106.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_305"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor105"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 306,
+      "file": "Data/Custom/Skins/FinalMU/10_306/eXG_Gloves107.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_306"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor106"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 307,
+      "file": "Data/Custom/Skins/FinalMU/10_307/eXG_Gloves108.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_307"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor107"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 308,
+      "file": "Data/Custom/Skins/FinalMU/10_308/eXG_Gloves109.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_308"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor108"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 309,
+      "file": "Data/Custom/Skins/FinalMU/10_309/eXG_Gloves106.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_309"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor109"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 310,
+      "file": "Data/Custom/Skins/FinalMU/10_310/eXG_Gloves117.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_310"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor110"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 311,
+      "file": "Data/Custom/Skins/FinalMU/10_311/eXG_Gloves112.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_311"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor111"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 312,
+      "file": "Data/Custom/Skins/FinalMU/10_312/eXG_Gloves121.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_312"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor112"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 313,
+      "file": "Data/Custom/Skins/FinalMU/10_313/eXG_Gloves114.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_313"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor113"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 314,
+      "file": "Data/Custom/Skins/FinalMU/10_314/eXG_Gloves115.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_314"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor114"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 316,
+      "file": "Data/Custom/Skins/FinalMU/10_316/eXG_Gloves116.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_316"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor115"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 317,
+      "file": "Data/Custom/Skins/FinalMU/10_317/eXG_Gloves117.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_317"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor116"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "staticEffects": [
+        {
+          "bone": 37,
+          "texture": 32231,
+          "offset": [
+            0.0,
+            -13.0,
+            -13.0
+          ],
+          "color": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32371,
+          "offset": [
+            0.0,
+            -13.0,
+            -13.0
+          ],
+          "color": [
+            1.0,
+            0.7,
+            0.5
+          ],
+          "size": 0.06,
+          "rotation": 0.0
+        },
+        {
+          "bone": 37,
+          "texture": 32900,
+          "offset": [
+            0.0,
+            -13.0,
+            -13.0
+          ],
+          "color": [
+            1.0,
+            0.1,
+            1.0
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        }
+      ],
+      "particleEffects": [
+        {
+          "bone": 37,
+          "texture": 32049,
+          "offset": [
+            0.0,
+            -13.0,
+            -13.0
+          ],
+          "color": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "size": 0.25,
+          "subType": 10
+        }
+      ]
+    },
+    {
+      "number": 318,
+      "file": "Data/Custom/Skins/FinalMU/10_318/GloveMale135_knight.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_318"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor117"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 319,
+      "file": "Data/Custom/Skins/FinalMU/10_319/eXG_Gloves125.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_319"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor118"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 320,
+      "file": "Data/Custom/Skins/FinalMU/10_320/eXG_Gloves120.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_320"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor119"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 66,
+            "blend": 0,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 321,
+      "file": "Data/Custom/Skins/FinalMU/10_321/eXG_Gloves1200.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_321"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor120"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 322,
+      "file": "Data/Custom/Skins/FinalMU/10_322/eXG_Gloves122.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_322"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor121"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 2,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 323,
+      "file": "Data/Custom/Skins/FinalMU/10_323/eXG_Gloves123.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_323"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor122"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 66,
+            "blend": 0,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 324,
+      "file": "Data/Custom/Skins/FinalMU/10_324/eXG_Gloves125.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_324"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor123"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 325,
+      "file": "Data/Custom/Skins/FinalMU/10_325/eXG_Gloves125.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_325"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor124"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": [
+              8,
+              0,
+              -0.001,
+              -1.0,
+              1001,
+              1000
+            ],
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 326,
+      "file": "Data/Custom/Skins/FinalMU/10_326/eXG_Gloves126.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_326"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 327,
+      "file": "Data/Custom/Skins/FinalMU/10_327/eXG_Gloves127.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_327"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 328,
+      "file": "Data/Custom/Skins/FinalMU/10_328/eXG_Gloves128.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_328"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor127"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 329,
+      "file": "Data/Custom/Skins/FinalMU/10_329/eXG_Gloves129.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_329"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor128"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 330,
+      "file": "Data/Custom/Skins/FinalMU/10_330/eXG_Gloves130.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_330"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor129"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 331,
+      "file": "Data/Custom/Skins/FinalMU/10_331/eXG_Gloves131.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_331"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor130"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 332,
+      "file": "Data/Custom/Skins/FinalMU/10_332/eXG_Gloves132.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_332"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor131"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 333,
+      "file": "Data/Custom/Skins/FinalMU/10_333/eXG_Gloves133.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_333"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor132"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 334,
+      "file": "Data/Custom/Skins/FinalMU/10_334/eXG_Gloves134.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_334"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor133"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 335,
+      "file": "Data/Custom/Skins/FinalMU/10_335/eXG_Gloves135.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_335"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor134"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 336,
+      "file": "Data/Custom/Skins/FinalMU/10_336/eXG_Gloves136.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_336"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor135"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 337,
+      "file": "Data/Custom/Skins/FinalMU/10_337/eXG_Gloves137.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_337"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 338,
+      "file": "Data/Custom/Skins/FinalMU/10_338/eXG_Gloves138.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_338"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor137"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 339,
+      "file": "Data/Custom/Skins/FinalMU/10_339/GloveMale162.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_339"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor138"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 0.5
+          },
+          {
+            "mesh": 1,
+            "flags": 70,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.0,
+            "green": 0.5,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 340,
+      "file": "Data/Custom/Skins/FinalMU/10_340/eXG_Gloves140.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_340"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor139"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 341,
+      "file": "Data/Custom/Skins/FinalMU/10_341/eXG_Gloves141.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_341"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor140"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 342,
+      "file": "Data/Custom/Skins/FinalMU/10_342/eXG_Gloves142.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_342"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor141"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 343,
+      "file": "Data/Custom/Skins/FinalMU/10_343/eXG_Gloves143.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_343"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 344,
+      "file": "Data/Custom/Skins/FinalMU/10_344/eXG_Gloves144.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_344"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor143"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 345,
+      "file": "Data/Custom/Skins/FinalMU/10_345/eXG_Gloves145.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_345"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor144"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 346,
+      "file": "Data/Custom/Skins/FinalMU/10_346/eXG_Gloves146.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_346"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor145"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 347,
+      "file": "Data/Custom/Skins/FinalMU/10_347/eXG_Gloves147.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_347"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor146"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 348,
+      "file": "Data/Custom/Skins/FinalMU/10_348/eXG_Gloves148.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_348"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor147"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 349,
+      "file": "Data/Custom/Skins/FinalMU/10_349/eXG_Gloves149.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_349"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor148"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 350,
+      "file": "Data/Custom/Skins/FinalMU/10_350/eXG_Gloves150.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_350"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor149"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 351,
+      "file": "Data/Custom/Skins/FinalMU/10_351/eXG_Gloves151.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_351"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor150"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 352,
+      "file": "Data/Custom/Skins/FinalMU/10_352/eXG_Gloves152.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_352"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor151"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 353,
+      "file": "Data/Custom/Skins/FinalMU/10_353/eXG_Gloves153.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_353"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor152"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 354,
+      "file": "Data/Custom/Skins/FinalMU/10_354/eXG_Gloves154.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_354"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor153"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 355,
+      "file": "Data/Custom/Skins/FinalMU/10_355/eXG_Gloves155.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_355"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor154"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 356,
+      "file": "Data/Custom/Skins/FinalMU/10_356/eXG_Gloves156.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_356"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 357,
+      "file": "Data/Custom/Skins/FinalMU/10_357/eXG_Gloves157.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_357"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor156"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 358,
+      "file": "Data/Custom/Skins/FinalMU/10_358/eXG_Gloves158.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_358"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor157"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 359,
+      "file": "Data/Custom/Skins/FinalMU/10_359/eXG_Gloves159.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_359"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor158"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 360,
+      "file": "Data/Custom/Skins/FinalMU/10_360/eXG_Gloves160.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_360"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor159"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 361,
+      "file": "Data/Custom/Skins/FinalMU/10_361/eXG_Gloves161.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_361"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 362,
+      "file": "Data/Custom/Skins/FinalMU/10_362/eXG_Gloves162.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_362"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 363,
+      "file": "Data/Custom/Skins/FinalMU/10_363/eXG_Gloves163.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_363"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor162"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 364,
+      "file": "Data/Custom/Skins/FinalMU/10_364/eXG_Gloves164.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_364"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor163"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 365,
+      "file": "Data/Custom/Skins/FinalMU/10_365/eXG_Gloves165.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_365"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor164"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 366,
+      "file": "Data/Custom/Skins/FinalMU/10_366/eXG_Gloves166.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_366"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor165"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 367,
+      "file": "Data/Custom/Skins/FinalMU/10_367/eXG_Gloves167.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_367"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor166"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 368,
+      "file": "Data/Custom/Skins/FinalMU/10_368/eXG_Gloves168.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_368"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor167"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 369,
+      "file": "Data/Custom/Skins/FinalMU/10_369/eXG_Gloves169.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_369"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor168"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 370,
+      "file": "Data/Custom/Skins/FinalMU/10_370/eXG_Gloves170.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_370"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor169"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 371,
+      "file": "Data/Custom/Skins/FinalMU/10_371/eXG_Gloves171.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_371"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor170"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 372,
+      "file": "Data/Custom/Skins/FinalMU/10_372/eXG_Gloves172.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_372"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor171"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 373,
+      "file": "Data/Custom/Skins/FinalMU/10_373/eXG_Gloves173.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_373"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor172"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 374,
+      "file": "Data/Custom/Skins/FinalMU/10_374/eXG_Gloves174.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_374"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor173"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 375,
+      "file": "Data/Custom/Skins/FinalMU/10_375/eXG_Gloves175.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_375"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor174"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 376,
+      "file": "Data/Custom/Skins/FinalMU/10_376/eXG_Gloves176.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_376"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor175"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 377,
+      "file": "Data/Custom/Skins/FinalMU/10_377/eXG_Gloves177.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_377"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor176"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 378,
+      "file": "Data/Custom/Skins/FinalMU/10_378/eXG_Gloves178.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_378"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor177"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 379,
+      "file": "Data/Custom/Skins/FinalMU/10_379/eXG_Gloves179.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_379"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor178"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 380,
+      "file": "Data/Custom/Skins/FinalMU/10_380/eXG_Gloves180.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_380"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor179"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 381,
+      "file": "Data/Custom/Skins/FinalMU/10_381/eXG_Gloves181.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_381"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor180"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 382,
+      "file": "Data/Custom/Skins/FinalMU/10_382/eXG_Gloves182.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_382"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor181"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 383,
+      "file": "Data/Custom/Skins/FinalMU/10_383/eXG_Gloves183.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_383"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor182"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 384,
+      "file": "Data/Custom/Skins/FinalMU/10_384/eXG_Gloves184.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_384"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor183"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 385,
+      "file": "Data/Custom/Skins/FinalMU/10_385/eXG_Gloves185.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_385"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 386,
+      "file": "Data/Custom/Skins/FinalMU/10_386/eXG_Gloves186.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_386"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 387,
+      "file": "Data/Custom/Skins/FinalMU/10_387/eXG_Gloves187.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_387"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor186"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 388,
+      "file": "Data/Custom/Skins/FinalMU/10_388/eXG_Gloves188.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_388"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor187"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 389,
+      "file": "Data/Custom/Skins/FinalMU/10_389/eXG_Gloves189.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_389"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor188"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 390,
+      "file": "Data/Custom/Skins/FinalMU/10_390/eXG_Gloves190.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_390"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor189"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 391,
+      "file": "Data/Custom/Skins/FinalMU/10_391/eXG_Gloves191.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_391"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 392,
+      "file": "Data/Custom/Skins/FinalMU/10_392/eXG_Gloves192.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_392"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 393,
+      "file": "Data/Custom/Skins/FinalMU/10_393/eXG_Gloves193.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_393"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 394,
+      "file": "Data/Custom/Skins/FinalMU/10_394/eXG_Gloves194.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_394"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor193"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 395,
+      "file": "Data/Custom/Skins/FinalMU/10_395/eXG_Gloves195.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_395"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor194"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 396,
+      "file": "Data/Custom/Skins/FinalMU/10_396/eXG_Gloves196.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_396"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor195"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 397,
+      "file": "Data/Custom/Skins/FinalMU/10_397/eXG_Gloves197.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_397"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor196"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 398,
+      "file": "Data/Custom/Skins/FinalMU/10_398/eXG_Gloves198.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_398"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor197"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 399,
+      "file": "Data/Custom/Skins/FinalMU/10_399/eXG_Gloves199.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_399"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor198"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 400,
+      "file": "Data/Custom/Skins/FinalMU/10_400/eXG_Gloves200.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_400"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor199"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 401,
+      "file": "Data/Custom/Skins/FinalMU/10_401/eXG_Gloves201.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_401"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor200"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 402,
+      "file": "Data/Custom/Skins/FinalMU/10_402/eXG_Gloves202.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_402"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor201"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 403,
+      "file": "Data/Custom/Skins/FinalMU/10_403/eXG_Gloves203.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_403"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 404,
+      "file": "Data/Custom/Skins/FinalMU/10_404/eXG_Gloves204.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_404"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor203"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 405,
+      "file": "Data/Custom/Skins/FinalMU/10_405/eXG_Gloves205.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_405"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor204"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 406,
+      "file": "Data/Custom/Skins/FinalMU/10_406/eXG_Gloves206.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_406"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor205"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 407,
+      "file": "Data/Custom/Skins/FinalMU/10_407/eXG_Gloves207.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_407"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor206"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 408,
+      "file": "Data/Custom/Skins/FinalMU/10_408/eXG_Gloves208.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_408"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 409,
+      "file": "Data/Custom/Skins/FinalMU/10_409/eXG_Gloves209.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_409"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor208"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 410,
+      "file": "Data/Custom/Skins/FinalMU/10_410/eXG_Gloves210.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_410"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor209"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 411,
+      "file": "Data/Custom/Skins/FinalMU/10_411/eXG_Gloves211.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_411"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor210"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 412,
+      "file": "Data/Custom/Skins/FinalMU/10_412/eXG_Gloves212.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_412"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor211"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 413,
+      "file": "Data/Custom/Skins/FinalMU/10_413/eXG_Gloves213.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_413"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 414,
+      "file": "Data/Custom/Skins/FinalMU/10_414/eXG_Gloves214.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_414"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 415,
+      "file": "Data/Custom/Skins/FinalMU/10_415/eXG_Gloves215.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_415"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor214"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 416,
+      "file": "Data/Custom/Skins/FinalMU/10_416/eXG_Gloves216.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_416"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor215"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 417,
+      "file": "Data/Custom/Skins/FinalMU/10_417/eXG_Gloves217.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_417"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor216"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 418,
+      "file": "Data/Custom/Skins/FinalMU/10_418/GloveMale163.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_418"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor217"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 0.5
+          },
+          {
+            "mesh": 1,
+            "flags": 70,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.0,
+            "green": 0.5,
+            "blue": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "number": 419,
+      "file": "Data/Custom/Skins/FinalMU/10_419/eXG_Gloves219.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_419"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 420,
+      "file": "Data/Custom/Skins/FinalMU/10_420/eXG_Gloves220.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_420"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor219"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 421,
+      "file": "Data/Custom/Skins/FinalMU/10_421/eXG_Gloves221.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_421"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor220"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 422,
+      "file": "Data/Custom/Skins/FinalMU/10_422/eXG_Gloves222.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_422"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor221"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 423,
+      "file": "Data/Custom/Skins/FinalMU/10_423/eXG_Gloves223.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_423"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor222"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 424,
+      "file": "Data/Custom/Skins/FinalMU/10_424/eXG_Gloves224.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_424"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor223"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 425,
+      "file": "Data/Custom/Skins/FinalMU/10_425/eXG_Gloves225.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_425"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor224"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 426,
+      "file": "Data/Custom/Skins/FinalMU/10_426/eXG_Gloves226.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_426"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 427,
+      "file": "Data/Custom/Skins/FinalMU/10_427/eXG_Gloves227.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_427"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor226"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 428,
+      "file": "Data/Custom/Skins/FinalMU/10_428/eXG_Gloves228.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_428"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor227"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 429,
+      "file": "Data/Custom/Skins/FinalMU/10_429/eXG_Gloves229.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_429"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor228"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 430,
+      "file": "Data/Custom/Skins/FinalMU/10_430/eXG_Gloves230.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_430"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor229"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 431,
+      "file": "Data/Custom/Skins/FinalMU/10_431/eXG_Gloves231.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_431"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor230"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 432,
+      "file": "Data/Custom/Skins/FinalMU/10_432/eXG_Gloves232.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_432"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 433,
+      "file": "Data/Custom/Skins/FinalMU/10_433/eXG_Gkives233.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_433"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor232"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 434,
+      "file": "Data/Custom/Skins/FinalMU/10_434/eXG_Gloves234.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_434"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor233"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 435,
+      "file": "Data/Custom/Skins/FinalMU/10_435/eXG_Gloves235.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_435"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor234"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 436,
+      "file": "Data/Custom/Skins/FinalMU/10_436/eXG_Gloves236.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_436"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor235"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 437,
+      "file": "Data/Custom/Skins/FinalMU/10_437/eXG_Gloves237.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_437"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      }
+    },
+    {
+      "number": 438,
+      "file": "Data/Custom/Skins/FinalMU/10_438/GloveMale164.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/10_438"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMuArmor237"
+      },
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "material": {
+        "layers": [
+          {
+            "mesh": 0,
+            "flags": 2,
+            "blend": -1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 1.0,
+            "green": 1.0,
+            "blue": 1.0
+          },
+          {
+            "mesh": 1,
+            "flags": 66,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.5,
+            "green": 0.5,
+            "blue": 0.5
+          },
+          {
+            "mesh": 1,
+            "flags": 70,
+            "blend": 1,
+            "light": 1,
+            "u": 0,
+            "v": 0,
+            "red": 0.0,
+            "green": 0.5,
+            "blue": 1.0
+          }
+        ]
       }
     }
   ]

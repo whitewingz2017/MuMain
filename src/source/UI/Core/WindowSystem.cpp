@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "UI/Inventory/SkinShopWindow.h"
+#include "UI/Inventory/SkinInventoryWindow.h"
+#include "UI/Inventory/MuunInventoryWindow.h"
+#include "UI/Inventory/ExcellentCombinationWindow.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Dialogs/MessageBox.h"
 #include "UI/RmlBridge/RmlTheme.h"
@@ -286,6 +290,9 @@ bool CSystem::LoadMainSceneInterface()
     if (m_pNewPurchaseShopInventory->Create(m_pNewUIMng) == false)
         return false;
 
+    m_pCombatStatistics = new CCombatStatisticsWindow;
+    m_pCombatStatistics->Create(m_pNewUIMng);
+
     m_pNewCharacterInfoWindow = new CCharacterInfoWindow;
     if (m_pNewCharacterInfoWindow->Create(m_pNewUIMng) == false)
         return false;
@@ -535,6 +542,18 @@ bool CSystem::LoadMainSceneInterface()
     m_pGenericMenuDialog = new CGenericMenuDialog;
     m_pGenericMenuDialog->Create(m_pNewUIMng);
     g_pGenericMenuDialog = m_pGenericMenuDialog;
+    m_pSkinShopWindow = new CSkinShopWindow;
+    m_pSkinShopWindow->Create(m_pNewUIMng);
+    g_pSkinShopWindow = m_pSkinShopWindow;
+    m_pSkinInventoryWindow = new CSkinInventoryWindow;
+    m_pSkinInventoryWindow->Create(m_pNewUIMng);
+    g_pSkinInventoryWindow = m_pSkinInventoryWindow;
+    m_pMuunInventoryWindow = new CMuunInventoryWindow;
+    m_pMuunInventoryWindow->Create(m_pNewUIMng);
+    g_pMuunInventoryWindow = m_pMuunInventoryWindow;
+    m_pExcellentCombinationWindow = new CExcellentCombinationWindow;
+    m_pExcellentCombinationWindow->Create(m_pNewUIMng);
+    g_pExcellentCombinationWindow = m_pExcellentCombinationWindow;
 
     m_pMuHelperConfig = new CMuHelperConfigWindow;
     if (m_pMuHelperConfig->Create(m_pNewUIMng) == false)
@@ -554,6 +573,7 @@ bool CSystem::LoadMainSceneInterface()
     {
         UI::Placement::RegisterWindow(windowId, slotName, [&window]() -> CObject* { return window; }, document);
     };
+    slot(INTERFACE_COMBAT_STATISTICS, "combat_statistics", m_pCombatStatistics, "combat_statistics.rml");
     slot(INTERFACE_CHARACTER, "character", m_pNewCharacterInfoWindow, "character_info.rml");
     slot(INTERFACE_MUHELPER, "mu_helper", m_pMuHelperConfig, "mu_helper_config.rml");
     slot(INTERFACE_MUHELPER_EXT, "mu_helper_detail", m_pMuHelperDetail, "mu_helper_detail.rml");
@@ -647,6 +667,7 @@ void CSystem::UnloadMainSceneInterface()
     SAFE_DELETE(m_pNewTrade);
     SAFE_DELETE(m_pNewNPCQuest);
     SAFE_DELETE(m_pNewMyQuestInfoWindow);
+    SAFE_DELETE(m_pCombatStatistics);
     SAFE_DELETE(m_pNewCharacterInfoWindow);
     SAFE_DELETE(m_pNewPurchaseShopInventory);
     SAFE_DELETE(m_pNewMyShopInventory);
@@ -715,6 +736,14 @@ void CSystem::UnloadMainSceneInterface()
     g_pGenericConfirmDialog = nullptr;
     SAFE_DELETE(m_pGenericConfirmDialog);
 
+    g_pExcellentCombinationWindow = nullptr;
+    SAFE_DELETE(m_pExcellentCombinationWindow);
+    g_pSkinInventoryWindow = nullptr;
+    SAFE_DELETE(m_pSkinInventoryWindow);
+    g_pMuunInventoryWindow = nullptr;
+    SAFE_DELETE(m_pMuunInventoryWindow);
+    g_pSkinShopWindow = nullptr;
+    SAFE_DELETE(m_pSkinShopWindow);
     g_pGenericMenuDialog = nullptr;
     SAFE_DELETE(m_pGenericMenuDialog);
 
@@ -1547,6 +1576,7 @@ void CSystem::HideAll()
 void CSystem::HideAllGroupA()
 {
     Hide(INTERFACE_INVENTORY);
+    Hide(INTERFACE_COMBAT_STATISTICS);
     Hide(INTERFACE_CHARACTER);
 
     DWORD dwGroupA[] = {
@@ -1599,6 +1629,7 @@ void CSystem::HideAllGroupB()
 {
     Hide(INTERFACE_FRIEND);
     Hide(INTERFACE_INVENTORY);
+    Hide(INTERFACE_COMBAT_STATISTICS);
     Hide(INTERFACE_CHARACTER);
 
     DWORD dwGroupB[] = {

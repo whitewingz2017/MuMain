@@ -1,0 +1,19 @@
+<rml><head><title>Muun Inventory</title>
+<link type="text/rcss" href="base.rcss"/>
+<link type="text/rcss" href="../../muun_inventory_common.rcss"/>
+<link type="text/rcss" href="muun_inventory.rcss"/>
+</head><body id="panel" data-model="muun_inventory" data-event-mouseup="muun_drop">
+<img id="muun-chrome" src="../../../Muun/inventory.tga"/>
+<div id="muun-title">{{title}}</div>
+<button id="muun-close" class="muun-close" data-event-click="muun_close"></button>
+<button id="muun-book" data-event-click="muun_book">Pet Book</button>
+<button id="muun-exchange" data-event-click="muun_exchange">Egg Exchange</button>
+<div id="muun-main-label">Main Muun</div><div id="muun-sub-label">Sub Muun</div>
+<div class="muun-cell" data-for="item : items" data-class-position-0="item.position == 0" data-class-position-1="item.position == 1" data-class-position-2="item.position == 2" data-class-position-3="item.position == 3" data-class-position-4="item.position == 4" data-class-position-5="item.position == 5" data-class-position-6="item.position == 6" data-class-position-7="item.position == 7" data-class-position-8="item.position == 8" data-class-position-9="item.position == 9" data-class-position-10="item.position == 10" data-class-position-11="item.position == 11" data-class-position-12="item.position == 12" data-class-position-13="item.position == 13" data-class-position-14="item.position == 14" data-class-position-15="item.position == 15" data-class-position-16="item.position == 16" data-class-position-17="item.position == 17" data-class-position-18="item.position == 18" data-class-position-19="item.position == 19" data-class-position-20="item.position == 20" data-class-position-21="item.position == 21">
+<img class="muun-image" data-attr-id="'muun_item_' + it_index"/>
+<button class="muun-hit" data-attr-id="'muun_slot_' + it_index" data-class-disabled="pending" data-event-dragstart="muun_drag_start(item.position)" data-event-dragend="muun_drag_end" aria-label="Muun slot"></button></div>
+<button id="muun-previous" class="muun-pager" data-event-click="muun_page(-1)"></button>
+<span id="muun-page">{{page}}</span>
+<button id="muun-next" class="muun-pager" data-event-click="muun_page(1)"></button>
+<div id="muun-status">{{status}}</div><button id="muun-refresh" data-event-click="muun_refresh">Refresh</button>
+</body></rml>

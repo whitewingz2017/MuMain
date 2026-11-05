@@ -28,7 +28,7 @@ body {
 #panel {
     position: absolute;
     width: 329dp;
-    height: 245dp;
+    height: 275dp;
 
     font-family: "token(font-body)";
     font-size: 12dp;
@@ -164,7 +164,7 @@ body {
 .login-content {
 	left: 9dp;
 	right: 9dp;
-	top: 50dp;
+	top: 80dp;
 	height: 139dp;
 	pointer-events: none;
 }
@@ -229,7 +229,7 @@ body {
 .login-footer {
 	left: 9dp;
 	right: 9dp;
-	top: 190dp;
+	top: 220dp;
 	height: 46dp;
 	bottom: auto;
 	pointer-events: none;
@@ -259,15 +259,23 @@ body {
 	font-family: "token(font-body)";
 }
 
-/* Intentionally external to the forged dialog shell. top:257dp = 245dp window height + 12dp
+/* Intentionally external to the forged dialog shell. top:287dp = 275dp window height + 12dp
    below it. */
 .trust-warning {
 	position: absolute;
 	left: 30dp;
-	top: 257dp;
+	top: 287dp;
 	width: 280dp;
 	font-size: 10dp;
 	font-effect: shadow(0dp 1dp #000000);
 	color: token(semantic-warning);
 	font-family: "token(font-body)";
 }
+
+/* The saved-account dropdown stays centered above the login fields. */
+#saved_accounts_row { position: absolute; left: 27dp; top: 50dp; width: 275dp; height: 26dp; font-size: 11dp; pointer-events: auto; }
+.saved-accounts-title { position: absolute; left: 0; top: 4dp; width: 85dp; color: #f2d891; }
+#saved_account_toggle { position: absolute; left: 85dp; top: 0; width: 180dp; height: 24dp; line-height: 24dp; text-align: center; background-color: #141714; border: 1dp #8e7951; cursor: pointer; }
+#saved_account_list { position: absolute; left: 85dp; top: 25dp; width: 180dp; max-height: 150dp; overflow-y: auto; background-color: #101410; border: 1dp #8e7951; }
+.saved-account-option { display: block; padding: 6dp; color: #f0dfb4; cursor: pointer; }
+.saved-account-option:hover { background-color: #3b3926; }

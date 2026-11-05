@@ -1,4 +1,4 @@
-﻿/*+++++++++++++++++++++++++++++++++++++
+/*+++++++++++++++++++++++++++++++++++++
     INCLUDE.
 +++++++++++++++++++++++++++++++++++++*/
 #include "stdafx.h"
@@ -1100,15 +1100,32 @@ int CSItemOption::RenderSetOptionListInItem(const ITEM* ip, int TextNum, bool bI
     mu_swprintf(TextList[TNum], L"\n"); TNum++;
 
 
+    const SET_SEARCH_RESULT_OPT* equippedSet = nullptr;
     for (int i = 0; i < m_SetSearchResultCount; i++)
     {
-        const auto& set = m_SetSearchResult[i];
-        if (wcscmp(set.SetName, setOption.strSetName) == 0)
+        if (wcscmp(m_SetSearchResult[i].SetName, setOption.strSetName) == 0)
         {
-            // Set Found.
-            TNum = RenderSetOptionList(set, TNum, bIsEquippedItem, true);
+            equippedSet = &m_SetSearchResult[i];
             break;
         }
+    }
+
+    if (equippedSet != nullptr)
+    {
+        TNum = RenderSetOptionList(*equippedSet, TNum, bIsEquippedItem, true);
+    }
+    else
+    {
+        // Fewer than two pieces of this set are worn (a dropped, stored or single item): list every
+        // option of the set, all inactive, as the original client did.
+        SET_SEARCH_RESULT_OPT preview{};
+        preview.SetNumber = m_bySelectedItemOption;
+        preview.CompleteSetItemCount = setOption.bySetItemCount;
+        preview.SetTypeIndex = static_cast<std::uint8_t>(ip->AncientDiscriminator - 1);
+        wcscpy(preview.SetName, setOption.strSetName);
+        AddSetOptions(preview, setOption, gCharacterManager.GetBaseClass(Hero->Class),
+                      gCharacterManager.IsSecondClass(Hero->Class));
+        TNum = RenderSetOptionList(preview, TNum, false, true);
     }
 
     mu_swprintf(TextList[TNum], L"\n"); TNum++;

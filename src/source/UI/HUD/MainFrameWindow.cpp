@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "UI/Bank/JewelBank.h"
 #include <algorithm>
 #include "I18N/All.h"
 
@@ -284,6 +285,8 @@ void mu::ui::window::CMainFrameWindow::BindRmlModel(Rml::DataModelConstructor& c
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickMyInven(); });
     c.BindEventCallback("mainframe_friend_click",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickFriend(); });
+    c.BindEventCallback("mainframe_bank_click",
+                        [](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { UI::Bank::Open(); });
     c.BindEventCallback("mainframe_window_click",
         [this](Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&) { RmlClickWindow(); });
     c.BindEventCallback("mainframe_party_click",

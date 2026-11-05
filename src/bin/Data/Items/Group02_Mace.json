@@ -583,6 +583,508 @@
       "classRequirements": {
         "darkLord": 1
       }
-    }
-  ]
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Mace Skin"
+      },
+      "width": 1,
+      "height": 4,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Battle Scepter Skin"
+      },
+      "width": 1,
+      "height": 3,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ],
+      "classRequirements": {
+        "darkLord": 1
+      }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mythical Thunderbolt Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkLord": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Mythical Horn of Steal Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Immortal Scepter of Revenge Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkLord": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Immortal Thunder Hammer Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkKnight": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Mythical Elysium Scepter Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkLord": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Legendary Regal Scepter Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkLord": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Final Cerberum Scepter Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkLord": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Scepter Skin 1 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Scepter Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Scepter Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Scepter Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 311,
+      "name": {
+        "en": "Scepter Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 312,
+      "name": {
+        "en": "Scepter Skin 6 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 313,
+      "name": {
+        "en": "Scepter Skin 7 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 314,
+      "name": {
+        "en": "Scepter Skin 8 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 315,
+      "name": {
+        "en": "Scepter Skin 9 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 316,
+      "name": {
+        "en": "Scepter Skin 10 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    }]
 }

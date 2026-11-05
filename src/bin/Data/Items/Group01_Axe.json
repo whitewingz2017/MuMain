@@ -274,6 +274,396 @@
         "darkKnight": 1,
         "magicGladiator": 1
       }
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mythical Dual Berserk Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Legendary Expanced Reaver Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Legendary Mindcrasher Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Immortal Bone Slaughter Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "magicGladiator": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Axe Skin 1 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Axe Skin 2 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Axe Skin 3 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Axe Skin 4 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Axe Skin 5 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Axe Skin 6 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Axe Skin 7 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 311,
+      "name": {
+        "en": "Axe Skin 8 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 312,
+      "name": {
+        "en": "Axe Skin 9 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 313,
+      "name": {
+        "en": "Axe Skin 10 Skin"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "classRequirements": {
+        "darkWizard": 3,
+        "darkKnight": 3,
+        "fairyElf": 3,
+        "magicGladiator": 3,
+        "darkLord": 3,
+        "summoner": 3,
+        "rageFighter": 3
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Permanent, tradable skin. Equip in the Skin slot."
+          },
+          "color": "blue"
+        }
+      ]
     }
   ]
 }

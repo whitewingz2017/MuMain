@@ -220,7 +220,7 @@ void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int L
 // For a slot that already knows whether it is hovered -- an RmlUi element -- instead of testing the
 // legacy mouse globals against the rectangle, which need not be where the item is shown.
 void RenderItem3DWithHover(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool hovered);
-void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancientDiscriminator, vec3_t Target, int Select, bool PickUp);
+void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancientDiscriminator, vec3_t Target, int Select, bool PickUp, float slotWidth = 0, float slotHeight = 0);
 bool GetAttackDamage(int* iMinDamage, int* iMaxDamage);
 // The item's name in the item names' language (the UI's, or English with "Translate item names" off), as windows,
 // messages and ground labels write it: the text of the first of its

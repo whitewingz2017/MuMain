@@ -62,6 +62,13 @@
 		<div class="btn btn-cancel" data-event-click="login_cancel_click">{{cancel_label}}</div>
 
 		<span class="trust-warning">{{trust_warning}}</span>
+        <div id="saved_accounts_row">
+            <span class="saved-accounts-title">Account Save:</span>
+            <div id="saved_account_toggle" data-event-click="login_toggle_accounts">{{saved_account_label}} v</div>
+            <div id="saved_account_list" data-class-hidden="!account_list_open">
+                <div class="saved-account-option" data-for="name : saved_accounts" data-event-click="login_choose_account(it_index)">{{name}}</div>
+            </div>
+        </div>
 	</div>
 </body>
 </rml>

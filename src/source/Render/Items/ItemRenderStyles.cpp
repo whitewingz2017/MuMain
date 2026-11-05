@@ -3,6 +3,8 @@
 #include "Core/Utilities/Random.h"
 #include "ItemRenderStyles.h"
 #include "ItemModelTable.h"
+#include "ItemMeshLayers.h"
+#include "ScopedItemEffects.h"
 
 #include "Core/Globals/_enum.h"
 #include "Engine/AI/ZzzAI.h"
@@ -21,6 +23,7 @@ namespace Render::Items::Styles
 {
 namespace
 {
+bool RenderAdditiveMeshes(BMD* b, const DrawLook& look, int type, float alpha, int flags);
 // A recipe draws the model and returns true, or returns false when the style
 // is not for this drawing (the drawing code then draws the model plainly).
 using StyleFunction = bool (*)(BMD* b, const OBJECT* o, DrawLook& look, int Type, float Alpha, int RenderType);
@@ -1741,6 +1744,36 @@ bool RenderInvisibilityCloak(BMD* b, const OBJECT* o, DrawLook& look, int Type, 
 
 // ------------------------------------------------ glow passes
 
+bool RenderFinalMuWing(BMD* b, const OBJECT* o, DrawLook& look, int type, float alpha, int flags)
+{
+    if (!(flags & RENDER_TEXTURE)) return false;
+    vec3_t originalLight;
+    VectorCopy(b->BodyLight, originalLight);
+    // The reference normalizes the whole registered wing, including its solid meshes.
+    Vector(1.f, 1.f, 1.f, b->BodyLight);
+    if (!RenderAdditiveMeshes(b, look, type, alpha, flags))
+        b->RenderBody(flags, alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU, look.blendMeshV,
+                      look.hiddenMesh);
+    VectorCopy(originalLight, b->BodyLight);
+    return true;
+}
+
+bool RenderMjsWing12(BMD* b, const OBJECT* o, DrawLook& look, int Type, float Alpha, int RenderType)
+{
+    constexpr int SolidWingMesh = 1;
+    if (b->NumMeshs <= SolidWingMesh || !(RenderType & RENDER_TEXTURE)) return false;
+    if (look.hiddenMesh != SolidWingMesh)
+        b->RenderMesh(SolidWingMesh, RenderType, Alpha, look.blendMesh, look.blendMeshLight, look.blendMeshU,
+                      look.blendMeshV);
+    // The other five RGB textures contain light on black, rather than opaque wing material.
+    for (int mesh = 0; mesh < b->NumMeshs; ++mesh)
+    {
+        if (mesh == SolidWingMesh || mesh == look.hiddenMesh) continue;
+        b->RenderMesh(mesh, RenderType | RENDER_BRIGHT, Alpha, -1, 1.f, look.blendMeshU, look.blendMeshV);
+    }
+    return true;
+}
+
 // The whole staff glows, then its second mesh again, white; the object keeps
 // blending that mesh.
 void RenderDeadlyStaffGlow(BMD* b, const OBJECT* o, DrawLook& look, float Alpha, int RenderType, int Texture)
@@ -1755,6 +1788,8 @@ void RenderDeadlyStaffGlow(BMD* b, const OBJECT* o, DrawLook& look, float Alpha,
 // ------------------------------------------------ the names
 
 const RenderStyle RenderStyles[] = {
+    {"finalMuWing", RenderFinalMuWing},
+    {"mjsWing12", RenderMjsWing12},
     {"stormCrow", RenderStormCrow},
     {"thunderHawk", RenderThunderHawk},
     {"wingsOfDarkness", RenderWingsOfDarkness},
@@ -1933,6 +1968,58 @@ ItemModelTable<const RenderStyle*> g_itemStyles{[](const Data::Items::ItemModelD
                                                     return model.renderStyle.empty() ? nullptr
                                                                                      : FindStyle(model.renderStyle);
                                                 }};
+
+void MeshAnimationOffset(const Data::Items::ItemMaterial& material, int mesh, float& u, float& v, int group)
+{
+    constexpr int WingGroup = 12;
+    constexpr float WingFramesPerSecond = 25.f;
+    constexpr float ItemFramesPerSecond = 16.f;
+    constexpr float MillisecondsPerSecond = 1000.f;
+    const float frameDurationMs = MillisecondsPerSecond / (group == WingGroup ? WingFramesPerSecond : ItemFramesPerSecond);
+    for (const auto& animation : material.animations)
+    {
+        if (animation.mesh != mesh) continue;
+        const int frame = static_cast<int>(WorldTime / frameDurationMs) % animation.frames;
+        u += static_cast<float>(frame % animation.columns) / animation.columns;
+        v += static_cast<float>(frame / animation.columns) / animation.rows;
+        return;
+    }
+}
+
+bool RenderAdditiveMeshes(BMD* b, const DrawLook& look, int type, float alpha, int flags)
+{
+    const auto* model = FindItemModel(type);
+    if (!model || model->material.additiveMeshes.empty() || !(flags & RENDER_TEXTURE)) return false;
+    const auto& material = model->material;
+    const bool effects = ScopedItemEffects::Enabled();
+    const bool hasSolidMesh = material.additiveMeshes.size() < static_cast<size_t>(b->NumMeshs);
+    b->BeginRender(alpha);
+    // Opaque surfaces establish depth before the transparent light planes.
+    for (int pass = 0; pass < 2; ++pass)
+    {
+        for (int mesh = 0; mesh < b->NumMeshs; ++mesh)
+        {
+            if (mesh == look.hiddenMesh) continue;
+            const auto& additive = material.additiveMeshes;
+            const bool glow = std::find(additive.begin(), additive.end(), mesh) != additive.end();
+            if (glow != (pass == 1) || (glow && !effects && hasSolidMesh)) continue;
+            float u = look.blendMeshU, v = look.blendMeshV;
+            if (effects) MeshAnimationOffset(material, mesh, u, v, model->group);
+            const auto streamMesh = b->StreamMesh;
+            if (glow && effects) b->StreamMesh = static_cast<char>(mesh);
+            vec3_t surfaceLight;
+            VectorCopy(b->BodyLight, surfaceLight);
+            // Emissive textures retain their color even on unlit terrain tiles.
+            if (glow && effects) Vector(1.f, 1.f, 1.f, b->BodyLight);
+            b->RenderMesh(mesh, glow && effects ? flags | RENDER_BRIGHT : flags, alpha,
+                          glow ? -1 : look.blendMesh, glow ? 1.f : look.blendMeshLight, u, v);
+            VectorCopy(surfaceLight, b->BodyLight);
+            b->StreamMesh = streamMesh;
+        }
+    }
+    b->EndRender();
+    return true;
+}
 } // namespace
 
 bool Exists(std::string_view name)
@@ -1977,7 +2064,12 @@ void SpawnHelperNpcPlateLights(OBJECT* o)
 
 bool Render(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float alpha, int renderType)
 {
+    if (RenderMeshLayers(b, o, modelType, alpha, renderType)) return true;
     const RenderStyle* style = g_itemStyles.Find(modelType);
+    if (style && style->render == RenderFinalMuWing)
+        return style->Render(b, o, look, modelType, alpha, renderType);
+    if (RenderAdditiveMeshes(b, look, modelType, alpha, renderType))
+        return true;
     return style != nullptr && style->Render(b, o, look, modelType, alpha, renderType);
 }
 

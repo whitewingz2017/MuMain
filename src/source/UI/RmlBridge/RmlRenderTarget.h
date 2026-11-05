@@ -31,6 +31,10 @@ public:
     // Draws only while enabled, so a hidden window costs nothing.
     void SetEnabled(bool enabled) { m_enabled = enabled; }
 
+    // Cached targets redraw only after invalidation or resizing; animated targets keep the default.
+    void SetContinuous(bool continuous) { m_continuous = continuous; }
+    void Invalidate() { m_dirty = true; }
+
     // Empty until the first frame has been drawn.
     const Rml::String& Source() const { return m_source; }
 
@@ -57,5 +61,7 @@ private:
     Texture m_pending;
     Rml::String m_source;
     bool m_enabled = false;
+    bool m_continuous = true;
+    bool m_dirty = true;
 };
 } // namespace UI::RmlBridge

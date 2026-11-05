@@ -1,7 +1,9 @@
-﻿
+
 #include "stdafx.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "UI/Core/UIManager.h"
 #include "UI/Inventory/InventoryCtrl.h"
+#include "UI/Inventory/MyInventory.h"
 #include "UI/RmlBridge/RmlElementBox.h"
 #include "UI/RmlBridge/RmlPanelGeometry.h"
 #include "UI/Inventory/ItemMng.h"
@@ -407,7 +409,7 @@ bool mu::ui::window::CInventoryCtrl::CanChangeItemColorState(ITEM* pItem)
         return true;
     }
 
-    if (pItem->Type >= ITEM_HELPER && pItem->Type <= ITEM_DARK_RAVEN_ITEM || pItem->Type == ITEM_HORN_OF_FENRIR ||
+    if (pItem->Type >= ITEM_HELPER && pItem->Type <= ITEM_DARK_RAVEN_ITEM || GameLogic::Cosmetics::HelperBehaviorItem(pItem->Type) == ITEM_HORN_OF_FENRIR ||
         pItem->Type == ITEM_PET_UNICORN)
     {
         return true;
@@ -943,7 +945,7 @@ bool mu::ui::window::CInventoryCtrl::UpdateMouseEvent()
              nullptr == GetPickedItem() && false == IsLocked() && m_bRepairMode == false)
     {
         m_EventState = EVENT_PICKING;
-        ITEM* pItem = this->FindItem(m_iPointedSquareIndex);
+        ITEM* pItem = this->FindItemAtPointer();
         if (pItem)
         {
             if (CreatePickedItem(this, pItem, true))
@@ -1070,7 +1072,7 @@ bool mu::ui::window::CInventoryCtrl::DropActsOn(ITEM* pPickItem, ITEM* pTargetIt
             bSuccess = true;
     }
 
-    if (pPickItem->Type == ITEM_JEWEL_OF_BLESS && iType == ITEM_HORN_OF_FENRIR && iDurability != 255)
+    if (pPickItem->Type == ITEM_JEWEL_OF_BLESS && GameLogic::Cosmetics::HelperBehaviorItem(iType) == ITEM_HORN_OF_FENRIR && iDurability != 255)
         bSuccess = true;
 
     if (bSuccess == false && m_pOwner == g_pMyInventory)

@@ -1,0 +1,15 @@
+#panel { position: absolute; left: 2vw; top: 8vh; width: 50vw; height: 82vh; margin: 0; transform: none; font-family: "Liberation Sans"; font-size: 12dp; color: #eee1c5; }
+#panel .window-shell-content { display: flex; flex-direction: column; align-items: stretch; min-height: 0; pointer-events: auto; }
+#panel .btn { position: relative; left: auto; top: auto; right: auto; bottom: auto; box-sizing: border-box; width: auto; min-width: 0; height: 27dp; padding: 4dp; font-size: 11dp; line-height: 17dp; }
+.storage-toolbar { display: flex; flex: 0 0 30dp; justify-content: space-between; align-items: center; }
+.storage-columns { width: 100%; display: flex; flex: 1 1 0; min-height: 0; margin: 5dp 0; }
+.storage-grid { position: relative; flex: 1 1 100%; width: 100%; min-width: 0; min-height: 0; }
+.storage-card { left: 0; top: 0; display: block; box-sizing: border-box; position: absolute; width: 31%; height: 48%; padding: 3dp; background-color: #11191fe0; border: 1dp #685333; }
+.storage-image { width: calc(100% - 6dp); height: calc(100% - 58dp); position: absolute; top: 3dp; left: 3dp; right: 3dp; bottom: 55dp; display: block; }
+.storage-card span { position: absolute; left: 3dp; right: 3dp; bottom: 27dp; height: 26dp; font-size: 10dp; line-height: 13dp; text-align: center; overflow: hidden; white-space: normal; }
+#panel .storage-card .btn { position: absolute; left: 3dp; right: 3dp; top: auto; bottom: 3dp; width: auto; height: 23dp; padding: 2dp; line-height: 17dp; }
+.storage-note { flex: 0 0 30dp; font-size: 10dp; line-height: 13dp; white-space: normal; }
+
+.storage-card.column-middle { left: 33%; }
+.storage-card.column-right { left: 66%; }
+.storage-card.row-bottom { top: 50%; }

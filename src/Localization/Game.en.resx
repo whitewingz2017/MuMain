@@ -1519,7 +1519,7 @@
     <comment>Login screen: remember-password checkbox label.</comment>
   </data>
   <data name="LoginTrustWarning" xml:space="preserve">
-    <value>Only save the password on a PC you trust.</value>
+    <value>Only save the password on a Phone you trust.</value>
     <comment>Login screen: warning under the remember-password checkbox.</comment>
   </data>
   <data name="LoginSavePasswordWarningTitle" xml:space="preserve">

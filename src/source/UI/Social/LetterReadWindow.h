@@ -16,6 +16,8 @@ public:
     void SetLetter(LETTERLIST_TEXT* pLetterHead, const wchar_t* pLetterText);
     // The three button actions the view hands back.
     void Reply();
+    void ClaimAttachment();
+    unsigned int LetterIndex() const { return m_LetterHead.m_dwLetterID; }
     void AskDelete();
     // -1 for the previous letter, +1 for the next; native had two copies of these twenty lines.
     void StepLetter(int direction);

@@ -31,6 +31,15 @@
 			<span class="checkbox-label">{{save_password_label}}</span>
 		</div>
 
+		<!-- TwinMU saved accounts: not in the 0.97 box, so it sits just above it. -->
+		<div id="saved_accounts_row">
+			<span class="saved-accounts-title native-text">Account Save:</span>
+			<div id="saved_account_toggle" class="native-text" data-event-click="login_toggle_accounts">{{saved_account_label}} v</div>
+			<div id="saved_account_list" data-class-hidden="!account_list_open">
+				<div class="saved-account-option native-text" data-for="name : saved_accounts" data-event-click="login_choose_account(it_index)">{{name}}</div>
+			</div>
+		</div>
+
 		<div class="btn btn-ok" data-event-click="login_ok_click"><span class="btn-text native-text">{{ok_label}}</span></div>
 		<div class="btn btn-cancel" data-event-click="login_cancel_click"><span class="btn-text native-text">{{cancel_label}}</span></div>
 	</div>

@@ -5,191 +5,367 @@
     {
       "number": 0,
       "file": "Data/Item/Shield01.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 1,
       "file": "Data/Item/Shield02.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 2,
       "file": "Data/Item/Shield03.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 3,
       "file": "Data/Item/Shield04.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 4,
       "file": "Data/Item/Shield05.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 5,
       "file": "Data/Item/Shield06.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 6,
       "file": "Data/Item/Shield07.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 7,
       "file": "Data/Item/Shield08.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 8,
       "file": "Data/Item/Shield09.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 9,
       "file": "Data/Item/Shield10.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 10,
       "file": "Data/Item/Shield11.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 11,
       "file": "Data/Item/Shield12.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 12,
       "file": "Data/Item/Shield13.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 13,
       "file": "Data/Item/Shield14.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 14,
       "file": "Data/Item/Shield15.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       }
     },
     {
       "number": 15,
       "file": "Data/Item/shield16.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.7],
-        "rotation": [270, 270, 0]
+        "anchor": [
+          0.5,
+          0.7
+        ],
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "renderStyle": "grandSoulShield"
     },
     {
       "number": 16,
       "file": "Data/Item/shield17.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.5, 0.9],
-        "rotation": [270, 270, 0]
+        "anchor": [
+          0.5,
+          0.9
+        ],
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "glow": {
         "color": "lime",
@@ -200,76 +376,1278 @@
     {
       "number": 17,
       "file": "Data/Item/Shield_18.bmd",
-      "textureFolders": ["Item", "Effect"],
+      "textureFolders": [
+        "Item",
+        "Effect"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "renderStyle": "crimsonGlory"
     },
     {
       "number": 18,
       "file": "Data/Item/Shield_19.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "renderStyle": "salamanderShield"
     },
     {
       "number": 19,
       "file": "Data/Item/Shield_20.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "glow": {
         "color": "emerald",
-        "meshes": [0],
-        "shineMeshes": [0]
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "renderStyle": "frostBarrier"
     },
     {
       "number": 20,
       "file": "Data/Item/Shield_21.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "rotation": [270, 270, 0]
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "glow": {
         "color": "periwinkle",
-        "meshes": [0]
+        "meshes": [
+          0
+        ]
       },
       "renderStyle": "guardianShield"
     },
     {
       "number": 21,
       "file": "Data/Item/crosssheild.bmd",
-      "textureFolders": ["Item"],
+      "textureFolders": [
+        "Item"
+      ],
       "inventory": {
-        "anchor": [0.55, 0.5],
-        "rotation": [270, 270, 0]
+        "anchor": [
+          0.55,
+          0.5
+        ],
+        "rotation": [
+          270,
+          270,
+          0
+        ]
       },
       "ground": {
-        "rotation": [0, 270, 225]
+        "rotation": [
+          0,
+          270,
+          225
+        ]
       },
       "glow": {
         "color": "rust",
-        "meshes": [0]
+        "meshes": [
+          0
+        ]
       },
       "renderStyle": "crossShield"
+    },
+    {
+      "number": 100,
+      "file": "Data/Custom/Skins/SHIELD/Shield100.bmd",
+      "textureFolders": [
+        "Custom/Skins/SHIELD"
+      ],
+      "inventory": {
+        "scale": 0.0025,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 2,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 3,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 4,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 5,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 6,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 7,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 8,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 9,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        },
+        {
+          "bone": 10,
+          "texture": 32003,
+          "color": [
+            0.54,
+            0.24,
+            0.63
+          ],
+          "size": 0.7
+        }
+      ],
+      "glow": {
+        "excellent": false
+      }
+    },
+    {
+      "number": 300,
+      "file": "Data/Custom/Skins/FinalMU/06_300/eXG_Shield101.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_300"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x100"
+      },
+      "inventory": {
+        "scale": 0.001817,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 301,
+      "file": "Data/Custom/Skins/FinalMU/06_301/eXG_Shield102.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_301"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x101"
+      },
+      "inventory": {
+        "scale": 0.002014,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 302,
+      "file": "Data/Custom/Skins/FinalMU/06_302/eXG_Shield103.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_302"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x102"
+      },
+      "inventory": {
+        "scale": 0.001953,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 303,
+      "file": "Data/Custom/Skins/FinalMU/06_303/eXG_Shield104.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_303"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x103"
+      },
+      "inventory": {
+        "scale": 0.00205,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 304,
+      "file": "Data/Custom/Skins/FinalMU/06_304/eXG_Shield105.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_304"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x104"
+      },
+      "inventory": {
+        "scale": 0.001993,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 305,
+      "file": "Data/Custom/Skins/FinalMU/06_305/eXG_Shield106.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_305"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x105"
+      },
+      "inventory": {
+        "scale": 0.001638,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 306,
+      "file": "Data/Custom/Skins/FinalMU/06_306/eXG_Shield107.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_306"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x106"
+      },
+      "inventory": {
+        "scale": 0.001791,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 307,
+      "file": "Data/Custom/Skins/FinalMU/06_307/eXG_Shield108.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_307"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x107"
+      },
+      "inventory": {
+        "scale": 0.002097,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 308,
+      "file": "Data/Custom/Skins/FinalMU/06_308/eXG_Shield109.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_308"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x108"
+      },
+      "inventory": {
+        "scale": 0.001413,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 309,
+      "file": "Data/Custom/Skins/FinalMU/06_309/eXG_Shield110.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_309"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x109"
+      },
+      "inventory": {
+        "scale": 0.002157,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 310,
+      "file": "Data/Custom/Skins/FinalMU/06_310/eXG_Shield111.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_310"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x110"
+      },
+      "inventory": {
+        "scale": 0.001832,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 311,
+      "file": "Data/Custom/Skins/FinalMU/06_311/eXG_Shield112.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_311"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x111"
+      },
+      "inventory": {
+        "scale": 0.001744,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 312,
+      "file": "Data/Custom/Skins/FinalMU/06_312/eXG_Shield113.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_312"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x112"
+      },
+      "inventory": {
+        "scale": 0.001865,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 313,
+      "file": "Data/Custom/Skins/FinalMU/06_313/eXG_Shield114.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_313"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x113"
+      },
+      "inventory": {
+        "scale": 0.001872,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 314,
+      "file": "Data/Custom/Skins/FinalMU/06_314/eXG_Shield115.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_314"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x114"
+      },
+      "inventory": {
+        "scale": 0.002002,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 315,
+      "file": "Data/Custom/Skins/FinalMU/06_315/eXG_Shield116.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_315"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x115"
+      },
+      "inventory": {
+        "scale": 0.001689,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 316,
+      "file": "Data/Custom/Skins/FinalMU/06_316/eXG_Shield117.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_316"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x116"
+      },
+      "staticEffects": [
+        {
+          "bone": 2,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32231,
+          "color": [
+            1.0,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "size": 1.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32900,
+          "color": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.002296,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 317,
+      "file": "Data/Custom/Skins/FinalMU/06_317/eXG_Shield118.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_317"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x117"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32002,
+          "color": [
+            0.47,
+            0.74,
+            0.89
+          ],
+          "size": 0.8,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.47,
+            0.74,
+            0.89
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32900,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 0.5,
+          "rotation": 0.0
+        },
+        {
+          "bone": 1,
+          "texture": 32140,
+          "color": [
+            0.35,
+            0.34,
+            1.0
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001724,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 318,
+      "file": "Data/Custom/Skins/FinalMU/06_318/eXG_Shield119.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_318"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x118"
+      },
+      "staticEffects": [
+        {
+          "bone": 2,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 6,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 9,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 10,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 11,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        },
+        {
+          "bone": 12,
+          "texture": 32002,
+          "color": [
+            0.43,
+            0.52,
+            0.94
+          ],
+          "size": 0.7,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.001533,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 319,
+      "file": "Data/Custom/Skins/FinalMU/06_319/eXG_Shield120.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_319"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x119"
+      },
+      "inventory": {
+        "scale": 0.001786,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 320,
+      "file": "Data/Custom/Skins/FinalMU/06_320/eXG_Shield121.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_320"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x120"
+      },
+      "inventory": {
+        "scale": 0.00177,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 321,
+      "file": "Data/Custom/Skins/FinalMU/06_321/eXG_Shield122.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_321"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x121"
+      },
+      "staticEffects": [
+        {
+          "bone": 1,
+          "texture": 32400,
+          "color": [
+            0.11,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 2,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 3,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 4,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 5,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.3,
+          "rotation": 0.0
+        },
+        {
+          "bone": 7,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.1,
+          "rotation": 0.0
+        },
+        {
+          "bone": 8,
+          "texture": 32400,
+          "color": [
+            0.23,
+            0.5,
+            0.5
+          ],
+          "size": 0.2,
+          "rotation": 0.0
+        }
+      ],
+      "inventory": {
+        "scale": 0.002233,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 322,
+      "file": "Data/Custom/Skins/FinalMU/06_322/eXG_Shield123.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_322"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x122"
+      },
+      "inventory": {
+        "scale": 0.001579,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 323,
+      "file": "Data/Custom/Skins/FinalMU/06_323/eXG_Shield124.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_323"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x123"
+      },
+      "inventory": {
+        "scale": 0.001654,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 324,
+      "file": "Data/Custom/Skins/FinalMU/06_324/eXG_Shield125.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_324"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x124"
+      },
+      "inventory": {
+        "scale": 0.00192,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 325,
+      "file": "Data/Custom/Skins/FinalMU/06_325/eXG_Shield126.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_325"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x125"
+      },
+      "inventory": {
+        "scale": 0.002294,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 326,
+      "file": "Data/Custom/Skins/FinalMU/06_326/eXG_Shield127.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_326"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x126"
+      },
+      "inventory": {
+        "scale": 0.00213,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 327,
+      "file": "Data/Custom/Skins/FinalMU/06_327/eXG_Shield128.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_327"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x127"
+      },
+      "inventory": {
+        "scale": 0.001539,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 328,
+      "file": "Data/Custom/Skins/FinalMU/06_328/eXG_Shield129.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_328"
+      ],
+      "glow": {
+        "excellent": false,
+        "color": "finalMu6x128"
+      },
+      "inventory": {
+        "scale": 0.001943,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
+    },
+    {
+      "number": 329,
+      "file": "Data/Custom/Skins/FinalMU/06_329/eXG_Shield130.bmd",
+      "textureFolders": [
+        "Custom/Skins/FinalMU/06_329"
+      ],
+      "glow": {
+        "excellent": false
+      },
+      "inventory": {
+        "scale": 0.001672,
+        "rotation": [
+          270,
+          270,
+          0
+        ],
+        "anchor": [
+          0.5,
+          0.55
+        ]
+      }
     }
   ]
 }

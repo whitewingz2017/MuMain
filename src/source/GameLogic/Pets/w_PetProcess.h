@@ -101,8 +101,10 @@ public:
     bool LoadData();
     std::size_t CountPets(CHARACTER* owner) const;
     bool IsPet(int itemType);
+    bool HasPet(CHARACTER* owner, int itemType) const;
     bool CreatePet(int itemType, int modelType, vec3_t Position, CHARACTER* Owner, int SubType = 0, int LinkBone = 0);
     void DeletePet(CHARACTER* Owner, int itemType = -1, bool allDelete = false);
+    void AttackMuun(CHARACTER* owner, int type, int targetIndex);
     void UpdatePets();
     // Marks the pets the frame's view shows; part of CullWorld.
     void CullPets();

@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <utility>
 #include "Core/Platform/WinCompat.h"
 #include "Data/GameConfig/GameConfigValidation.h"
 
@@ -49,6 +50,9 @@ public:
     // Drops the saved username and password from config.ini and revokes the
     // save-password consent. Used when the player edits the credentials.
     void ClearCredentials();
+    std::vector<std::wstring> GetSavedAccountNames();
+    bool SelectSavedAccount(std::size_t index, std::wstring& user, std::wstring& password);
+    void ForgetSavedAccount(const std::wstring& user, bool passwordOnly = false);
 
     std::wstring GetLanguageSelection() const { return m_languageSelection; }
     void SetLanguageSelection(const std::wstring& lang);
@@ -95,6 +99,8 @@ public:
     // until something writes the setting back.
     int GetUIScalePercent() const { return m_uiScalePercent; }
     void SetUIScalePercent(int percent);
+    int GetChatTextScalePercent() const { return m_chatTextScalePercent; }
+    void SetChatTextScalePercent(int percent);
 
     // Chat commands - the favourites and the named templates of the command
     // window. They belong to the installation, not to a character.
@@ -136,6 +142,8 @@ public:
         return m_antialiasing;
     }
     void SetAntialiasing(int samples);
+    bool GetLowWorldTextures() const { return m_lowWorldTextures; }
+    void SetLowWorldTextures(bool enabled) { m_lowWorldTextures = enabled; }
     bool GetEnhancedLighting() const { return m_enhancedLighting; }
     void SetEnhancedLighting(bool enabled) { m_enhancedLighting = enabled; }
     bool GetDynamicLights() const { return m_dynamicLights; }
@@ -194,6 +202,10 @@ private:
     GameConfig(const GameConfig&) = delete;
     GameConfig& operator=(const GameConfig&) = delete;
 
+    void LoadSavedAccounts();
+    void SaveSavedAccounts();
+    void RememberCurrentAccount();
+    std::vector<std::pair<std::wstring, std::wstring>> m_savedAccounts;
     std::filesystem::path m_configPath;
 
     int  m_windowWidth;
@@ -220,12 +232,14 @@ private:
     std::wstring m_fontSelection;
     std::wstring m_rmlTheme;
     int m_uiScalePercent;
+    int m_chatTextScalePercent;
     bool m_enableAnimationTaskPool;
 
     int m_zoom;
     bool m_sortParticleDraws;
     bool m_vsyncEnabled;
     LookPreset m_look;
+    bool m_lowWorldTextures = false;
     int m_anisotropy;
     int m_antialiasing;
     bool m_enhancedLighting;

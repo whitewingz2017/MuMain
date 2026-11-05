@@ -5,6 +5,7 @@
 
 #include "UI/Inventory/InventoryCtrl.h"
 #include "UI/Inventory/ItemCameraTarget.h"
+#include "UI/Inventory/MuunInventoryWindow.h"
 #include "UI/RmlBridge/RmlDocumentVisibility.h"
 #include "UI/RmlBridge/RmlThemedView.h"
 
@@ -12,6 +13,12 @@ namespace
 {
 using mu::ui::window::CInventoryCtrl;
 using mu::ui::window::CPickedItem;
+using mu::ui::window::g_pMuunInventoryWindow;
+
+bool ShownMuunItem()
+{
+    return g_pMuunInventoryWindow && g_pMuunInventoryWindow->IsDraggingItem();
+}
 
 CPickedItem* ShownPickedItem()
 {
@@ -27,6 +34,8 @@ struct CursorItemLayer
                                        {
                                            if (CPickedItem* picked = ShownPickedItem())
                                                picked->Render3D();
+                                           else if (ShownMuunItem())
+                                               g_pMuunInventoryWindow->RenderDraggedItem();
                                        }};
 };
 
@@ -40,7 +49,7 @@ void UI::Items::SyncCursorItemLayer()
         g_Layer = new CursorItemLayer();
     g_Layer->view.Ensure();
     Rml::ElementDocument* document = g_Layer->view.Document();
-    const bool shown = ShownPickedItem() != nullptr;
+    const bool shown = ShownPickedItem() != nullptr || ShownMuunItem();
     UI::RmlBridge::SyncDocumentVisibilityInFront(document, shown);
     g_Layer->target.Sync(document ? document->GetElementById("cursor_item") : nullptr, shown);
 }

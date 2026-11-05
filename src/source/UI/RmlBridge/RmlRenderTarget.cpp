@@ -124,7 +124,7 @@ void RenderTarget::Resize(std::uint32_t width, std::uint32_t height)
 
 void RenderTarget::Draw()
 {
-    if (!m_enabled || !m_drawer)
+    if (!m_enabled || !m_drawer || (!m_continuous && !m_dirty && m_pending.id == 0))
         return;
     const bool promoting = m_pending.id != 0;
     const Texture target = promoting ? m_pending : m_current;
@@ -140,6 +140,7 @@ void RenderTarget::Draw()
         m_drawer(target.width, target.height);
     }
     renderer.EndOffscreenCapture();
+    m_dirty = false;
 
     if (!promoting)
         return;

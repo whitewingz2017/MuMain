@@ -34,7 +34,7 @@ private:
     bool HandleRightClick(CInventoryCtrl* targetControl) const;
     bool HandleStorageAutoMove(CInventoryCtrl* targetControl) const;
     bool HandleMixAutoMove(CInventoryCtrl* targetControl) const;
-    bool HandleSellToNPC(CInventoryCtrl* targetControl) const;
+    bool HandleSellToNPC(CInventoryCtrl* targetControl, ITEM* selectedItem = nullptr, bool confirmAll = false) const;
     bool HandleInventoryRightClickActions(CInventoryCtrl* targetControl) const;
     bool TryEquipItem(CInventoryCtrl* targetControl, ITEM* pItem, int iSrcIndex) const;
     bool TryDropItem(CInventoryCtrl* targetControl, ITEM* pItem) const;

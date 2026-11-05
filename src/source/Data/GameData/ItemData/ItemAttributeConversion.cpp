@@ -2,6 +2,7 @@
 
 #include "ItemAttributeConversion.h"
 #include "ItemStatProfiles.h"
+#include "GameLogic/Cosmetics/CosmeticArmor.h"
 #include "ItemType.h"
 #include "Core/Text/Utf8.h"
 
@@ -48,8 +49,11 @@ void CopyRequirements(const ITEM_ATTRIBUTE& attribute, ItemDefinition& definitio
 
 void CopyStats(const ItemDefinition& definition, ITEM_ATTRIBUTE& attribute)
 {
-    attribute.Width = definition.width;
-    attribute.Height = definition.height;
+    const int type = definition.group * 512 + definition.number;
+    const bool skin = GameLogic::Cosmetics::ArmorPart(type) >= 0 || GameLogic::Cosmetics::IsFenrirMount(type);
+    constexpr int SkinCellsPerSide = 2;
+    attribute.Width = skin ? SkinCellsPerSide : definition.width;
+    attribute.Height = skin ? SkinCellsPerSide : definition.height;
     attribute.m_byItemSlot = static_cast<BYTE>(definition.slot);
     attribute.TwoHand = definition.twoHanded;
     attribute.m_wSkillIndex = definition.skill;

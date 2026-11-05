@@ -158,3 +158,11 @@ body {
 	font-size: calc(6.5 * var(--px));
 	line-height: calc(7.5 * var(--px));
 }
+
+/* TwinMU saved-account dropdown, above the 0.97 box; the list drops over it. */
+#saved_accounts_row { position: absolute; left: calc(15 * var(--px)); top: calc(-30 * var(--px)); width: calc(220 * var(--px)); height: calc(24 * var(--px)); z-index: 1; pointer-events: auto; }
+.saved-accounts-title { position: absolute; left: 0; top: calc(5 * var(--px)); width: calc(60 * var(--px)); color: #ffe6d2; }
+#saved_account_toggle { position: absolute; left: calc(62 * var(--px)); top: 0; width: calc(158 * var(--px)); height: calc(22 * var(--px)); line-height: calc(22 * var(--px)); text-align: center; background-color: #141714e6; border: 1px #8e7951; cursor: pointer; }
+#saved_account_list { position: absolute; left: calc(62 * var(--px)); top: calc(23 * var(--px)); width: calc(158 * var(--px)); max-height: calc(150 * var(--px)); overflow-y: auto; background-color: #101410f0; border: 1px #8e7951; }
+.saved-account-option { display: block; padding: calc(4 * var(--px)); color: #ffe6d2; cursor: pointer; }
+.saved-account-option:hover { background-color: #3b3926; }

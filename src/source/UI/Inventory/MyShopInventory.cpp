@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "GameLogic/Items/StoreMail.h"
 #include "UI/Inventory/MyShopInventory.h"
 #include "Audio/DSPlaySound.h"
 #include "UI/Core/WindowSystem.h"
@@ -35,6 +36,11 @@ namespace
 // they work with every server.
 void SendItemPrice(int itemSlot, const GameLogic::PersonalShop::ItemPrice& price)
 {
+    if (!price.Components.empty())
+    {
+        GameLogic::PersonalShop::SendCombinedPrice(itemSlot, price);
+        return;
+    }
     if (price.Kind == GameLogic::PersonalShop::PriceKind::Zen)
     {
         SocketClient->ToGameServer()->SendPlayerShopSetItemPrice(itemSlot, price.Amount);
@@ -204,7 +210,7 @@ void ShowItemPriceDialog(const GameLogic::PersonalShop::ItemPrice& priceType, co
     cfg.lines = {{I18N::Game::EnterSellingPrice, false}};
     cfg.input = GenericDialogConfig::InputField{};
     cfg.input->mode = GenericDialogConfig::InputField::Mode::Text;
-    cfg.input->maxLength = 8;
+    cfg.input->maxLength = priceType.Kind == GameLogic::PersonalShop::PriceKind::Item ? 5 : 8;
     cfg.input->numericOnly = true;
     cfg.input->initialText = initialText;
 
@@ -222,7 +228,7 @@ void ShowItemPriceDialog(const GameLogic::PersonalShop::ItemPrice& priceType, co
         const std::wstring strTextW = g_pGenericConfirmDialog->GetInputText();
         GameLogic::PersonalShop::ItemPrice price = priceType;
         price.Amount = strTextW.empty() ? 0 : _wtoi(strTextW.c_str());
-        if (price.Amount == 0)
+        if (price.Amount <= 0 || (price.Kind == GameLogic::PersonalShop::PriceKind::Item && price.Amount > 65535))
         {
             g_pGenericConfirmDialog->KeepOpen();
             return;
@@ -250,13 +256,101 @@ void ShowItemPriceDialog(const GameLogic::PersonalShop::ItemPrice& priceType, co
 
     g_pGenericConfirmDialog->Show(std::move(cfg));
 }
+using GameLogic::PersonalShop::ItemPrice;
+using GameLogic::PersonalShop::PaymentPart;
+void ShowCombinedPrice(std::vector<PaymentPart> parts);
+void ChoosePricePart(std::vector<PaymentPart> parts)
+{
+    GenericMenuConfig cfg;
+    cfg.title = I18N::Game::Currency;
+    for (const auto& currency : GameLogic::PersonalShop::GetAllowedPriceTypes())
+    {
+        GenericMenuConfig::MenuButton button;
+        button.label = GameLogic::PersonalShop::GetCurrencyName(currency);
+        button.onClick = [parts, currency]
+        {
+            GenericDialogConfig input;
+            input.showCancel = true;
+            input.lines = {{GameLogic::PersonalShop::GetCurrencyName(currency), true}};
+            input.input = GenericDialogConfig::InputField{};
+            input.input->numericOnly = true;
+            input.input->maxLength = currency.Kind == GameLogic::PersonalShop::PriceKind::Item ? 5 : 9;
+            input.onPrimary = [parts, currency]() mutable
+            {
+                const auto text = g_pGenericConfirmDialog->GetInputText();
+                const int amount = text.empty() ? 0 : _wtoi(text.c_str());
+                if (amount <= 0 || (currency.Kind == GameLogic::PersonalShop::PriceKind::Item && amount > 65535))
+                { g_pGenericConfirmDialog->KeepOpen(); return; }
+                auto found = std::find_if(parts.begin(), parts.end(), [currency](const auto& p) { return p.type == currency.PriceItemType; });
+                if (found != parts.end()) found->amount = amount;
+                else parts.push_back({currency.PriceItemType, amount});
+                ShowCombinedPrice(std::move(parts));
+            };
+            input.onCancel = [parts] { ShowCombinedPrice(parts); };
+            g_pGenericConfirmDialog->Show(std::move(input));
+        };
+        cfg.buttons.push_back(std::move(button));
+    }
+    cfg.onCancel = [parts] { ShowCombinedPrice(parts); };
+    if (cfg.buttons.size() > 6) cfg.columns = 2;
+    GenericMenuConfig::MenuButton cancel;
+    cancel.label = I18N::Game::Cancel;
+    cancel.compact = true;
+    cancel.dismiss = true;
+    cancel.onClick = cfg.onCancel;
+    cfg.buttons.push_back(std::move(cancel));
+    g_pGenericMenuDialog->Show(std::move(cfg));
+}
+void ShowCombinedPrice(std::vector<PaymentPart> parts)
+{
+    GenericMenuConfig cfg;
+    cfg.title = L"Selling price (all currencies required)";
+    for (size_t i=0; i<parts.size(); ++i)
+    {
+        ItemPrice display{1, GameLogic::PersonalShop::PriceKind::Item, GameLogic::PersonalShop::CombinedPriceMarker};
+        display.Components = {parts[i]};
+        GenericMenuConfig::MenuButton row;
+        row.label = GameLogic::PersonalShop::FormatPrice(display) + L"  [Remove]";
+        row.onClick = [parts, i]() mutable { parts.erase(parts.begin()+i); ShowCombinedPrice(std::move(parts)); };
+        cfg.buttons.push_back(std::move(row));
+    }
+    if (parts.size() < GameLogic::PersonalShop::MaximumPriceParts)
+    {
+        GenericMenuConfig::MenuButton add;
+        add.label = L"Add currency";
+        add.onClick = [parts] { ChoosePricePart(parts); };
+        cfg.buttons.push_back(std::move(add));
+    }
+    if (!parts.empty())
+    {
+        GenericMenuConfig::MenuButton save;
+        save.label = I18N::Game::Apply;
+        save.onClick = [parts]
+        {
+            ItemPrice price{1, GameLogic::PersonalShop::PriceKind::Item, GameLogic::PersonalShop::CombinedPriceMarker};
+            price.Components = parts;
+            ApplyPersonalShopItemPrice(price, g_pMyShopInventory->GetSourceIndex());
+            g_pMyShopInventory->SetInputValueTextBox(false);
+        };
+        cfg.buttons.push_back(std::move(save));
+    }
+    cfg.onCancel = [] { CInventoryCtrl::BackupPickedItem(); g_pMyShopInventory->SetInputValueTextBox(false); g_pMyShopInventory->ChangeSourceIndex(-1); };
+    GenericMenuConfig::MenuButton cancel;
+    cancel.label = I18N::Game::Cancel;
+    cancel.compact = true;
+    cancel.dismiss = true;
+    cancel.onClick = cfg.onCancel;
+    cfg.buttons.push_back(std::move(cancel));
+    g_pGenericMenuDialog->Show(std::move(cfg));
+}
 } // namespace
 
 void mu::ui::window::ShowPersonalShopItemValueDialog()
 {
     // Numeric Mode::Text price entry. See MyShopInventory.h's own declaration comment for why
     // this is a free function shared across all 4 call sites instead of duplicated per site.
-    ShowItemPriceDialog({}, {});
+    if (GameLogic::PersonalShop::SupportsCombinedPrices()) ShowCombinedPrice({});
+    else ShowItemPriceDialog({}, {});
 }
 
 mu::ui::window::CMyShopInventory::CMyShopInventory() : m_SourceIndex(-1), m_TargetIndex(-1), m_EnablePersonalShop(false)

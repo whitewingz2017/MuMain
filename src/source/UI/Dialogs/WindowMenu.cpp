@@ -1,6 +1,12 @@
 
 #include "stdafx.h"
+#include "UI/Inventory/ExcellentCombinationWindow.h"
+#include "GameLogic/Events/EventSchedule.h"
+#include "GameLogic/Pets/Muun.h"
+#include "UI/Inventory/MuunInventoryWindow.h"
 #include "UI/Dialogs/WindowMenu.h"
+#include "UI/Dialogs/RedeemCodeDialog.h"
+#include "UI/Bank/JewelBank.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Core/WindowCommon.h" // ShowSystemMenuDialog
 #include "Audio/DSPlaySound.h"
@@ -24,7 +30,10 @@ const wchar_t* const* const kMenuLabels[] = {
     &I18N::Game::SystemEsc, &I18N::Game::HelpF1, &I18N::Game::GuildG,
     &I18N::Game::MoveM,     &I18N::Game::MapTab, &I18N::Game::GensInfoB,
 };
-static_assert(std::size(kMenuLabels) == CWindowMenu::MENU_MAX_INDEX, "one label per menu row");
+// The TwinMU rows follow the original six; the game text tables have no labels for them.
+const wchar_t* const kTwinMuLabels[] = {L"Redeem Code", L"Excellent Combination", L"Event Timers", L"Muun Inventory", L"Jewel Bank"};
+static_assert(std::size(kMenuLabels) + std::size(kTwinMuLabels) == CWindowMenu::MENU_MAX_INDEX,
+              "one label per menu row");
 
 template <typename Model>
 void SyncFloat(RmlModelBinder<Model>& binder, float Model::* field, const char* name, float value)
@@ -99,6 +108,8 @@ bool mu::ui::window::CWindowMenu::UpdateKeyEvent()
 
 bool mu::ui::window::CWindowMenu::Update()
 {
+    GameLogic::Events::Schedule::Update();
+    GameLogic::Pets::Muun::Update();
     SyncRmlModel();
 
     if (m_PendingEntry >= 0)
@@ -123,6 +134,18 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
 {
     switch (entry)
     {
+    case MENU_MUUN:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (g_pMuunInventoryWindow) g_pMuunInventoryWindow->Open();
+        break;
+    case MENU_JEWEL_BANK:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        UI::Bank::Open();
+        break;
+    case MENU_EVENT_TIMERS:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        GameLogic::Events::Schedule::Open();
+        break;
     case MENU_SYSTEM:
         g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
         mu::ui::window::ShowSystemMenuDialog();
@@ -146,6 +169,14 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
             g_pNewUISystem->Hide(mu::ui::window::INTERFACE_MINI_MAP);
         else
             g_pNewUISystem->Toggle(mu::ui::window::INTERFACE_MINI_MAP);
+        break;
+    case MENU_EXCELLENT_COMBINATION:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (g_pExcellentCombinationWindow) g_pExcellentCombinationWindow->Open();
+        break;
+    case MENU_REDEEM:
+        g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
+        UI::RedeemCodes::Open();
         break;
     case MENU_GENS:
         if (g_pNewUIGensRanking->SetGensInfo())
@@ -178,7 +209,11 @@ void mu::ui::window::CWindowMenu::BindRmlModel(Rml::DataModelConstructor& c, Win
 
     model.rows.clear();
     for (int i = 0; i < MENU_MAX_INDEX; ++i)
-        model.rows.push_back({StringUtils::WideToNarrow(*kMenuLabels[i]), i});
+    {
+        const int original = static_cast<int>(std::size(kMenuLabels));
+        const wchar_t* label = i < original ? *kMenuLabels[i] : kTwinMuLabels[i - original];
+        model.rows.push_back({StringUtils::WideToNarrow(label), i});
+    }
 }
 
 void mu::ui::window::CWindowMenu::BuildRmlUi()

@@ -221,3 +221,7 @@
 .attr-lines.attr-lines-agi span { height: calc(13px * var(--root-scale)); }
 .attr-lines.attr-lines-vit span { height: calc(13px * var(--root-scale)); }
 .attr-lines.attr-lines-ene span { height: calc(13px * var(--root-scale)); }
+
+/* Opens the separate combat statistics window. */
+.statistics-toggle { display: block; position: absolute; left: 18px; right: 18px; top: 374px; height: 16px; line-height: 16px; text-align: center; font-size: 11px; background-color: #26394a; border: 1px #607c90; }
+.statistics-toggle:hover { background-color: #344f64; }

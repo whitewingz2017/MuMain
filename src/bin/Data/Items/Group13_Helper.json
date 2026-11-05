@@ -6962,6 +6962,1831 @@
         "summoner": 1,
         "rageFighter": 1
       }
-    }
-  ]
+    },
+    {
+      "number": 200,
+      "name": {
+        "en": "Pet 208 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 300,
+      "name": {
+        "en": "Mount Bear"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 301,
+      "name": {
+        "en": "Mount Hell Lion"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 302,
+      "name": {
+        "en": "Mount Griffon"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 303,
+      "name": {
+        "en": "Mount Hell Rino"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 304,
+      "name": {
+        "en": "Mount Hell Rider"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 305,
+      "name": {
+        "en": "Mount Scorpion"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 306,
+      "name": {
+        "en": "Mount King Kong"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 307,
+      "name": {
+        "en": "Mount Cyber Rino"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 308,
+      "name": {
+        "en": "Mount Fury"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 309,
+      "name": {
+        "en": "Mount Phantom Horse Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 310,
+      "name": {
+        "en": "Mount Ghost Fenrier"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 311,
+      "name": {
+        "en": "Mount Dragon"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 312,
+      "name": {
+        "en": "Mount Fox"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 313,
+      "name": {
+        "en": "Pet 11 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 314,
+      "name": {
+        "en": "Pet 12 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 315,
+      "name": {
+        "en": "Pet 13 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 316,
+      "name": {
+        "en": "Pet 14 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 317,
+      "name": {
+        "en": "Pet 15 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 318,
+      "name": {
+        "en": "Pet 16 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 319,
+      "name": {
+        "en": "Pet 17 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 320,
+      "name": {
+        "en": "Pet 18 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 321,
+      "name": {
+        "en": "Pet 19 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 322,
+      "name": {
+        "en": "Pet 20 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 323,
+      "name": {
+        "en": "Pet 21 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 324,
+      "name": {
+        "en": "Pet 22 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 325,
+      "name": {
+        "en": "Pet 23 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 326,
+      "name": {
+        "en": "Pet 24 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 327,
+      "name": {
+        "en": "Pet 25 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 328,
+      "name": {
+        "en": "Pet 26 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 329,
+      "name": {
+        "en": "Pet 27 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 330,
+      "name": {
+        "en": "Pet 28 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 331,
+      "name": {
+        "en": "Pet 29 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 332,
+      "name": {
+        "en": "Pet 30 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 333,
+      "name": {
+        "en": "Pet 31 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 334,
+      "name": {
+        "en": "Pet 32 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 335,
+      "name": {
+        "en": "Pet 33 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 336,
+      "name": {
+        "en": "Pet 34 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 337,
+      "name": {
+        "en": "Pet 35 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 338,
+      "name": {
+        "en": "Pet 36 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 339,
+      "name": {
+        "en": "Pet 37 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 340,
+      "name": {
+        "en": "Pet 38 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 341,
+      "name": {
+        "en": "Pet 39 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 342,
+      "name": {
+        "en": "Pet 40 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 343,
+      "name": {
+        "en": "Pet 41 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 344,
+      "name": {
+        "en": "Pet 42 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 345,
+      "name": {
+        "en": "Pet 43 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 346,
+      "name": {
+        "en": "Pet 44 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 347,
+      "name": {
+        "en": "Pet 45 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 348,
+      "name": {
+        "en": "Pet 46 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 349,
+      "name": {
+        "en": "Pet 47 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 350,
+      "name": {
+        "en": "Pet 48 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 351,
+      "name": {
+        "en": "Pet 49 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 352,
+      "name": {
+        "en": "Pet 50 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 353,
+      "name": {
+        "en": "Pet 51 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 354,
+      "name": {
+        "en": "Pet 52 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 355,
+      "name": {
+        "en": "Pet 53 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 356,
+      "name": {
+        "en": "Pet 54 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 357,
+      "name": {
+        "en": "Pet 55 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 358,
+      "name": {
+        "en": "Pet 56 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 359,
+      "name": {
+        "en": "Pet 57 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 360,
+      "name": {
+        "en": "Pet 58 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 361,
+      "name": {
+        "en": "Pet 59 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 362,
+      "name": {
+        "en": "Pet 60 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 363,
+      "name": {
+        "en": "Pet 61 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 364,
+      "name": {
+        "en": "Pet 62 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 365,
+      "name": {
+        "en": "Pet 74 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 366,
+      "name": {
+        "en": "Pet 75 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 367,
+      "name": {
+        "en": "Pet 86 Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 368,
+      "name": {
+        "en": "Mount Lion"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 255,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Rideable Fenrir mount. Equip in the Gear helper slot."
+          },
+          "color": "blue"
+        }
+      ],
+      "tags": [
+        "mount",
+        "hornMount",
+        "flying",
+        "valuable"
+      ],
+      "slot": "pet",
+      "statProfile": "default",
+      "level": 300,
+      "excellentRaisesLevel": false,
+      "requirements": {
+        "level": 300
+      },
+      "classRequirements": {
+        "darkWizard": 2,
+        "darkKnight": 2,
+        "fairyElf": 2,
+        "magicGladiator": 1,
+        "darkLord": 1,
+        "summoner": 2,
+        "rageFighter": 1
+      }
+    },
+    {
+      "number": 369,
+      "name": {
+        "en": "Mount Malfurion Skin"
+      },
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "droppable": false,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Cosmetic item. Use to equip in Skin."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 450,
+      "name": {
+        "en": "Magic Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 451,
+      "name": {
+        "en": "Evolved Magic Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 452,
+      "name": {
+        "en": "Fighter Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 453,
+      "name": {
+        "en": "Evolved Fighter Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 454,
+      "name": {
+        "en": "Dark Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "number": 455,
+      "name": {
+        "en": "Evolved Dark Muun"
+      },
+      "width": 2,
+      "height": 2,
+      "durability": 100,
+      "droppable": true,
+      "sellable": false,
+      "repairable": false,
+      "description": [
+        {
+          "text": {
+            "en": "Muun companion. Manage through Menu > Muun Inventory."
+          },
+          "color": "blue"
+        }
+      ]
+    }]
 }

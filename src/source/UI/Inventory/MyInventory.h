@@ -88,6 +88,9 @@ namespace mu::ui::window
         bool m_bRepairEnableLevel;
         bool m_bMyShopOpen;
         bool m_bMyShopLocked = false;
+        bool m_SkinPage = false;
+        void ToggleEquipmentPage();
+        bool ProcessSkinSlots();
 
         // The whole window is RmlUi: the equipped and the grid's items are live 3D, drawn into the
         // document's #item_view (m_ItemTarget).
@@ -98,6 +101,7 @@ namespace mu::ui::window
             float textPx = 0.f; // UI::RmlBridge::SyncNativeTextSize()
 
             Rml::String title;
+            bool skinPage = false;
             Rml::String goldText;
             Rml::String goldTier; // UI::RmlBridge::GoldTierKey() of the amount
 
@@ -118,6 +122,7 @@ namespace mu::ui::window
             Rml::String socketOptionLabel;
             bool setOptionActive = false;    // IsAncientSetEquipped() -- label color
             bool socketOptionActive = false; // IsSocketSetOptionEnabled() -- label color
+            float optionLabelsFit = 1.f;     // the line shrunk to the frame's width, 1 = fits
             bool setOptionHovered = false;
             bool socketOptionHovered = false;
 
@@ -135,6 +140,8 @@ namespace mu::ui::window
 
         void BuildRmlUi();
         void SyncRmlModel();
+        void SyncOptionLabelsFit(const wchar_t* setOptionLabel, const wchar_t* socketOptionLabel);
+        std::wstring m_measuredOptionLabels; // the header line optionLabelsFit was measured for
         // The equipment slots' states and the grid's cells, into the model.
         void SyncSlotStates();
 
@@ -236,6 +243,7 @@ namespace mu::ui::window
         int FindItemIndexWithTagInUseOrder(Data::Items::ItemTag tag) const;
 
         bool EquipmentWindowProcess();
+        bool UnequipToInventory(int slot);
         // The pointer over the drawn panel.
         bool IsPointerOverPanel() const;
         // Whether the item in equipmentSlot may be taken off here; tells the

@@ -8,7 +8,7 @@
 <body data-model="my_inventory">
 	<!-- CMyInventory (MyInventory.h): the frame, the equipment slots, the item grid, the items
 	     C++ draws live into #item_view, the stack counts, the title, gold and buttons. -->
-	<div id="panel" data-style---text-px="text_px + 'px'">
+	<div data-class-skin-page="skin_page" id="panel" data-style---text-px="text_px + 'px'">
 		<div id="frame_corner_close" data-event-click="window_close"></div>
 		<div class="bg-panel">
 			<div class="inv-shell-edge"></div>
@@ -48,11 +48,16 @@
 		<img id="item_view" class="item-view"/>
 		<div id="item_grid_counts" class="item-grid-counts">
 			<div class="item-count" data-for="c : grid_cells"><span class="item-count-text counter-scaled" data-if="c.count != ''"
-			     data-style-font-size="text_px + 'px'">{{c.count}}</span></div>
+			     data-style-font-size="text_px * 0.55 + 'px'">{{c.count}}</span></div>
 		</div>
 		<div id="option_tooltip_anchor" class="native-anchor"></div>
 		<!-- Header rail: `-px` variants since #panel carries its placement's scale (see
 		     base.rcss). Fill/accent are the frame's .rail-fill/.rail-accent above. -->
+		<button class="skin-storage-open" data-if="skin_page" data-event-click="my_inventory_skin_storage">Skin Inventory</button>
+		<button class="skin-shop-open" data-if="skin_page" data-event-click="my_inventory_skin_shop">Skin Shop</button>
+		<button class="inventory-page-prev" data-event-click="my_inventory_page" data-hint="Switch Gear / Skin">&#9664;</button>
+		<button class="inventory-page-next" data-event-click="my_inventory_page" data-hint="Switch Gear / Skin">&#9654;</button>
+
 		<div class="modern-header-rail-px inv-header-rail">
 			<div class="modern-joint-px"></div>
 			<div class="modern-header-text-px">
@@ -95,6 +100,7 @@
 		     data-event-mouseover="my_inventory_set_option_hover" data-event-mouseout="my_inventory_set_option_unhover">{{set_option_label}}</div>
 		<div id="socket_option_label" class="option-label option-label-socket" data-class-active="socket_option_active"
 		     data-event-mouseover="my_inventory_socket_option_hover" data-event-mouseout="my_inventory_socket_option_unhover">{{socket_option_label}}</div>
+
 	</div>
 </body>
 </rml>

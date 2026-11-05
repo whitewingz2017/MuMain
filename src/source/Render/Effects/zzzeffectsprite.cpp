@@ -18,9 +18,14 @@
 #include "UI/Core/WindowSystem.h"
 #include "Scenes/MainScene.h"
 #include "Render/Renderer/MuRenderer.h"
+#include "Camera/CameraProjection.h"
+#include "Render/Items/ScopedItemEffects.h"
 
 #include <algorithm>
 #include <array>
+#include <bitset>
+#include <cstring>
+#include <optional>
 
 namespace
 {
@@ -185,6 +190,49 @@ Render::EffectDrawing::SpriteDraw DescribeSprite(const OBJECT& sprite, bool bloo
         draw.height = Height;
     }
     return draw;
+}
+
+namespace
+{
+void RenderSpriteWithBlend(int index)
+{
+    // As RenderSprites draws a live sprite: its quad and blend, and whether bloom leaves it alone.
+    Render::EffectDrawing::ActiveEffectDrawer().DrawSprite(DescribeSprite(Sprites[index], s_spriteBloomExcluded[index]));
+}
+}
+
+void RenderWithSpriteCamera(const std::function<void()>& draw)
+{
+    float savedMatrix[3][4];
+    std::memcpy(savedMatrix, g_Camera.Matrix, sizeof(savedMatrix));
+    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
+    BeginSprite();
+    draw();
+    EndSprite();
+    std::memcpy(g_Camera.Matrix, savedMatrix, sizeof(savedMatrix));
+}
+
+void RenderWithSprites(const std::function<void()>& draw)
+{
+    // Preview attachments must stay in this camera and out of the world particle pool.
+    const Render::Items::ScopedItemEffects effects(Render::Items::ScopedItemEffects::Enabled(), true);
+    std::bitset<MAX_SPRITES> existing;
+    for (int i = 0; i < MAX_SPRITES; ++i) existing[i] = Sprites[i].Live;
+    draw();
+    float savedMatrix[3][4];
+    std::memcpy(savedMatrix, g_Camera.Matrix, sizeof(savedMatrix));
+    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
+    BeginSprite();
+    for (int i = 0; i < MAX_SPRITES; ++i)
+    {
+        auto& sprite = Sprites[i];
+        if (existing[i] || !sprite.Live) continue;
+        sprite.Visible = true;
+        if (!IsSpritesDisabledDebug()) RenderSpriteWithBlend(i);
+        sprite.Live = false;
+    }
+    EndSprite();
+    std::memcpy(g_Camera.Matrix, savedMatrix, sizeof(savedMatrix));
 }
 
 void RenderSprites(BYTE byRenderOneMore)

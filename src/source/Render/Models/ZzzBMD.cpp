@@ -1588,6 +1588,18 @@ void BMD::EndRenderCoinHeap(int coinCount)
     mu::GetRenderer().RenderTriangles(muVerts, 0u);
 }
 
+static void SetTexturedMeshBlend(int flags, float alpha, int components)
+{
+    if (flags & RENDER_BRIGHT)
+        EnableAlphaBlend(components == 4);
+    else if (flags & RENDER_DARK)
+        EnableAlphaBlendMinus();
+    else if (alpha < 0.99f || components == 4)
+        EnableAlphaTest();
+    else
+        DisableAlphaBlend();
+}
+
 void BMD::RenderMesh(int meshIndex, int renderFlags, float alpha, int blendMeshIndex, float blendMeshAlpha, float blendMeshTextureCoordU, float blendMeshTextureCoordV, int explicitTextureIndex)
 {
     Render::ModelDrawing::MeshDraw draw{.model = this,
@@ -1948,22 +1960,7 @@ void BMD::DrawMesh(const Render::ModelDrawing::MeshDraw& draw) const
         break;
     case MeshMaterial::Texture:
         BindTexture(textureIndex);
-        if ((renderFlags & RENDER_BRIGHT) == RENDER_BRIGHT)
-        {
-            EnableAlphaBlend();
-        }
-        else if ((renderFlags & RENDER_DARK) == RENDER_DARK)
-        {
-            EnableAlphaBlendMinus();
-        }
-        else if (alpha < 0.99f || texture->Components == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
+        SetTexturedMeshBlend(renderFlags, alpha, texture->Components);
 
         if ((renderFlags & RENDER_NODEPTH) == RENDER_NODEPTH)
         {

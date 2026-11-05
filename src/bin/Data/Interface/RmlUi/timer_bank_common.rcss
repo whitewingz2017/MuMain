@@ -1,0 +1,27 @@
+/* Brown ornamental frame and red title rail shared by timer and bank lists. */
+.timer-bank-frame, .timer-bank-title, .timer-bank-close { display: none; }
+#panel.timer-bank { left: 50%; top: 50%; margin: 0; transform: translate(-50%, -50%); width: 340dp; max-width: 92vw; height: 82vh; max-height: 90vh; padding: 0; border: 0; background-color: transparent; decorator: none; }
+#panel.timer-bank.jewel-bank { width: 560dp; }
+#panel.timer-bank .window-shell-sprite-back, #panel.timer-bank .window-shell-sprite-top, #panel.timer-bank .window-shell-sprite-middle, #panel.timer-bank .window-shell-sprite-bottom, #panel.timer-bank .window-shell-header-title, #panel.timer-bank .modern-shell-edge, #panel.timer-bank .modern-groove, #panel.timer-bank .legacy-shell-edge, #panel.timer-bank .window-shell-header-rail, #panel.timer-bank .gmd-divider { display: none; }
+#panel.timer-bank .window-shell-content { position: static; left: auto; right: auto; top: auto; bottom: auto; margin: 0; box-sizing: border-box; width: 100%; height: 100%; padding: 65dp 23dp 24dp 23dp; background-color: transparent; border: 0; decorator: none; display: flex; flex-direction: column; align-items: stretch; }
+#panel.timer-bank .timer-bank-frame { display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+#panel.timer-bank .timer-bank-title { display: block; position: absolute; left: 12%; top: 7.5%; width: 76%; height: 25dp; text-align: center; font-size: 14dp; color: #ffd25c; pointer-events: none; }
+#panel.timer-bank .timer-bank-close { display: block; position: absolute; right: 7%; top: 6%; width: 28dp; height: 28dp; padding: 0; background-color: transparent; decorator: none; border: 0; color: #d74917; font-size: 19dp; text-align: center; }
+#panel.timer-bank .gmd-lines { flex: 0 0 auto; }
+#panel.timer-bank .gmd-line { font-size: 10dp; line-height: 13dp; color: #c6b58c; margin: 0 0 5dp 0; }
+#panel.timer-bank .gmd-button-row { display: flex; flex-direction: row; flex-wrap: wrap; align-content: flex-start; flex: 1 1 0; width: 100%; min-height: 0; max-height: none; overflow: hidden auto; padding: 0 4dp 0 0; }
+#panel.timer-bank .gmd-button-cell { position: relative; width: 100%; margin: 0 0 5dp 0; }
+#panel.timer-bank .gmd-btn { position: relative; width: 100%; box-sizing: border-box; min-height: 30dp; height: 30dp; padding: 0 6dp; border: 1dp #685333; background-color: #121310d9; decorator: none; opacity: 1; line-height: 28dp; }
+#panel.timer-bank .gmd-btn-fill { background-color: #121310d9; }
+#panel.timer-bank .gmd-btn-label { display: block; margin: 0; width: auto; text-align: left; font-size: 11dp; line-height: 28dp; color: #eac45c; white-space: nowrap; }
+#panel.timer-bank .gmd-btn-detail { display: block; position: absolute; right: 6dp; top: 0; width: auto; line-height: 28dp; font-size: 10dp; text-align: right; color: #eac45c; pointer-events: none; }
+#panel.timer-bank.event-timers .gmd-btn-label { margin-right: 110dp; }
+#panel.timer-bank.jewel-bank .gmd-btn-label { margin-left: 28dp; margin-right: 225dp; }
+#panel.timer-bank.jewel-bank .gmd-btn-detail { right: 170dp; width: 50dp; }
+#panel.timer-bank.jewel-bank .gmd-button-icon { display: block; position: absolute; left: 3dp; top: 3dp; width: 24dp; height: 24dp; pointer-events: none; }
+.gmd-row-actions { display: none; }
+#panel.timer-bank .gmd-row-actions { display: flex; flex-direction: row; position: absolute; right: 3dp; top: 2dp; width: 160dp; height: 26dp; }
+#panel.timer-bank .gmd-row-actions button { box-sizing: border-box; min-height: 0; width: 77dp; height: 26dp; margin: 0 0 0 3dp; padding: 0; text-align: center; font-size: 10dp; line-height: 24dp; border: 1dp #745c32; background-color: #272419; color: #f1ce72; decorator: none; }
+#panel.timer-bank .gmd-button-cell.compact { position: relative; left: auto; right: auto; top: auto; bottom: auto; width: 31%; margin-right: 2%; }
+#panel.timer-bank .compact .gmd-btn-label { margin: 0; text-align: center; }
+#panel.timer-bank .compact .gmd-btn-detail { display: none; }

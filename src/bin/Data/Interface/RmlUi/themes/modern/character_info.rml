@@ -87,6 +87,7 @@
 		<div id="btn_stat_cmd" class="stat-btn stat-btn-cmd" data-class-hidden="!can_level_up || !show_charisma"
 		     data-event-click="chainfo_increase_stat(4)">+</div>
 
+		<button class="statistics-toggle" data-event-click="chainfo_statistics">Statistics</button>
 		<!-- Bottom action row: same bordered forged-metal square buttons as CMyInventory's
 		     Exit/Repair/My Shop/Expand (base.rcss's .modern-icon-btn-px), not a flat exit button
 		     plus legacy-sprite icons -- keeps this row visually part of the same family. -->

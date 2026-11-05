@@ -7578,8 +7578,8 @@ void RefreshStunSkull(OBJECT* o, vec3_t Light)
 
 extern float g_Luminosity;
 
-void RenderPartObjectEffect(const OBJECT* o, int Type, const vec3_t Light, float Alpha, int ItemLevel,
-                            int ExcellentFlags, int ancientDiscriminator, int Select, int RenderType)
+static void RenderPartObjectEffectBody(const OBJECT* o, int Type, const vec3_t Light, float Alpha, int ItemLevel,
+                                       int ExcellentFlags, int ancientDiscriminator, int Select, int RenderType)
 {
     // The item effects and styles change the look for this draw; the object keeps its own.
     DrawLook look = DrawLook::Of(*o);
@@ -7904,6 +7904,15 @@ void RenderPartObjectEffect(const OBJECT* o, int Type, const vec3_t Light, float
 }
 
 extern float BoneScale;
+
+void RenderPartObjectEffect(const OBJECT* o, int Type, const vec3_t Light, float Alpha, int ItemLevel,
+                            int ExcellentFlags, int ancientDiscriminator, int Select, int RenderType)
+{
+    RenderPartObjectEffectBody(o, Type, Light, Alpha, ItemLevel, ExcellentFlags, ancientDiscriminator, Select,
+                               RenderType);
+    // A TwinMU item model's attached sprites and particles, after the solid model.
+    Render::Items::ItemEffects::RenderAttachments(&Models[Type], const_cast<OBJECT*>(o), Type, Alpha);
+}
 
 void RenderPartObjectEdge(BMD* b, const OBJECT* o, int Flag, bool Translate, float Scale, float (*bones)[3][4],
                           const DrawLook* look)

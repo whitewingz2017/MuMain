@@ -22,4 +22,28 @@ namespace Engine::Object
     {
         return currentAction >= PLAYER_SIT1 && currentAction <= PLAYER_POSE_FEMALE1;
     }
+
+    // True for the stand/walk/run animations SetPlayerStop and SetPlayerWalk pick when the
+    // character is not on a Fenrir: on foot, flying, or on a Uniria, Dinorant or Dark Horse.
+    inline bool IsNonFenrirMovementAction(int currentAction)
+    {
+        if (currentAction >= PLAYER_STOP_MALE && currentAction <= PLAYER_RUN_RIDE_WEAPON) return true;
+        switch (currentAction)
+        {
+        case PLAYER_STOP_TWO_HAND_SWORD_TWO:
+        case PLAYER_WALK_TWO_HAND_SWORD_TWO:
+        case PLAYER_RUN_TWO_HAND_SWORD_TWO:
+        case PLAYER_STOP_RAGEFIGHTER:
+        case PLAYER_DARKLORD_STAND:
+        case PLAYER_DARKLORD_WALK:
+        case PLAYER_STOP_RIDE_HORSE:
+        case PLAYER_RUN_RIDE_HORSE:
+        case PLAYER_RAGE_UNI_RUN:
+        case PLAYER_RAGE_UNI_RUN_ONE_RIGHT:
+        case PLAYER_RAGE_UNI_STOP_ONE_RIGHT:
+            return true;
+        default:
+            return false;
+        }
+    }
 }
