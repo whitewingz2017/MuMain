@@ -427,7 +427,8 @@ bool mu::ui::window::CNPCShop::InventoryProcess()
         if (pPickedItem->GetSourceStorageType() == STORAGE_TYPE::INVENTORY)
         {
             const int iSourceIndex = pPickedItem->GetSourceLinealPos();
-            if (iSourceIndex >= MAX_EQUIPMENT_INDEX && iSourceIndex < MAX_MY_INVENTORY_EX_INDEX)
+            // An item taken from an equipment slot (a bow in hand) sells from that slot.
+            if (iSourceIndex >= 0 && iSourceIndex < MAX_MY_INVENTORY_EX_INDEX)
             {
                 SocketClient->ToGameServer()->SendSellItemToNpcRequest(iSourceIndex);
                 g_pNPCShop->SetSellingItem(true);

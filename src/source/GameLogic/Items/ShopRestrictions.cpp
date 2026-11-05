@@ -66,8 +66,9 @@ namespace GameLogic::Items
 
     bool CanConfirmSale(const ITEM* item, int sourceIndex, int expectedIndex, unsigned int expectedKey, bool shopOpen, bool salePending)
     {
+        // An equipped item (an equipment slot) sells as well as a carried one; the server accepts both.
         return shopOpen && !salePending && item && item->Key == expectedKey && sourceIndex == expectedIndex &&
-            sourceIndex >= MAX_EQUIPMENT_INDEX && sourceIndex < MAX_MY_INVENTORY_EX_INDEX && !IsSellingBan(item);
+            sourceIndex >= 0 && sourceIndex < MAX_MY_INVENTORY_EX_INDEX && !IsSellingBan(item);
     }
 
     bool IsRepairBan(const ITEM* pItem)
