@@ -6,6 +6,7 @@
 #include <cmath>
 #include "GameLogic/Pets/Muun.h"
 #include "GameLogic/Pets/MuunMounts.h"
+#include "GameLogic/Pets/MountCombat.h"
 #include "Engine/AI/GOBoid.h"
 #include "GameLogic/Pets/CosmeticPetMovement.h"
 #include "GameLogic/Cosmetics/CosmeticArmor.h"
@@ -293,8 +294,10 @@ void PetObject::UpdateRidingMount(bool preview)
 
 void PetObject::UpdateMuunMovement(double tick, bool preview)
 {
+    // Dismounted to fight, a mount walks beside its rider at its safe-zone size.
     m_obj->Scale = GameLogic::Pets::IsMountItem(m_itemType)
-        ? GameLogic::Pets::MountViewScale(m_baseScale, m_pOwner->SafeZone) : m_baseScale;
+        ? GameLogic::Pets::MountViewScale(m_baseScale,
+            m_pOwner->SafeZone || GameLogic::Pets::MountCombat::IsFollowing(&m_pOwner->Object)) : m_baseScale;
     m_muunFollow = !preview;
     if (GameLogic::Pets::MuunMounts::IsRiding(&m_pOwner->Object, m_itemType))
     {

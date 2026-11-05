@@ -104,7 +104,8 @@ bool FollowInTown(OBJECT* mount, bool preview)
     const bool flyingMount = mount->Type == MODEL_UNICON || mount->Type == MODEL_PEGASUS;
     if (preview || SceneFlag != MAIN_SCENE || (!RideableModel(mount->Type) && !(flyingMount && combatFollowing))) return false;
     const float baseScale = mount->Type == MODEL_DARK_HORSE ? 1.f : 0.9f;
-    mount->Scale = MountViewScale(baseScale, InTown(mount));
+    // Dismounted to fight, it walks beside the rider at its safe-zone size.
+    mount->Scale = MountViewScale(baseScale, InTown(mount) || combatFollowing);
     // A transformed rider has no riding pose, so its mount walks beside it everywhere.
     const bool transformed = mount->Owner && mount->Owner->Type != MODEL_PLAYER;
     if (!InTown(mount) && !transformed && !combatFollowing) return false;
