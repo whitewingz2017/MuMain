@@ -24,6 +24,7 @@ constexpr int ResponseHeaderSize = 5;
 constexpr Uint64 RequestTimeoutMs = 8000;
 std::array<int, SkinSlotCount> armor = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
 std::array<int, SkinSlotCount> flags{};
+std::array<int, SkinSlotCount> levels{};
 std::wstring owner;
 std::uint32_t sequence = 0;
 std::uint32_t pending = 0;
@@ -59,6 +60,7 @@ void Reset()
 {
     armor.fill(-1);
     flags.fill(0);
+    levels.fill(0);
     statistics.clear();
     storedSkins.clear();
     storageSupported = false;
@@ -120,6 +122,7 @@ void Receive(std::span<const std::uint8_t> packet)
         return;
     std::array<int, SkinSlotCount> confirmed = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     std::array<int, SkinSlotCount> confirmedFlags{};
+    std::array<int, SkinSlotCount> confirmedLevels{};
     for (const auto& item : json["Skins"])
     {
         if (!item.is_object() || !item.contains("Part") || !item["Part"].is_number_integer()
@@ -139,6 +142,13 @@ void Receive(std::span<const std::uint8_t> packet)
             const auto bonus = item["BonusFlags"].get<std::int64_t>();
             if (bonus < 0 || bonus > 63) return;
             confirmedFlags[part] = static_cast<int>(bonus);
+        }
+        if (item.contains("Level"))
+        {
+            if (!item["Level"].is_number_integer()) return;
+            const auto level = item["Level"].get<std::int64_t>();
+            if (level < 0 || level > 15) return;
+            confirmedLevels[part] = static_cast<int>(level);
         }
     }
     std::vector<StoredSkin> stored;
@@ -172,6 +182,7 @@ void Receive(std::span<const std::uint8_t> packet)
     statistics = ReadStatistics(json);
     armor = confirmed;
     flags = confirmedFlags;
+    levels = confirmedLevels;
     ready = true;
     pending = 0;
     if (json.contains("Status") && json["Status"].is_string() && json["Status"] != "Ready")
@@ -189,6 +200,17 @@ int EquippedArmor(int part)
 int EquippedFlags(int part)
 {
     return Ready() && part >= 0 && part < SkinSlotCount ? flags[part] : 0;
+}
+
+int EquippedLevel(int part)
+{
+    return Ready() && part >= 0 && part < SkinSlotCount ? levels[part] : 0;
+}
+
+int VisualLevel(int part)
+{
+    // The armor parts show the full set equipped in part 1, as VisualItem does.
+    return EquippedLevel(part >= 0 && part < ArmorPartCount ? 1 : part);
 }
 
 int VisualItem(int part)

@@ -118,7 +118,11 @@ bool Request(std::uint8_t operation, int inventorySlot = 0, int part = 0);
 void Receive(std::span<const std::uint8_t> packet);
 int EquippedArmor(int part);
 int EquippedFlags(int part);
+// The equipped skin's item level (0 to 15); 0 from a server that doesn't send it.
+int EquippedLevel(int part);
 int VisualItem(int part);
+// The level of the skin VisualItem shows for the part.
+int VisualLevel(int part);
 std::span<const std::string> Statistics();
 bool Ready();
 void Reset();

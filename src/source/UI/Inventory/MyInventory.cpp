@@ -1110,6 +1110,7 @@ void CMyInventory::RenderEquipment(float scale) const
     {
         ITEM skinItem{};
         skinItem.Type = static_cast<short>(GameLogic::Cosmetics::EquippedArmor(GameLogic::Cosmetics::SkinPartForEquipment(i)));
+        skinItem.Level = static_cast<decltype(ITEM::Level)>(GameLogic::Cosmetics::EquippedLevel(GameLogic::Cosmetics::SkinPartForEquipment(i)));
         const ITEM* pEquippedItem = m_SkinPage ? &skinItem : &CharacterMachine->Equipment[i];
         if (pEquippedItem->Type >= 0)
         {
@@ -1805,6 +1806,7 @@ void CMyInventory::RenderItemToolTip(int iSlotIndex) const
         item.Type = static_cast<short>(type);
         item.Durability = 1;
         item.ExcellentFlags = GameLogic::Cosmetics::EquippedFlags(part);
+        item.Level = static_cast<decltype(ITEM::Level)>(GameLogic::Cosmetics::EquippedLevel(part));
         SetItemAttributes(&item);
         RenderItemInfoAtPx(m_EquipmentSlots[iSlotIndex].x, m_EquipmentSlots[iSlotIndex].y, &item, false);
         return;

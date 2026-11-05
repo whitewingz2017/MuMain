@@ -26,6 +26,11 @@ int VisibleItem(CHARACTER* character, int part)
     return character == previewCharacter ? previewSkins[part] : GameLogic::Cosmetics::VisualItem(part);
 }
 
+int VisibleLevel(const CHARACTER* character, int part)
+{
+    return character == previewCharacter ? previewLevel : GameLogic::Cosmetics::VisualLevel(part);
+}
+
 // Transformation rings swap the body model but keep the linked weapons and wings, so equipment skins still apply.
 bool EquipmentSkinsVisible(const CHARACTER* character, const OBJECT* object, bool preview)
 {
@@ -94,10 +99,11 @@ bool Render(CHARACTER* character, int selection)
         if (body == BODYPART_HEAD && visibleArmor(0) >= 0) continue;
         const int skin = visibleArmor(body - BODYPART_HELM);
         PART_t* part = &character->BodyPart[body];
+        const int skinLevel = skin >= 0 ? VisibleLevel(character, body - BODYPART_HELM) : 0;
         const int model = skin >= 0 ? MODEL_ITEM + skin : part->Type;
         if (model < 0 || ::Models[model].NumMeshs <= 0) continue;
         RenderPartObject(&character->Object, model, skin >= 0 ? nullptr : part, character->Light,
-            character->Object.Alpha, skin >= 0 ? (preview ? previewLevel : 0) : part->Level,
+            character->Object.Alpha, skin >= 0 ? skinLevel : part->Level,
             skin >= 0 ? 0 : part->ExcellentFlags, skin >= 0 ? 0 : part->AncientDiscriminator,
             false, false, true, selection);
     }
@@ -122,7 +128,7 @@ void WithEquipment(CHARACTER* character, OBJECT* object, int selection,
             // A skin covers the equipped item: with nothing equipped in the slot, nothing shows.
             if (skin < 0 || (!preview && slots[part - 5]->Type < 0)) continue;
             restore[part - 5]->Save();
-            OverrideEquipment(*slots[part - 5], skin, preview ? previewLevel : 0);
+            OverrideEquipment(*slots[part - 5], skin, VisibleLevel(character, part));
             wingSkin = wingSkin || part == 7;
         }
     }
