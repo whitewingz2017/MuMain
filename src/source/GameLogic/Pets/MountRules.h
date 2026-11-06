@@ -14,6 +14,14 @@ constexpr bool RidesAsDarkHorse(int type)
 {
     return type == DarkHorseItem || GameLogic::Cosmetics::IsHorseMount(type);
 }
+// A mount walking beside its rider plays its walk: action 1 in the Fenrir's, the Dark Horse's and the
+// FinalMU mounts' layouts. The followers' moving action (2) is the run of a ridden Fenrir and Dark Horse
+// and no walk in the FinalMU mount models, which stood still in it while they moved.
+constexpr int MountWalkAction = 1;
+constexpr unsigned short MountFollowAction(unsigned short followerAction, int actionCount)
+{
+    return followerAction != 0 && actionCount > MountWalkAction ? static_cast<unsigned short>(MountWalkAction) : followerAction;
+}
 constexpr float MountViewScale(float scale, bool safeZone)
 {
     constexpr float SafeZoneReduction = 0.5f;

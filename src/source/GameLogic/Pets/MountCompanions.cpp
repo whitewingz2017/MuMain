@@ -117,6 +117,7 @@ bool FollowInTown(OBJECT* mount, bool preview)
         double& idleSince = mount >= Mounts && mount < Mounts + MAX_MOUNTS
             ? followerIdleSince[mount - Mounts] : localIdleSince;
         MoveMuunFollower(mount, idleSince, now, false);
+        mount->CurrentAction = MountFollowAction(mount->CurrentAction, Models[mount->Type].NumActions);
         return true;
     }
     MoveGroundCosmetic(mount, false, true);

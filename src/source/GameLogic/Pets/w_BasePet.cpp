@@ -312,6 +312,8 @@ void PetObject::UpdateMuunMovement(double tick, bool preview)
     {
         const int target = SDL_GetTicks() < m_muunAttackUntil ? m_muunTarget : -1;
         GameLogic::Pets::MoveMuunFollower(m_obj, m_idleSince, tick, floating, target);
+        if (GameLogic::Pets::IsMountItem(m_itemType))
+            m_obj->CurrentAction = GameLogic::Pets::MountFollowAction(m_obj->CurrentAction, Models[m_obj->Type].NumActions);
         return;
     }
     GameLogic::Pets::MoveGroundCosmetic(m_obj, preview, !floating);
