@@ -3,6 +3,7 @@
 #include "Core/Text/GroupedNumbers.h"
 
 #include "UI/HUD/HudUpdates.h"
+#include "Scenes/SceneCore.h"
 
 #include "UI/Core/WindowSystem.h"
 #include "UI/HUD/GensRanking.h"
@@ -62,6 +63,8 @@ void SetItemHotkey(ItemHotkey hotkey, int itemType, int itemLevel)
 void AddSlideNotice(int loopCount, int loopDelay, std::wstring_view text, int type, float speed,
                     std::uint32_t color)
 {
+    if (SceneFlag != MAIN_SCENE)
+        return;
     std::wstring notice(text);
     g_pSlideHelpMgr->AddSlide(loopCount, loopDelay, notice.c_str(), type, speed, color);
 }

@@ -10,6 +10,7 @@
 #include "Render/Textures/ZzzOpenglUtil.h"
 #include "Render/Text/CUIRenderText.h"
 #include "App/Platform/Windows/Winmain.h"
+#include "Scenes/SceneCore.h"
 
 #include <RmlUi/Core/Context.h>
 #include <chrono>
@@ -123,7 +124,9 @@ void Clear()
 
 void Create(const wchar_t* text, int color)
 {
-    if (!text || !*text)
+    // Announcements (event openings and the like) belong to the world, not the login or
+    // character screens; ones that arrive there are dropped rather than replayed late.
+    if (!text || !*text || SceneFlag != MAIN_SCENE)
         return;
     s_History.Push(text, color != 0);
     s_LastMove = std::chrono::steady_clock::now();
@@ -143,6 +146,11 @@ void Move()
 
 void Render()
 {
+    if (SceneFlag != MAIN_SCENE)
+    {
+        UI::RmlBridge::SyncDocumentVisibility(s_View.Document(), false);
+        return;
+    }
     s_RenderedThisFrame = true;
 #ifdef KJH_ADD_INGAMESHOP_UI_SYSTEM
     if (g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_INGAMESHOP))
