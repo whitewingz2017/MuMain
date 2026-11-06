@@ -123,12 +123,13 @@ constexpr DocumentPlacement Placements[] = {
     {"igs_buy_select.rml", 10.665f, MainScene},
     {"igs_send_gift.rml", 10.665f, MainScene},
     {"kanturu_enter.rml", 10.1f, MainScene},
-    {"master_level.rml", 10.1f, MainScene},
-    {"master_level_band.rml", 10.1f, MainScene},
     {"cursed_temple_result.rml", 10.2f, MainScene},
     {"cursed_temple_enter.rml", 10.3f, MainScene},
     {"window_menu.rml", 10.4f, MainScene},
     {"main_frame.rml", 10.6f, MainScene},
+    // The master skill tree covers the HUD while it is open (the original drew it at 10.1).
+    {"master_level.rml", 10.62f, MainScene},
+    {"master_level_band.rml", 10.62f, MainScene},
     {"command_window.rml", 10.65f, MainScene}, // UI::RmlBridge::ForegroundPanelLayerDepth
     {"chat_command.rml", 10.65f, MainScene},
     // The original drew it at 10.5, under the HUD; the modern theme's settings screen covers the
