@@ -270,6 +270,38 @@ TEST_CASE("The update marks the map objects the frame's view shows, and only tho
     SceneFlag = scene;
 }
 
+TEST_CASE("The update hides again the map objects of a block the cull showed and then left [effects]")
+{
+    ViewScope view;
+    const EGameScene scene = SceneFlag;
+    SceneFlag = MAIN_SCENE;
+    OBJECT shown{};
+    shown.Live = true;
+    shown.CollisionRange = 0.f;
+    view.Ahead(1000.f, shown.Position);
+    const int column = static_cast<int>(shown.Position[0] / 100.f) / 16;
+    const int row = static_cast<int>(shown.Position[1] / 100.f) / 16;
+    OBJECT_BLOCK& block = ObjectBlock[column * 16 + row];
+    OBJECT* const previousHead = block.Head;
+    block.Head = &shown;
+
+    // Off-screen first: the update hides the block's objects, then leaves the hidden block alone.
+    block.Visible = false;
+    MoveObjects();
+    MoveObjects();
+    CHECK_FALSE(shown.Visible);
+
+    // The cull shows the object, and the next cull finds its block off-screen.
+    CullObjects();
+    REQUIRE(shown.Visible);
+    block.Visible = false;
+    MoveObjects();
+    CHECK_FALSE(shown.Visible);
+
+    block.Head = previousHead;
+    SceneFlag = scene;
+}
+
 #ifdef MU_ENABLE_CONTROL_SOCKET
 TEST_CASE("The draw purity check counts a draw pass that draws from the update's random sequences [effects]")
 {

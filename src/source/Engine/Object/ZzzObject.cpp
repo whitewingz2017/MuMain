@@ -78,6 +78,17 @@ extern vec3_t LightTransform[MAX_MESH][MAX_VERTICES];
 
 int          g_iTotalObj = 0;
 OBJECT_BLOCK ObjectBlock[256];
+
+namespace
+{
+constexpr std::size_t ObjectBlockCount = std::size(ObjectBlock);
+// The blocks in which the last cull marked an object drawn; UpdateObjectEffects visits only these.
+std::array<bool, ObjectBlockCount> s_blockHasDrawnObjects{};
+// The blocks whose objects MoveObjects already hid since the cull last set their visibility, so it can
+// leave them alone until a cull touches them again. A new object starts hidden (CreateObject).
+std::array<bool, ObjectBlockCount> s_blockObjectsHidden{};
+} // namespace
+
 OBJECT       Boids[MAX_BOIDS];
 OBJECT       Fishs[MAX_FISHS];
 OBJECT       Mounts[MAX_MOUNTS];
@@ -122,11 +133,16 @@ void SetActionObject(int iWorld, int iType, int iLifeTime, int iVel)
     g_fActionObjectVelocity = (float)iVel;
 }
 
+// Whether a scripted object action (a gate opening) is under way; ActionObject does nothing otherwise.
+static bool IsObjectActionPending()
+{
+    return g_iActionWorld >= 0 && g_iActionObjectType >= 0 && g_iActionTime >= 0;
+}
+
 void ActionObject(OBJECT* o)
 {
-    if (g_iActionWorld < 0)     return;
-    if (g_iActionObjectType < 0)return;
-    if (g_iActionTime < 0)      return;
+    if (!IsObjectActionPending())
+        return;
 
     if (gMapManager.WorldActive == g_iActionWorld)
     {
@@ -4100,9 +4116,13 @@ void UpdateObjectEffects()
         Time_Effect = 0;
     Time_Effect += FPS_ANIMATION_FACTOR;
 
-    for (OBJECT_BLOCK& ob : ObjectBlock)
+    // Only the blocks the cull drew from: walking every object of the map to find the drawn ones cost
+    // a cache miss per object.
+    for (std::size_t block = 0; block < ObjectBlockCount; ++block)
     {
-        for (OBJECT* o = ob.Head; o != nullptr; o = o->Next)
+        if (!s_blockHasDrawnObjects[block])
+            continue;
+        for (OBJECT* o = ObjectBlock[block].Head; o != nullptr; o = o->Next)
         {
             if (o->DrawnFrame != s_objectCullFrame)
                 continue;
@@ -4139,10 +4159,11 @@ float g_MapEditorPlacementPreviewScale = 1.0f;
 // The objects the last cull marked, in the order they draw.
 static std::vector<OBJECT*> s_objectsToDraw;
 
-static void MarkDrawn(OBJECT* o)
+static void MarkDrawn(OBJECT* o, std::size_t block)
 {
     o->DrawnFrame = s_objectCullFrame;
     s_objectsToDraw.push_back(o);
+    s_blockHasDrawnObjects[block] = true;
     vec3_t origin;
     ObjectModelOrigin(o, origin);
     PlaceObjectBounds(o, origin);
@@ -4152,6 +4173,7 @@ void CullObjects()
 {
     ++s_objectCullFrame;
     s_objectsToDraw.clear();
+    s_blockHasDrawnObjects.fill(false);
 
     float   range = 0.f;
     if (gMapManager.WorldActive == WD_10HEAVEN)
@@ -4163,7 +4185,8 @@ void CullObjects()
     {
         for (int j = 0; j < 16; j++)
         {
-            OBJECT_BLOCK* ob = &ObjectBlock[i * 16 + j];
+            const std::size_t blockIndex = static_cast<std::size_t>(i * 16 + j);
+            OBJECT_BLOCK* ob = &ObjectBlock[blockIndex];
 
             ob->Visible = TestFrustrum2D((float)(i * 16 + 8), (float)(j * 16 + 8), -180.f);
             if (g_Direction.m_CKanturu.IsMayaScene()
@@ -4183,7 +4206,7 @@ void CullObjects()
                     {
                         if (g_Direction.m_CKanturu.IsMayaScene() && (o->Type == 0 || o->Type == MODEL_STORM2))
                         {
-                            MarkDrawn(o);
+                            MarkDrawn(o, blockIndex);
                         }
                         else
                             if (gMapManager.WorldActive == WD_73NEW_LOGIN_SCENE)
@@ -4210,7 +4233,7 @@ void CullObjects()
                                     else
                                         o->AlphaTarget = 1.0f;
 
-                                    MarkDrawn(o);
+                                    MarkDrawn(o, blockIndex);
                                 }
                                 else if (TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -500.f) && fDistance < fDis && o->Type <= MAX_WORLD_OBJECTS)
                                 {
@@ -4219,7 +4242,7 @@ void CullObjects()
                                     else
                                         o->AlphaTarget = 1.0f;
 
-                                    MarkDrawn(o);
+                                    MarkDrawn(o, blockIndex);
                                 }
                                 else if (o->AlphaTarget != 0 && fDistance > fDis)
                                 {
@@ -4232,23 +4255,23 @@ void CullObjects()
                             else if ((gMapManager.WorldActive == WD_51HOME_6TH_CHAR
                                 ) && ((o->Type >= 5 && o->Type <= 14) || (o->Type >= 87 && o->Type <= 88) || (o->Type == 4 || o->Type == 129)) && TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -400.f))
                             {
-                                MarkDrawn(o);
+                                MarkDrawn(o, blockIndex);
                             }
                             else if ((gMapManager.WorldActive == WD_74NEW_CHARACTER_SCENE) && (o->Type == 129 || o->Type == 98))
                             {
-                                MarkDrawn(o);
+                                MarkDrawn(o, blockIndex);
                             }
                             else if ((gMapManager.WorldActive == WD_57ICECITY || gMapManager.WorldActive == WD_58ICECITY_BOSS) && (o->Type == 30 || o->Type == 31) && TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -600.f))
                             {
-                                MarkDrawn(o);
+                                MarkDrawn(o, blockIndex);
                             }
                             else if (gMapManager.IsPKField() && (o->Type == 16 || o->Type == 67 || o->Type == 68) && TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -600.f))
                             {
-                                MarkDrawn(o);
+                                MarkDrawn(o, blockIndex);
                             }
                             else if (IsDoppelGanger2() && (o->Type == 16 || o->Type == 67 || o->Type == 68) && TestFrustrum2D(o->Position[0] * 0.01f, o->Position[1] * 0.01f, -600.f))
                             {
-                                MarkDrawn(o);
+                                MarkDrawn(o, blockIndex);
                             }
 
                         if (o->Next == NULL)
@@ -4263,6 +4286,8 @@ void CullObjects()
 
             if (ob->Visible || g_Camera.TopViewEnable)
             {
+                // The cull sets these objects' visibility: MoveObjects has to hide them again.
+                s_blockObjectsHidden[blockIndex] = false;
                 OBJECT* o = ob->Head;
                 while (1)
                 {
@@ -4302,7 +4327,7 @@ void CullObjects()
                                                     Success = true;
                                                 if (Success)
                                                 {
-                                                    MarkDrawn(o);
+                                                    MarkDrawn(o, blockIndex);
                                                 }
                                             }
                         }
@@ -5352,6 +5377,27 @@ void MoveObjectOnEffect(OBJECT* o, int& objCount, int& visObject)
     }
 }
 
+// An off-screen block: its objects are hidden, and a pending gate action still runs on them. Once
+// hidden they stay hidden until a cull sets their visibility again, so with no action pending a
+// block hidden before is left alone; walking every object of the map each frame cost a cache miss
+// per object.
+static void HideBlockObjects(std::size_t blockIndex)
+{
+    const bool actionPending = IsObjectActionPending();
+    if (!actionPending && s_blockObjectsHidden[blockIndex])
+        return;
+
+    for (OBJECT* o = ObjectBlock[blockIndex].Head; o != nullptr; o = o->Next)
+    {
+        if (actionPending && o->Live)
+        {
+            ActionObject(o);
+        }
+        o->Visible = false;
+    }
+    s_blockObjectsHidden[blockIndex] = true;
+}
+
 void MoveObjects()
 {
     int     objectCount = 0;
@@ -5363,7 +5409,8 @@ void MoveObjects()
     {
         for (int j = 0; j < 16; j++)
         {
-            OBJECT_BLOCK* ob = &ObjectBlock[i * 16 + j];
+            const std::size_t blockIndex = static_cast<std::size_t>(i * 16 + j);
+            OBJECT_BLOCK* ob = &ObjectBlock[blockIndex];
             if (ob->Visible)
             {
                 OBJECT* o = ob->Head;
@@ -5385,21 +5432,7 @@ void MoveObjects()
             }
             else
             {
-                OBJECT* o = ob->Head;
-                while (1)
-                {
-                    if (o != NULL)
-                    {
-                        if (o->Live)
-                        {
-                            ActionObject(o);
-                        }
-                        o->Visible = false;
-                        if (o->Next == NULL) break;
-                        o = o->Next;
-                    }
-                    else break;
-                }
+                HideBlockObjects(blockIndex);
             }
         }
     }
