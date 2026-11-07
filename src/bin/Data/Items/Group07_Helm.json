@@ -32,8 +32,8 @@
       "name": {
         "en": "Dragon Helm",
         "de": "Drachenhelm",
-        "es": "Yelmo Dragón",
-        "pt": "Elmo do dragão"
+        "es": "Yelmo DragÃƒÂ³n",
+        "pt": "Elmo do dragÃƒÂ£o"
       },
       "width": 2,
       "height": 2,
@@ -78,9 +78,9 @@
       "number": 3,
       "name": {
         "en": "Legendary Helm",
-        "de": "Legendärer Helm",
+        "de": "LegendÃƒÂ¤rer Helm",
         "es": "Yelmo Legendario",
-        "pt": "Elmo lendário"
+        "pt": "Elmo lendÃƒÂ¡rio"
       },
       "width": 2,
       "height": 2,
@@ -175,8 +175,8 @@
       "name": {
         "en": "Sphinx Mask",
         "de": "Sphinxmaske",
-        "es": "Máscara Esfinge",
-        "pt": "Máscara da esfinge"
+        "es": "MÃƒÂ¡scara Esfinge",
+        "pt": "MÃƒÂ¡scara da esfinge"
       },
       "width": 2,
       "height": 2,
@@ -199,7 +199,7 @@
         "en": "Brass Helm",
         "de": "Messinghelm",
         "es": "Yelmo de Metal",
-        "pt": "Elmo de latão"
+        "pt": "Elmo de latÃƒÂ£o"
       },
       "width": 2,
       "height": 2,
@@ -319,8 +319,8 @@
       "name": {
         "en": "Spirit Helm",
         "de": "Geisterhelm",
-        "es": "Yelmo Espíritu",
-        "pt": "Elmo do espírito"
+        "es": "Yelmo EspÃƒÂ­ritu",
+        "pt": "Elmo do espÃƒÂ­rito"
       },
       "width": 2,
       "height": 2,
@@ -342,9 +342,9 @@
       "number": 14,
       "name": {
         "en": "Guardian Helm",
-        "de": "Wächterhelm",
-        "es": "Yelmo Guardián",
-        "pt": "Elmo do guardião"
+        "de": "WÃƒÂ¤chterhelm",
+        "es": "Yelmo GuardiÃƒÂ¡n",
+        "pt": "Elmo do guardiÃƒÂ£o"
       },
       "width": 2,
       "height": 2,
@@ -367,8 +367,8 @@
       "name": {
         "en": "Black Dragon Helm",
         "de": "Schwarzdrachenhelm",
-        "es": "Yelmo Dragón Negro",
-        "pt": "Elmo do dragão negro"
+        "es": "Yelmo DragÃƒÂ³n Negro",
+        "pt": "Elmo do dragÃƒÂ£o negro"
       },
       "width": 2,
       "height": 2,
@@ -390,9 +390,9 @@
       "number": 17,
       "name": {
         "en": "Dark Phoenix Helm",
-        "de": "Dunkelphönixhelm",
-        "es": "Yelmo Fénix Oscuro",
-        "pt": "Elmo da fênix negra"
+        "de": "DunkelphÃƒÂ¶nixhelm",
+        "es": "Yelmo FÃƒÂ©nix Oscuro",
+        "pt": "Elmo da fÃƒÂªnix negra"
       },
       "width": 2,
       "height": 2,
@@ -414,7 +414,7 @@
       "number": 18,
       "name": {
         "en": "Grand Soul Helm",
-        "de": "Großseelenhelm",
+        "de": "GroÃƒÅ¸seelenhelm",
         "es": "Yelmo Gran Alma",
         "pt": "Grande elmo da alma"
       },
@@ -438,7 +438,7 @@
       "number": 19,
       "name": {
         "en": "Divine Helm",
-        "de": "Göttlicher Helm",
+        "de": "GÃƒÂ¶ttlicher Helm",
         "es": "Yelmo Divino",
         "pt": "Elmo divino"
       },
@@ -462,9 +462,9 @@
       "number": 21,
       "name": {
         "en": "Great Dragon Helm",
-        "de": "Großartiger Drachenhelm",
-        "es": "Yelmo Gran Dragón",
-        "pt": "Grande elmo do dragão"
+        "de": "GroÃƒÅ¸artiger Drachenhelm",
+        "es": "Yelmo Gran DragÃƒÂ³n",
+        "pt": "Grande elmo do dragÃƒÂ£o"
       },
       "width": 2,
       "height": 2,
@@ -511,8 +511,8 @@
       "name": {
         "en": "Red Spirit Helm",
         "de": "Rotgeisterhelm",
-        "es": "Yelmo Espíritu Rojo",
-        "pt": "Elmo do espírito vermelho"
+        "es": "Yelmo EspÃƒÂ­ritu Rojo",
+        "pt": "Elmo do espÃƒÂ­rito vermelho"
       },
       "width": 2,
       "height": 2,
@@ -535,8 +535,8 @@
       "name": {
         "en": "Light Plate Mask",
         "de": "Leichtplattenmaske",
-        "es": "Máscara Plata de Luz",
-        "pt": "Máscara de placa leve"
+        "es": "MÃƒÂ¡scara Plata de Luz",
+        "pt": "MÃƒÂ¡scara de placa leve"
       },
       "width": 2,
       "height": 2,
@@ -559,8 +559,8 @@
       "name": {
         "en": "Adamantine Mask",
         "de": "Adamantmaske",
-        "es": "Máscara Adamantina",
-        "pt": "Máscara de adamantina"
+        "es": "MÃƒÂ¡scara Adamantina",
+        "pt": "MÃƒÂ¡scara de adamantina"
       },
       "width": 2,
       "height": 2,
@@ -583,8 +583,8 @@
       "name": {
         "en": "Dark Steel Mask",
         "de": "Dunkelstahlmaske",
-        "es": "Máscara Acero Oscuro",
-        "pt": "Máscara de aço negro"
+        "es": "MÃƒÂ¡scara Acero Oscuro",
+        "pt": "MÃƒÂ¡scara de aÃƒÂ§o negro"
       },
       "width": 2,
       "height": 2,
@@ -607,8 +607,8 @@
       "name": {
         "en": "Dark Master Mask",
         "de": "Dunkelmeistermaske",
-        "es": "Máscara Amo Oscuro",
-        "pt": "Máscara do Mestre Negro"
+        "es": "MÃƒÂ¡scara Amo Oscuro",
+        "pt": "MÃƒÂ¡scara do Mestre Negro"
       },
       "width": 2,
       "height": 2,
@@ -631,8 +631,8 @@
       "name": {
         "en": "Dragon Knight Helm",
         "de": "Drachenritterhelm",
-        "es": "Yelmo Caballero Dragón",
-        "pt": "Elmo do cavaleiro dragão"
+        "es": "Yelmo Caballero DragÃƒÂ³n",
+        "pt": "Elmo do cavaleiro dragÃƒÂ£o"
       },
       "width": 2,
       "height": 2,
@@ -657,7 +657,7 @@
         "en": "Venom Mist Helm",
         "de": "Giftnebelhelm",
         "es": "Yelmo Bruma de Veneno",
-        "pt": "Elmo da névoa de veneno"
+        "pt": "Elmo da nÃƒÂ©voa de veneno"
       },
       "width": 2,
       "height": 2,
@@ -681,8 +681,8 @@
       "name": {
         "en": "Sylphid Ray Helm",
         "de": "Sylphenstrahlhelm",
-        "es": "Yelmo Rayo de Sílfide",
-        "pt": "Elmo do raio silfídico"
+        "es": "Yelmo Rayo de SÃƒÂ­lfide",
+        "pt": "Elmo do raio silfÃƒÂ­dico"
       },
       "width": 2,
       "height": 2,
@@ -706,8 +706,8 @@
       "name": {
         "en": "Sunlight Mask",
         "de": "Sonnenlichtmaske",
-        "es": "Máscara Luz Solar",
-        "pt": "Máscara da luz do sol"
+        "es": "MÃƒÂ¡scara Luz Solar",
+        "pt": "MÃƒÂ¡scara da luz do sol"
       },
       "width": 2,
       "height": 2,
@@ -730,7 +730,7 @@
       "number": 34,
       "name": {
         "en": "Ashcrow Helm",
-        "de": "Aschkrähenhelm",
+        "de": "AschkrÃƒÂ¤henhelm",
         "es": "Yelmo Cuervo Ceniza",
         "pt": "Elmo de Ashcrow"
       },
@@ -800,8 +800,8 @@
       "name": {
         "en": "Glorious Mask",
         "de": "Glorreiche Maske",
-        "es": "Máscara Gloriosa",
-        "pt": "Máscara gloriosa"
+        "es": "MÃƒÂ¡scara Gloriosa",
+        "pt": "MÃƒÂ¡scara gloriosa"
       },
       "width": 2,
       "height": 2,
@@ -893,9 +893,9 @@
       "number": 42,
       "name": {
         "en": "Demonic Helm",
-        "de": "Dämonischer Helm",
-        "es": "Yelmo Demoníaco",
-        "pt": "Elmo demoníaco"
+        "de": "DÃƒÂ¤monischer Helm",
+        "es": "Yelmo DemonÃƒÂ­aco",
+        "pt": "Elmo demonÃƒÂ­aco"
       },
       "width": 2,
       "height": 2,
@@ -917,8 +917,8 @@
       "name": {
         "en": "Storm Blitz Helm",
         "de": "Sturmblitzhelm",
-        "es": "Yelmo Ráfaga Tormentosa",
-        "pt": "Elmo Relâmpago de Tempestade"
+        "es": "Yelmo RÃƒÂ¡faga Tormentosa",
+        "pt": "Elmo RelÃƒÂ¢mpago de Tempestade"
       },
       "width": 2,
       "height": 2,
@@ -967,8 +967,8 @@
       "name": {
         "en": "Titan  Helm",
         "de": "Titanenhelm",
-        "es": "Yelmo Titán",
-        "pt": "Elmo do titã"
+        "es": "Yelmo TitÃƒÂ¡n",
+        "pt": "Elmo do titÃƒÂ£"
       },
       "width": 2,
       "height": 2,
@@ -1015,7 +1015,7 @@
       "name": {
         "en": "Seraphim Helm",
         "de": "Seraphim-Helm",
-        "es": "Yelmo Serafín",
+        "es": "Yelmo SerafÃƒÂ­n",
         "pt": "Elmo de serafim"
       },
       "width": 2,
@@ -1040,7 +1040,7 @@
         "en": "Faith Helm",
         "de": "Glaubenshelm",
         "es": "Yelmo de Fe",
-        "pt": "Elmo da fé"
+        "pt": "Elmo da fÃƒÂ©"
       },
       "width": 2,
       "height": 2,
@@ -1063,9 +1063,9 @@
       "number": 51,
       "name": {
         "en": "Royal Mask",
-        "de": "Königliche Maske",
-        "es": "Máscara Real",
-        "pt": "Máscara real"
+        "de": "KÃƒÂ¶nigliche Maske",
+        "es": "MÃƒÂ¡scara Real",
+        "pt": "MÃƒÂ¡scara real"
       },
       "width": 2,
       "height": 2,
@@ -1316,8 +1316,8 @@
       "name": {
         "en": "Adamantine Mask",
         "de": "Adamantmaske",
-        "es": "Máscara Adamantina",
-        "pt": "Máscara de adamantina"
+        "es": "MÃƒÂ¡scara Adamantina",
+        "pt": "MÃƒÂ¡scara de adamantina"
       },
       "tags": [
         "luckyItem"
@@ -1348,8 +1348,8 @@
       "name": {
         "en": "Dragon Helm",
         "de": "Drachenhelm",
-        "es": "Casco Dragón",
-        "pt": "Elmo de Dragão"
+        "es": "Casco DragÃƒÂ³n",
+        "pt": "Elmo de DragÃƒÂ£o"
       },
       "tags": [
         "luckyItem"
@@ -1379,9 +1379,9 @@
       "number": 68,
       "name": {
         "en": "Guardian Helm",
-        "de": "Wächterhelm",
-        "es": "Yelmo Guardián",
-        "pt": "Elmo de Guardião"
+        "de": "WÃƒÂ¤chterhelm",
+        "es": "Yelmo GuardiÃƒÂ¡n",
+        "pt": "Elmo de GuardiÃƒÂ£o"
       },
       "tags": [
         "luckyItem"
@@ -1411,9 +1411,9 @@
       "number": 69,
       "name": {
         "en": "Legendary Helm",
-        "de": "Legendärer Helm",
+        "de": "LegendÃƒÂ¤rer Helm",
         "es": "Casco Legendario",
-        "pt": "Elmo Lendário"
+        "pt": "Elmo LendÃƒÂ¡rio"
       },
       "tags": [
         "luckyItem"
@@ -1507,9 +1507,9 @@
       "number": 73,
       "name": {
         "en": "Phoenix Soul Helmet",
-        "de": "Phönixseelenhelm",
-        "es": "Casco de Alma de Fénix",
-        "pt": "Elmo de Alma de Fênix"
+        "de": "PhÃƒÂ¶nixseelenhelm",
+        "es": "Casco de Alma de FÃƒÂ©nix",
+        "pt": "Elmo de Alma de FÃƒÂªnix"
       },
       "width": 2,
       "height": 2,
@@ -5144,6 +5144,26 @@
           "color": "purple"
         }
       ]
+    },
+    {
+      "number": 146,
+      "name": {
+        "en": "Tigris Helm"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "helm",
+      "statProfile": "armor",
+      "level": 128,
+      "durability": 88,
+      "defense": 60,
+      "requirements": {
+        "level": 380,
+        "strength": 97
+      },
+      "classRequirements": {
+        "rageFighter": 1
+      }
     }
   ]
 }

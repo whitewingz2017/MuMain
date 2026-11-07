@@ -12,7 +12,7 @@
 #buttons_top.workspace-placed { position: absolute; transform-origin: left top; }
 #buttons_top {
 	position: relative;
-	width: 506dp;
+	width: 556dp;
 	height: 24dp;
 	font-family: "token(font-body)";
 	background-color: rgba(15, 16, 13, 190);
@@ -52,6 +52,7 @@
 #btn_code_top     { left: 354dp; }
 #btn_events_top   { left: 404dp; }
 #btn_muun_top     { left: 454dp; }
+#btn_rank_top     { left: 504dp; }
 
 .alert-dot-top {
 	position: absolute;

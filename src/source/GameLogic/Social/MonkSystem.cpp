@@ -93,6 +93,9 @@ void CMonkSystem::RegistItem()
     m_cItemEqualType.SetModelType(MODEL_PHOENIX_SOUL_STAR, MODEL_SWORD_35_LEFT, MODEL_SWORD_35_RIGHT);
     m_mapItemEqualType.insert(tm_ItemEqualType::value_type(m_cItemEqualType.GetModelType(), m_cItemEqualType));
 
+    m_cItemEqualType.SetModelType(MODEL_PANTERA_CLAWS, MODEL_PANTERA_CLAWS_LEFT, MODEL_PANTERA_CLAWS_RIGHT);
+    m_mapItemEqualType.insert(tm_ItemEqualType::value_type(m_cItemEqualType.GetModelType(), m_cItemEqualType));
+
     for (const auto& [modelType, equalType] : m_mapItemEqualType)
     {
         m_subItemModels.insert(equalType.GetSubLeftType());

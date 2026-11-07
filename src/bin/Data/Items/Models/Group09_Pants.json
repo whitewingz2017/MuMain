@@ -2240,7 +2240,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor117"
+        "color": "finalMuArmor117",
+        "meshes": [
+          0,
+          1,
+          3
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          3
+        ]
       },
       "inventory": {
         "anchor": [
@@ -2314,7 +2324,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor118"
+        "color": "finalMuArmor118",
+        "meshes": [
+          0,
+          1,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2
+        ]
       },
       "inventory": {
         "anchor": [
@@ -2598,7 +2618,19 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor119"
+        "color": "finalMuArmor119",
+        "meshes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "shineMeshes": [
+          0,
+          2,
+          3,
+          4
+        ]
       },
       "inventory": {
         "anchor": [
@@ -2893,7 +2925,19 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor120"
+        "color": "finalMuArmor120",
+        "meshes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          3,
+          4
+        ]
       },
       "inventory": {
         "anchor": [
@@ -3188,7 +3232,21 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor121"
+        "color": "finalMuArmor121",
+        "meshes": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ]
       },
       "inventory": {
         "anchor": [
@@ -3494,7 +3552,19 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor122"
+        "color": "finalMuArmor122",
+        "meshes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2,
+          4
+        ]
       },
       "inventory": {
         "anchor": [
@@ -3789,7 +3859,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor123"
+        "color": "finalMuArmor123",
+        "meshes": [
+          0,
+          1,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2
+        ]
       },
       "inventory": {
         "anchor": [
@@ -3863,7 +3943,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor124"
+        "color": "finalMuArmor124",
+        "meshes": [
+          0,
+          1,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2
+        ]
       },
       "inventory": {
         "anchor": [
@@ -4391,7 +4481,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor138"
+        "color": "finalMuArmor138",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -5938,7 +6034,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor217"
+        "color": "finalMuArmor217",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -6373,7 +6475,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor237"
+        "color": "finalMuArmor237",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -6441,6 +6549,41 @@
             "blue": 1.0
           }
         ]
+      }
+    },
+    {
+      "number": 146,
+      "file": "Data/Custom/Tigris/PantMale105.bmd",
+      "textureFolders": [
+        "Custom/Tigris"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.9
+        ],
+        "scale": 0.0033,
+        "bodyHeight": -50
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          -45
+        ],
+        "bodyHeight": -50
+      },
+      "material": {
+        "specular": 0.6
+      },
+      "glow": {
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ],
+        "excellentMesh": 0
       }
     }
   ]

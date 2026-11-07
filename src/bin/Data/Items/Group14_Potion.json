@@ -5319,6 +5319,94 @@
       "repairable": false
     },
     {
+      "number": 176,
+      "name": {
+        "en": "Death King's Bone"
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Material for the Cloak of Death"
+          }
+        },
+        {
+          "text": {
+            "en": "Combine with a 2nd wing or cape, a Jewel of Chaos and a Jewel of Creation in the Chaos Machine."
+          }
+        }
+      ],
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "repairable": false
+    },
+    {
+      "number": 177,
+      "name": {
+        "en": "Hell Maine's Leather"
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Material for the Wings of Chaos"
+          }
+        },
+        {
+          "text": {
+            "en": "Combine with a 2nd wing or cape, a Jewel of Chaos and a Jewel of Creation in the Chaos Machine."
+          }
+        }
+      ],
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "repairable": false
+    },
+    {
+      "number": 178,
+      "name": {
+        "en": "Dark Phoenix Flame"
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Material for the Wings of Power"
+          }
+        },
+        {
+          "text": {
+            "en": "Combine with a 2nd wing or cape, a Jewel of Chaos and a Jewel of Creation in the Chaos Machine."
+          }
+        }
+      ],
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "repairable": false
+    },
+    {
+      "number": 179,
+      "name": {
+        "en": "Death Beam Knight's Soul"
+      },
+      "description": [
+        {
+          "text": {
+            "en": "Material for the Wings of Life"
+          }
+        },
+        {
+          "text": {
+            "en": "Combine with a 2nd wing or cape, a Jewel of Chaos and a Jewel of Creation in the Chaos Machine."
+          }
+        }
+      ],
+      "width": 1,
+      "height": 1,
+      "durability": 1,
+      "repairable": false
+    },
+    {
       "number": 250,
       "name": {
         "en": "Muun Evolution Stone"

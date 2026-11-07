@@ -9,6 +9,8 @@
 #include "GameLogic/Items/ExcellentCombination.h"
 #include "GameLogic/Cosmetics/FenrirMounts.h"
 #include "GameLogic/Cosmetics/SkinShop.h"
+#include "GameLogic/RankTitles/RankShop.h"
+#include "GameLogic/RankTitles/RankTitleStore.h"
 #include "GameLogic/Bank/JewelBank.h"
 #include "GameLogic/Events/EventSchedule.h"
 #include "GameLogic/Events/EventProgress.h"
@@ -13417,6 +13419,18 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
     if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFD && ReceiveBuffer[4] == 0x02)
     {
         GameLogic::Cosmetics::SkinShop::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == GameLogic::RankTitles::PacketHeadCode
+        && ReceiveBuffer[4] == GameLogic::RankTitles::PacketSubCode)
+    {
+        GameLogic::RankTitles::Receive(received_span);
+        return;
+    }
+    if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == GameLogic::RankTitles::PacketHeadCode
+        && ReceiveBuffer[4] == GameLogic::RankTitles::Shop::PacketSubCode)
+    {
+        GameLogic::RankTitles::Shop::Receive(received_span);
         return;
     }
     if (Size >= 5 && ReceiveBuffer[0] == 0xC2 && ReceiveBuffer[3] == 0xFA && ReceiveBuffer[4] == 0x19)

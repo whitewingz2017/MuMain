@@ -12,9 +12,9 @@
 #panel {
 	position: absolute;
 	left: 528px;
-	top: 184px;
+	top: 164px;
 	width: 112px;
-	height: 246px;
+	height: 266px;
 	font-family: "token(font-body)";
 	pointer-events: auto;
 }
@@ -24,7 +24,7 @@
 	left: 0;
 	top: 0;
 	width: 112px;
-	height: 246px;
+	height: 266px;
 	box-sizing: border-box;
 	border-width: 1px;
 	border-color: #000000;
@@ -61,5 +61,6 @@
 }
 .menu-row:hover .menu-label { color: #ffff00; }
 
-/* TwinMU: 11 rows (Redeem Code, Excellent Combination, Event Timers, Muun Inventory, Jewel Bank);
+/* TwinMU: 12 rows (Redeem Code, Excellent Combination, Event Timers, Muun Inventory, Jewel Bank,
+   Rank Shop);
    the frame grows upward so its bottom edge stays at 480 - 50. */

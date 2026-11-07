@@ -44,6 +44,12 @@ build-linux/
 !src/bin/Data/Interface/MapNameOrnament/**
 # RmlUi UI content (RML/RCSS documents and themes) is authored source, not build output.
 !src/bin/Data/
+# Rank title catalog and packed badge art.
+!src/bin/Data/Custom/
+!src/bin/Data/Custom/RankTitles/
+!src/bin/Data/Custom/RankTitles/RankTitles.json
+!src/bin/Data/Custom/RankHornor/
+!src/bin/Data/Custom/RankHornor/*.OZT
 !src/bin/Data/Interface/
 !src/bin/Data/Interface/RmlUi/
 !src/bin/Data/Interface/RmlUi/**
@@ -119,3 +125,8 @@ docs/reviews/
 # In-game test runner output (docs/in-game-tests.md)
 in-game-test-results/
 __pycache__/
+
+# Imported Rage Fighter socket equipment.
+!src/bin/Data/Custom/
+!src/bin/Data/Custom/Tigris/
+!src/bin/Data/Custom/Tigris/**

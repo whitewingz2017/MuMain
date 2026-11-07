@@ -536,7 +536,8 @@ void SetItemAttributes(ITEM* ip)
             ip->SpecialNum++;
         }
         if (ip->Type == ITEM_CAPE_OF_LORD
-            || ip->Type == ITEM_CAPE_OF_FIGHTER)
+            || ip->Type == ITEM_CAPE_OF_FIGHTER
+            || GameLogic::Items::IsMonsterWing(ip))
         {
             ip->Special[ip->SpecialNum] = AT_LUCK;
             ip->SpecialNum++;
@@ -699,6 +700,45 @@ void SetItemAttributes(ITEM* ip)
                 {
                     ip->SpecialValue[ip->SpecialNum] = Option3;
                     ip->Special[ip->SpecialNum] = AT_LIFE_REGENERATION; ip->SpecialNum++;
+                }
+            }
+            else if (ip->Type == ITEM_CLOAK_OF_DEATH || ip->Type == ITEM_WINGS_OF_CHAOS)
+            {
+                if (ip->OptionType == 0)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3;
+                    ip->Special[ip->SpecialNum] = AT_LIFE_REGENERATION; ip->SpecialNum++;
+                }
+                if (ip->OptionType == 2)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3 * 4;
+                    ip->Special[ip->SpecialNum] = AT_IMPROVE_DAMAGE; ip->SpecialNum++;
+                }
+            }
+            else if (ip->Type == ITEM_WINGS_OF_POWER)
+            {
+                if (ip->OptionType == 0)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3;
+                    ip->Special[ip->SpecialNum] = AT_LIFE_REGENERATION; ip->SpecialNum++;
+                }
+                if (ip->OptionType == 2)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3 * 4;
+                    ip->Special[ip->SpecialNum] = AT_IMPROVE_MAGIC; ip->SpecialNum++;
+                }
+            }
+            else if (ip->Type == ITEM_WINGS_OF_LIFE)
+            {
+                if (ip->OptionType == 2)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3;
+                    ip->Special[ip->SpecialNum] = AT_LIFE_REGENERATION; ip->SpecialNum++;
+                }
+                if (ip->OptionType == 0)
+                {
+                    ip->SpecialValue[ip->SpecialNum] = Option3 * 4;
+                    ip->Special[ip->SpecialNum] = AT_IMPROVE_DAMAGE; ip->SpecialNum++;
                 }
             }
             else if (ip->Type == ITEM_WINGS_OF_DESPAIR)
@@ -1247,6 +1287,7 @@ int64_t ItemValue(const ITEM* ip, int goldType)
     else if (((Type == 12 && (ip->Type > ITEM_WINGS_OF_DARKNESS
         && !(ip->Type >= ITEM_WING_OF_STORM && ip->Type <= ITEM_WING_OF_DIMENSION)
         && (ip->Type != ITEM_CAPE_OF_OVERRULE)
+        && !GameLogic::Items::IsMonsterWing(ip)
         )) || Type == 13 || Type == 15))
     {
         Gold = (long long)100 + Level2 * Level2 * Level2;
@@ -1282,7 +1323,7 @@ int64_t ItemValue(const ITEM* ip, int goldType)
         case 15:Level2 += 365; break;
         }
         if ((Type == 12 && ip->Type <= ITEM_WINGS_OF_DARKNESS) || ip->Type == ITEM_CAPE_OF_LORD || (ip->Type >= ITEM_WING_OF_STORM && ip->Type <= ITEM_WING_OF_DIMENSION)
-            || (ip->Type == ITEM_CAPE_OF_OVERRULE))
+            || (ip->Type == ITEM_CAPE_OF_OVERRULE) || GameLogic::Items::IsMonsterWing(ip))
         {
             Gold = (long long)(40000000 + ((40 + Level2) * Level2 * Level2 * 11));
         }
@@ -1335,6 +1376,7 @@ int64_t ItemValue(const ITEM* ip, int goldType)
 
                     || (ip->Type >= ITEM_WING_OF_STORM && ip->Type <= ITEM_WING_OF_DIMENSION)
                     || (ip->Type >= ITEM_CAPE_OF_FIGHTER && ip->Type <= ITEM_CAPE_OF_OVERRULE)
+                    || GameLogic::Items::IsMonsterWing(ip)
                     )    //  날개.
                 {
                     int iOption = ip->SpecialValue[i];

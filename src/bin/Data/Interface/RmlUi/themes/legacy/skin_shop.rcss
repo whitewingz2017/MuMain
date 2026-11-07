@@ -1,1 +1,3 @@
-/* The shared three-column layout uses this theme's window_shell chrome. */
+/* The shared layout uses this theme's window_shell chrome. The preview window starts 8dp past the shell's
+   frame: its content inset (32dp) plus the gap. */
+.shop-preview-window { left: calc(100% + 40dp); }

@@ -1775,7 +1775,8 @@ bool mu::ui::window::CInventoryCtrl::CanUpgradeItem(ITEM* pSourceItem, ITEM* pTa
 
     if (((pTargetItem->Type >= ITEM_SWORD && pTargetItem->Type < ITEM_WING) && !GameLogic::Items::IsAmmunition(pTargetItem)) ||
         (pTargetItem->Type >= ITEM_WING && pTargetItem->Type <= ITEM_WINGS_OF_DARKNESS) ||
-        (pTargetItem->Type >= ITEM_WING_OF_STORM && pTargetItem->Type <= ITEM_WING_OF_DIMENSION))
+        (pTargetItem->Type >= ITEM_WING_OF_STORM && pTargetItem->Type <= ITEM_WING_OF_DIMENSION) ||
+        (pTargetItem->Type >= ITEM_CLOAK_OF_DEATH && pTargetItem->Type <= ITEM_WINGS_OF_LIFE))
     {
         if ((pSourceItem->Type == ITEM_JEWEL_OF_BLESS) && (iTargetLevel >= 0 && iTargetLevel <= 5))
         {

@@ -104,7 +104,7 @@
         "en": "Katana",
         "de": "Katana",
         "es": "Katana",
-        "pt": "Cataná"
+        "pt": "CatanÃ¡"
       },
       "width": 1,
       "height": 3,
@@ -164,7 +164,7 @@
         "en": "Blade",
         "de": "Klinge",
         "es": "Espada",
-        "pt": "Lâmina"
+        "pt": "LÃ¢mina"
       },
       "width": 1,
       "height": 3,
@@ -196,7 +196,7 @@
         "en": "Gladius",
         "de": "Gladius",
         "es": "Gladius",
-        "pt": "Gládio"
+        "pt": "GlÃ¡dio"
       },
       "width": 1,
       "height": 3,
@@ -342,9 +342,9 @@
       "number": 11,
       "name": {
         "en": "Legendary Sword",
-        "de": "Legendäres Schwert",
+        "de": "LegendÃ¤res Schwert",
         "es": "Espada Legendaria",
-        "pt": "Espada lendária"
+        "pt": "Espada lendÃ¡ria"
       },
       "width": 2,
       "height": 3,
@@ -372,8 +372,8 @@
       "name": {
         "en": "Heliacal Sword",
         "de": "Sonnenschwert",
-        "es": "Espada Helíaca",
-        "pt": "Espada helíaca"
+        "es": "Espada HelÃ­aca",
+        "pt": "Espada helÃ­aca"
       },
       "width": 2,
       "height": 3,
@@ -402,7 +402,7 @@
         "en": "Double Blade",
         "de": "Doppelklinge",
         "es": "Doble Hoja",
-        "pt": "Lâmina dupla"
+        "pt": "LÃ¢mina dupla"
       },
       "width": 1,
       "height": 3,
@@ -431,7 +431,7 @@
       "name": {
         "en": "Lighting Sword",
         "de": "Blitzschwert",
-        "es": "Espada Lumínica",
+        "es": "Espada LumÃ­nica",
         "pt": "Espada de luz"
       },
       "width": 1,
@@ -489,9 +489,9 @@
       "number": 16,
       "name": {
         "en": "Sword of Destruction",
-        "de": "Schwert der Zerstörung",
-        "es": "Espada de Destrucción",
-        "pt": "Espada da destruição"
+        "de": "Schwert der ZerstÃ¶rung",
+        "es": "Espada de DestrucciÃ³n",
+        "pt": "Espada da destruiÃ§Ã£o"
       },
       "width": 1,
       "height": 4,
@@ -549,7 +549,7 @@
         "en": "Thunder Blade",
         "de": "Donnerklinge",
         "es": "Espada del Trueno",
-        "pt": "Lâmina do trovão"
+        "pt": "LÃ¢mina do trovÃ£o"
       },
       "width": 2,
       "height": 3,
@@ -576,18 +576,24 @@
       "number": 19,
       "name": {
         "en": "Divine Sword of Archangel",
-        "de": "Göttliches Schwert des Erzengels",
-        "es": "Espada Divina de Arcángel",
+        "de": "GÃ¶ttliches Schwert des Erzengels",
+        "es": "Espada Divina de ArcÃ¡ngel",
         "pt": "Espada divina do arcanjo"
       },
-      "tags": ["divineArchangelWeapon", "valuable"],
+      "tags": [
+        "divineArchangelWeapon",
+        "valuable"
+      ],
       "nameLines": [
         {
           "text": {
             "en": "{name}"
           },
           "color": "purple",
-          "levels": [0, 0]
+          "levels": [
+            0,
+            0
+          ]
         },
         {
           "text": {
@@ -623,7 +629,7 @@
         "en": "Knight Blade",
         "de": "Ritterklinge",
         "es": "Espada de Caballero",
-        "pt": "Lâmina do cavaleiro"
+        "pt": "LÃ¢mina do cavaleiro"
       },
       "width": 1,
       "height": 4,
@@ -651,9 +657,11 @@
         "en": "Dark Reign Blade",
         "de": "Klinge der Dunklen Herrschaft",
         "es": "Espada del Reino Oscuro",
-        "pt": "Lâmina do Império negro"
+        "pt": "LÃ¢mina do ImpÃ©rio negro"
       },
-      "tags": ["magicSword"],
+      "tags": [
+        "magicSword"
+      ],
       "width": 2,
       "height": 4,
       "slot": "mainHand",
@@ -683,7 +691,7 @@
         "en": "Bone Blade",
         "de": "Knochenklinge",
         "es": "Espada de Hueso",
-        "pt": "Lâmina de osso"
+        "pt": "LÃ¢mina de osso"
       },
       "width": 1,
       "height": 4,
@@ -712,9 +720,11 @@
         "en": "Explosion Blade",
         "de": "Explosionsklinge",
         "es": "Espada Explosiva",
-        "pt": "Lâmina da explosão"
+        "pt": "LÃ¢mina da explosÃ£o"
       },
-      "tags": ["magicSword"],
+      "tags": [
+        "magicSword"
+      ],
       "width": 2,
       "height": 4,
       "slot": "mainHand",
@@ -771,11 +781,13 @@
       "number": 25,
       "name": {
         "en": "Sword Dancer",
-        "de": "Schwerttänzer",
+        "de": "SchwerttÃ¤nzer",
         "es": "Oscilador de Espadas",
-        "pt": "Dançarino da espada"
+        "pt": "DanÃ§arino da espada"
       },
-      "tags": ["magicSword"],
+      "tags": [
+        "magicSword"
+      ],
       "width": 2,
       "height": 4,
       "slot": "mainHand",
@@ -862,7 +874,9 @@
         "es": "Espada Runa Bastarda",
         "pt": "Espada bastarda das runas"
       },
-      "tags": ["magicSword"],
+      "tags": [
+        "magicSword"
+      ],
       "width": 1,
       "height": 4,
       "slot": "mainHand",
@@ -891,9 +905,11 @@
         "en": "Rune Blade",
         "de": "Runenklinge",
         "es": "Espada Runa",
-        "pt": "Lâmina das runas"
+        "pt": "LÃ¢mina das runas"
       },
-      "tags": ["magicSword"],
+      "tags": [
+        "magicSword"
+      ],
       "width": 2,
       "height": 4,
       "slot": "mainHand",
@@ -978,7 +994,7 @@
         "en": "Piercing Blade Glove",
         "de": "Durchbohrerklingen-Handschuh",
         "es": "Guantes de Cuchillas Perforadoras",
-        "pt": "Luvas de Lâmina Perfurante"
+        "pt": "Luvas de LÃ¢mina Perfurante"
       },
       "width": 1,
       "height": 2,
@@ -1003,9 +1019,9 @@
       "number": 35,
       "name": {
         "en": "Phoenix Soul Star",
-        "de": "Phönixseelenstern",
-        "es": "Estrella de Alma de Fénix",
-        "pt": "Estrela de Alma de Fênix"
+        "de": "PhÃ¶nixseelenstern",
+        "es": "Estrella de Alma de FÃ©nix",
+        "pt": "Estrela de Alma de FÃªnix"
       },
       "width": 1,
       "height": 2,
@@ -2162,5 +2178,31 @@
           "color": "purple"
         }
       ]
-    }]
+    },
+    {
+      "number": 52,
+      "name": {
+        "en": "Pantera Claws"
+      },
+      "width": 1,
+      "height": 2,
+      "slot": "mainHand",
+      "weaponKind": "glove",
+      "statProfile": "weapon",
+      "skill": 270,
+      "level": 147,
+      "durability": 98,
+      "damageMin": 122,
+      "damageMax": 128,
+      "attackSpeed": 40,
+      "requirements": {
+        "level": 380,
+        "strength": 101,
+        "dexterity": 51
+      },
+      "classRequirements": {
+        "rageFighter": 1
+      }
+    }
+  ]
 }

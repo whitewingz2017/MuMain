@@ -139,6 +139,7 @@ constexpr DocumentPlacement Placements[] = {
     {"skin_inventory.rml", SkinShopLayerDepth, MainScene},
     {"muun_inventory.rml", SkinShopLayerDepth, MainScene},
     {"excellent_combination.rml", SkinShopLayerDepth, MainScene},
+    {"rank_shop.rml", SkinShopLayerDepth, MainScene},
     // The original drew each tooltip at its owner's depth (item tooltips at 5.5), where the
     // chat log, the friends window, the full map and the HUD hid its rows: an original
     // defect. Every tooltip draws above the windows instead, still under the message boxes.

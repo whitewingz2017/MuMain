@@ -4,6 +4,7 @@
 #include "GameLogic/Events/EventSchedule.h"
 #include "GameLogic/Pets/Muun.h"
 #include "UI/Inventory/MuunInventoryWindow.h"
+#include "UI/Character/RankShopWindow.h"
 #include "UI/Dialogs/WindowMenu.h"
 #include "UI/Dialogs/RedeemCodeDialog.h"
 #include "UI/Bank/JewelBank.h"
@@ -31,7 +32,8 @@ const wchar_t* const* const kMenuLabels[] = {
     &I18N::Game::MoveM,     &I18N::Game::MapTab, &I18N::Game::GensInfoB,
 };
 // The TwinMU rows follow the original six; the game text tables have no labels for them.
-const wchar_t* const kTwinMuLabels[] = {L"Redeem Code", L"Excellent Combination", L"Event Timers", L"Muun Inventory", L"Jewel Bank"};
+const wchar_t* const kTwinMuLabels[] = {L"Redeem Code", L"Excellent Combination", L"Event Timers", L"Muun Inventory", L"Jewel Bank",
+                                     L"Rank Shop"};
 static_assert(std::size(kMenuLabels) + std::size(kTwinMuLabels) == CWindowMenu::MENU_MAX_INDEX,
               "one label per menu row");
 
@@ -141,6 +143,10 @@ void mu::ui::window::CWindowMenu::RunMenuEntry(int entry)
     case MENU_JEWEL_BANK:
         g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);
         UI::Bank::Open();
+        break;
+    case MENU_RANK_SHOP:
+        g_pNewUISystem->Hide(INTERFACE_WINDOW_MENU);
+        if (g_pRankShopWindow) g_pRankShopWindow->Open();
         break;
     case MENU_EVENT_TIMERS:
         g_pNewUISystem->Hide(mu::ui::window::INTERFACE_WINDOW_MENU);

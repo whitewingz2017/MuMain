@@ -1,0 +1,2 @@
+#panel { font-family: "token(font-body)"; color: token(text-primary); }
+.rank-list, .rank-selection { border-color: token(metal-edge); }

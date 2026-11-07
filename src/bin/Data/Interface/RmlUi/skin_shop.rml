@@ -44,36 +44,38 @@
                 <span>{{page}}</span>
                 <button class="btn shop-control" data-class-disabled="!next || pending" data-event-click="skin_page(1)">Next</button>
             </div>
-        </div>
-        <div class="shop-preview-column">
-        <div id="shop_preview" class="shop-preview">
-            <div class="skin-selected-name">{{selected_name}}</div>
-            <img id="skin_character" class="skin-character"/>
-            <div class="shop-turn">
-                <button class="btn shop-control" data-event-click="skin_turn(-1)">&#9664;</button>
-                <div class="shop-level">
-                    <button class="btn shop-control" data-event-click="skin_level(-1)" data-class-disabled="preview_level == 0">-</button>
-                    <span>Preview +{{preview_level}}</span>
-                    <button class="btn shop-control" data-event-click="skin_level(1)" data-class-disabled="preview_level == 15">+</button>
-                </div>
-                <button class="btn shop-control" data-event-click="skin_turn(1)">&#9654;</button>
-            </div>
-        </div>
-        <div id="skin_purchase" class="skin-purchase">
-            <div class="skin-note">{{note}}</div>
-            <div id="skin_bonuses" class="skin-dropdown skin-bonuses">
-                <div id="skin_bonus_select" class="skin-dropdown-value" data-class-open="open_dropdown == 2"
-                     data-class-disabled="bonuses.size == 0 || pending"
-                     data-event-click="skin_dropdown(2)">{{bonus_label}}<div class="skin-caret"></div></div>
-                <div class="skin-dropdown-list bonus-options" data-class-hidden="open_dropdown != 2">
-                    <div class="skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
-                         data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</div>
+            <div id="skin_purchase" class="skin-purchase">
+                <div class="skin-note">{{note}}</div>
+                <div class="skin-purchase-row">
+                    <div id="skin_bonuses" class="skin-dropdown skin-bonuses">
+                        <div id="skin_bonus_select" class="skin-dropdown-value" data-class-open="open_dropdown == 2"
+                             data-class-disabled="bonuses.size == 0 || pending"
+                             data-event-click="skin_dropdown(2)">{{bonus_label}}<div class="skin-caret"></div></div>
+                        <div class="skin-dropdown-list bonus-options" data-class-hidden="open_dropdown != 2">
+                            <div class="skin-dropdown-option" data-for="bonus : bonuses" data-class-selected="bonus.selected"
+                                 data-event-click="skin_bonus(bonus.index)">{{bonus.label}}</div>
+                        </div>
+                    </div>
+                    <button id="skin_buy" class="btn skin-buy" data-class-disabled="!can_buy" data-event-click="skin_buy">Buy {{price}}</button>
                 </div>
             </div>
-            <button id="skin_buy" class="btn skin-buy" data-class-disabled="!can_buy" data-event-click="skin_buy">Buy {{price}}</button>
-        </div>
         </div>
     </div>
     <div class="shop-status">{{status}}</div>
+    <!-- The character preview: a window of its own docked to the shop's right edge, so the shop
+         itself stays narrow. Same document, so the shop staying modal keeps its buttons usable. -->
+    <div id="shop_preview" class="shop-preview-window">
+        <div class="skin-selected-name">{{selected_name}}</div>
+        <img id="skin_character" class="skin-character"/>
+        <div class="shop-turn">
+            <button class="btn shop-control" data-event-click="skin_turn(-1)">&#9664;</button>
+            <div class="shop-level">
+                <button class="btn shop-control" data-event-click="skin_level(-1)" data-class-disabled="preview_level == 0">-</button>
+                <span>Preview +{{preview_level}}</span>
+                <button class="btn shop-control" data-event-click="skin_level(1)" data-class-disabled="preview_level == 15">+</button>
+            </div>
+            <button class="btn shop-control" data-event-click="skin_turn(1)">&#9654;</button>
+        </div>
+    </div>
 </body>
 </rml>

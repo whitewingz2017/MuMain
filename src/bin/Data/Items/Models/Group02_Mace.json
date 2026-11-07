@@ -1357,7 +1357,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu2x103"
+        "color": "finalMu2x103",
+        "meshes": [0, 1],
+        "shineMeshes": [0, 1]
       },
       "material": {
         "layers": [
@@ -1499,7 +1501,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu2x104"
+        "color": "finalMu2x104",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "material": {
         "layers": [
@@ -1785,7 +1789,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu2x106"
+        "color": "finalMu2x106",
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "material": {
         "layers": [

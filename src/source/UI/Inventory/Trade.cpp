@@ -762,6 +762,7 @@ void CTrade::BackUpYourInven(ITEM* pYourItemObj)
         || (pYourItemObj->Type >= ITEM_WING_OF_STORM && pYourItemObj->Type <= ITEM_WING_OF_DIMENSION)
         || (pYourItemObj->Type == ITEM_JEWEL_OF_CHAOS)
         || (pYourItemObj->Type >= ITEM_CAPE_OF_FIGHTER && pYourItemObj->Type <= ITEM_CAPE_OF_OVERRULE)
+        || (pYourItemObj->Type >= ITEM_CLOAK_OF_DEATH && pYourItemObj->Type <= ITEM_WINGS_OF_LIFE)
         || ((pYourItemObj->Level > 4 && pYourItemObj->Type < ITEM_WING) || pYourItemObj->ExcellentFlags > 0))
     {
         int nCompareValue;

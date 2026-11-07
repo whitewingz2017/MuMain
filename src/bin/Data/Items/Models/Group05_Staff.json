@@ -1247,7 +1247,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x100"
+        "color": "finalMu5x100",
+        "meshes": [0, 4],
+        "shineMeshes": [0, 4]
       },
       "material": {
         "layers": [
@@ -1518,7 +1520,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x101"
+        "color": "finalMu5x101",
+        "meshes": [0, 1, 5],
+        "shineMeshes": [0, 1, 5]
       },
       "material": {
         "layers": [
@@ -1944,7 +1948,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x102"
+        "color": "finalMu5x102",
+        "meshes": [0, 2, 4],
+        "shineMeshes": [0, 2, 4]
       },
       "material": {
         "layers": [
@@ -2140,7 +2146,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x103"
+        "color": "finalMu5x103",
+        "meshes": [0, 1, 4],
+        "shineMeshes": [0, 1, 4]
       },
       "material": {
         "layers": [
@@ -2487,7 +2495,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x104"
+        "color": "finalMu5x104",
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "material": {
         "layers": [
@@ -2908,7 +2918,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x107"
+        "color": "finalMu5x107",
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "material": {
         "layers": [
@@ -3114,7 +3126,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x108"
+        "color": "finalMu5x108",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "material": {
         "layers": [
@@ -3335,7 +3349,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x109"
+        "color": "finalMu5x109",
+        "meshes": [0, 1, 2, 3],
+        "shineMeshes": [0, 1, 2, 3]
       },
       "material": {
         "layers": [
@@ -4295,7 +4311,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu5x110"
+        "color": "finalMu5x110",
+        "meshes": [0, 1, 4, 5],
+        "shineMeshes": [0, 1, 4, 5]
       },
       "material": {
         "layers": [

@@ -802,7 +802,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu4x100"
+        "color": "finalMu4x100",
+        "meshes": [0, 1, 2, 3, 4, 5, 7],
+        "shineMeshes": [0, 1, 2, 3, 4, 5, 7]
       },
       "material": {
         "layers": [
@@ -1214,7 +1216,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu4x101"
+        "color": "finalMu4x101",
+        "meshes": [0, 6],
+        "shineMeshes": [0, 6]
       },
       "material": {
         "layers": [
@@ -1645,7 +1649,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu4x102"
+        "color": "finalMu4x102",
+        "meshes": [0, 1, 2, 4],
+        "shineMeshes": [0, 1, 2, 4]
       },
       "material": {
         "layers": [
@@ -2150,7 +2156,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu4x103"
+        "color": "finalMu4x103",
+        "meshes": [0, 1],
+        "shineMeshes": [0, 1]
       },
       "material": {
         "layers": [

@@ -16,6 +16,8 @@
 #include "Render/Terrain/ZzzLodTerrain.h"
 #include "CSParts.h"
 
+#include <algorithm>
+#include <limits>
 #include <memory>
 
 namespace
@@ -30,6 +32,36 @@ bool ShouldAssignWebzenPart(CHARACTER& character)
     const bool hasGmBuff = g_isCharacterBuff((&character.Object), eBuff_GMEffect) != FALSE;
     const bool isOperator = (character.CtlCode == CTLCODE_20OPERATOR) || (character.CtlCode == CTLCODE_08OPERATOR);
     return hasGmBuff || isOperator;
+}
+
+void UpdateGameMasterMarkBounds(OBJECT& mark)
+{
+    if (mark.Type != MODEL_WEBZEN_MARK)
+        return;
+    BMD& model = Models[mark.Type];
+    const float limit = std::numeric_limits<float>::max();
+    vec3_t minimum = {limit, limit, limit};
+    vec3_t maximum = {-limit, -limit, -limit};
+    bool hasVertices = false;
+    for (int mesh = 0; mesh < model.NumMeshs; ++mesh)
+    {
+        model.EnsureCpuVertices(mesh);
+        for (int vertex = 0; vertex < model.Meshs[mesh].NumVertices; ++vertex)
+        {
+            hasVertices = true;
+            for (int axis = 0; axis < 3; ++axis)
+            {
+                minimum[axis] = std::min(minimum[axis], VertexTransform[mesh][vertex][axis]);
+                maximum[axis] = std::max(maximum[axis], VertexTransform[mesh][vertex][axis]);
+            }
+        }
+    }
+    if (!hasVertices)
+        return;
+    VectorCopy(minimum, mark.OBB.StartPos);
+    Vector(maximum[0] - minimum[0], 0.f, 0.f, mark.OBB.XAxis);
+    Vector(0.f, maximum[1] - minimum[1], 0.f, mark.OBB.YAxis);
+    Vector(0.f, 0.f, maximum[2] - minimum[2], mark.OBB.ZAxis);
 }
 
 bool ShouldHideCastleMarks(const CHARACTER& character)
@@ -279,6 +311,7 @@ void CSParts::IRender(const CHARACTER* c)
 
     Vector(1.f, 1.f, 1.f, Models[m_pObj.Type].BodyLight);
     RenderObject(&m_pObj, true);
+    UpdateGameMasterMarkBounds(m_pObj);
 }
 
 CSAnimationParts::CSAnimationParts(int Type, int BoneNumber, bool bBillBoard, float x, float y, float z, float ax, float ay, float az)

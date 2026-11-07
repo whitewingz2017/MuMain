@@ -4,6 +4,7 @@
 #include "UI/Dialogs/RedeemCodeDialog.h"
 #include "UI/Inventory/ExcellentCombinationWindow.h"
 #include "UI/Inventory/MuunInventoryWindow.h"
+#include "UI/Character/RankShopWindow.h"
 #include "GameLogic/Events/EventSchedule.h"
 #include <algorithm>
 #include "I18N/All.h"
@@ -328,6 +329,12 @@ void mu::ui::window::CMainFrameWindow::BindTopMenuActions(Rml::DataModelConstruc
         {
             if (event.GetParameter<int>("button", 0) != 0) return;
             if (g_pMuunInventoryWindow) g_pMuunInventoryWindow->Open();
+        });
+    c.BindEventCallback("mainframe_rank_click",
+        [](Rml::DataModelHandle, Rml::Event& event, const Rml::VariantList&)
+        {
+            if (event.GetParameter<int>("button", 0) != 0) return;
+            if (g_pRankShopWindow) g_pRankShopWindow->Open();
         });
 }
 

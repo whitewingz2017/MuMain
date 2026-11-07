@@ -95,6 +95,7 @@ namespace mu::ui::window
     class CSkinInventoryWindow;
     class CMuunInventoryWindow;
     class CExcellentCombinationWindow;
+    class CRankShopWindow;
     class CSystem
     {
         CManager* m_pNewUIMng;
@@ -240,6 +241,7 @@ namespace mu::ui::window
         CSkinInventoryWindow* m_pSkinInventoryWindow = nullptr;
         CMuunInventoryWindow* m_pMuunInventoryWindow = nullptr;
         CExcellentCombinationWindow* m_pExcellentCombinationWindow = nullptr;
+        CRankShopWindow* m_pRankShopWindow = nullptr;
 
         bool CreateChatCommandWindow();
 

@@ -65,6 +65,8 @@ BOOL CSocketItemMgr::IsSocketItem(int iItemType)
 {
     switch (iItemType)
     {
+    case ITEM_PANTERA_CLAWS:
+    case ITEM_TIGRIS_HELM: case ITEM_TIGRIS_ARMOR: case ITEM_TIGRIS_PANTS: case ITEM_TIGRIS_BOOTS:
     case ITEM_FLAMBERGE:
     case ITEM_SWORD_BREAKER:
     case ITEM_IMPERIAL_SWORD:

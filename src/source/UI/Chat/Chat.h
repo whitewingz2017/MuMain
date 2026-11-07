@@ -19,4 +19,6 @@ namespace UI::Chat
     void MoveChat();
     void SetPlayerColor(BYTE PK);
     void RenderBooleans();
+    // The top of this character's visible name, guild and chat box, or the supplied idle anchor.
+    int NameLabelTop(const CHARACTER* character, int idleTop);
 }

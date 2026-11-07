@@ -73,6 +73,16 @@ namespace GameLogic::Items
         return HasWingTier(pItem, WingTier::Small);
     }
 
+    bool IsMonsterWing(const ITEM* pItem)
+    {
+        return IsMonsterWingType(pItem->Type);
+    }
+
+    bool IsMonsterWingType(int itemType)
+    {
+        return itemType >= ITEM_CLOAK_OF_DEATH && itemType <= ITEM_WINGS_OF_LIFE;
+    }
+
     bool IsPetSlotModel(int modelType)
     {
         return g_ItemDatabase.GetSlot(Data::Items::ToItemType(modelType)) == ItemSlot::Pet;

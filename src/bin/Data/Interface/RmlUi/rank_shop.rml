@@ -1,0 +1,45 @@
+<rml>
+<head>
+    <title>Rank Shop</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="../../rank_shop_common.rcss"/>
+    <link type="text/rcss" href="rank_shop.rcss"/>
+    <link type="text/template" href="window_shell.rml"/>
+</head>
+<body template="window_shell" data-model="rank_shop">
+    <!-- CRankShopWindow: the titles of RankTitles.json (Shop) and the owned ones (My Ranks), two
+         columns of badges, and under them the selected title with its action. -->
+    <div class="rank-summary">
+        <span class="rank-balance">{{balance}}</span>
+        <button class="btn rank-control" data-class-disabled="pending" data-event-click="rank_refresh">Refresh</button>
+        <button class="btn rank-control" data-event-click="rank_close">Close</button>
+    </div>
+    <div class="rank-tabs">
+        <button class="btn rank-tab" data-class-selected="tab == 0" data-event-click="rank_tab(0)">Shop</button>
+        <button class="btn rank-tab" data-class-selected="tab == 1" data-event-click="rank_tab(1)">My Ranks</button>
+    </div>
+    <div id="rank_list" class="rank-list">
+        <button class="btn rank-card" data-for="card : cards" data-class-selected="card.selected"
+                data-class-active="card.active" data-event-click="rank_select(card.rank)"
+                data-attr-aria-label="card.label">
+            <img class="rank-badge" data-if="card.image != ''" data-attr-src="card.image"/>
+            <span class="rank-card-label" data-if="card.image == ''">{{card.label}}</span>
+            <span class="rank-card-detail" data-class-owned="card.owned">{{card.detail}}</span>
+        </button>
+    </div>
+    <div class="rank-pagination">
+        <button class="btn rank-control" data-class-disabled="!previous || pending" data-event-click="rank_page(-1)">Previous</button>
+        <span>{{page}}</span>
+        <button class="btn rank-control" data-class-disabled="!next || pending" data-event-click="rank_page(1)">Next</button>
+    </div>
+    <div class="rank-selection">
+        <div class="rank-selection-info">
+            <img class="rank-preview-badge" data-if="selected_image != ''" data-attr-src="selected_image"/>
+            <div class="rank-selected-name" data-if="selected_image == ''">{{selected_label}}</div>
+            <div class="rank-note">{{selected_detail}}</div>
+        </div>
+        <button class="btn rank-action" data-class-disabled="!can_act" data-event-click="rank_action">{{action_label}}</button>
+    </div>
+    <div class="rank-status">{{status}}</div>
+</body>
+</rml>

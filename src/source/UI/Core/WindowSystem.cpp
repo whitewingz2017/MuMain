@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UI/Inventory/SkinShopWindow.h"
+#include "UI/Character/RankShopWindow.h"
 #include "UI/Inventory/SkinInventoryWindow.h"
 #include "UI/Inventory/MuunInventoryWindow.h"
 #include "UI/Inventory/ExcellentCombinationWindow.h"
@@ -556,6 +557,9 @@ bool CSystem::LoadMainSceneInterface()
     m_pExcellentCombinationWindow = new CExcellentCombinationWindow;
     m_pExcellentCombinationWindow->Create(m_pNewUIMng);
     g_pExcellentCombinationWindow = m_pExcellentCombinationWindow;
+    m_pRankShopWindow = new CRankShopWindow;
+    m_pRankShopWindow->Create(m_pNewUIMng);
+    g_pRankShopWindow = m_pRankShopWindow;
 
     m_pMuHelperConfig = new CMuHelperConfigWindow;
     if (m_pMuHelperConfig->Create(m_pNewUIMng) == false)
@@ -741,6 +745,8 @@ void CSystem::UnloadMainSceneInterface()
 
     g_pExcellentCombinationWindow = nullptr;
     SAFE_DELETE(m_pExcellentCombinationWindow);
+    g_pRankShopWindow = nullptr;
+    SAFE_DELETE(m_pRankShopWindow);
     g_pSkinInventoryWindow = nullptr;
     SAFE_DELETE(m_pSkinInventoryWindow);
     g_pMuunInventoryWindow = nullptr;

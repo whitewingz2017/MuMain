@@ -41,6 +41,7 @@
 #include "Engine/Object/ZzzInventory.h"
 #include "Render/Effects/ZzzEffect.h"
 #include "Render/Effects/GameMasterAura.h"
+#include "Render/Effects/RankAura.h"
 #include "GameLogic/Events/BloodCastleQuestItem.h"
 #include "Engine/Object/ZzzOpenData.h"
 #include "Scenes/SceneCore.h"
@@ -6978,6 +6979,8 @@ bool HidesLinkedPart(const CHARACTER* c, int Type)
             return true; // Small Wings and Capes
         else if (Type >= MODEL_CAPE_OF_FIGHTER && Type <= MODEL_CAPE_OF_OVERRULE)
             return true; // Capes
+        else if (Type >= MODEL_CLOAK_OF_DEATH && Type <= MODEL_WINGS_OF_LIFE)
+            return true; // Monster Wings
     }
     if (GameLogic::Items::IsSummonerBookModel(Type))
         return true;
@@ -7210,6 +7213,11 @@ vec34_t* RenderLinkObject(float x, float y, float z, const CHARACTER* c, const P
         case MODEL_WING_OF_ILLUSION:  // Wing of Illusion
         case MODEL_WING_OF_RUIN:      // Wing of Ruin
         case MODEL_WING_OF_DIMENSION: // Wing of Dimension
+
+        case MODEL_CLOAK_OF_DEATH: // Cloak of Death
+        case MODEL_WINGS_OF_CHAOS: // Wings of Chaos
+        case MODEL_WINGS_OF_POWER: // Wings of Power
+        case MODEL_WINGS_OF_LIFE:  // Wings of Life
 
         case MODEL_SMALL_WING_OF_CURSE:   // Small Wing of Curse
         case MODEL_SMALL_WINGS_OF_ELF:    // Small Wings of Elf
@@ -12132,6 +12140,7 @@ void UpdateDrawnCharacterEffects()
         SpawnHeldWeaponGlows(c);
         UpdateMonsterBodyEffects(c, o, b);
         UpdateCharacterBodyEffects(c, o);
+        Render::Effects::RankAura::Update(c, o);
         UpdateHeldWeaponEffects(c, o, b);
         if (gCharacterManager.GetBaseClass(c->Class) == CLASS_SUMMONER)
         {
@@ -12379,12 +12388,14 @@ void RenderCharactersClient()
             if (o->Visible)
             {
                 Render::Effects::GameMasterAura::RenderBehind(c, o);
+                Render::Effects::RankAura::RenderBehind(c, o);
                 if (i != SelectedCharacter && i != SelectedNpc)
                     RenderCharacter(c, o);
                 else
                     RenderCharacter(c, o, true);
 
                 Render::Effects::GameMasterAura::Render(c, o);
+                Render::Effects::RankAura::Render(c, o);
 
 #ifdef _EDITOR
                 if (s_bShowCharacterPickBoxes)

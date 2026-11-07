@@ -1,0 +1,30 @@
+/* The rank shop: one narrow column, two columns of title badges, the selected title and its action under them. */
+#panel { width: 90vw; max-width: 460dp; height: 92vh; max-height: 640dp; font-family: "Liberation Sans"; font-size: 12dp; color: #e9dfc8; }
+#panel .window-shell-content { display: flex; flex-direction: column; align-items: stretch; min-height: 0; pointer-events: auto; }
+.rank-summary { display: flex; align-items: center; flex: 0 0 30dp; margin-bottom: 4dp; }
+.rank-balance { flex: 1 1 0; color: #efbe50; }
+.btn.rank-control { width: auto; min-width: 58dp; height: 28dp; margin-left: 4dp; padding: 5dp 8dp; font-size: 12dp; line-height: 16dp; }
+.rank-tabs { display: flex; flex: 0 0 30dp; margin-bottom: 4dp; }
+.btn.rank-tab { width: auto; min-width: 90dp; height: 28dp; margin-right: 4dp; padding: 5dp 10dp; font-size: 12dp; line-height: 16dp; }
+.rank-list { display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start; flex: 1 1 0; min-height: 0; overflow: hidden auto; padding: 4dp; background-color: #071114c0; border: 1dp #4c4840; }
+.btn.rank-card { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 49%; height: 42dp; margin-bottom: 4dp; padding: 2dp; line-height: 13dp; }
+/* Height only: the badge keeps its own proportions, a wide banner or a square emblem alike. */
+.rank-badge { display: block; height: 24dp; max-width: 100%; pointer-events: none; }
+.rank-card-label { display: block; font-size: 12dp; line-height: 16dp; color: #e9dfc8; pointer-events: none; }
+.rank-card-detail { display: block; font-size: 11dp; line-height: 13dp; color: #efbe50; pointer-events: none; }
+.rank-card-detail.owned { color: #8fd18a; }
+.rank-pagination { display: flex; justify-content: space-between; align-items: center; flex: 0 0 30dp; margin-top: 3dp; }
+.rank-selection { display: flex; align-items: center; flex: 0 0 64dp; margin-top: 4dp; padding: 4dp; background-color: #071114c0; border: 1dp #4c4840; }
+.rank-selection-info { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1 1 0; min-width: 0; }
+.rank-preview-badge { display: block; height: 32dp; max-width: 100%; pointer-events: none; }
+.rank-selected-name { display: block; text-align: center; color: #efbe50; font-size: 13dp; line-height: 16dp; }
+.rank-note { display: block; margin-top: 3dp; text-align: center; font-size: 11dp; line-height: 13dp; white-space: normal; }
+.btn.rank-action { width: 130dp; height: 30dp; margin-left: 6dp; padding: 5dp; font-size: 12dp; line-height: 18dp; color: #efbe50; }
+.rank-status { flex: 0 0 26dp; margin-top: 4dp; font-size: 11dp; line-height: 13dp; white-space: normal; }
+.rank-list scrollbarvertical { width: 8dp; margin: 0; }
+.rank-list scrollbarvertical slidertrack { background-color: #171b1e; }
+.rank-list scrollbarvertical sliderbar { background-color: #b79a53; }
+.rank-tab, .rank-control, .rank-card, .rank-action { box-sizing: border-box; position: relative; left: auto; right: auto; top: auto; bottom: auto; background-color: #171b1ee8; border: 1dp #655940; color: #e9dfc8; pointer-events: auto; }
+.rank-card.active { border-color: #8fd18a; }
+.selected { border-color: #e6bb53; background-color: #354c45; }
+.disabled { opacity: 0.4; pointer-events: none; }

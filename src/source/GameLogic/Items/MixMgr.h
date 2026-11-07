@@ -188,6 +188,7 @@ namespace SEASON3A
 
         void Reset();
         void AddRecipe(MIX_RECIPE* pMixRecipe);
+        int GetRecipeCount() const { return static_cast<int>(m_Recipes.size()); }
         void ClearCheckRecipeResult();
         int CheckRecipe(int iNumMixItems, CMixItem* pMixItems);
         int CheckRecipeSimilarity(int iNumMixItems, CMixItem* pMixItems);

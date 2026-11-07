@@ -968,6 +968,15 @@ names from the glow color list, see below.
 | `excellentMesh` | The excellent glow is only on this mesh. | all meshes |
 | `excellentMeshWithoutSkin` | The same, when the item is drawn without the character, in the inventory and on the ground. | `excellentMesh` |
 
+`meshes` and `shineMeshes` select whole meshes; they cannot mask dark areas within
+a mesh's texture.
+Skins with authored material layers or additive effect meshes keep their own
+material glow at every upgrade level, including +15. Standard upgrade, excellent
+and ancient chrome overlays are suppressed on these models: light planes can
+share the base mesh, so selecting only that mesh cannot safely add chrome.
+Their actual item level and gameplay stats are unchanged. Rebuild both PC and
+mobile clients to apply this rendering behavior.
+
 The glow colors are named in `src/bin/Data/Effects/GlowColors.json`, as
 red, green and blue from 0 to 1:
 
@@ -1739,3 +1748,22 @@ Names that are not valid UTF-8 are read as Windows-1252, the encoding of
 the Portuguese and Spanish files; the original client showed their
 accented letters as `�`. The byte pair `A1 AF` (a right quote on Korean
 systems) becomes an apostrophe (*Gaion's Order*).
+
+## Tigris socket equipment
+
+Rage Fighter and Fist Master can wear the four-piece Tigris set: helm (7:146),
+armor (8:146), pants (9:146), and boots (11:146). Pantera Claws (0:52) can be
+worn in either hand. These are combat items on the Gear page, with three socket
+slots available and +0 through +15 enhancement. Their initial stats follow the
+server's Phoenix Soul equipment balance; armor requires level 380 and strength
+97, and claws require level 380, strength 101 and dexterity 51.
+
+Deploy the matching OpenMU server and apply **Tigris Socket Equipment** in the
+admin panel's configuration updates with players offline, then restart. Fresh
+Season 6 configurations include the items. Set the empty socket count when
+creating or dropping an item; support for three sockets does not automatically
+open three slots on every item instance. Install the same item catalogs and
+`Data/Custom/Tigris/` assets on PC and mobile.
+
+The claw models reserve item-model numbers 0:53 and 0:54 for the left/right hand
+meshes. These are visual parts, not separately obtainable equipment.

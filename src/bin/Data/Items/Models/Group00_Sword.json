@@ -1243,7 +1243,21 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x100"
+        "color": "finalMu0x100",
+        "meshes": [
+          0,
+          1,
+          2,
+          4,
+          5
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2,
+          4,
+          5
+        ]
       },
       "material": {
         "layers": [
@@ -1567,7 +1581,23 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x101"
+        "color": "finalMu0x101",
+        "meshes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6
+        ]
       },
       "material": {
         "layers": [
@@ -1978,7 +2008,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x102"
+        "color": "finalMu0x102",
+        "meshes": [
+          0,
+          1,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2
+        ]
       },
       "material": {
         "layers": [
@@ -2171,7 +2211,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x103"
+        "color": "finalMu0x103",
+        "meshes": [
+          0,
+          1,
+          4
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          4
+        ]
       },
       "material": {
         "layers": [
@@ -2515,7 +2565,15 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x104"
+        "color": "finalMu0x104",
+        "meshes": [
+          0,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          2
+        ]
       },
       "material": {
         "layers": [
@@ -2693,7 +2751,19 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x105"
+        "color": "finalMu0x105",
+        "meshes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          2,
+          4
+        ]
       },
       "material": {
         "layers": [
@@ -2872,7 +2942,15 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x106"
+        "color": "finalMu0x106",
+        "meshes": [
+          0,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          2
+        ]
       },
       "material": {
         "layers": [
@@ -3256,7 +3334,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x107"
+        "color": "finalMu0x107",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "material": {
         "layers": [
@@ -3449,7 +3533,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x108"
+        "color": "finalMu0x108",
+        "meshes": [
+          0,
+          2,
+          3
+        ],
+        "shineMeshes": [
+          0,
+          2,
+          3
+        ]
       },
       "material": {
         "layers": [
@@ -3826,7 +3920,15 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x109"
+        "color": "finalMu0x109",
+        "meshes": [
+          0,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          2
+        ]
       },
       "material": {
         "layers": [
@@ -4502,7 +4604,15 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x112"
+        "color": "finalMu0x112",
+        "meshes": [
+          0,
+          2
+        ],
+        "shineMeshes": [
+          0,
+          2
+        ]
       },
       "material": {
         "layers": [
@@ -4725,7 +4835,17 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x113"
+        "color": "finalMu0x113",
+        "meshes": [
+          0,
+          1,
+          3
+        ],
+        "shineMeshes": [
+          0,
+          1,
+          3
+        ]
       },
       "material": {
         "layers": [
@@ -6271,7 +6391,15 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x114"
+        "color": "finalMu0x114",
+        "meshes": [
+          0,
+          3
+        ],
+        "shineMeshes": [
+          0,
+          3
+        ]
       },
       "material": {
         "layers": [
@@ -6445,7 +6573,19 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMu0x115"
+        "color": "finalMu0x115",
+        "meshes": [
+          0,
+          2,
+          4,
+          5
+        ],
+        "shineMeshes": [
+          0,
+          2,
+          4,
+          5
+        ]
       },
       "material": {
         "layers": [
@@ -16280,6 +16420,141 @@
           0.5,
           0.55
         ]
+      }
+    },
+    {
+      "number": 52,
+      "file": "Data/Custom/Tigris/Sword37.bmd",
+      "textureFolders": [
+        "Custom/Tigris"
+      ],
+      "inventory": {
+        "anchor": [
+          0.55,
+          0.6
+        ],
+        "offset": [
+          -0.005,
+          0.015
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [
+          60,
+          0,
+          -45
+        ]
+      },
+      "material": {
+        "additiveMeshes": [
+          1,
+          2
+        ]
+      },
+      "glow": {
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ],
+        "excellentMesh": 0
+      }
+    },
+    {
+      "number": 53,
+      "file": "Data/Custom/Tigris/Sword37_L.bmd",
+      "textureFolders": [
+        "Custom/Tigris"
+      ],
+      "inventory": {
+        "anchor": [
+          0.55,
+          0.6
+        ],
+        "offset": [
+          -0.005,
+          0.015
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [
+          60,
+          0,
+          -45
+        ]
+      },
+      "material": {
+        "additiveMeshes": [
+          1,
+          2
+        ]
+      },
+      "glow": {
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ],
+        "excellentMesh": 0
+      }
+    },
+    {
+      "number": 54,
+      "file": "Data/Custom/Tigris/Sword37_R.bmd",
+      "textureFolders": [
+        "Custom/Tigris"
+      ],
+      "inventory": {
+        "anchor": [
+          0.55,
+          0.6
+        ],
+        "offset": [
+          -0.005,
+          0.015
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [
+          60,
+          0,
+          -45
+        ]
+      },
+      "material": {
+        "additiveMeshes": [
+          1,
+          2
+        ]
+      },
+      "glow": {
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ],
+        "excellentMesh": 0
       }
     }
   ]

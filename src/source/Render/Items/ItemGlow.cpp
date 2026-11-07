@@ -72,6 +72,12 @@ const Colors& GetItemColors(int itemType)
     return colors != nullptr ? *colors : OtherModelColors;
 }
 
+bool UsesOwnMeshGlow(int modelType)
+{
+    const auto* model = g_ItemModelDatabase.Find(GetItemTypeOfModel(modelType));
+    return model && (!model->material.layers.empty() || !model->material.additiveMeshes.empty());
+}
+
 void RenderMeshes(BMD* b, const OBJECT* o, DrawLook& look, const ItemGlowMeshes& meshes, float alpha, int renderType,
                   int texture)
 {
@@ -132,6 +138,10 @@ int GetLevel(int modelType, int level)
         return level + WizardsRingGlowLevelOffset;
     }
 
+    // Authored light planes can share the base mesh; upgrade chrome exposes their dark polygons.
+    if (UsesOwnMeshGlow(modelType))
+        return PlainGlowLevel;
+
     const auto& levels = Get(modelType).levels;
     if (!levels)
     {
@@ -148,6 +158,9 @@ bool HasExcellentGlow(int modelType)
 
 void RenderGlow(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float alpha, int renderType, int texture)
 {
+    if (UsesOwnMeshGlow(modelType))
+        return;
+
     if (Styles::RenderGlow(b, o, look, modelType, alpha, renderType, texture))
     {
         return;
@@ -163,6 +176,9 @@ void RenderGlow(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float al
 
 void RenderShine(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float alpha, int renderType, int texture)
 {
+    if (UsesOwnMeshGlow(modelType))
+        return;
+
     if (IsPhoenixSoulInventoryModel(modelType))
     {
         RenderPhoenixSoulInventoryMesh(b, o, look, alpha, renderType, 1);
@@ -173,6 +189,9 @@ void RenderShine(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float a
 
 void RenderExcellentGlow(BMD* b, const OBJECT* o, DrawLook& look, int modelType, float alpha)
 {
+    if (UsesOwnMeshGlow(modelType))
+        return;
+
     if (IsPhoenixSoulInventoryModel(modelType))
     {
         RenderPhoenixSoulInventoryMesh(b, o, look, alpha, ExcellentGlowRenderType, 1);

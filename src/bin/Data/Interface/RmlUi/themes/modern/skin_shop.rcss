@@ -1,2 +1,4 @@
 #panel { font-family: "token(font-body)"; color: token(text-primary); }
-.shop-categories, .shop-items, .shop-preview { border-color: token(metal-edge); }
+.shop-categories, .shop-items, .shop-preview-window { border-color: token(metal-edge); }
+/* 8dp past the shell's frame: its content inset (14dp) plus the gap. */
+.shop-preview-window { left: calc(100% + 22dp); background-color: rgba(17, 19, 15, 235); }

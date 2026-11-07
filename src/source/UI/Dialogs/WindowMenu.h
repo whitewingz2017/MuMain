@@ -32,6 +32,7 @@ public:
         MENU_EVENT_TIMERS,
         MENU_MUUN,
         MENU_JEWEL_BANK,
+        MENU_RANK_SHOP,
         MENU_MAX_INDEX,
     };
 

@@ -33,6 +33,18 @@
       "perLevel": 1
     },
     {
+      "name": "cloakOfDeathDamageAbsorb",
+      "caption": {"en": "Damage Absorption in % (Cloak of Death)"},
+      "values": 13,
+      "perLevel": 2
+    },
+    {
+      "name": "cloakOfDeathDamageIncrease",
+      "caption": {"en": "Damage Increase in % (Cloak of Death)"},
+      "values": 21,
+      "perLevel": 1
+    },
+    {
       "name": "damageIncreaseWeapons",
       "caption": {"en": "Damage Increase (Weapons)"},
       "values": [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 31, 36, 42, 49, 57, 66]
@@ -78,6 +90,18 @@
       "values": [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 31, 36, 42, 49, 57, 66]
     },
     {
+      "name": "monsterWingDamageAbsorb",
+      "caption": {"en": "Damage Absorption in % (Wings of Power and Life)"},
+      "values": 29,
+      "perLevel": 2
+    },
+    {
+      "name": "monsterWingDamageIncrease",
+      "caption": {"en": "Damage Increase in % (Wings of Power and Life)"},
+      "values": 35,
+      "perLevel": 1
+    },
+    {
       "name": "smallCapeDamageAbsorb",
       "caption": {"en": "Damage Absorption in % (Small Capes)"},
       "values": 20,
@@ -118,6 +142,18 @@
       "caption": {"en": "Damage Increase in % (3rd Wings and Capes)"},
       "values": 39,
       "perLevel": 2
+    },
+    {
+      "name": "wingsOfChaosDamageAbsorb",
+      "caption": {"en": "Damage Absorption in % (Wings of Chaos)"},
+      "values": 30,
+      "perLevel": 2
+    },
+    {
+      "name": "wingsOfChaosDamageIncrease",
+      "caption": {"en": "Damage Increase in % (Wings of Chaos)"},
+      "values": 33,
+      "perLevel": 1
     }
   ],
   "default": {
@@ -188,6 +224,13 @@
         "dexterity": "base",
         "energy": "base",
         "vitality": "base"
+      }
+    },
+    {
+      "name": "monsterWing",
+      "defense": {"table": "defenseBonus1stWings"},
+      "requirements": {
+        "levelPerItemLevel": 5
       }
     },
     {

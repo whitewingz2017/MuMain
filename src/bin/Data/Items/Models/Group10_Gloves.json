@@ -2144,7 +2144,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor117"
+        "color": "finalMuArmor117",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [
@@ -2215,7 +2217,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor119"
+        "color": "finalMuArmor119",
+        "meshes": [1],
+        "shineMeshes": [1]
       },
       "inventory": {
         "anchor": [
@@ -2267,7 +2271,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor120"
+        "color": "finalMuArmor120",
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "inventory": {
         "anchor": [
@@ -2330,7 +2336,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor121"
+        "color": "finalMuArmor121",
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "inventory": {
         "anchor": [
@@ -2393,7 +2401,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor122"
+        "color": "finalMuArmor122",
+        "meshes": [1],
+        "shineMeshes": [1]
       },
       "inventory": {
         "anchor": [
@@ -2445,7 +2455,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor123"
+        "color": "finalMuArmor123",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [
@@ -2497,7 +2509,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor124"
+        "color": "finalMuArmor124",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [
@@ -2793,7 +2807,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor138"
+        "color": "finalMuArmor138",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [
@@ -4318,7 +4334,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor217"
+        "color": "finalMuArmor217",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [
@@ -4731,7 +4749,9 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor237"
+        "color": "finalMuArmor237",
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "inventory": {
         "anchor": [

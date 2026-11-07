@@ -105,9 +105,57 @@ const wchar_t* SEASON3A::GetMixRecipeText(int textId)
     return *found->text;
 }
 
+namespace
+{
+    // The Monster Wings mix (crafting 56 of the server), which Mix.bmd doesn't have: a second wing or cape, a Jewel of
+    // Chaos, a Jewel of Creation and one monster wing material. The second wings count their price / 9,000,000 for the
+    // rate, the capes their price / 500,000; at most 60 %, 100,000 zen per percent. No talismans.
+    void AddMonsterWingRecipe(CMixRecipes& recipes, short wingMin, short wingMax, float priceDivisor)
+    {
+        auto* recipe = new MIX_RECIPE{};
+        recipe->m_iMixIndex = recipes.GetRecipeCount();
+        recipe->m_iMixID = 56;
+        recipe->m_iMixName[0] = 614; // Create Wings
+        recipe->m_iMixDesc[0] = 610;
+        recipe->m_iMixDesc[1] = 611;
+        recipe->m_iWidth = 5;
+        recipe->m_iHeight = 4;
+        recipe->m_iRequiredLevel = 10;
+        recipe->m_bRequiredZenType = 'B';
+        recipe->m_dwRequiredZen = 100000;
+        const MIXRATE_TOKEN rate[] = {
+            {MRCP_INT, 0.f}, {MRCP_LP, 0.f}, {MRCP_NONJEWELITEM, 0.f}, {MRCP_DIV, 0.f}, {MRCP_NUMBER, priceDivisor}, {MRCP_RP, 0.f},
+        };
+        recipe->m_iNumRateData = static_cast<int>(std::size(rate));
+        std::copy(std::begin(rate), std::end(rate), recipe->m_RateToken);
+        recipe->m_iSuccessRate = 60;
+        recipe->m_bMixOption = 'A';
+        recipe->m_bCharmOption = 'B';
+        recipe->m_bChaosCharmOption = 'U';
+        const MIX_RECIPE_ITEM sources[] = {
+            {wingMin, wingMax, 0, 255, 0, 255, 0, 255, 1, 1, 0},
+            {ITEM_JEWEL_OF_CHAOS, ITEM_JEWEL_OF_CHAOS, 0, 255, 0, 255, 0, 255, 1, 1, 0},
+            {ITEM_JEWEL_OF_CREATION, ITEM_JEWEL_OF_CREATION, 0, 255, 0, 255, 0, 255, 1, 1, 0},
+            {ITEM_DEATH_KINGS_BONE, ITEM_DEATH_BEAM_KNIGHTS_SOUL, 0, 255, 0, 255, 0, 255, 1, 1, 0},
+        };
+        recipe->m_iNumMixSoruces = static_cast<int>(std::size(sources));
+        std::copy(std::begin(sources), std::end(sources), recipe->m_MixSources);
+        recipes.AddRecipe(recipe);
+    }
+
+    void AddMonsterWingRecipes(CMixRecipes& recipes)
+    {
+        AddMonsterWingRecipe(recipes, ITEM_WINGS_OF_SPIRITS, ITEM_WINGS_OF_DARKNESS, 9000000.f);
+        AddMonsterWingRecipe(recipes, ITEM_WINGS_OF_DESPAIR, ITEM_WINGS_OF_DESPAIR, 9000000.f);
+        AddMonsterWingRecipe(recipes, ITEM_CAPE_OF_FIGHTER, ITEM_CAPE_OF_FIGHTER, 500000.f);
+        AddMonsterWingRecipe(recipes, ITEM_CAPE_OF_LORD, ITEM_CAPE_OF_LORD, 500000.f);
+    }
+}
+
 void CMixRecipeMgr::LoadData()
 {
     OpenRecipeFile(L"Data\\Local\\Mix.bmd");
+    AddMonsterWingRecipes(m_MixRecipe[MIXTYPE_GOBLIN_NORMAL]);
 }
 
 void CMixItem::Reset()

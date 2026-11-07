@@ -2310,7 +2310,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor138"
+        "color": "finalMuArmor138",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -3664,7 +3670,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor217"
+        "color": "finalMuArmor217",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -4077,7 +4089,13 @@
       ],
       "glow": {
         "excellent": false,
-        "color": "finalMuArmor237"
+        "color": "finalMuArmor237",
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ]
       },
       "inventory": {
         "anchor": [
@@ -4123,6 +4141,36 @@
             "blue": 1.0
           }
         ]
+      }
+    },
+    {
+      "number": 146,
+      "file": "Data/Custom/Tigris/HelmMale105.bmd",
+      "textureFolders": [
+        "Custom/Tigris"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.8
+        ],
+        "scale": 0.0039,
+        "bodyHeight": -160
+      },
+      "ground": {
+        "bodyHeight": -160
+      },
+      "material": {
+        "specular": 0.6
+      },
+      "glow": {
+        "meshes": [
+          0
+        ],
+        "shineMeshes": [
+          0
+        ],
+        "excellentMesh": 0
       }
     }
   ]

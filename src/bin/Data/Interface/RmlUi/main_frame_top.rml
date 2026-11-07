@@ -37,6 +37,7 @@
 			<div id="btn_code_top" class="frame-btn-top" data-event-click="mainframe_code_click"><span>CODE</span></div>
 			<div id="btn_events_top" class="frame-btn-top" data-event-click="mainframe_events_click"><span>EVENTS</span></div>
 			<div id="btn_muun_top" class="frame-btn-top" data-event-click="mainframe_muun_click"><span>MUUN</span></div>
+			<div id="btn_rank_top" class="frame-btn-top" data-event-click="mainframe_rank_click"><span>RANK</span></div>
 		</div>
 	</div>
 </body>

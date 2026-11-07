@@ -4306,6 +4306,106 @@
       }
     },
     {
+      "number": 262,
+      "file": "Data/Custom/MonsterWings/CloakOfDeath/cape_of_death.bmd",
+      "textureFolders": [
+        "Custom/MonsterWings/CloakOfDeath"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "scale": 0.0014
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          45
+        ]
+      },
+      "glow": {
+        "level": 0,
+        "excellent": false
+      }
+    },
+    {
+      "number": 263,
+      "file": "Data/Custom/MonsterWings/WingsOfChaos/chaoswing.bmd",
+      "textureFolders": [
+        "Custom/MonsterWings/WingsOfChaos"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "scale": 0.0025
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          45
+        ]
+      },
+      "glow": {
+        "level": 0,
+        "excellent": false
+      }
+    },
+    {
+      "number": 264,
+      "file": "Data/Custom/MonsterWings/WingsOfPower/magic_wing.bmd",
+      "textureFolders": [
+        "Custom/MonsterWings/WingsOfPower"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "scale": 0.002
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          45
+        ]
+      },
+      "glow": {
+        "level": 0,
+        "excellent": false
+      }
+    },
+    {
+      "number": 265,
+      "file": "Data/Custom/MonsterWings/WingsOfLife/flamewing.bmd",
+      "textureFolders": [
+        "Custom/MonsterWings/WingsOfLife"
+      ],
+      "inventory": {
+        "anchor": [
+          0.5,
+          0.5
+        ],
+        "scale": 0.0025
+      },
+      "ground": {
+        "rotation": [
+          270,
+          0,
+          45
+        ]
+      },
+      "glow": {
+        "level": 0,
+        "excellent": false
+      }
+    },
+    {
       "number": 300,
       "file": "Data/Custom/Skins/FinalMU/12_300/GuncrasherWing3rd.bmd",
       "textureFolders": [
@@ -4341,7 +4441,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "material": {
         "additiveMeshes": [
@@ -4367,7 +4469,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "material": {
         "additiveMeshes": [
@@ -5057,7 +5161,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [1],
+        "shineMeshes": [1]
       },
       "material": {
         "additiveMeshes": [
@@ -5132,7 +5238,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 2],
+        "shineMeshes": [0, 1, 2]
       },
       "material": {
         "additiveMeshes": [
@@ -5215,7 +5323,9 @@
         "scale": 0.001613
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 2, 3, 5],
+        "shineMeshes": [0, 1, 2, 3, 5]
       },
       "material": {
         "additiveMeshes": [
@@ -5233,7 +5343,9 @@
         "scale": 0.001512
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1],
+        "shineMeshes": [0, 1]
       },
       "material": {
         "additiveMeshes": [
@@ -5259,7 +5371,8 @@
         "scale": 0.001968
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "level": 0
       },
       "material": {
         "additiveMeshes": [
@@ -5771,7 +5884,9 @@
         "scale": 0.001877
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [1, 2],
+        "shineMeshes": [1, 2]
       },
       "material": {
         "additiveMeshes": [
@@ -7944,7 +8059,9 @@
         "scale": 0.001414
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [1, 2, 3],
+        "shineMeshes": [1, 2, 3]
       },
       "material": {
         "additiveMeshes": [
@@ -8942,7 +9059,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 2, 3, 4],
+        "shineMeshes": [0, 1, 2, 3, 4]
       },
       "material": {
         "additiveMeshes": [
@@ -9602,7 +9721,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 2],
+        "shineMeshes": [0, 1, 2]
       },
       "material": {
         "additiveMeshes": [
@@ -9633,7 +9754,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 2],
+        "shineMeshes": [0, 1, 2]
       },
       "material": {
         "additiveMeshes": [
@@ -10635,7 +10758,9 @@
         "scale": 0.001841
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 2],
+        "shineMeshes": [0, 2]
       },
       "material": {
         "additiveMeshes": [
@@ -11225,7 +11350,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1],
+        "shineMeshes": [0, 1]
       },
       "material": {
         "additiveMeshes": [
@@ -11243,7 +11370,9 @@
         "scale": 0.001191
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0],
+        "shineMeshes": [0]
       },
       "material": {
         "additiveMeshes": [
@@ -11300,7 +11429,9 @@
         "scale": 0.002
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 2, 3],
+        "shineMeshes": [0, 2, 3]
       },
       "material": {
         "additiveMeshes": [
@@ -11551,7 +11682,9 @@
         "scale": 0.00109
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 5],
+        "shineMeshes": [0, 1, 5]
       },
       "material": {
         "additiveMeshes": [
@@ -11729,7 +11862,9 @@
         "scale": 0.001334
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [1],
+        "shineMeshes": [1]
       },
       "material": {
         "additiveMeshes": [
@@ -13325,7 +13460,9 @@
         "scale": 0.001225
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 5],
+        "shineMeshes": [0, 1, 5]
       },
       "material": {
         "additiveMeshes": [
@@ -13359,7 +13496,9 @@
         "scale": 0.00109
       },
       "glow": {
-        "excellent": false
+        "excellent": false,
+        "meshes": [0, 1, 5],
+        "shineMeshes": [0, 1, 5]
       },
       "material": {
         "additiveMeshes": [

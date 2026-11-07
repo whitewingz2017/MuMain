@@ -16,6 +16,9 @@ namespace GameLogic::Items
     // The Capes of Lord and Fighter.
     bool IsSecondTierCape(const ITEM* pItem);
     bool IsSmallWing(const ITEM* pItem);
+    // The monster wings (2.5 wings): Cloak of Death, Wings of Chaos, Wings of Power and Wings of Life.
+    bool IsMonsterWing(const ITEM* pItem);
+    bool IsMonsterWingType(int itemType);
 
     // Mounts and pets
     // The model of an item that goes into the pet slot (helpers, mounts, pets).

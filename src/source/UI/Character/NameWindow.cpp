@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "UI/Scaling/UITransform.h"
 #include "UI/Chat/Chat.h"
+#include "UI/Chat/RankBadge.h"
 #include "UI/Character/NameWindow.h"
 #include "Render/Models/ZzzBMD.h"
 #include "Engine/Object/ZzzObject.h"
@@ -254,6 +255,7 @@ void mu::ui::window::CNameWindow::RenderLabels()
     RenderName();
     matchEvent::RenderMatchTimes();
     UI::Chat::RenderBooleans();
+    UI::RankTitles::Badge::RenderVisible();
     RenderMonsterHealthBars();
     DrawPersonalShopTitleImp();
     DisableAlphaBlend();
