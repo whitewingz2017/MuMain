@@ -62,20 +62,24 @@ void CheckInvalidRepeats(const Stats::SegmentStats& segment, std::vector<Finding
             std::to_string(segment.invalidRepeats + segment.validRepeats) + " repeats were discarded");
 }
 
-// BeginFrame acquires the swapchain image, which blocks while the GPU is still on earlier
-// frames: a large share there means the frame is GPU-bound and CPU savings will not show.
+// The main loop waits for the GPU to free a swapchain image before reading input (SwapWait), and
+// BeginFrame acquires it (RenderBegin); either blocks while the GPU is still on earlier frames. A
+// large share there means the frame is GPU-bound and CPU savings will not show.
 void CheckSwapchainWait(const RunData& run, const Stats::SegmentStats& segment, std::vector<Finding>& out)
 {
     const int beginIndex = IndexOf(run.passNames, "RenderBegin");
-    if (beginIndex < 0 || segment.frame.meanMs <= 0.0f)
+    const int waitIndex = IndexOf(run.passNames, "SwapWait");
+    if ((beginIndex < 0 && waitIndex < 0) || segment.frame.meanMs <= 0.0f)
         return;
 
-    const float waitPercent = 100.0f * segment.passCpuMs[beginIndex] / segment.frame.meanMs;
+    const float beginMs = beginIndex >= 0 ? segment.passCpuMs[beginIndex] : 0.0f;
+    const float waitMs = waitIndex >= 0 ? segment.passCpuMs[waitIndex] : 0.0f;
+    const float waitPercent = 100.0f * (beginMs + waitMs) / segment.frame.meanMs;
     if (waitPercent <= kSwapchainWaitPercent)
         return;
 
     Add(out, Level::Info, "swapchain-wait", segment.name,
-        "RenderBegin is " + Fixed(waitPercent, 1) +
+        "SwapWait and RenderBegin are " + Fixed(waitPercent, 1) +
             "% of the frame -- the CPU is waiting for the GPU to free a swapchain image");
 }
 

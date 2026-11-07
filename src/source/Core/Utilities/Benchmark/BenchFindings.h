@@ -19,7 +19,7 @@ namespace Core::Benchmark::Findings
 inline constexpr float kAttributionGapPercent = 10.0f; // frame time outside every pass scope
 inline constexpr float kDriftWarnPercent = 5.0f;       // baseline start vs. end of run
 inline constexpr float kNoisySegmentSpreadPercent = 10.0f;
-inline constexpr float kSwapchainWaitPercent = 30.0f; // RenderBegin as a share of frame time
+inline constexpr float kSwapchainWaitPercent = 30.0f; // SwapWait + RenderBegin as a share of frame time
 inline constexpr int kSubmissionBoundMinDraws = 100;
 // Below this relative difference in draw calls per frame, a segment did not measurably change
 // what the client submitted -- it turned nothing off at this spot, whatever it promised to.

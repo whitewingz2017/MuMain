@@ -1463,6 +1463,125 @@ bool RouteActionInput(SDL_Event& event, bool synthetic, bool& propagates)
     }
 }
 
+// Routes the SDL events queued since the last loop: window, mouse, keyboard and text input, at
+// most g_MaxMessagePerCycle of them when that is set.
+static void PumpEvents()
+{
+    SDL_Event event;
+    int messageProcessed = 0;
+    while (SDL_PollEvent(&event))
+    {
+#ifdef _EDITOR
+        // Feed every event to the editor's ImGui SDL3 backend (issue #442).
+        // Guard on an active context: editor init can fail or be shut down.
+        if (ImGui::GetCurrentContext() != nullptr)
+            ImGui_ImplSDL3_ProcessEvent(&event);
+        // What the editor takes (a click or a key on one of its windows) does
+        // not reach RmlUi or the game under it.
+        if (g_MuEditorCore.ClaimsEvent(event))
+        {
+            ++messageProcessed;
+            if (g_MaxMessagePerCycle > 0 && messageProcessed >= g_MaxMessagePerCycle)
+            {
+                break;
+            }
+            continue;
+        }
+#endif
+        switch (event.type)
+        {
+        case SDL_EVENT_QUIT:
+            Destroy = true;
+            break;
+        case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+            // Titlebar X / Alt+F4: request shutdown directly on SDL's close
+            // event, without relying on a subsequent SDL_EVENT_QUIT (#535).
+            Destroy = true;
+            break;
+        case SDL_EVENT_MOUSE_MOTION:
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+        {
+            bool propagates = true;
+            RouteActionInput(event, false, propagates);
+            break;
+        }
+        case SDL_EVENT_MOUSE_WHEEL:
+            if (Core::Input::RouteToUi(event, g_sdlWindow))
+            {
+                // SDL does not pre-correct flipped (natural) scrolling; invert.
+                MouseWheel = (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -static_cast<int>(event.wheel.y)
+                                                                               : static_cast<int>(event.wheel.y);
+            }
+            break;
+        case SDL_EVENT_WINDOW_RESIZED:
+            HandleWindowResize(event.window.data1, event.window.data2);
+            break;
+        case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+            HandleContentScaleChange();
+            break;
+        case SDL_EVENT_WINDOW_FOCUS_GAINED:
+            HandleFocusChange(true);
+            break;
+#ifndef _WIN32
+        case SDL_EVENT_WINDOW_MOUSE_ENTER:
+            // Wayland can deliver the first pointer-enter after the startup
+            // cursor-hide, dropping it and leaving the OS cursor over the
+            // game's own; re-apply the hide on every enter (issue #462).
+            MuApplyCursorVisibility();
+            break;
+#endif
+        case SDL_EVENT_WINDOW_FOCUS_LOST:
+            HandleFocusChange(false);
+            break;
+        case SDL_EVENT_TEXT_INPUT:
+        case SDL_EVENT_KEY_UP:
+        case SDL_EVENT_KEY_DOWN:
+        {
+            bool propagates = true;
+            RouteActionInput(event, false, propagates);
+            break;
+        }
+        case SDL_EVENT_TEXT_EDITING:
+            // IsTextInputActive() is driven by RmlUiSystemInterface::ActivateKeyboard/
+            // DeactivateKeyboard, which WidgetTextInput's own Focus/Blur handling calls.
+            if (RmlUiRuntime::Instance().IsTextInputActive())
+                RmlUiRuntime::Instance().ProcessTextEditing(event);
+            break;
+        default:
+            break;
+        }
+
+        ++messageProcessed;
+        if (g_MaxMessagePerCycle > 0 && messageProcessed >= g_MaxMessagePerCycle)
+        {
+            break;
+        }
+    }
+}
+
+// The work between frames: the server packets from the network thread, a pending reconnect
+// teardown, the due timers and the control socket.
+static void ProcessBetweenFrames()
+{
+    // Process server packets handed over from the network thread. Replaces
+    // the old WM_RECEIVE_BUFFER message round-trip; runs on the main thread.
+    Network::IncomingPacketQueue::Instance().DrainTo(ProcessPacketCallback);
+
+    // Run a pending reconnect teardown between frames (self-guards on its
+    // pending flag). Replaces the old WM_START_RECONNECT round-trip.
+    ReconnectManager::Instance().Begin();
+
+    // Fire any due timers. Replaces the Win32 SetTimer/WM_TIMER dispatch.
+    Core::Time::FrameTimerScheduler::Instance().Tick();
+
+    // Serve the control socket, after this frame's packets have been
+    // processed so a command sees the newest game state, and before
+    // rendering so an act's step is drawn in the same frame. Does nothing
+    // when the socket was never opened.
+    App::Control::ControlServer::Instance().Poll();
+}
+
 MSG MainLoop()
 {
     constexpr auto target_resolution = 1;
@@ -1474,12 +1593,12 @@ MSG MainLoop()
 
     while (!Destroy)
     {
-        SDL_Event event;
-        int messageProcessed = 0;
-
         // Wait for the GPU before reading input, not after: with VSync the frame then uses input as fresh as
         // the CPU work allows, and the wait isn't counted as the renderer's CPU time.
-        mu::GetRenderer().WaitForSwapchain();
+        {
+            FRAME_PROFILE(SwapchainWait);
+            mu::GetRenderer().WaitForSwapchain();
+        }
 
         // Per-frame mouse-state reset (was done per-message in WndProc): clear a
         // stale double-click and a pop whose position the cursor has moved off.
@@ -1490,112 +1609,15 @@ MSG MainLoop()
         // The Windows hook bridges F10, Enter and posted game-shutdown messages.
         // SDL dispatches child EDIT controls itself; mouse/window events and
         // the editor's input are routed below.
-        while (SDL_PollEvent(&event))
         {
-#ifdef _EDITOR
-            // Feed every event to the editor's ImGui SDL3 backend (issue #442).
-            // Guard on an active context: editor init can fail or be shut down.
-            if (ImGui::GetCurrentContext() != nullptr)
-                ImGui_ImplSDL3_ProcessEvent(&event);
-            // What the editor takes (a click or a key on one of its windows) does
-            // not reach RmlUi or the game under it.
-            if (g_MuEditorCore.ClaimsEvent(event))
-            {
-                ++messageProcessed;
-                if (g_MaxMessagePerCycle > 0 && messageProcessed >= g_MaxMessagePerCycle)
-                {
-                    break;
-                }
-                continue;
-            }
-#endif
-            switch (event.type)
-            {
-            case SDL_EVENT_QUIT:
-                Destroy = true;
-                break;
-            case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                // Titlebar X / Alt+F4: request shutdown directly on SDL's close
-                // event, without relying on a subsequent SDL_EVENT_QUIT (#535).
-                Destroy = true;
-                break;
-            case SDL_EVENT_MOUSE_MOTION:
-            case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            case SDL_EVENT_MOUSE_BUTTON_UP:
-            {
-                bool propagates = true;
-                RouteActionInput(event, false, propagates);
-                break;
-            }
-            case SDL_EVENT_MOUSE_WHEEL:
-                if (Core::Input::RouteToUi(event, g_sdlWindow))
-                {
-                    // SDL does not pre-correct flipped (natural) scrolling; invert.
-                    MouseWheel = (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -static_cast<int>(event.wheel.y)
-                                                                                   : static_cast<int>(event.wheel.y);
-                }
-                break;
-            case SDL_EVENT_WINDOW_RESIZED:
-                HandleWindowResize(event.window.data1, event.window.data2);
-                break;
-            case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
-                HandleContentScaleChange();
-                break;
-            case SDL_EVENT_WINDOW_FOCUS_GAINED:
-                HandleFocusChange(true);
-                break;
-#ifndef _WIN32
-            case SDL_EVENT_WINDOW_MOUSE_ENTER:
-                // Wayland can deliver the first pointer-enter after the startup
-                // cursor-hide, dropping it and leaving the OS cursor over the
-                // game's own; re-apply the hide on every enter (issue #462).
-                MuApplyCursorVisibility();
-                break;
-#endif
-            case SDL_EVENT_WINDOW_FOCUS_LOST:
-                HandleFocusChange(false);
-                break;
-            case SDL_EVENT_TEXT_INPUT:
-            case SDL_EVENT_KEY_UP:
-            case SDL_EVENT_KEY_DOWN:
-            {
-                bool propagates = true;
-                RouteActionInput(event, false, propagates);
-                break;
-            }
-            case SDL_EVENT_TEXT_EDITING:
-                // IsTextInputActive() is driven by RmlUiSystemInterface::ActivateKeyboard/
-                // DeactivateKeyboard, which WidgetTextInput's own Focus/Blur handling calls.
-                if (RmlUiRuntime::Instance().IsTextInputActive())
-                    RmlUiRuntime::Instance().ProcessTextEditing(event);
-                break;
-            default:
-                break;
-            }
-
-            ++messageProcessed;
-            if (g_MaxMessagePerCycle > 0 && messageProcessed >= g_MaxMessagePerCycle)
-            {
-                break;
-            }
+            FRAME_PROFILE(Events);
+            PumpEvents();
         }
 
-        // Process server packets handed over from the network thread. Replaces
-        // the old WM_RECEIVE_BUFFER message round-trip; runs on the main thread.
-        Network::IncomingPacketQueue::Instance().DrainTo(ProcessPacketCallback);
-
-        // Run a pending reconnect teardown between frames (self-guards on its
-        // pending flag). Replaces the old WM_START_RECONNECT round-trip.
-        ReconnectManager::Instance().Begin();
-
-        // Fire any due timers. Replaces the Win32 SetTimer/WM_TIMER dispatch.
-        Core::Time::FrameTimerScheduler::Instance().Tick();
-
-        // Serve the control socket, after this frame's packets have been
-        // processed so a command sees the newest game state, and before
-        // rendering so an act's step is drawn in the same frame. Does nothing
-        // when the socket was never opened.
-        App::Control::ControlServer::Instance().Poll();
+        {
+            FRAME_PROFILE(Packets);
+            ProcessBetweenFrames();
+        }
 
         if (CheckRenderNextFrame())
         {

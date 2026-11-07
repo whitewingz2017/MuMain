@@ -324,3 +324,22 @@ TEST_CASE("swapchain-wait fires when RenderBegin is most of the frame")
     const std::vector<Stats::SegmentStats> stats = Stats::SummarizeRun(run);
     CHECK(HasRule(Findings::Evaluate(run, stats), "swapchain-wait"));
 }
+
+TEST_CASE("swapchain-wait counts the main loop's wait for the GPU with RenderBegin")
+{
+    RunData run = MakeRun();
+    run.passNames.push_back("SwapWait");
+    run.passIsNested.push_back(false);
+    constexpr int RenderBeginPass = 2;
+    constexpr int SwapWaitPass = 3;
+    // Each alone stays under the threshold; together they are over a third of the frame.
+    for (RepeatSamples& repeat : run.segments.front().repeats)
+        for (FrameSample& frame : repeat.frames)
+        {
+            frame.cpuMs[RenderBeginPass] = frame.frameMs * 0.15f;
+            frame.cpuMs[SwapWaitPass] = frame.frameMs * 0.2f;
+        }
+
+    const std::vector<Stats::SegmentStats> stats = Stats::SummarizeRun(run);
+    CHECK(HasRule(Findings::Evaluate(run, stats), "swapchain-wait"));
+}

@@ -264,6 +264,41 @@ static void UpdateUIAndInput()
         g_pUIManager->UpdateInput();
 }
 
+// The map's objects, the items on the ground and the ambient wildlife.
+static void MoveWorldEntities()
+{
+    FRAME_PROFILE(MoveWorld);
+    {
+        Render::Lighting::LightSourceScope mapLights(Render::Lighting::LightSource::Map);
+        MoveObjects();
+    }
+
+    if (!g_Camera.TopViewEnable)
+        MoveItems();
+
+    if (RequireLeavesEffect())
+    {
+        MoveLeaves();
+    }
+
+    MoveBoids();
+    MoveFishs();
+}
+
+// The hero and the other characters, with their mounts and pets.
+static void MoveCharacterEntities()
+{
+    FRAME_PROFILE(MoveCharacters);
+    {
+        Render::Lighting::LightSourceScope characterLights(Render::Lighting::LightSource::Character);
+        MoveHero();
+        MoveCharactersClient();
+    }
+    GameLogic::Pets::MountCompanions::EnsureHeroMount();
+    MoveMounts();
+    ThePetProcess().UpdatePets();
+}
+
 /**
  * @brief Updates all game entities and visual effects.
  *
@@ -282,31 +317,10 @@ static void UpdateUIAndInput()
 
 static void UpdateGameEntities()
 {
-    {
-        Render::Lighting::LightSourceScope mapLights(Render::Lighting::LightSource::Map);
-        MoveObjects();
-    }
-
-    if (!g_Camera.TopViewEnable)
-        MoveItems();
-
-    if (RequireLeavesEffect())
-    {
-        MoveLeaves();
-    }
-
-    MoveBoids();
-    MoveFishs();
+    MoveWorldEntities();
     UI::Chat::MoveChat();
     UpdatePersonalShopTitleImp();
-    {
-        Render::Lighting::LightSourceScope characterLights(Render::Lighting::LightSource::Character);
-        MoveHero();
-        MoveCharactersClient();
-    }
-    GameLogic::Pets::MountCompanions::EnsureHeroMount();
-    MoveMounts();
-    ThePetProcess().UpdatePets();
+    MoveCharacterEntities();
     MovePoints();
     {
         FRAME_PROFILE(MoveEffects);
@@ -340,6 +354,7 @@ static void UpdateGameEntities()
  */
 static void UpdateMainSceneView()
 {
+    FRAME_PROFILE(View);
     MoveMainCamera();
 
     const auto viewport = UI::Scaling::WorldViewport(WindowWidth, WindowHeight, g_Camera.TopViewEnable);
@@ -384,7 +399,10 @@ void MoveMainScene()
     }
 
     // Picks what the cursor is over in what the last frame drew, and highlights it.
-    Input::Selection::SelectObjects();
+    {
+        FRAME_PROFILE(Picking);
+        Input::Selection::SelectObjects();
+    }
     InitializeSceneFrame();
 
     // While the reconnect dialog is up it's modal: block world clicks so they

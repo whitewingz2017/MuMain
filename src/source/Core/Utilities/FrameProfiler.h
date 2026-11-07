@@ -46,6 +46,18 @@ enum class Pass : int
     ObjectsDraw,
     // The update's effect spawns and poses for the drawn characters and map objects.
     UpdateEffects,
+    // The main loop around the frame: the wait for the GPU to free a swapchain image, the SDL
+    // events, and the server packets with the due timers and the control socket.
+    SwapchainWait,
+    Events,
+    Packets,
+    // The main scene's update outside its effect passes: picking what the cursor is over, the
+    // map's objects and wildlife, the characters with their mounts and pets, and the view
+    // (camera, culling and the frame's lights).
+    Picking,
+    MoveWorld,
+    MoveCharacters,
+    View,
     Count_
 };
 
@@ -53,8 +65,10 @@ inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
     "Terrain",   "Objects",  "Chars",     "Items",       "Effects",   "Other",   "CharWait", "MoveFx",
     "MovePart",  "Skinning", "UI",        "RenderBegin", "RenderEnd", "Submit",  "UIUpdate", "RmlInput",
     "UILayout",  "Flush",    "Sprites",   "Particles",   "Joints",    "Overlay", "RmlUpd",   "RmlRend",
-    "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw", "UpdateFx",
+    "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw", "UpdateFx", "SwapWait",
+    "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",
 };
+static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 
 enum class Counter : int
 {

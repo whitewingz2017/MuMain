@@ -120,8 +120,14 @@ even running, and a frame time without them next to it is not something anyone c
 later.
 
 The timings are CPU time; SDL_GPU gives the client no GPU timer queries. A GPU-bound frame shows
-up as the CPU waiting for a swapchain image in `RenderBegin`, which the `swapchain-wait` finding
-points out.
+up as the CPU waiting for a swapchain image, in `SwapWait` (the main loop's wait before it reads
+input) and `RenderBegin`, which the `swapchain-wait` finding points out.
+
+Besides the draw passes, the breakdown times the main loop around the frame (`SwapWait`, `Events`
+for the SDL input events, `Packets` for the server packets, timers and control socket) and the
+main scene's update (`Picking` for what the cursor is over, `MoveWorld` for map objects, ground
+items and wildlife, `MoveChars` for characters with their mounts and pets, `View` for the camera,
+culling and the frame's lights), so little of a frame is left unattributed.
 
 ### Reading the summary
 
