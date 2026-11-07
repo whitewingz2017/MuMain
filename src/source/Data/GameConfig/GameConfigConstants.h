@@ -64,6 +64,9 @@ namespace CfgKeys
     // Anisotropic filtering of every texture with mip levels: world textures in the Enhanced
     // look, upscaled textures in both looks. 1 is off.
     inline constexpr wchar_t CfgKeyAnisotropy[] = L"Anisotropy";
+    // How much sharper than standard the Enhanced look samples world textures, in hundredths
+    // of a mip level (a negative mip LOD bias): 0 is the standard mip level, 100 one level sharper.
+    inline constexpr wchar_t CfgKeyMipSharpenPercent[] = L"MipSharpenPercent";
     // Multisample anti-aliasing of the Enhanced look: 0 (off), 2, 4 or 8 samples per pixel.
     inline constexpr wchar_t CfgKeyAntialiasing[] = L"Antialiasing";
     // The Enhanced look's features the player keeps on; Classic ignores them.
@@ -150,6 +153,11 @@ namespace CfgDefaults
     inline constexpr wchar_t CfgDefaultLook[] = L"Classic";
     // 8x anisotropy on textures with mip levels.
     inline constexpr int CfgDefaultAnisotropy = 8;
+    // Half a mip level sharper. Higher values show more texture detail at a distance but let
+    // fine patterns shimmer while the camera moves.
+    inline constexpr int CfgDefaultMipSharpenPercent = 50;
+    inline constexpr int CfgMinMipSharpenPercent = 0;
+    inline constexpr int CfgMaxMipSharpenPercent = 100;
 
     // The samples the Enhanced look renders with (Classic renders without); a
     // requested count is lowered to what the GPU supports.

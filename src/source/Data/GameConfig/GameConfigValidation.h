@@ -19,6 +19,8 @@ std::wstring ValidateServerIP(const std::wstring& value, const std::wstring& def
 // At least 1 (no anisotropy). The upper bound is what the GPU supports and is
 // applied by the renderer, which logs when it clamps.
 int ValidateAnisotropy(int value);
+// Clamped to [CfgMinMipSharpenPercent, CfgMaxMipSharpenPercent].
+int ValidateMipSharpenPercent(int value);
 // 0 (off), 2, 4 or 8: other values round down to the nearest of those, 1 and
 // below are off, above 8 is 8. What the GPU supports is applied by the
 // renderer, which logs the count it uses.

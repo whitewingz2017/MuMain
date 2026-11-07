@@ -10,11 +10,11 @@ options window, without editing those files (see "Tuning it yourself").
 
 | Feature | What it does | Guide |
 |---|---|---|
-| Texture filtering | mipmaps and anisotropic filtering for world textures | — |
+| Texture filtering | mipmaps, anisotropic filtering and mip sharpening for world textures | — |
 | Enhanced lighting | per-pixel model lighting with rim light and, on metal armour, specular highlights | — |
 | Dynamic model lights | candles, fires and spells light characters, monsters and NPCs | — |
 | Light mood | darker baked map light, so the light sources stand out | [light-mood.md](light-mood.md) |
-| Post-processing | bloom around light effects and per-map colour grading | [post-processing.md](post-processing.md) |
+| Post-processing | bloom around light effects, per-map colour grading and sharpening | [post-processing.md](post-processing.md) |
 | Anti-aliasing | multisampled edges (4 samples, or what `Antialiasing` asks for), alpha-to-coverage for cut-out foliage and fences | — |
 
 ## Choosing the look
@@ -32,6 +32,7 @@ options window, without editing those files (see "Tuning it yourself").
   | `Look` | `Enhanced` or `Classic` | `Classic` |
   | `Antialiasing` | samples of the Enhanced look: `0` (off), `2`, `4` or `8` | `4` |
   | `Anisotropy` | maximum anisotropic filtering, clamped to the GPU | `8` |
+  | `MipSharpenPercent` | how much sharper world textures are sampled, in hundredths of a mip level: `0` (standard) to `100` | `50` |
   | `EnhancedLighting`, `DynamicLights`, `LightMood`, `PostProcessing` | `0` switches that feature of Enhanced off; Classic ignores them | `1` |
 
   A missing or unknown `Look` counts as Classic, so the classic look stays
@@ -44,6 +45,11 @@ options window, without editing those files (see "Tuning it yourself").
   The anisotropy level applies to every texture with mip levels: world
   textures in Enhanced, and upscaled textures (an optional asset pack) in both
   looks, because they are always drawn smaller than they are stored.
+  `MipSharpenPercent` makes Enhanced sample world textures from a larger mip
+  level than the standard choice, so ground, walls and armour keep more detail
+  a few steps away. Higher values show more detail but let fine patterns
+  shimmer while the camera moves; lower it (or set `0`) if they do. It never
+  touches the interface or the Classic look, and has no effect on macOS (Metal).
 
 The login and character selection scenes take the Enhanced features too,
 except the light mood. The interface is the same in both looks.
@@ -87,6 +93,7 @@ window.
 | Bloom and colour grading | Bloom intensity | `bloom.strength` | 0–2 | 0.05 | 1 (Icarus 0.3) | common |
 | Bloom and colour grading | Bloom spread | `bloom.levelFalloff` | 0.25–1 | 0.05 | 0.6 | common |
 | Bloom and colour grading | Colour grading strength | `grading.strength` | 0–100 % | 1 % | 100 % | common |
+| Bloom and colour grading | Sharpening | `sharpen.strength` | 0–100 % | 5 % | 50 % | common |
 
 The defaults are the shipped look profile's (and each map's own, where it has
 one); they are defaults, not a promise that every combination of extremes looks
@@ -100,6 +107,7 @@ good. What some ends mean:
   ground; the skill effects themselves are still drawn. Skill intensity is not
   the only source of light during a fight: map lights, and the darker map
   light's own boost of every light (Mood strength), add to it.
+- A Sharpening of 0 % leaves the image as rendered; bloom and grading stay.
 - A Colour grading strength of 0 % applies no grading at all while the bloom
   stays on.
 - A Mood strength of 0 % is the map's original light; the rest of the Enhanced
@@ -205,6 +213,7 @@ for the whole file.
 | `bloom.strength` | 1.0 (Icarus 0.3) | 0.6 | 0–2 | how strong the halo around light effects is |
 | `bloom.levelFalloff` | 0.6 | 0.5 | 0.25–1 | how wide the halo spreads |
 | `grading.strength` | 1 | 1 | 0–1 | how much of a map's grading table applies; 0 grades nothing while the bloom stays |
+| `sharpen.strength` | 0.5 | 0.5 | 0–1 | contrast-adaptive sharpening of the 3D scene; flat areas gain the most, strong edges little, so outlines do not glow |
 
 ## Developer commands
 

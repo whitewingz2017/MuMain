@@ -1,7 +1,7 @@
 # Post-processing
 
 Post-processing works on the finished 3D scene before the interface is drawn on
-top of it. It adds two things to the Classic look:
+top of it. It adds three things to the Classic look:
 
 - **Bloom**: spells, fires, torches and portals spread a soft halo around
   themselves. Only effects drawn as light (additive blending) glow; bright
@@ -10,6 +10,10 @@ top of it. It adds two things to the Classic look:
   they look exactly as without post-processing, however shiny their gear. The
   halo is screen-blended, so it lights dark surroundings without washing bright
   ones out to white, and it stays close to its effect.
+- **Sharpening**: texture detail and edges are sharpened after anti-aliasing,
+  before the bloom and the grading. The sharpening adapts to contrast: flat,
+  soft areas gain the most and hard edges little, so outlines do not ring or
+  glow. 0 leaves the image as rendered.
 - **Colour grading**: a map can carry its own colour mood through a lookup
   table. A map without a table is not graded. A table never makes anything
   brighter and leaves highlights (armour, glows, light pools) untouched; it
@@ -19,8 +23,8 @@ The HUD, windows, text, the cursor and item previews in windows are never
 processed: they look exactly as without post-processing.
 
 Post-processing is part of the Enhanced look and off in Classic
-([enhanced-look.md](enhanced-look.md)). With it on, a bloom strength of 0 and
-no grading table, the frame looks the same as with it off.
+([enhanced-look.md](enhanced-look.md)). With it on, a bloom strength of 0, a
+sharpening of 0 and no grading table, the frame looks the same as with it off.
 
 ## Settings
 
@@ -28,12 +32,13 @@ The `Look` preset switches post-processing with the rest of the Enhanced look,
 and the options window's "Bloom and colour grading" row switches it off on its
 own. Its strengths are values of the look profile, `Data/Render/Look.json`:
 `bloom.strength` (0 to 2, shipped 1.0, 0.3 in Icarus), `bloom.levelFalloff`
-(0.25 to 1, how wide the halo spreads) and `grading.strength` (0 to 1, how much
-of a map's table applies). A grading strength of 0 applies no grading at all
-while the bloom stays on.
+(0.25 to 1, how wide the halo spreads), `grading.strength` (0 to 1, how much
+of a map's table applies) and `sharpen.strength` (0 to 1, shipped 0.5). A
+grading strength of 0 applies no grading at all while the bloom stays on.
 
-Players tune the three under that row (Bloom intensity, Bloom spread, Colour
-grading strength, the last in percent); see "Tuning it yourself" in
+Players tune the four under that row (Bloom intensity, Bloom spread, Colour
+grading strength and Sharpening, the last two in percent); see "Tuning it
+yourself" in
 [enhanced-look.md](enhanced-look.md). A value a player changed applies on every
 map in place of the map's value until it is reset.
 
@@ -46,7 +51,8 @@ Developer builds (control socket or DevEditor) have, for the session only:
 for diagnosis `$post view source` (only what feeds the bloom: the additive
 effects, black elsewhere), `$post view bloom` (the blurred glow) and
 `$post view scene` (back). The views need post-processing on and a bloom
-strength above 0.
+strength above 0. The diagnostic views are
+never sharpened.
 
 ## Grading tables
 

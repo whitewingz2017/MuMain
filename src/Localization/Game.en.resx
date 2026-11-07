@@ -1198,6 +1198,12 @@
   <data name="Tuning Colour Grading Strength Help" xml:space="preserve">
     <value>How much of the map's colour grading applies. 0 % applies none, while bloom stays on.</value>
   </data>
+  <data name="Tuning Sharpening" xml:space="preserve">
+    <value>Sharpening</value>
+  </data>
+  <data name="Tuning Sharpening Help" xml:space="preserve">
+    <value>How much texture detail and edges are sharpened. Flat areas gain the most, strong edges little, so outlines do not glow. 0 % leaves the image as rendered.</value>
+  </data>
   <data name="Tuning More Settings" xml:space="preserve">
     <value>More settings</value>
   </data>

@@ -63,4 +63,11 @@ AnisotropyLevel ClampAnisotropy(int configured)
     return {requested, false};
 }
 
+float MipLodBiasForSharpenPercent(int percent)
+{
+    constexpr float HundredthsPerLevel = 100.0f;
+    const float levels = static_cast<float>(percent) / HundredthsPerLevel;
+    return -std::clamp(levels, 0.0f, MaxMipSharpenLevels);
+}
+
 } // namespace Render::Textures

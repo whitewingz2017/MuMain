@@ -41,10 +41,14 @@ struct SdlGpuCompositeUniform
     // 0: ungraded; otherwise the blend of the graded colour with the ungraded one
     // (Render::PostProcessing::CompositeGradingStrength).
     float gradingStrength;
+    // 0: unsharpened; up to 1 (Render::PostProcessing::CompositeSharpenStrength).
+    float sharpenStrength;
+    float padding[3];
 };
 static_assert(offsetof(SdlGpuCompositeUniform, bloomScale) == 8);
 static_assert(offsetof(SdlGpuCompositeUniform, gradingStrength) == 12);
-static_assert(sizeof(SdlGpuCompositeUniform) == 16);
+static_assert(offsetof(SdlGpuCompositeUniform, sharpenStrength) == 16);
+static_assert(sizeof(SdlGpuCompositeUniform) == 32);
 
 // The textures and passes that turn the rendered 3D scene into the processed
 // image the UI is then drawn on: the scene texture the scene pass resolves into,
@@ -80,6 +84,7 @@ public:
     void RenderBloom(SDL_GPUCommandBuffer* commandBuffer, float levelFalloff);
 
     // Draws the processed scene over the whole target of `pass`: the scene,
+    // sharpened at the look's sharpening strength,
     // plus this frame's bloom scaled by the look's bloom strength when
     // RenderBloom ran (with the same level falloff), graded through the grading
     // table at the look's grading strength when one is set. The diagnostic

@@ -16,6 +16,10 @@ namespace Render::PostProcessing
 // view is shown, the look profile's strength otherwise.
 [[nodiscard]] float CompositeGradingStrength(bool hasTable, bool diagnosticView, float strength);
 
+// The sharpening strength the composite gets: 0 (none) while a diagnostic view is shown, the look
+// profile's strength inside 0 to 1 otherwise.
+[[nodiscard]] float CompositeSharpenStrength(bool diagnosticView, float strength);
+
 // CPU mirror of the composite's grading blend: the colour channel between its ungraded (strength
 // 0) and fully graded (strength 1) value. The shader is the implementation.
 [[nodiscard]] float BlendGrading(float ungraded, float graded, float strength);

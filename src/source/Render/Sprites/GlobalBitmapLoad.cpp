@@ -269,6 +269,15 @@ bool UploadTextureSDLGpu(BITMAP_t* bitmap, std::span<const std::uint8_t> pixels,
 // Enhanced samplers cover the whole chain (Vulkan's VK_LOD_CLAMP_NONE).
 constexpr float UnclampedMaxLod = 1000.0f;
 
+// CGlobalBitmap::m_filteredSamplers: clamp to edge, repeat; then the same mip-sharpened.
+constexpr std::size_t FilteredSamplerWrapModes = 2;
+
+std::size_t FilteredSamplerSlot(bool wrapRepeat, bool mipSharpened)
+{
+    const std::size_t wrapSlot = wrapRepeat ? 1u : 0u;
+    return mipSharpened ? FilteredSamplerWrapModes + wrapSlot : wrapSlot;
+}
+
 // Build mip chains requested by world draws for at most this long per frame.
 constexpr std::chrono::milliseconds MipChainBudgetPerFrame{4};
 
@@ -957,17 +966,8 @@ void CGlobalBitmap::ApplyTextureFilteringSwitch()
                                      m_requestedAnisotropy, anisotropy.value);
         m_anisotropyClampLogged = true;
     }
-    if (anisotropy.value != m_anisotropy)
-    {
-        // The shared samplers bake in the level; rebuild them and point every
-        // chained texture at the new ones.
-        ReleaseFilteredSamplers();
-        m_anisotropy = anisotropy.value;
-        for (const auto& [index, bitmap] : m_mapBitmap)
-        {
-            RegisterFilteredSampler(*bitmap);
-        }
-    }
+    ApplyFilteredSamplerSettings(anisotropy.value,
+                                 Render::Textures::MipLodBiasForSharpenPercent(m_requestedMipSharpenPercent));
 
     const bool changed = m_textureFilteringEnabled != m_textureFilteringRequested;
     m_textureFilteringEnabled = m_textureFilteringRequested;
@@ -992,6 +992,24 @@ void CGlobalBitmap::ApplyTextureFilteringSwitch()
     }
 }
 
+void CGlobalBitmap::ApplyFilteredSamplerSettings(std::uint32_t anisotropy, float mipLodBias)
+{
+    if (anisotropy == m_anisotropy && mipLodBias == m_mipLodBias)
+    {
+        return;
+    }
+
+    // The shared samplers bake in both; rebuild them and point every chained
+    // texture at the new ones.
+    ReleaseFilteredSamplers();
+    m_anisotropy = anisotropy;
+    m_mipLodBias = mipLodBias;
+    for (const auto& [index, bitmap] : m_mapBitmap)
+    {
+        RegisterFilteredSampler(*bitmap);
+    }
+}
+
 void CGlobalBitmap::RegisterFilteredSampler(const BITMAP_t& bitmap)
 {
     const bool upscaled = bitmap.scale > 1u;
@@ -999,25 +1017,28 @@ void CGlobalBitmap::RegisterFilteredSampler(const BITMAP_t& bitmap)
     {
         return;
     }
-    SDL_GPUSampler* sampler = GetFilteredSampler(bitmap.wrapRepeat);
-    if (!sampler)
-    {
-        return;
-    }
+    // Only the Enhanced look's world draws are mip-sharpened.
     if (bitmap.worldTexture)
     {
-        mu::RegisterFilteredSampler(bitmap.BitmapIndex, sampler);
+        if (SDL_GPUSampler* sampler = GetFilteredSampler(bitmap.wrapRepeat, true))
+        {
+            mu::RegisterFilteredSampler(bitmap.BitmapIndex, sampler);
+        }
     }
     // Upscaled art is drawn smaller than it is stored in both looks.
     if (upscaled)
     {
-        mu::RegisterSampler(bitmap.BitmapIndex, sampler);
+        if (SDL_GPUSampler* sampler = GetFilteredSampler(bitmap.wrapRepeat, false))
+        {
+            mu::RegisterSampler(bitmap.BitmapIndex, sampler);
+        }
     }
 }
 
-SDL_GPUSampler* CGlobalBitmap::GetFilteredSampler(bool wrapRepeat)
+SDL_GPUSampler* CGlobalBitmap::GetFilteredSampler(bool wrapRepeat, bool mipSharpened)
 {
-    SDL_GPUSampler*& sampler = m_filteredSamplers[wrapRepeat ? 1u : 0u];
+    static_assert(std::tuple_size<decltype(m_filteredSamplers)>::value == 2u * FilteredSamplerWrapModes);
+    SDL_GPUSampler*& sampler = m_filteredSamplers[FilteredSamplerSlot(wrapRepeat, mipSharpened)];
     if (sampler)
     {
         return sampler;
@@ -1042,6 +1063,7 @@ SDL_GPUSampler* CGlobalBitmap::GetFilteredSampler(bool wrapRepeat)
     samplerInfo.address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
     samplerInfo.min_lod = 0.0f;
     samplerInfo.max_lod = UnclampedMaxLod;
+    samplerInfo.mip_lod_bias = mipSharpened ? m_mipLodBias : 0.0f;
     samplerInfo.enable_anisotropy = anisotropy > 1u;
     samplerInfo.max_anisotropy = static_cast<float>(anisotropy);
 
@@ -1219,10 +1241,11 @@ void CGlobalBitmap::LogTextureFilteringSummary(const char* context) const
     }
 
     mu::log::Get("render")->info(
-        "Texture filtering ({}): {}, anisotropy {}; {} world textures ({} mipmapped), {} screen-space; "
-        "{:.1f} MiB on the GPU; texture loading {:.0f} ms, of which mip chains {:.0f} ms",
-        context, m_textureFilteringEnabled ? "Enhanced" : "Classic", m_anisotropy, world, mipmapped, screenSpace,
-        static_cast<double>(gpuBytes) / (1024.0 * 1024.0), m_textureLoadSeconds * 1000.0, m_mipChainSeconds * 1000.0);
+        "Texture filtering ({}): {}, anisotropy {}, mip LOD bias {:.2f}; {} world textures ({} mipmapped), {} "
+        "screen-space; {:.1f} MiB on the GPU; texture loading {:.0f} ms, of which mip chains {:.0f} ms",
+        context, m_textureFilteringEnabled ? "Enhanced" : "Classic", m_anisotropy, m_mipLodBias, world, mipmapped,
+        screenSpace, static_cast<double>(gpuBytes) / (1024.0 * 1024.0), m_textureLoadSeconds * 1000.0,
+        m_mipChainSeconds * 1000.0);
 }
 
 void CGlobalBitmap::SplitExt(IN const std::wstring& filepath, OUT std::wstring& ext, bool bIncludeDot)

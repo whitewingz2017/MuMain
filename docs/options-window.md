@@ -85,6 +85,9 @@ window writes to these sections:
   - `Anisotropy` (`1` is off, up to `16`; default `8`): the Anisotropic
     filtering row, for every texture with mip levels: world textures in the
     Enhanced look, upscaled textures in both.
+  - `MipSharpenPercent` (`0` to `100`; default `50`): no row; how much sharper
+    the Enhanced look samples world textures, in hundredths of a mip level. See
+    [`enhanced-look.md`](enhanced-look.md).
   - `EnhancedLighting`, `DynamicLights`, `LightMood`, `PostProcessing`
     (default `1`): the checkboxes of the rows under "Enhanced graphics", each a
     feature of the Enhanced look; see [`enhanced-look.md`](enhanced-look.md).

@@ -31,4 +31,13 @@ struct AnisotropyLevel
 // anisotropy), at most MaxSupportedAnisotropy.
 [[nodiscard]] AnisotropyLevel ClampAnisotropy(int configured);
 
+// The most mip levels the Enhanced samplers sharpen world textures by.
+inline constexpr float MaxMipSharpenLevels = 1.0f;
+
+// The mip LOD bias of the mip-sharpened Enhanced samplers for a sharpening in
+// hundredths of a mip level ([Render] MipSharpenPercent): 0 for none or a
+// negative value, down to -MaxMipSharpenLevels. A negative bias samples a
+// larger, sharper mip level than the standard choice.
+[[nodiscard]] float MipLodBiasForSharpenPercent(int percent);
+
 } // namespace Render::Textures

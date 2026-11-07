@@ -29,6 +29,11 @@ int ValidateAnisotropy(int value)
     return value < 1 ? 1 : value;
 }
 
+int ValidateMipSharpenPercent(int value)
+{
+    return std::clamp(value, CfgDefaults::CfgMinMipSharpenPercent, CfgDefaults::CfgMaxMipSharpenPercent);
+}
+
 int ValidateAntialiasing(int value)
 {
     if (value >= 8)

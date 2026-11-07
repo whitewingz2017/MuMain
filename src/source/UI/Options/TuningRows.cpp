@@ -68,6 +68,8 @@ ControlTexts TextsOf(TuningControlId id)
         return {I18N::Game::TuningBloomSpread, I18N::Game::TuningBloomSpreadHelp};
     case TuningControlId::GradingStrength:
         return {I18N::Game::TuningColourGradingStrength, I18N::Game::TuningColourGradingStrengthHelp};
+    case TuningControlId::SharpenStrength:
+        return {I18N::Game::TuningSharpening, I18N::Game::TuningSharpeningHelp};
     case TuningControlId::Count:
         break;
     }

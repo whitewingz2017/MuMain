@@ -18,7 +18,8 @@
     "dynamic.effectCap": 2.5,
     "bloom.strength": 1.0,
     "bloom.levelFalloff": 0.6,
-    "grading.strength": 1
+    "grading.strength": 1,
+    "sharpen.strength": 0.5
   },
   "maps": [
     {

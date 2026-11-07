@@ -136,6 +136,12 @@ public:
         return m_anisotropy;
     }
     void SetAnisotropy(int anisotropy);
+    // Hundredths of a mip level sharper than standard ([Render] MipSharpenPercent).
+    int GetMipSharpenPercent() const
+    {
+        return m_mipSharpenPercent;
+    }
+    void SetMipSharpenPercent(int percent);
     // Samples per pixel: 0 (off), 2, 4 or 8.
     int GetAntialiasing() const
     {
@@ -241,6 +247,7 @@ private:
     LookPreset m_look;
     bool m_lowWorldTextures = false;
     int m_anisotropy;
+    int m_mipSharpenPercent;
     int m_antialiasing;
     bool m_enhancedLighting;
     bool m_dynamicLights;

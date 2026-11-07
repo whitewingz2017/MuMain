@@ -345,6 +345,8 @@ void SdlGpuPostProcessing::DrawComposite(SDL_GPUCommandBuffer* commandBuffer, SD
     const float gradingStrength = Render::PostProcessing::CompositeGradingStrength(
         m_gradingEnabled, view != PostProcessingView::Scene, look.gradingStrength);
     const bool grading = gradingStrength > 0.0f;
+    const float sharpenStrength =
+        Render::PostProcessing::CompositeSharpenStrength(view != PostProcessingView::Scene, look.sharpenStrength);
     if (view != PostProcessingView::Scene)
     {
         bloom = false;
@@ -386,7 +388,11 @@ void SdlGpuPostProcessing::DrawComposite(SDL_GPUCommandBuffer* commandBuffer, SD
     SDL_BindGPUGraphicsPipeline(pass, m_compositePipeline);
     SDL_BindGPUFragmentSamplers(pass, 0, bindings, static_cast<Uint32>(std::size(bindings)));
     const SdlGpuCompositeUniform uniform{
-        {1.0f / static_cast<float>(size.width), 1.0f / static_cast<float>(size.height)}, bloomScale, gradingStrength};
+        {1.0f / static_cast<float>(size.width), 1.0f / static_cast<float>(size.height)},
+        bloomScale,
+        gradingStrength,
+        sharpenStrength,
+        {}};
     SDL_PushGPUFragmentUniformData(commandBuffer, 0, &uniform, sizeof(uniform));
     SDL_DrawGPUPrimitives(pass, FullscreenVertexCount, 1, 0, 0);
 }

@@ -153,8 +153,12 @@ class CGlobalBitmap
     int m_requestedAnisotropy = 8;
     std::uint32_t m_anisotropy = 0;
     bool m_anisotropyClampLogged = false;
-    // Shared Enhanced samplers: [0] clamp to edge, [1] repeat.
-    std::array<SDL_GPUSampler*, 2> m_filteredSamplers{};
+    int m_requestedMipSharpenPercent = 0;
+    // Applied by the mip-sharpened samplers (Render::Textures::MipLodBiasForSharpenPercent).
+    float m_mipLodBias = 0.0f;
+    // Shared Enhanced samplers: clamp to edge and repeat at the standard mip
+    // level, then both mip-sharpened (FilteredSamplerSlot).
+    std::array<SDL_GPUSampler*, 4> m_filteredSamplers{};
     std::vector<std::uint32_t> m_mipChainRequests;
     double m_textureLoadSeconds = 0.0;
     double m_mipChainSeconds = 0.0;
@@ -238,6 +242,15 @@ public:
     {
         return m_requestedAnisotropy;
     }
+    // How much sharper than standard the Enhanced look samples world textures,
+    // in hundredths of a mip level ([Render] MipSharpenPercent). Upscaled art
+    // drawn in the Classic look or on screen keeps the standard level. Applied
+    // between frames like the anisotropy. The Metal backend ignores it.
+    void SetMipSharpenPercent(int percent)
+    {
+        m_requestedMipSharpenPercent = percent;
+        m_textureFilteringSwitchPending = true;
+    }
     void UpdateTextureFiltering();
     bool IsTextureFilteringEnabled() const
     {
@@ -276,9 +289,12 @@ protected:
                      GLuint uiWrapMode, bool worldTexture, bool padToPowerOfTwo, bool premultiplyAlpha,
                      bool keepPixels);
     void RegisterFilteredSampler(const BITMAP_t& bitmap);
-    SDL_GPUSampler* GetFilteredSampler(bool wrapRepeat);
+    SDL_GPUSampler* GetFilteredSampler(bool wrapRepeat, bool mipSharpened);
     void ReleaseFilteredSamplers();
     void ApplyTextureFilteringSwitch();
+    // Rebuilds the shared samplers when the anisotropy or the mip LOD bias
+    // changed and points every chained texture at the new ones.
+    void ApplyFilteredSamplerSettings(std::uint32_t anisotropy, float mipLodBias);
     // The RGBA pixels of a loaded original texture, read from its file again.
     bool ReadBitmapPixels(const BITMAP_t& bitmap, std::vector<std::uint8_t>& rgba);
     bool BuildMipChain(GLuint uiBitmapIndex);

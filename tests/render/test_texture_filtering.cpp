@@ -59,3 +59,17 @@ TEST_CASE("anisotropy is clamped to what every backend supports [render][mipmap]
     CHECK(ClampAnisotropy(64).value == MaxSupportedAnisotropy);
     CHECK(ClampAnisotropy(64).clamped);
 }
+
+TEST_CASE("mip sharpening is a negative mip LOD bias of at most one level [render][mipmap]")
+{
+    using Render::Textures::MaxMipSharpenLevels;
+    using Render::Textures::MipLodBiasForSharpenPercent;
+
+    CHECK(MipLodBiasForSharpenPercent(0) == 0.0f);
+    CHECK(MipLodBiasForSharpenPercent(50) == doctest::Approx(-0.5f));
+    CHECK(MipLodBiasForSharpenPercent(25) == doctest::Approx(-0.25f));
+    CHECK(MipLodBiasForSharpenPercent(100) == doctest::Approx(-MaxMipSharpenLevels));
+    // A negative sharpening is none, never a blurrier mip level.
+    CHECK(MipLodBiasForSharpenPercent(-40) == 0.0f);
+    CHECK(MipLodBiasForSharpenPercent(400) == doctest::Approx(-MaxMipSharpenLevels));
+}

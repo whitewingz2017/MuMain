@@ -64,12 +64,14 @@ enum class PostProcessingView : std::uint8_t
 
 // The look profile's post-processing values (Render::Look): the bloom strength
 // (0: no bloom), the weight each wider bloom level adds to the next narrower one,
-// and how much of the map's colour grading applies (0.1 to 1).
+// how much of the map's colour grading applies (0.1 to 1) and the strength of
+// the contrast-adaptive sharpening (0: none, to 1).
 struct PostProcessingLook
 {
     float bloomStrength = 0.0f;
     float bloomLevelFalloff = 0.5f;
     float gradingStrength = 1.0f;
+    float sharpenStrength = 0.0f;
 };
 
 // ---------------------------------------------------------------------------

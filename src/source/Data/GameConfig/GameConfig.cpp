@@ -104,6 +104,8 @@ void GameConfig::Load()
     m_look = ReadLookPreset(m_configPath);
     m_anisotropy =
         GameConfigValidation::ValidateAnisotropy(ReadInt(CfgSectionRender, CfgKeyAnisotropy, CfgDefaultAnisotropy));
+    m_mipSharpenPercent = GameConfigValidation::ValidateMipSharpenPercent(
+        ReadInt(CfgSectionRender, CfgKeyMipSharpenPercent, CfgDefaultMipSharpenPercent));
     m_antialiasing = GameConfigValidation::ValidateAntialiasing(
         ReadInt(CfgSectionRender, CfgKeyAntialiasing, CfgDefaultAntialiasing));
     m_enhancedLighting = ReadBool(CfgSectionRender, CfgKeyEnhancedLighting, CfgDefaultEnhancedLighting);
@@ -175,6 +177,7 @@ void GameConfig::Save()
     WriteBool(CfgSectionRender, CfgKeyVSync, m_vsyncEnabled);
     WriteString(CfgSectionRender, CfgKeyLook, GameConfigValidation::FormatLook(m_look));
     WriteInt(CfgSectionRender, CfgKeyAnisotropy, m_anisotropy);
+    WriteInt(CfgSectionRender, CfgKeyMipSharpenPercent, m_mipSharpenPercent);
     WriteInt(CfgSectionRender, CfgKeyAntialiasing, m_antialiasing);
     WriteBool(CfgSectionRender, CfgKeyEnhancedLighting, m_enhancedLighting);
     WriteBool(CfgSectionRender, CfgKeyDynamicLights, m_dynamicLights);
@@ -271,6 +274,11 @@ void GameConfig::SetLook(LookPreset look)
 void GameConfig::SetAnisotropy(int anisotropy)
 {
     m_anisotropy = GameConfigValidation::ValidateAnisotropy(anisotropy);
+}
+
+void GameConfig::SetMipSharpenPercent(int percent)
+{
+    m_mipSharpenPercent = GameConfigValidation::ValidateMipSharpenPercent(percent);
 }
 
 void GameConfig::SetAntialiasing(int samples)

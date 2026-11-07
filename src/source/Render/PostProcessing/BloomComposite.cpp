@@ -1,5 +1,7 @@
 #include "Render/PostProcessing/BloomComposite.h"
 
+#include <algorithm>
+
 namespace Render::PostProcessing
 {
 
@@ -22,6 +24,15 @@ float CompositeGradingStrength(bool hasTable, bool diagnosticView, float strengt
         return 0.0f;
     }
     return strength;
+}
+
+float CompositeSharpenStrength(bool diagnosticView, float strength)
+{
+    if (diagnosticView)
+    {
+        return 0.0f;
+    }
+    return std::clamp(strength, 0.0f, 1.0f);
 }
 
 float BlendGrading(float ungraded, float graded, float strength)

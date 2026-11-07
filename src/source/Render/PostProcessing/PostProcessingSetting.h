@@ -14,8 +14,8 @@ bool SetPostProcessingEnabled(bool enabled);
 // True while frames are post-processed (requested and available).
 [[nodiscard]] bool PostProcessingActive();
 
-// Hands the look profile's bloom and grading values of the active world to the
-// renderer. Call once per frame, before the scene's end.
+// Hands the look profile's bloom, grading and sharpening values of the active
+// world to the renderer. Call once per frame, before the scene's end.
 void SubmitPostProcessingLook();
 
 // `$post view scene|source|bloom`: for diagnosis, shows the bloom source (the

@@ -46,6 +46,7 @@ enum class LookValue : std::uint8_t
     BloomStrength,
     BloomLevelFalloff,
     GradingStrength,
+    SharpenStrength,
     Count,
 };
 

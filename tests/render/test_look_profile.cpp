@@ -61,6 +61,9 @@ TEST_CASE("the look profile's built-in values are the renderer's values before i
     CHECK(BuiltInFloat(LookValue::BloomLevelFalloff) == mu::SdlGpuPostProcessing::BloomLevelWeight);
     CHECK(BuiltInFloat(LookValue::BloomLevelFalloff) == mu::PostProcessingLook{}.bloomLevelFalloff);
     CHECK(BuiltIn(LookValue::GradingStrength) == 1.0);
+    // New with the profile: half-strength sharpening; the renderer without a submitted look has none.
+    CHECK(BuiltIn(LookValue::SharpenStrength) == Approx(0.5));
+    CHECK(mu::PostProcessingLook{}.sharpenStrength == 0.0f);
 }
 
 TEST_CASE("dynamic.wrap: the point-light diffuse from Lambert to half-Lambert [render][look]")
@@ -198,10 +201,29 @@ TEST_CASE(
     // while the bloom keeps its own scale, so bloom stays on without any grading.
     CHECK(Post::CompositeGradingStrength(true, false, 0.0f) == 0.0f);
 
-    // The strength replaces the former gradingEnabled flag in the last register lane.
+    // The strength replaces the former gradingEnabled flag in the last lane of the first register.
     CHECK(offsetof(mu::SdlGpuCompositeUniform, bloomScale) == 8);
     CHECK(offsetof(mu::SdlGpuCompositeUniform, gradingStrength) == 12);
-    CHECK(sizeof(mu::SdlGpuCompositeUniform) == 16);
+}
+
+TEST_CASE("sharpen.strength: 0 to 1, off in a diagnostic view [render][look]")
+{
+    const Data::Maps::LookValueInfo& sharpen = Info(LookValue::SharpenStrength);
+    CHECK(sharpen.min == 0.0);
+    CHECK(sharpen.max == 1.0);
+
+    CHECK(Post::CompositeSharpenStrength(false, 0.5f) == 0.5f);
+    CHECK(Post::CompositeSharpenStrength(false, 0.0f) == 0.0f);
+    CHECK(Post::CompositeSharpenStrength(false, 1.0f) == 1.0f);
+    // A diagnostic view shows the bloom unsharpened.
+    CHECK(Post::CompositeSharpenStrength(true, 0.5f) == 0.0f);
+    // Out-of-range submissions stay inside the shader's lobe range.
+    CHECK(Post::CompositeSharpenStrength(false, -0.5f) == 0.0f);
+    CHECK(Post::CompositeSharpenStrength(false, 3.0f) == 1.0f);
+
+    // The strength opens the second register.
+    CHECK(offsetof(mu::SdlGpuCompositeUniform, sharpenStrength) == 16);
+    CHECK(sizeof(mu::SdlGpuCompositeUniform) == 32);
 }
 
 TEST_CASE("the developer tuning commands name their look values [render][look]")

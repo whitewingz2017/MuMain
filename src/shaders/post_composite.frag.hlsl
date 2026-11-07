@@ -1,6 +1,6 @@
-// post_composite.frag.hlsl — the processed 3D scene: the scene image with its bloom screen-blended
-// on top, colour graded through the map's lookup table. Draws into the frame's destination before
-// the UI.
+// post_composite.frag.hlsl — the processed 3D scene: the scene image sharpened, with its bloom
+// screen-blended on top, colour graded through the map's lookup table. Draws into the frame's
+// destination before the UI.
 // CompositeUniforms mirrors mu::SdlGpuCompositeUniform.
 Texture2D scene : register(t0, space2);
 SamplerState sceneSampler : register(s0, space2);   // point: one scene texel per pixel
@@ -13,6 +13,10 @@ cbuffer CompositeUniforms : register(b0, space3)
     float2 inverseTargetSize;
     float bloomScale;     // 0: no bloom
     float gradingStrength; // 0: ungraded; else blend of the graded colour with the ungraded one
+    float sharpenStrength; // 0: unsharpened; up to 1
+    float padding0;        // scalars: the same offsets under HLSL and SPIR-V packing
+    float padding1;
+    float padding2;
 };
 struct FSInput
 {
@@ -24,14 +28,26 @@ struct FSInput
 // (1024x32): red runs along x inside a slice, green along y, blue picks the slice.
 static const float kGradingSize = 32.0;
 
+// Contrast-adaptive sharpening (after AMD FidelityFX CAS): the cross of the four neighbours is
+// subtracted with a weight from the softest to the sharpest lobe. The weight shrinks where the
+// neighbourhood is already near black or white, so strong edges do not ring or glow.
+static const float kSharpenSoftestLobe = 8.0;
+static const float kSharpenSharpestLobe = 5.0;
+static const float kSharpenEpsilon = 1.0e-4;
+
 // Defined after main so the compiled shader declares its textures in binding order (scene,
 // bloom, grading): spirv-cross numbers Metal textures in that order.
+float3 Sharpen(float2 uv, float3 centre);
 float3 Grade(float3 color);
 
 float4 main(FSInput input) : SV_Target
 {
     const float2 uv = input.pos.xy * inverseTargetSize;
     float4 color = scene.Sample(sceneSampler, uv);
+    if (sharpenStrength > 0.0)
+    {
+        color.rgb = Sharpen(uv, color.rgb);
+    }
     if (bloomScale > 0.0)
     {
         // Screen blend: a dark pixel gains about the glow's light, a bright one little, so glows
@@ -45,6 +61,26 @@ float4 main(FSInput input) : SV_Target
         color.rgb = lerp(color.rgb, Grade(color.rgb), gradingStrength);
     }
     return color;
+}
+
+float3 Sharpen(float2 uv, float3 centre)
+{
+    const float2 stepX = float2(inverseTargetSize.x, 0.0);
+    const float2 stepY = float2(0.0, inverseTargetSize.y);
+    const float3 north = scene.Sample(sceneSampler, uv - stepY).rgb;
+    const float3 south = scene.Sample(sceneSampler, uv + stepY).rgb;
+    const float3 west = scene.Sample(sceneSampler, uv - stepX).rgb;
+    const float3 east = scene.Sample(sceneSampler, uv + stepX).rgb;
+
+    const float3 darkest = min(centre, min(min(north, south), min(west, east)));
+    const float3 brightest = max(centre, max(max(north, south), max(west, east)));
+    // How far the neighbourhood is from black and white: 1 in flat areas, 0 at a hard edge.
+    const float3 headroom = saturate(min(darkest, 1.0 - brightest) / max(brightest, kSharpenEpsilon));
+    const float lobeDivisor = lerp(kSharpenSoftestLobe, kSharpenSharpestLobe, sharpenStrength);
+    const float3 lobe = -sqrt(headroom) / lobeDivisor;
+
+    const float3 neighbours = north + south + west + east;
+    return saturate((centre + neighbours * lobe) / (1.0 + 4.0 * lobe));
 }
 
 float3 Grade(float3 color)
