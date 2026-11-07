@@ -58,15 +58,28 @@ enum class Pass : int
     MoveWorld,
     MoveCharacters,
     View,
+    // The parts of UpdateEffects: the characters', map objects', mounts', effect models' and
+    // terrain's effect spawns and poses.
+    UpdateCharacterEffects,
+    UpdateObjectEffects,
+    UpdateMountEffects,
+    UpdateEffectModelEffects,
+    UpdateTerrainEffects,
+    // The parts of MoveWorld: the map objects, the items on the ground, and the ambient leaves,
+    // wildlife and fish.
+    MoveMapObjects,
+    MoveGroundItems,
+    MoveAmbient,
     Count_
 };
 
 inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
-    "Terrain",   "Objects",  "Chars",     "Items",       "Effects",   "Other",   "CharWait", "MoveFx",
-    "MovePart",  "Skinning", "UI",        "RenderBegin", "RenderEnd", "Submit",  "UIUpdate", "RmlInput",
-    "UILayout",  "Flush",    "Sprites",   "Particles",   "Joints",    "Overlay", "RmlUpd",   "RmlRend",
-    "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw", "UpdateFx", "SwapWait",
-    "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",
+    "Terrain",   "Objects",  "Chars",     "Items",       "Effects",   "Other",     "CharWait", "MoveFx",
+    "MovePart",  "Skinning", "UI",        "RenderBegin", "RenderEnd", "Submit",    "UIUpdate", "RmlInput",
+    "UILayout",  "Flush",    "Sprites",   "Particles",   "Joints",    "Overlay",   "RmlUpd",   "RmlRend",
+    "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw",   "UpdateFx", "SwapWait",
+    "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
+    "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient",
 };
 static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 

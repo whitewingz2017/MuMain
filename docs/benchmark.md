@@ -127,7 +127,9 @@ Besides the draw passes, the breakdown times the main loop around the frame (`Sw
 for the SDL input events, `Packets` for the server packets, timers and control socket) and the
 main scene's update (`Picking` for what the cursor is over, `MoveWorld` for map objects, ground
 items and wildlife, `MoveChars` for characters with their mounts and pets, `View` for the camera,
-culling and the frame's lights), so little of a frame is left unattributed.
+culling and the frame's lights), so little of a frame is left unattributed. `UpdateFx` and
+`MoveWorld` are split further: `FxChars`, `FxObjects`, `FxMounts`, `FxModels` and `FxTerrain`
+for the effect spawns and poses, and `MvObjects`, `MvItems` and `MvAmbient` for the world's moves.
 
 ### Reading the summary
 

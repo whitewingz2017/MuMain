@@ -269,13 +269,18 @@ static void MoveWorldEntities()
 {
     FRAME_PROFILE(MoveWorld);
     {
+        FRAME_PROFILE(MoveMapObjects);
         Render::Lighting::LightSourceScope mapLights(Render::Lighting::LightSource::Map);
         MoveObjects();
     }
 
     if (!g_Camera.TopViewEnable)
+    {
+        FRAME_PROFILE(MoveGroundItems);
         MoveItems();
+    }
 
+    FRAME_PROFILE(MoveAmbient);
     if (RequireLeavesEffect())
     {
         MoveLeaves();
@@ -334,11 +339,26 @@ static void UpdateGameEntities()
     MovePointers();
     {
         FRAME_PROFILE(UpdateEffects);
-        UpdateCharacterEffects();
-        UpdateObjectEffects();
-        UpdateMountEffects();
-        UpdateEffectModelEffects();
-        UpdateTerrainEffects();
+        {
+            FRAME_PROFILE(UpdateCharacterEffects);
+            UpdateCharacterEffects();
+        }
+        {
+            FRAME_PROFILE(UpdateObjectEffects);
+            UpdateObjectEffects();
+        }
+        {
+            FRAME_PROFILE(UpdateMountEffects);
+            UpdateMountEffects();
+        }
+        {
+            FRAME_PROFILE(UpdateEffectModelEffects);
+            UpdateEffectModelEffects();
+        }
+        {
+            FRAME_PROFILE(UpdateTerrainEffects);
+            UpdateTerrainEffects();
+        }
     }
 
     g_Direction.CheckDirection();
