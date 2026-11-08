@@ -131,6 +131,12 @@ culling and the frame's lights), so little of a frame is left unattributed. `Upd
 `MoveWorld` are split further: `FxChars`, `FxObjects`, `FxMounts`, `FxModels` and `FxTerrain`
 for the effect spawns and poses, and `MvObjects`, `MvItems` and `MvAmbient` for the world's moves.
 
+For Enhanced frames, `EndReplay` is split into `EndScene` (scene drawing), `EndMotion`
+(skinned object motion), `EndTAA` (temporal resolve), `EndBloom` (bloom sources and filtering)
+and `EndCompUI` (composite and the recorded UI). These are CPU times already included in
+`EndReplay`; do not add them to it. RmlUi's later work appears in `RmlUpd` and `RmlRend`,
+and submission in `Submit`, all within `RenderEnd`.
+
 ### Reading the summary
 
 Alongside the median it reports the **1% low** (the mean of the worst 1% of frames) and the

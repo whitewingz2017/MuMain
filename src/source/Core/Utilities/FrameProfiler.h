@@ -70,6 +70,12 @@ enum class Pass : int
     MoveMapObjects,
     MoveGroundItems,
     MoveAmbient,
+    // The scene, object motion, temporal resolve, bloom and composite/UI inside RendererReplay.
+    RendererScene,
+    RendererMotion,
+    RendererTemporal,
+    RendererBloom,
+    RendererComposite,
     Count_
 };
 
@@ -79,7 +85,8 @@ inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
     "UILayout",  "Flush",    "Sprites",   "Particles",   "Joints",    "Overlay",   "RmlUpd",   "RmlRend",
     "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw",   "UpdateFx", "SwapWait",
     "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
-    "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient",
+    "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient", "EndScene", "EndMotion",
+    "EndTAA",    "EndBloom", "EndCompUI",
 };
 static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 

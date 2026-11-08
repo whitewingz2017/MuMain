@@ -2661,6 +2661,7 @@ public:
     // against the scene depth; then the bloom chain.
     static void RenderBloomSources(std::size_t sceneEnd, bool boneDataReady)
     {
+        FRAME_PROFILE(RendererBloom);
         constexpr SDL_FColor noLight{0.0f, 0.0f, 0.0f, 0.0f};
         const SDL_GPUColorTargetInfo colorTarget = CycledTarget(mu::GetSdlGpuFrameColorTarget(
             {s_postProcessing.GetBloomSourceTexture(), IsMultisampled() ? s_multisampleColorTexture : nullptr},
@@ -2676,6 +2677,21 @@ public:
         s_postProcessing.RenderBloom(s_cmdBuf, s_postProcessingLook.bloomLevelFalloff);
     }
 
+    static void ResolveTemporalScene(std::size_t sceneEnd, bool boneDataReady,
+                                     const Render::PostProcessing::TemporalFrame& temporal)
+    {
+        bool objectMotionWritten = false;
+        {
+            FRAME_PROFILE(RendererMotion);
+            objectMotionWritten = ReplayObjectMotion(sceneEnd, boneDataReady);
+        }
+        FRAME_PROFILE(RendererTemporal);
+        if (!s_postProcessing.ResolveTemporal(s_cmdBuf, s_depthTexture, objectMotionWritten, temporal))
+        {
+            s_temporalHistory.Reset();
+        }
+    }
+
     // The scene into the scene texture, its temporal resolve and its bloom. With temporal
     // anti-aliasing the scene's draws are jittered; the resolve reads the scene's depth.
     [[nodiscard]] static bool ReplayProcessedScene(std::size_t sceneEnd, bool boneDataReady, ReplayView& view)
@@ -2684,24 +2700,23 @@ public:
         const ScopedSceneJitter jitter(temporal ? temporal->jitterClip : glm::vec2(0.0f));
         SDL_GPUTexture* const multisampled = IsMultisampled() ? s_multisampleColorTexture : nullptr;
 
-        // Its depth stays for the bloom and UI passes, which test against it as
-        // the UI did when it shared the scene's pass.
-        const SDL_GPUColorTargetInfo sceneTarget = CycledTarget(
-            mu::GetSdlGpuFrameColorTarget({s_postProcessing.GetSceneTexture(), multisampled}, s_clearColor));
-        if (!BeginReplayPass(sceneTarget, MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, SDL_GPU_STOREOP_STORE)))
         {
-            return false;
+            FRAME_PROFILE(RendererScene);
+            // Its depth stays for the bloom and UI passes, which test against it as
+            // the UI did when it shared the scene's pass.
+            const SDL_GPUColorTargetInfo sceneTarget = CycledTarget(
+                mu::GetSdlGpuFrameColorTarget({s_postProcessing.GetSceneTexture(), multisampled}, s_clearColor));
+            if (!BeginReplayPass(sceneTarget, MakeDepthTarget(SDL_GPU_LOADOP_CLEAR, SDL_GPU_STOREOP_STORE)))
+            {
+                return false;
+            }
+            ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::AllCommands, view);
+            EndReplayPass();
         }
-        ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::AllCommands, view);
-        EndReplayPass();
 
         if (temporal)
         {
-            const bool objectMotionWritten = ReplayObjectMotion(sceneEnd, boneDataReady);
-            if (!s_postProcessing.ResolveTemporal(s_cmdBuf, s_depthTexture, objectMotionWritten, *temporal))
-            {
-                s_temporalHistory.Reset();
-            }
+            ResolveTemporalScene(sceneEnd, boneDataReady, *temporal);
         }
         if (s_postProcessingLook.bloomStrength > 0.0f)
         {
@@ -2790,6 +2805,7 @@ public:
             return false;
         }
 
+        FRAME_PROFILE(RendererComposite);
         // The composite covers every pixel: the target's old content is not loaded.
         // A diagnostic view without its image this frame leaves black instead.
         constexpr SDL_FColor black{0.0f, 0.0f, 0.0f, 1.0f};
