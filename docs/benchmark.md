@@ -131,6 +131,12 @@ culling and the frame's lights), so little of a frame is left unattributed. `Upd
 `MoveWorld` are split further: `FxChars`, `FxObjects`, `FxMounts`, `FxModels` and `FxTerrain`
 for the effect spawns and poses, and `MvObjects`, `MvItems` and `MvAmbient` for the world's moves.
 
+`Packets` is split into `PktDrain` (taking queued server packets and running their callbacks),
+`Reconnect` (a pending reconnect teardown), `Timers` (finding and firing due timers), and
+`ControlPoll` (the developer control socket). These are already included in `Packets`; do not
+add them to it. Use these rows to locate a hitch between frames. Like the other timings, they
+measure elapsed time on the main thread, including time spent waiting or descheduled.
+
 `Events` is split into `EvtPoll` (SDL polling, including native window message processing) and
 `EvtHandle` (routing returned events to the game, UI and window handlers). Both are included
 in `Events`; do not add them to it. These rows distinguish a polling pause from a handler pause.

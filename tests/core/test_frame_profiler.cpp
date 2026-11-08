@@ -46,6 +46,45 @@ TEST_CASE("renderer counters follow nested frame passes [core][profiling][frame_
     FrameProfiler::ResetCounters();
 }
 
+TEST_CASE("packet child passes publish separate timings and counters [core][profiling][frame_profiler]")
+{
+    using Counter = FrameProfiler::Counter;
+    using Pass = FrameProfiler::Pass;
+    const Pass children[] = {Pass::PacketDrain, Pass::Reconnect, Pass::FrameTimers, Pass::ControlPoll};
+    FrameProfiler::ResetFrame();
+    FrameProfiler::ResetCounters();
+    FrameProfiler::g_CountersEnabled = true;
+    {
+        FRAME_PROFILE(Packets);
+        float childMilliseconds = 1.0f;
+        for (Pass child : children)
+        {
+            {
+                FrameProfiler::Scope scope(child);
+                FrameProfiler::Count(Counter::DrawCalls);
+            }
+            CHECK(FrameProfiler::CurrentPass() == Pass::Packets);
+            CHECK(FrameProfiler::NestedPass(child));
+            FrameProfiler::AccumulatorMs(child) = childMilliseconds;
+            childMilliseconds += 1.0f;
+        }
+    }
+    constexpr float ParentMilliseconds = 20.0f;
+    FrameProfiler::AccumulatorMs(Pass::Packets) = ParentMilliseconds;
+    FrameProfiler::CompleteFrame();
+    CHECK(FrameProfiler::CompletedMs(Pass::Packets) == ParentMilliseconds);
+    float expected = 1.0f;
+    for (Pass child : children)
+    {
+        CHECK(FrameProfiler::CompletedMs(child) == expected);
+        CHECK(FrameProfiler::CompletedCounter(child, Counter::DrawCalls) == 1);
+        CHECK(FrameProfiler::AccumulatorMs(child) == 0.0f);
+        expected += 1.0f;
+    }
+    FrameProfiler::g_CountersEnabled = false;
+    FrameProfiler::CompleteFrame();
+}
+
 TEST_CASE("frame profile macro supports two scopes on one source line [core][profiling][frame_profiler]")
 {
     { FRAME_PROFILE(Terrain); } { FRAME_PROFILE(Objects); }

@@ -1657,20 +1657,32 @@ static void ProcessBetweenFrames()
 {
     // Process server packets handed over from the network thread. Replaces
     // the old WM_RECEIVE_BUFFER message round-trip; runs on the main thread.
-    Network::IncomingPacketQueue::Instance().DrainTo(ProcessPacketCallback);
+    {
+        FRAME_PROFILE(PacketDrain);
+        Network::IncomingPacketQueue::Instance().DrainTo(ProcessPacketCallback);
+    }
 
     // Run a pending reconnect teardown between frames (self-guards on its
     // pending flag). Replaces the old WM_START_RECONNECT round-trip.
-    ReconnectManager::Instance().Begin();
+    {
+        FRAME_PROFILE(Reconnect);
+        ReconnectManager::Instance().Begin();
+    }
 
     // Fire any due timers. Replaces the Win32 SetTimer/WM_TIMER dispatch.
-    Core::Time::FrameTimerScheduler::Instance().Tick();
+    {
+        FRAME_PROFILE(FrameTimers);
+        Core::Time::FrameTimerScheduler::Instance().Tick();
+    }
 
     // Serve the control socket, after this frame's packets have been
     // processed so a command sees the newest game state, and before
     // rendering so an act's step is drawn in the same frame. Does nothing
     // when the socket was never opened.
-    App::Control::ControlServer::Instance().Poll();
+    {
+        FRAME_PROFILE(ControlPoll);
+        App::Control::ControlServer::Instance().Poll();
+    }
 }
 
 MSG MainLoop()

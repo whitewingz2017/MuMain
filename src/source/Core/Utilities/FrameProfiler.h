@@ -90,18 +90,24 @@ enum class Pass : int
     // Polling SDL (including native message handling) and routing each returned event.
     EventPoll,
     EventDispatch,
+    // The work between frames inside Packets.
+    PacketDrain,
+    Reconnect,
+    FrameTimers,
+    ControlPoll,
     Count_
 };
 
 inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
-    "Terrain",   "Objects",  "Chars",     "Items",       "Effects",   "Other",     "CharWait", "MoveFx",
-    "MovePart",  "Skinning", "UI",        "RenderBegin", "RenderEnd", "Submit",    "UIUpdate", "RmlInput",
-    "UILayout",  "Flush",    "Sprites",   "Particles",   "Joints",    "Overlay",   "RmlUpd",   "RmlRend",
-    "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw",   "UpdateFx", "SwapWait",
-    "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
-    "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient", "EndScene", "EndMotion",
-    "EndTAA",    "EndBloom", "EndCompUI", "RmlPrep",     "RmlCore",   "RmlFit",    "RmlMarq",  "RmlChat",
-    "RmlBegin",  "RmlDraw",  "RmlEnd",    "RmlGeom",     "EvtPoll",   "EvtHandle",
+    "Terrain",   "Objects",     "Chars",     "Items",       "Effects",   "Other",     "CharWait", "MoveFx",
+    "MovePart",  "Skinning",    "UI",        "RenderBegin", "RenderEnd", "Submit",    "UIUpdate", "RmlInput",
+    "UILayout",  "Flush",       "Sprites",   "Particles",   "Joints",    "Overlay",   "RmlUpd",   "RmlRend",
+    "EndOffscr", "EndStage",    "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw",   "UpdateFx", "SwapWait",
+    "Events",    "Packets",     "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
+    "FxMounts",  "FxModels",    "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient", "EndScene", "EndMotion",
+    "EndTAA",    "EndBloom",    "EndCompUI", "RmlPrep",     "RmlCore",   "RmlFit",    "RmlMarq",  "RmlChat",
+    "RmlBegin",  "RmlDraw",     "RmlEnd",    "RmlGeom",     "EvtPoll",   "EvtHandle", "PktDrain", "Reconnect",
+    "Timers",    "ControlPoll",
 };
 static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 

@@ -144,25 +144,29 @@ TEST_CASE("the report renders every section and is byte-identical for identical 
 
 TEST_CASE("benchmark exports retain nested passes at the end of their storage")
 {
-    RunData run = MakeRun();
-    constexpr int LastPass = kMaxPasses - 1;
-    run.passNames.resize(kMaxPasses, "Unused");
-    run.passIsNested.resize(kMaxPasses, true);
-    run.passNames[LastPass] = "EvtHandle";
-    for (RepeatSamples& repeat : run.segments.front().repeats)
+    for (const char* name : {"EvtHandle", "PktDrain", "Reconnect", "Timers", "ControlPoll"})
     {
-        for (FrameSample& frame : repeat.frames)
-            frame.cpuMs[LastPass] = 2.0f;
-        repeat.counters.perPass[LastPass][0] = 30;
-    }
+        RunData run = MakeRun();
+        constexpr int LastPass = kMaxPasses - 1;
+        run.passNames.resize(kMaxPasses, "Unused");
+        run.passIsNested.resize(kMaxPasses, true);
+        run.passNames[LastPass] = name;
+        for (RepeatSamples& repeat : run.segments.front().repeats)
+        {
+            for (FrameSample& frame : repeat.frames)
+                frame.cpuMs[LastPass] = 2.0f;
+            repeat.counters.perPass[LastPass][0] = 30;
+        }
 
-    const auto stats = Stats::SummarizeRun(run);
-    CHECK(stats.front().passCpuMs[LastPass] == doctest::Approx(2.0f));
-    CHECK(stats.front().unattributedPercent == doctest::Approx(50.0f));
-    CHECK(Report::BuildFramesCsv(run).find("cpu_EvtHandle") != std::string::npos);
-    CHECK(Report::BuildPassesCsv(run).find(",EvtHandle,2.00,3.0") != std::string::npos);
-    CHECK(Report::BuildReportMarkdown(run, stats, {}).find("| EvtHandle | 2.00 | 3.0") != std::string::npos);
-    CHECK(Report::BuildRunJson(run, stats, {}).find("\"EvtHandle\"") != std::string::npos);
+        const auto stats = Stats::SummarizeRun(run);
+        CHECK(stats.front().passCpuMs[LastPass] == doctest::Approx(2.0f));
+        CHECK(stats.front().unattributedPercent == doctest::Approx(50.0f));
+        CHECK(Report::BuildFramesCsv(run).find(std::string("cpu_") + name) != std::string::npos);
+        CHECK(Report::BuildPassesCsv(run).find(std::string(",") + name + ",2.00,3.0") != std::string::npos);
+        CHECK(Report::BuildReportMarkdown(run, stats, {}).find(std::string("| ") + name + " | 2.00 | 3.0") !=
+              std::string::npos);
+        CHECK(Report::BuildRunJson(run, stats, {}).find(std::string("\"") + name + "\"") != std::string::npos);
+    }
 }
 
 TEST_CASE("slow polling diagnostics retain run progress and CPU measurements in both reports")
