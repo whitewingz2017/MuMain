@@ -165,6 +165,21 @@ TEST_CASE("benchmark exports retain nested passes at the end of their storage")
     CHECK(Report::BuildRunJson(run, stats, {}).find("\"EvtHandle\"") != std::string::npos);
 }
 
+TEST_CASE("slow polling diagnostics retain run progress and CPU measurements in both reports")
+{
+    RunData run = MakeRun();
+    const std::string progress = "BENCH scene.full [1/2] repeat 7/10 872/1200: slow SDL poll: elapsed ";
+    const std::string measured = progress + "89.980000 ms; thread CPU 0.000000 ms";
+    const std::string unavailable = progress + "90.000000 ms; thread CPU unavailable";
+    run.events = {measured, unavailable};
+
+    const auto stats = Stats::SummarizeRun(run);
+    const std::string markdown = Report::BuildReportMarkdown(run, stats, {});
+    const std::string json = Report::BuildRunJson(run, stats, {});
+    CHECK(markdown.find("### Events\n\n- " + measured + "\n- " + unavailable) != std::string::npos);
+    CHECK(json.find("\"events\": [\"" + measured + "\", \"" + unavailable + "\"]") != std::string::npos);
+}
+
 TEST_CASE("an aborted, dirty-tree run says so at the top of the report")
 {
     RunData run = MakeRun();

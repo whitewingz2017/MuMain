@@ -65,6 +65,9 @@ public:
         return m_lastOutputPath;
     }
 
+    // A diagnostic saved with the active run, tagged with its current progress.
+    void RecordDiagnostic(const std::string& text);
+
     // A line in the system log, where `$` commands answer.
     static void Say(const std::string& text);
 

@@ -385,6 +385,14 @@ void Recorder::Finish(RunStatus status)
     m_segments.clear();
 }
 
+void Recorder::RecordDiagnostic(const std::string& text)
+{
+    if (!m_running)
+        return;
+
+    m_events.push_back(StatusText() + ": " + text);
+}
+
 void Recorder::Say(const std::string& text)
 {
     const std::wstring line(text.begin(), text.end());

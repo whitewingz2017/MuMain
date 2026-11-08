@@ -135,6 +135,15 @@ for the effect spawns and poses, and `MvObjects`, `MvItems` and `MvAmbient` for 
 `EvtHandle` (routing returned events to the game, UI and window handlers). Both are included
 in `Events`; do not add them to it. These rows distinguish a polling pause from a handler pause.
 
+On Windows, an active benchmark also saves an event note for each SDL poll taking at least 5 ms.
+The note in `report.md` and `run.json` includes the run progress, elapsed milliseconds and the
+main thread's kernel plus user CPU milliseconds (or `unavailable` if Windows could not read it).
+Progress shows how many measured frames were recorded before that poll, or the remaining warmup.
+Thread CPU accounting is coarse: a short poll can report zero CPU time. A long poll with little
+CPU time suggests waiting or descheduling; it cannot distinguish those causes. CPU time near
+the elapsed time points to work inside polling. These measurements and note collection run only
+during a benchmark, and the `EvtPoll` timing excludes note collection.
+
 For Enhanced frames, `EndReplay` is split into `EndScene` (scene drawing), `EndMotion`
 (skinned object motion), `EndTAA` (temporal resolve), `EndBloom` (bloom sources and filtering)
 and `EndCompUI` (composite and the recorded UI). These are CPU times already included in

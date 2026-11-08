@@ -22,6 +22,7 @@
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
 #endif
+#include <chrono>
 #include <clocale>
 #include <cstring>
 #include <filesystem>
@@ -1497,10 +1498,59 @@ bool RouteActionInput(SDL_Event& event, bool synthetic, bool& propagates)
     }
 }
 
+#ifdef _WIN32
+static std::optional<ULONGLONG> ReadCurrentThreadCpuTime()
+{
+    FILETIME creation, exit, kernel, user;
+    if (!GetThreadTimes(GetCurrentThread(), &creation, &exit, &kernel, &user))
+        return std::nullopt;
+
+    ULARGE_INTEGER kernelTicks{}, userTicks{};
+    kernelTicks.LowPart = kernel.dwLowDateTime;
+    kernelTicks.HighPart = kernel.dwHighDateTime;
+    userTicks.LowPart = user.dwLowDateTime;
+    userTicks.HighPart = user.dwHighDateTime;
+    return kernelTicks.QuadPart + userTicks.QuadPart;
+}
+
+static void RecordSlowEventPoll(std::chrono::steady_clock::time_point started,
+                                const std::optional<ULONGLONG>& cpuBefore)
+{
+    constexpr auto kSlowPollThreshold = std::chrono::milliseconds(5);
+    const auto elapsed = std::chrono::steady_clock::now() - started;
+    if (elapsed < kSlowPollThreshold)
+        return;
+
+    const auto cpuAfter = cpuBefore ? ReadCurrentThreadCpuTime() : std::nullopt;
+    constexpr double kFileTimeTicksPerMillisecond = 10000.0;
+    const double elapsedMs = std::chrono::duration<double, std::milli>(elapsed).count();
+    std::string cpuMs = "unavailable";
+    if (cpuBefore && cpuAfter && *cpuAfter >= *cpuBefore)
+        cpuMs = std::to_string(static_cast<double>(*cpuAfter - *cpuBefore) / kFileTimeTicksPerMillisecond) + " ms";
+
+    // shortcut: low CPU time cannot distinguish blocking from descheduling; use a scheduler trace if needed.
+    Core::Benchmark::Recorder::Instance().RecordDiagnostic("slow SDL poll: elapsed " + std::to_string(elapsedMs) +
+                                                           " ms; thread CPU " + cpuMs);
+}
+#endif
+
 static bool PollProfiledEvent(SDL_Event& event)
 {
-    FRAME_PROFILE(EventPoll);
-    return SDL_PollEvent(&event);
+#ifdef _WIN32
+    const bool recordPoll = Core::Benchmark::Recorder::Instance().IsRunning();
+    const auto cpuBefore = recordPoll ? ReadCurrentThreadCpuTime() : std::nullopt;
+    const auto started = recordPoll ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
+#endif
+    bool hasEvent;
+    {
+        FRAME_PROFILE(EventPoll);
+        hasEvent = SDL_PollEvent(&event);
+    }
+#ifdef _WIN32
+    if (recordPoll)
+        RecordSlowEventPoll(started, cpuBefore);
+#endif
+    return hasEvent;
 }
 
 // Routes the SDL events queued since the last loop: window, mouse, keyboard and text input, at
