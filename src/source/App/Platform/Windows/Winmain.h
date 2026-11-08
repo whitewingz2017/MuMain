@@ -95,9 +95,12 @@ extern void MuSetVSyncForSession(bool enabled);
 extern void MuSetTextureFilteringEnabled(bool enabled);
 // Saves [Render] Anisotropy and applies it between frames to every texture with mip levels.
 extern void MuSetAnisotropyPreference(int anisotropy);
-// Persists the anti-aliasing setting (0 off, 2, 4, 8 samples); applied between frames.
+// Persists multisampling as the anti-aliasing (0 off, 2, 4, 8 samples); applied between frames.
 extern void MuSetAntialiasingPreference(int samples);
-// Multisampling on (at [Render] Antialiasing) or off, as the active look asks.
+// Persists temporal anti-aliasing (on) or multisampling at the saved count (off) as the
+// anti-aliasing; applied between frames.
+extern void MuSetTemporalAntialiasingPreference(bool enabled);
+// The saved anti-aliasing on, or none, as the active look asks.
 extern void MuSetAntialiasingActive(bool active);
 
 // Confines the mouse cursor to the window's client area when in fullscreen

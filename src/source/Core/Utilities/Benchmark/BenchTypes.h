@@ -110,6 +110,7 @@ struct EnvironmentInfo
     std::string enhancedFeatures; // the Enhanced features on, space-separated
     std::string enhancedTuning;   // the player's [EnhancedTuning] values as key=value, space-separated
     int antialiasingSamples = 0;  // in effect: 0 while Classic
+    bool temporalAntialiasing = false; // in effect: frames resolve with temporal anti-aliasing
     int anisotropy = 0;
 
     std::string buildConfig; // Debug / Release

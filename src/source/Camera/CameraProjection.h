@@ -21,7 +21,8 @@ public:
     static void UpdateView(CameraState& state, int x, int y, int width, int height);
 
     /**
-     * @brief Sets the renderer's projection and view to the state's view, for a target of width x height
+     * @brief Sets the renderer's projection and view to the state's view, for a target of width x height,
+     *        and makes it the frame's 3D scene camera (temporal anti-aliasing follows it)
      */
     static void ApplyView(const CameraState& state, int width, int height);
 

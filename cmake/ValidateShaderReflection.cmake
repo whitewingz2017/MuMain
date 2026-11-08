@@ -275,6 +275,10 @@ set(shader_specs
     "post_bloom_down.frag|frag||1|0|1"
     "post_bloom_up.frag|frag||1|0|1"
     "post_composite.frag|frag||3|0|1"
+    "post_temporal.frag|frag||4|0|1"
+    "skinned_motion.vert|vert|0,4|0|1|2"
+    "skinned_weighted_motion.vert|vert|0,4,6,7|0|1|2"
+    "object_motion.frag|frag||0|0|0"
 )
 
 foreach(shader_spec IN LISTS shader_specs)

@@ -26,6 +26,40 @@ Post-processing is part of the Enhanced look and off in Classic
 ([enhanced-look.md](enhanced-look.md)). With it on, a bloom strength of 0, a
 sharpening of 0 and no grading table, the frame looks the same as with it off.
 
+## Temporal anti-aliasing
+
+With `[Render] AntialiasingType=TAA` (or `$taa on` in the chat box) the
+Enhanced look smooths edges over time instead of with multisampling: each
+frame draws the 3D scene shifted by a different fraction of a pixel (eight
+offsets in turn), and blends it with the result of the frames before, found
+where the camera saw the same surface. Over a few frames every pixel averages
+several positions inside itself, which smooths the edges of geometry, foliage
+and fences and calms shimmering textures, at the cost of one sample per pixel
+instead of several. The sharpening above runs after it and restores the detail
+the blend softens.
+
+Each pixel keeps 90% of the frames before and takes 10% of the new one. The
+frames before are found where the surface was: characters, monsters, NPCs and
+the parts they carry (models skinned on the GPU, each in bones of its own) are
+drawn a second time after the scene, each vertex in this frame's pose and the
+previous frame's, which says how far each of their pixels moved; everything
+else moved as the camera did. So the character the camera follows stays as
+sharp walking as standing. Where the old colour still does not fit what the
+pixel's neighbours show now (something moved in front, a spell flashed, the
+surface was off screen), it is pulled toward the new colour, so effects and
+models without a motion of their own (map objects that share their bones,
+models drawn on the CPU) do not leave trails, though they can look softer
+while they move. A surface that moved more than an eighth of the screen in one
+frame starts over from the new frame. The blend starts over after a resize, a
+loading screen or switching the look. The interface is never jittered or
+blended.
+
+Temporal anti-aliasing needs post-processing on; without it (Classic, or
+`PostProcessing=0`) the scene renders without anti-aliasing. `$taa off`,
+`$msaa` or the options window's Anti-aliasing row switch back to
+multisampling. The benchmark report's Graphics table says whether frames used
+it ("Temporal anti-aliasing").
+
 ## Settings
 
 The `Look` preset switches post-processing with the rest of the Enhanced look,

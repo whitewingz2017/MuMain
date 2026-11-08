@@ -76,9 +76,10 @@ GetSdlGpuMultisampleColorTextureInfo(SDL_GPUTextureFormat format, SdlGpuTargetSi
     return info;
 }
 
-std::optional<SDL_GPUTextureCreateInfo> GetSdlGpuDepthTextureInfo(SdlGpuTargetSize size, SDL_GPUSampleCount sampleCount)
+std::optional<SDL_GPUTextureCreateInfo> GetSdlGpuDepthTextureInfo(SdlGpuTargetSize size, SDL_GPUSampleCount sampleCount,
+                                                                  bool sampled)
 {
-    if (size.width == 0u || size.height == 0u)
+    if (size.width == 0u || size.height == 0u || (sampled && sampleCount != SDL_GPU_SAMPLECOUNT_1))
     {
         return std::nullopt;
     }
@@ -87,6 +88,10 @@ std::optional<SDL_GPUTextureCreateInfo> GetSdlGpuDepthTextureInfo(SdlGpuTargetSi
     info.type = SDL_GPU_TEXTURETYPE_2D;
     info.format = SdlGpuDepthFormat;
     info.usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET;
+    if (sampled)
+    {
+        info.usage |= SDL_GPU_TEXTUREUSAGE_SAMPLER;
+    }
     info.width = size.width;
     info.height = size.height;
     info.layer_count_or_depth = 1u;

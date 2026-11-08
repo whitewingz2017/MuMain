@@ -410,6 +410,16 @@ bool CmuConsoleDebug::CheckCommand(const std::wstring& strCommand)
         }
         return true;
     }
+    else if (strCommand.compare(L"$taa on") == 0)
+    {
+        MuSetTemporalAntialiasingPreference(true);
+        return true;
+    }
+    else if (strCommand.compare(L"$taa off") == 0)
+    {
+        MuSetTemporalAntialiasingPreference(false);
+        return true;
+    }
     else if (strCommand.compare(L"$effects off") == 0)
     {
         // Force-disable both effect surfaces to test whether effects

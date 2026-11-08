@@ -393,29 +393,63 @@ void MuSetAnisotropyPreference(int anisotropy)
     Bitmaps.SetAnisotropy(config.GetAnisotropy());
 }
 
-// Whether the active look renders with multisampling (Enhanced does, Classic does not).
+// Whether the active look smooths edges (Enhanced does, Classic does not).
 static bool g_antialiasingActive = false;
+
+// The saved anti-aliasing while the look smooths edges: multisampling, or temporal anti-aliasing with
+// one sample; neither otherwise.
+static void ApplyAntialiasing()
+{
+    const GameConfig& config = GameConfig::GetInstance();
+    const bool temporal = g_antialiasingActive && config.GetAntialiasingType() == AntialiasingType::Temporal;
+    // The renderer rebuilds its pipelines and targets at the next BeginFrame, if the count changed.
+    mu::GetRenderer().SetAntialiasingSamples(g_antialiasingActive && !temporal ? config.GetAntialiasing() : 0);
+    mu::GetRenderer().SetTemporalAntialiasing(temporal);
+}
+
+// The saved anti-aliasing as the log names it.
+static std::string AntialiasingLabel(const GameConfig& config)
+{
+    if (config.GetAntialiasingType() == AntialiasingType::Temporal)
+    {
+        return "temporal";
+    }
+    return config.GetAntialiasing() > 1 ? std::to_string(config.GetAntialiasing()) + "x" : std::string("off");
+}
+
+// Saves the config and applies its anti-aliasing, while the look smooths edges.
+static void SaveAntialiasingPreference(GameConfig& config)
+{
+    config.Save();
+    if (!g_antialiasingActive)
+    {
+        mu::log::Get("render")->info("Anti-aliasing: {} saved for the Enhanced look; Classic renders without",
+                                     AntialiasingLabel(config));
+        return;
+    }
+    mu::log::Get("render")->info("Anti-aliasing: {}", AntialiasingLabel(config));
+    ApplyAntialiasing();
+}
 
 void MuSetAntialiasingActive(bool active)
 {
     g_antialiasingActive = active;
-    // The renderer rebuilds its pipelines and targets at the next BeginFrame, if the count changed.
-    mu::GetRenderer().SetAntialiasingSamples(active ? GameConfig::GetInstance().GetAntialiasing() : 0);
+    ApplyAntialiasing();
 }
 
 void MuSetAntialiasingPreference(int samples)
 {
     GameConfig& config = GameConfig::GetInstance();
     config.SetAntialiasing(samples);
-    config.Save();
-    if (!g_antialiasingActive)
-    {
-        mu::log::Get("render")->info("Anti-aliasing: {} saved for the Enhanced look; Classic renders without",
-                                     config.GetAntialiasing() > 1 ? std::to_string(config.GetAntialiasing()) + "x"
-                                                                  : std::string("off"));
-        return;
-    }
-    mu::GetRenderer().SetAntialiasingSamples(config.GetAntialiasing());
+    config.SetAntialiasingType(AntialiasingType::Multisample);
+    SaveAntialiasingPreference(config);
+}
+
+void MuSetTemporalAntialiasingPreference(bool enabled)
+{
+    GameConfig& config = GameConfig::GetInstance();
+    config.SetAntialiasingType(enabled ? AntialiasingType::Temporal : AntialiasingType::Multisample);
+    SaveAntialiasingPreference(config);
 }
 
 void MuSetVSyncForSession(bool enabled)

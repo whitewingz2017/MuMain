@@ -108,6 +108,7 @@ void CaptureGraphics(EnvironmentInfo& info)
     // Samples per pixel the frames render with; 1 is off.
     const int samples = mu::GetRenderer().GetAntialiasingSamples();
     info.antialiasingSamples = samples > 1 ? samples : 0;
+    info.temporalAntialiasing = mu::GetRenderer().IsTemporalAntialiasingActive();
     info.anisotropy = Bitmaps.RequestedAnisotropy();
 }
 

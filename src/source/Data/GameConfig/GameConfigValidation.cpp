@@ -7,6 +7,26 @@
 
 namespace GameConfigValidation
 {
+namespace
+{
+// `text` without the blanks around it.
+std::wstring_view TrimBlanks(std::wstring_view text)
+{
+    const auto first = text.find_first_not_of(L" \t");
+    if (first == std::wstring_view::npos)
+    {
+        return {};
+    }
+    return text.substr(first, text.find_last_not_of(L" \t") - first + 1);
+}
+
+bool EqualsIgnoringCase(std::wstring_view text, std::wstring_view name)
+{
+    return text.size() == name.size() && std::equal(text.begin(), text.end(), name.begin(), [](wchar_t a, wchar_t b)
+                                                    { return std::towlower(a) == std::towlower(b); });
+}
+} // namespace
+
 int ValidateServerPort(int value, int defaultPort)
 {
     return value > 0 && value <= 65535 ? value : defaultPort;
@@ -53,22 +73,12 @@ int ValidateAntialiasing(int value)
 
 std::optional<LookPreset> ParseLook(std::wstring_view text)
 {
-    const auto first = text.find_first_not_of(L" \t");
-    if (first == std::wstring_view::npos)
-    {
-        return std::nullopt;
-    }
-    text = text.substr(first, text.find_last_not_of(L" \t") - first + 1);
-    const auto equals = [text](std::wstring_view name)
-    {
-        return text.size() == name.size() && std::equal(text.begin(), text.end(), name.begin(), [](wchar_t a, wchar_t b)
-                                                        { return std::towlower(a) == std::towlower(b); });
-    };
-    if (equals(L"Classic"))
+    text = TrimBlanks(text);
+    if (EqualsIgnoringCase(text, L"Classic"))
     {
         return LookPreset::Classic;
     }
-    if (equals(L"Enhanced"))
+    if (EqualsIgnoringCase(text, L"Enhanced"))
     {
         return LookPreset::Enhanced;
     }
@@ -87,6 +97,34 @@ LookPreset ValidateLook(std::wstring_view text)
         return *preset;
     }
     return *ParseLook(CfgDefaults::CfgDefaultLook);
+}
+
+std::optional<AntialiasingType> ParseAntialiasingType(std::wstring_view text)
+{
+    text = TrimBlanks(text);
+    if (EqualsIgnoringCase(text, L"MSAA"))
+    {
+        return AntialiasingType::Multisample;
+    }
+    if (EqualsIgnoringCase(text, L"TAA"))
+    {
+        return AntialiasingType::Temporal;
+    }
+    return std::nullopt;
+}
+
+const wchar_t* FormatAntialiasingType(AntialiasingType type)
+{
+    return type == AntialiasingType::Temporal ? L"TAA" : L"MSAA";
+}
+
+AntialiasingType ValidateAntialiasingType(std::wstring_view text)
+{
+    if (const std::optional<AntialiasingType> type = ParseAntialiasingType(text))
+    {
+        return *type;
+    }
+    return *ParseAntialiasingType(CfgDefaults::CfgDefaultAntialiasingType);
 }
 
 std::wstring ValidateRenderBackend(const std::wstring& value, const std::wstring& defaultValue)

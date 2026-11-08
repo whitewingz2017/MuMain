@@ -69,6 +69,7 @@ void CameraProjection::ApplyView(const CameraState& state, int width, int height
     view[15] = 1.f;
     renderer.SetMatrixMode(GL_MODELVIEW);
     renderer.LoadMatrix(view);
+    renderer.SetSceneCamera();
 }
 
 float CameraProjection::WorldAspectRatio()

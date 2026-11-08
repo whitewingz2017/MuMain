@@ -486,6 +486,19 @@ public:
     {
         return 1;
     }
+    // Temporal anti-aliasing of the 3D scene: each frame draws the scene at another sub-pixel
+    // offset and blends it with the previous frames' result. It applies to post-processed frames
+    // that render with one sample; the caller turns multisampling off with it.
+    virtual void SetTemporalAntialiasing(bool /*enabled*/) {}
+    // Whether frames resolve with temporal anti-aliasing now.
+    [[nodiscard]] virtual bool IsTemporalAntialiasingActive() const
+    {
+        return false;
+    }
+    // The current projection and modelview are this frame's 3D scene camera. Temporal
+    // anti-aliasing follows the camera's movement from it; the last call before the scene ends
+    // (EndSceneGeometry) counts.
+    virtual void SetSceneCamera() {}
 
     // Post-processing (bloom and colour grading) of the 3D scene. A scene calls
     // EndSceneGeometry once its 3D world is drawn and before its UI: what was

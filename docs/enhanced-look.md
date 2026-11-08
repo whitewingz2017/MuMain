@@ -15,7 +15,7 @@ options window, without editing those files (see "Tuning it yourself").
 | Dynamic model lights | candles, fires and spells light characters, monsters and NPCs | — |
 | Light mood | darker baked map light, so the light sources stand out | [light-mood.md](light-mood.md) |
 | Post-processing | bloom around light effects, per-map colour grading and sharpening | [post-processing.md](post-processing.md) |
-| Anti-aliasing | multisampled edges (4 samples, or what `Antialiasing` asks for), alpha-to-coverage for cut-out foliage and fences | — |
+| Anti-aliasing | multisampled edges (4 samples, or what `Antialiasing` asks for), alpha-to-coverage for cut-out foliage and fences; or temporal anti-aliasing instead (`AntialiasingType=TAA`) | [post-processing.md](post-processing.md) |
 
 ## Choosing the look
 
@@ -31,6 +31,7 @@ options window, without editing those files (see "Tuning it yourself").
   |---|---|---|
   | `Look` | `Enhanced` or `Classic` | `Classic` |
   | `Antialiasing` | samples of the Enhanced look: `0` (off), `2`, `4` or `8` | `4` |
+  | `AntialiasingType` | `MSAA` (the `Antialiasing` samples) or `TAA` (temporal, with one sample) | `MSAA` |
   | `Anisotropy` | maximum anisotropic filtering, clamped to the GPU | `8` |
   | `MipSharpenPercent` | how much sharper world textures are sampled, in hundredths of a mip level: `0` (standard) to `100` | `50` |
   | `EnhancedLighting`, `DynamicLights`, `LightMood`, `PostProcessing` | `0` switches that feature of Enhanced off; Classic ignores them | `1` |
@@ -42,6 +43,10 @@ options window, without editing those files (see "Tuning it yourself").
   `$msaa off|2|4|8` in the chat box, changes and saves the count (on a slow GPU,
   Off keeps Enhanced without anti-aliasing). The Anisotropic filtering row sets
   `Anisotropy`.
+  `$taa on` switches Enhanced to temporal anti-aliasing (`AntialiasingType=TAA`)
+  and saves it; `$taa off`, `$msaa` or the Anti-aliasing row go back to
+  multisampling. Temporal anti-aliasing needs post-processing; with
+  `PostProcessing=0` the scene renders without anti-aliasing.
   The anisotropy level applies to every texture with mip levels: world
   textures in Enhanced, and upscaled textures (an optional asset pack) in both
   looks, because they are always drawn smaller than they are stored.

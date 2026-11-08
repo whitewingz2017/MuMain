@@ -148,6 +148,12 @@ public:
         return m_antialiasing;
     }
     void SetAntialiasing(int samples);
+    // MSAA or TAA ([Render] AntialiasingType).
+    AntialiasingType GetAntialiasingType() const
+    {
+        return m_antialiasingType;
+    }
+    void SetAntialiasingType(AntialiasingType type);
     bool GetLowWorldTextures() const { return m_lowWorldTextures; }
     void SetLowWorldTextures(bool enabled) { m_lowWorldTextures = enabled; }
     bool GetEnhancedLighting() const { return m_enhancedLighting; }
@@ -249,6 +255,7 @@ private:
     int m_anisotropy;
     int m_mipSharpenPercent;
     int m_antialiasing;
+    AntialiasingType m_antialiasingType;
     bool m_enhancedLighting;
     bool m_dynamicLights;
     bool m_lightMood;

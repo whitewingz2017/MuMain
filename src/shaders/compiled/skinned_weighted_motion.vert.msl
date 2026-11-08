@@ -1,0 +1,201 @@
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+struct Skinning
+{
+    float4x4 mvp;
+    float4 bodyOriginAndScale;
+    float4 boneScaleAndRestPoseScale;
+    uint4 palette;
+};
+
+struct Motion
+{
+    float4x4 currentTransform;
+    float4x4 previousTransform;
+    float4 previousBodyOriginAndScale;
+    float4 previousBoneScaleAndRestPoseScale;
+    uint4 previousPalette;
+};
+
+struct boneRows
+{
+    float4 _data[1];
+};
+
+struct main0_out
+{
+    float4 _entryPointOutput_currentClip [[user(locn0)]];
+    float4 _entryPointOutput_previousClip [[user(locn1)]];
+    float4 gl_Position [[position]];
+    float gl_ClipDistance [[clip_distance]] [1];
+    float gl_ClipDistance_0 [[user(clip0)]];
+};
+
+struct main0_in
+{
+    float3 input_pos [[attribute(0)]];
+    int input_positionBoneIndex [[attribute(4)]];
+    uint4 input_joints [[attribute(6)]];
+    float4 input_weights [[attribute(7)]];
+};
+
+vertex main0_out main0(main0_in in [[stage_in]], constant Skinning& _63 [[buffer(0)]], constant Motion& _84 [[buffer(1)]], const device boneRows& boneRows_1 [[buffer(2)]])
+{
+    main0_out out = {};
+    float3 _1297;
+    do
+    {
+        if (in.input_weights.x > 0.0)
+        {
+            uint4 _498 = in.input_joints;
+            float4 _499 = in.input_weights;
+            float4 _543 = float4(in.input_pos, 1.0);
+            float3 _1295;
+            _1295 = float3(0.0);
+            float3 _1307;
+            for (uint _1294 = 0u; _1294 < 4u; _1295 = _1307, _1294++)
+            {
+                if ((_499[_1294] > 0.0) && (_498[_1294] < _63.palette.y))
+                {
+                    uint _567 = _63.palette.x + (_498[_1294] * 3u);
+                    _1307 = _1295 + (float3(dot(boneRows_1._data[_567], _543), dot(boneRows_1._data[_567 + 1u], _543), dot(boneRows_1._data[_567 + 2u], _543)) * _499[_1294]);
+                }
+                else
+                {
+                    _1307 = _1295;
+                }
+            }
+            float3 _1296;
+            if (_63.palette.z != 0u)
+            {
+                _1296 = _63.bodyOriginAndScale.xyz + (_1295 * _63.bodyOriginAndScale.w);
+            }
+            else
+            {
+                _1296 = _1295;
+            }
+            _1297 = _1296;
+            break;
+        }
+        float3 _1293;
+        do
+        {
+            if ((in.input_positionBoneIndex < 0) || (in.input_positionBoneIndex >= int(_63.palette.y)))
+            {
+                _1293 = in.input_pos;
+                break;
+            }
+            uint _661 = _63.palette.x + (uint(in.input_positionBoneIndex) * 3u);
+            uint _665 = _661 + 1u;
+            uint _668 = _661 + 2u;
+            float3 _1291;
+            if (_63.boneScaleAndRestPoseScale.x == 1.0)
+            {
+                float4 _686 = float4(in.input_pos * ((_63.boneScaleAndRestPoseScale.y != 0.0) ? _63.boneScaleAndRestPoseScale.y : 1.0), 1.0);
+                _1291 = float3(dot(boneRows_1._data[_661], _686), dot(boneRows_1._data[_665], _686), dot(boneRows_1._data[_668], _686));
+            }
+            else
+            {
+                _1291 = (float3(dot(boneRows_1._data[_661].xyz, in.input_pos), dot(boneRows_1._data[_665].xyz, in.input_pos), dot(boneRows_1._data[_668].xyz, in.input_pos)) * _63.boneScaleAndRestPoseScale.x) + float3(boneRows_1._data[_661].w, boneRows_1._data[_665].w, boneRows_1._data[_668].w);
+            }
+            float3 _1292;
+            if (_63.palette.z != 0u)
+            {
+                _1292 = _63.bodyOriginAndScale.xyz + (_1291 * _63.bodyOriginAndScale.w);
+            }
+            else
+            {
+                _1292 = _1291;
+            }
+            _1293 = _1292;
+            break;
+        } while(false);
+        _1297 = _1293;
+        break;
+    } while(false);
+    float4 _447 = float4(_1297, 1.0);
+    float3 _1304;
+    do
+    {
+        if (in.input_weights.x > 0.0)
+        {
+            uint4 _776 = in.input_joints;
+            float4 _777 = in.input_weights;
+            float4 _821 = float4(in.input_pos, 1.0);
+            float3 _1302;
+            _1302 = float3(0.0);
+            float3 _1308;
+            for (uint _1301 = 0u; _1301 < 4u; _1302 = _1308, _1301++)
+            {
+                if ((_777[_1301] > 0.0) && (_776[_1301] < _84.previousPalette.y))
+                {
+                    uint _845 = _84.previousPalette.x + (_776[_1301] * 3u);
+                    _1308 = _1302 + (float3(dot(boneRows_1._data[_845], _821), dot(boneRows_1._data[_845 + 1u], _821), dot(boneRows_1._data[_845 + 2u], _821)) * _777[_1301]);
+                }
+                else
+                {
+                    _1308 = _1302;
+                }
+            }
+            float3 _1303;
+            if (_84.previousPalette.z != 0u)
+            {
+                _1303 = _84.previousBodyOriginAndScale.xyz + (_1302 * _84.previousBodyOriginAndScale.w);
+            }
+            else
+            {
+                _1303 = _1302;
+            }
+            _1304 = _1303;
+            break;
+        }
+        float3 _1300;
+        do
+        {
+            if ((in.input_positionBoneIndex < 0) || (in.input_positionBoneIndex >= int(_84.previousPalette.y)))
+            {
+                _1300 = in.input_pos;
+                break;
+            }
+            uint _939 = _84.previousPalette.x + (uint(in.input_positionBoneIndex) * 3u);
+            uint _943 = _939 + 1u;
+            uint _946 = _939 + 2u;
+            float3 _1298;
+            if (_84.previousBoneScaleAndRestPoseScale.x == 1.0)
+            {
+                float4 _964 = float4(in.input_pos * ((_84.previousBoneScaleAndRestPoseScale.y != 0.0) ? _84.previousBoneScaleAndRestPoseScale.y : 1.0), 1.0);
+                _1298 = float3(dot(boneRows_1._data[_939], _964), dot(boneRows_1._data[_943], _964), dot(boneRows_1._data[_946], _964));
+            }
+            else
+            {
+                _1298 = (float3(dot(boneRows_1._data[_939].xyz, in.input_pos), dot(boneRows_1._data[_943].xyz, in.input_pos), dot(boneRows_1._data[_946].xyz, in.input_pos)) * _84.previousBoneScaleAndRestPoseScale.x) + float3(boneRows_1._data[_939].w, boneRows_1._data[_943].w, boneRows_1._data[_946].w);
+            }
+            float3 _1299;
+            if (_84.previousPalette.z != 0u)
+            {
+                _1299 = _84.previousBodyOriginAndScale.xyz + (_1298 * _84.previousBodyOriginAndScale.w);
+            }
+            else
+            {
+                _1299 = _1298;
+            }
+            _1300 = _1299;
+            break;
+        } while(false);
+        _1304 = _1300;
+        break;
+    } while(false);
+    float4 _458 = _63.mvp * _447;
+    float4 _1289 = _458;
+    _1289.z = _458.z - (1.9999999949504854157567024230957e-06 * _458.w);
+    out.gl_Position = _1289;
+    out._entryPointOutput_currentClip = _84.currentTransform * _447;
+    out._entryPointOutput_previousClip = _84.previousTransform * float4(_1304, 1.0);
+    out.gl_ClipDistance[0] = _458.w - 1.0;
+    out.gl_ClipDistance_0 = out.gl_ClipDistance[0];
+    return out;
+}
+

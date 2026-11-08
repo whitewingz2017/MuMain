@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <utility>
 
 namespace mu
 {
@@ -16,6 +17,9 @@ constexpr Uint32 FullscreenVertexCount = 3u;
 // Float bloom levels keep dim glows from banding and let the upsample passes sum
 // above 1 before the composite scales the result down.
 constexpr SDL_GPUTextureFormat PreferredBloomFormat = SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT;
+// A float history keeps the slow blend of many frames from rounding small changes away, which
+// would leave a pixel stuck short of its colour.
+constexpr SDL_GPUTextureFormat PreferredHistoryFormat = SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT;
 using Render::PostProcessing::GradingTableBytesPerTexel;
 using Render::PostProcessing::GradingTableHeight;
 using Render::PostProcessing::GradingTableWidth;
@@ -104,6 +108,27 @@ SdlGpuBloomUniform MakeBloomUniform(SdlGpuTargetSize sourceSize, float levelWeig
         {1.0f / static_cast<float>(sourceSize.width), 1.0f / static_cast<float>(sourceSize.height)}, levelWeight, 0.0f};
 }
 
+SdlGpuTemporalUniform MakeTemporalUniform(SdlGpuTargetSize size, const Render::PostProcessing::TemporalFrame& frame,
+                                          float historyWeight)
+{
+    SdlGpuTemporalUniform uniform{};
+    std::memcpy(uniform.currentToPrevious, &frame.currentToPrevious[0][0], sizeof(uniform.currentToPrevious));
+    uniform.inverseTargetSize[0] = 1.0f / static_cast<float>(size.width);
+    uniform.inverseTargetSize[1] = 1.0f / static_cast<float>(size.height);
+    uniform.jitter[0] = frame.jitterClip.x;
+    uniform.jitter[1] = frame.jitterClip.y;
+    uniform.historyWeight = historyWeight;
+    return uniform;
+}
+
+// `preferred` when the device can render into and sample it, `fallback` otherwise.
+SDL_GPUTextureFormat SupportedTargetFormat(SDL_GPUDevice* device, SDL_GPUTextureFormat preferred,
+                                           SDL_GPUTextureFormat fallback)
+{
+    const SDL_GPUTextureUsageFlags targetUsage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+    return SDL_GPUTextureSupportsFormat(device, preferred, SDL_GPU_TEXTURETYPE_2D, targetUsage) ? preferred : fallback;
+}
+
 } // namespace
 
 bool SdlGpuPostProcessing::CreatePipelines(SDL_GPUDevice* device, const SdlGpuPostShaders& shaders,
@@ -122,17 +147,19 @@ bool SdlGpuPostProcessing::CreatePipelines(SDL_GPUDevice* device, const SdlGpuPo
     }
     m_device = device;
 
-    const SDL_GPUTextureUsageFlags targetUsage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
-    const SDL_GPUTextureFormat bloomFormat =
-        SDL_GPUTextureSupportsFormat(device, PreferredBloomFormat, SDL_GPU_TEXTURETYPE_2D, targetUsage)
-            ? PreferredBloomFormat
-            : frameFormat;
-    if (bloomFormat != m_bloomFormat || frameFormat != m_frameFormat)
+    const SDL_GPUTextureFormat bloomFormat = SupportedTargetFormat(device, PreferredBloomFormat, frameFormat);
+    const SDL_GPUTextureFormat historyFormat = SupportedTargetFormat(device, PreferredHistoryFormat, frameFormat);
+    // Movements need a float format with alpha, which the preferred history format is.
+    const SDL_GPUTextureFormat objectMotionFormat =
+        historyFormat == PreferredHistoryFormat ? PreferredHistoryFormat : SDL_GPU_TEXTUREFORMAT_INVALID;
+    if (bloomFormat != m_bloomFormat || historyFormat != m_historyFormat || frameFormat != m_frameFormat)
     {
         ReleaseTargets();
     }
     m_frameFormat = frameFormat;
     m_bloomFormat = bloomFormat;
+    m_historyFormat = historyFormat;
+    m_objectMotionFormat = objectMotionFormat;
 
     m_bloomDownPipeline = BuildPipeline(device, shaders.fullscreenVertex, {shaders.bloomDown, bloomFormat});
     m_bloomUpPipeline = BuildPipeline(device, shaders.fullscreenVertex, {shaders.bloomUp, bloomFormat, {}, true});
@@ -145,7 +172,21 @@ bool SdlGpuPostProcessing::CreatePipelines(SDL_GPUDevice* device, const SdlGpuPo
         DestroyPipelines();
         return false;
     }
+    CreateTemporalPipeline(shaders);
     return true;
+}
+
+void SdlGpuPostProcessing::CreateTemporalPipeline(const SdlGpuPostShaders& shaders)
+{
+    if (!shaders.temporal)
+    {
+        return;
+    }
+    m_temporalPipeline = BuildPipeline(m_device, shaders.fullscreenVertex, {shaders.temporal, m_historyFormat});
+    if (!m_temporalPipeline)
+    {
+        log::Get("render")->warn("SDL_gpu -- temporal anti-aliasing pipeline failed: {}", SDL_GetError());
+    }
 }
 
 void SdlGpuPostProcessing::DestroyPipelines()
@@ -153,12 +194,18 @@ void SdlGpuPostProcessing::DestroyPipelines()
     ReleasePipeline(m_device, m_bloomDownPipeline);
     ReleasePipeline(m_device, m_bloomUpPipeline);
     ReleasePipeline(m_device, m_compositePipeline);
+    ReleasePipeline(m_device, m_temporalPipeline);
 }
 
 bool SdlGpuPostProcessing::IsAvailable() const
 {
     return m_bloomDownPipeline && m_bloomUpPipeline && m_compositePipeline && m_pointSampler && m_linearSampler &&
            m_gradingTexture;
+}
+
+bool SdlGpuPostProcessing::IsTemporalAvailable() const
+{
+    return IsAvailable() && m_temporalPipeline;
 }
 
 bool SdlGpuPostProcessing::CreateSamplers()
@@ -243,6 +290,58 @@ bool SdlGpuPostProcessing::EnsureTargets(SdlGpuTargetSize size)
     return true;
 }
 
+bool SdlGpuPostProcessing::EnsureTemporalTargets()
+{
+    if (m_historyTextures[0] && m_historyTextures[1])
+    {
+        return true;
+    }
+    if (!m_sceneTexture)
+    {
+        return false;
+    }
+
+    for (SDL_GPUTexture*& texture : m_historyTextures)
+    {
+        ReleaseTexture(m_device, texture);
+        texture = CreateTarget(m_device, m_historyFormat, m_targetSize);
+    }
+    m_historyValid = false;
+    if (!m_historyTextures[0] || !m_historyTextures[1])
+    {
+        log::Get("render")->error("SDL_gpu -- temporal anti-aliasing history failed ({}x{}): {}", m_targetSize.width,
+                                  m_targetSize.height, SDL_GetError());
+        for (SDL_GPUTexture*& texture : m_historyTextures)
+        {
+            ReleaseTexture(m_device, texture);
+        }
+        return false;
+    }
+
+    // Optional: without it the camera's movement alone places the history.
+    ReleaseTexture(m_device, m_objectMotionTexture);
+    if (m_objectMotionFormat != SDL_GPU_TEXTUREFORMAT_INVALID)
+    {
+        m_objectMotionTexture = CreateTarget(m_device, m_objectMotionFormat, m_targetSize);
+        if (!m_objectMotionTexture)
+        {
+            log::Get("render")->warn("SDL_gpu -- temporal anti-aliasing object motion failed ({}x{}): {}",
+                                     m_targetSize.width, m_targetSize.height, SDL_GetError());
+        }
+    }
+    return true;
+}
+
+SDL_GPUTexture* SdlGpuPostProcessing::GetObjectMotionTexture() const
+{
+    return m_objectMotionTexture;
+}
+
+SDL_GPUTextureFormat SdlGpuPostProcessing::GetObjectMotionFormat() const
+{
+    return m_objectMotionFormat;
+}
+
 SDL_GPUTexture* SdlGpuPostProcessing::GetSceneTexture() const
 {
     return m_sceneTexture;
@@ -262,6 +361,13 @@ void SdlGpuPostProcessing::ReleaseTargets()
         ReleaseTexture(m_device, level.texture);
         level.size = {};
     }
+    for (SDL_GPUTexture*& texture : m_historyTextures)
+    {
+        ReleaseTexture(m_device, texture);
+    }
+    ReleaseTexture(m_device, m_objectMotionTexture);
+    m_historyValid = false;
+    m_temporalResolved = false;
     m_targetSize = {};
     m_bloomRendered = false;
 }
@@ -297,6 +403,57 @@ void SdlGpuPostProcessing::RunBloomPass(SDL_GPUCommandBuffer* commandBuffer, SDL
     SDL_EndGPURenderPass(pass);
 }
 
+bool SdlGpuPostProcessing::ResolveTemporal(SDL_GPUCommandBuffer* commandBuffer, SDL_GPUTexture* sceneDepth,
+                                           bool objectMotionWritten, const Render::PostProcessing::TemporalFrame& frame)
+{
+    m_temporalResolved = false;
+    if (!IsTemporalAvailable() || !m_sceneTexture || !sceneDepth || !EnsureTemporalTargets())
+    {
+        return false;
+    }
+
+    const std::size_t written = 1u - m_historyIndex;
+    SDL_GPUColorTargetInfo colorTarget{};
+    colorTarget.texture = m_historyTextures[written];
+    colorTarget.load_op = SDL_GPU_LOADOP_DONT_CARE;
+    colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+    // Every pixel is written: replaced by a fresh texture instead of waiting for an earlier frame.
+    colorTarget.cycle = true;
+    SDL_GPURenderPass* pass = SDL_BeginGPURenderPass(commandBuffer, &colorTarget, 1, nullptr);
+    if (!pass)
+    {
+        return false;
+    }
+
+    const SDL_GPUViewport viewport{
+        0.0f, 0.0f, static_cast<float>(m_targetSize.width), static_cast<float>(m_targetSize.height), 0.0f, 1.0f};
+    const SDL_Rect scissor{0, 0, static_cast<int>(m_targetSize.width), static_cast<int>(m_targetSize.height)};
+    SDL_SetGPUViewport(pass, &viewport);
+    SDL_SetGPUScissor(pass, &scissor);
+    SDL_BindGPUGraphicsPipeline(pass, m_temporalPipeline);
+    objectMotionWritten = objectMotionWritten && m_objectMotionTexture;
+    const SDL_GPUTextureSamplerBinding bindings[] = {
+        {m_sceneTexture, m_pointSampler},
+        {sceneDepth, m_pointSampler},
+        // The scene stands in for object motion that was not written: the shader then leaves it unread.
+        {objectMotionWritten ? m_objectMotionTexture : m_sceneTexture, m_pointSampler},
+        {m_historyTextures[m_historyIndex], m_linearSampler},
+    };
+    SDL_BindGPUFragmentSamplers(pass, 0, bindings, static_cast<Uint32>(std::size(bindings)));
+    // A history made since the last resolve holds nothing yet.
+    SdlGpuTemporalUniform uniform =
+        MakeTemporalUniform(m_targetSize, frame, m_historyValid ? frame.historyWeight : 0.0f);
+    uniform.objectMotionWritten = objectMotionWritten ? 1.0f : 0.0f;
+    SDL_PushGPUFragmentUniformData(commandBuffer, 0, &uniform, sizeof(uniform));
+    SDL_DrawGPUPrimitives(pass, FullscreenVertexCount, 1, 0, 0);
+    SDL_EndGPURenderPass(pass);
+
+    m_historyIndex = written;
+    m_historyValid = true;
+    m_temporalResolved = true;
+    return true;
+}
+
 void SdlGpuPostProcessing::RenderBloom(SDL_GPUCommandBuffer* commandBuffer, float levelFalloff)
 {
     if (!IsAvailable() || !m_bloomSourceTexture)
@@ -329,6 +486,7 @@ void SdlGpuPostProcessing::RenderBloom(SDL_GPUCommandBuffer* commandBuffer, floa
 void SdlGpuPostProcessing::DrawComposite(SDL_GPUCommandBuffer* commandBuffer, SDL_GPURenderPass* pass,
                                          SdlGpuTargetSize size, const PostProcessingLook& look, PostProcessingView view)
 {
+    const bool temporalResolved = std::exchange(m_temporalResolved, false);
     if (!IsAvailable() || !m_sceneTexture || size.width == 0u || size.height == 0u)
     {
         return;
@@ -339,7 +497,7 @@ void SdlGpuPostProcessing::DrawComposite(SDL_GPUCommandBuffer* commandBuffer, SD
 
     // The image shown as the scene: the scene itself, or a diagnostic view in
     // its place (black when the bloom was not rendered this frame).
-    SDL_GPUTexture* shown = m_sceneTexture;
+    SDL_GPUTexture* shown = temporalResolved ? m_historyTextures[m_historyIndex] : m_sceneTexture;
     SDL_GPUSampler* shownSampler = m_pointSampler;
     bool bloom = bloomRendered;
     const float gradingStrength = Render::PostProcessing::CompositeGradingStrength(
@@ -484,6 +642,8 @@ void SdlGpuPostProcessing::Release()
     m_device = nullptr;
     m_frameFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
     m_bloomFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+    m_historyFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
+    m_objectMotionFormat = SDL_GPU_TEXTUREFORMAT_INVALID;
 }
 
 } // namespace mu

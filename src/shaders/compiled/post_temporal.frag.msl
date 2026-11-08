@@ -1,0 +1,160 @@
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+struct TemporalUniforms
+{
+    float4x4 currentToPrevious;
+    float2 inverseTargetSize;
+    float2 jitter;
+    float historyWeight;
+    float objectMotionWritten;
+    float padding0;
+    float padding1;
+};
+
+struct main0_out
+{
+    float4 _entryPointOutput [[color(0)]];
+};
+
+fragment main0_out main0(constant TemporalUniforms& _61 [[buffer(0)]], texture2d<float> scene [[texture(0)]], texture2d<float> sceneDepth [[texture(1)]], texture2d<float> objectMotion [[texture(2)]], texture2d<float> history [[texture(3)]], sampler sceneSampler [[sampler(0)]], sampler depthSampler [[sampler(1)]], sampler objectMotionSampler [[sampler(2)]], sampler historySampler [[sampler(3)]], float4 gl_FragCoord [[position]])
+{
+    main0_out out = {};
+    float4 _1631;
+    do
+    {
+        float2 _786 = gl_FragCoord.xy * _61.inverseTargetSize;
+        float4 _791 = scene.sample(sceneSampler, _786);
+        if (_61.historyWeight <= 0.0)
+        {
+            _1631 = _791;
+            break;
+        }
+        float3 _867 = float3(((0.25 * _791.x) + (0.5 * _791.y)) + (0.25 * _791.z), (0.5 * _791.x) - (0.5 * _791.z), (((-0.25) * _791.x) + (0.5 * _791.y)) - (0.25 * _791.z));
+        float3 _1610;
+        float3 _1611;
+        float3 _1612;
+        float3 _1613;
+        _1613 = _867;
+        _1612 = _867;
+        _1611 = _867 * _867;
+        _1610 = _867;
+        float3 _1626;
+        float3 _1627;
+        float3 _1628;
+        float3 _1629;
+        for (int _1609 = -1; _1609 <= 1; _1613 = _1627, _1612 = _1626, _1611 = _1629, _1610 = _1628, _1609++)
+        {
+            _1629 = _1611;
+            _1628 = _1610;
+            _1627 = _1613;
+            _1626 = _1612;
+            float3 _1637;
+            float3 _1638;
+            float3 _1639;
+            float3 _1640;
+            for (int _1624 = -1; _1624 <= 1; _1629 = _1640, _1628 = _1639, _1627 = _1638, _1626 = _1637, _1624++)
+            {
+                if ((_1624 == 0) && (_1609 == 0))
+                {
+                    _1640 = _1629;
+                    _1639 = _1628;
+                    _1638 = _1627;
+                    _1637 = _1626;
+                    continue;
+                }
+                float4 _919 = scene.sample(sceneSampler, (_786 + (float2(float(_1624), float(_1609)) * _61.inverseTargetSize)));
+                float3 _1002 = float3(((0.25 * _919.x) + (0.5 * _919.y)) + (0.25 * _919.z), (0.5 * _919.x) - (0.5 * _919.z), (((-0.25) * _919.x) + (0.5 * _919.y)) - (0.25 * _919.z));
+                _1640 = _1629 + (_1002 * _1002);
+                _1639 = _1628 + _1002;
+                _1638 = fast::max(_1627, _1002);
+                _1637 = fast::min(_1626, _1002);
+            }
+        }
+        float3 _946 = _1610 * float3(0.111111111938953399658203125);
+        float3 _955 = sqrt(fast::max((_1611 * float3(0.111111111938953399658203125)) - (_946 * _946), float3(0.0)));
+        float3 _961 = fast::max(_1612, _946 - (_955 * 1.0));
+        float3 _968 = fast::min(_1613, _946 + (_955 * 1.0));
+        float2 _1619;
+        do
+        {
+            float2 _1615;
+            float _1618;
+            _1618 = 1.0;
+            _1615 = _786;
+            float _1622;
+            float2 _1632;
+            for (int _1614 = -1; _1614 <= 1; _1618 = _1622, _1615 = _1632, _1614++)
+            {
+                _1622 = _1618;
+                _1632 = _1615;
+                float _1641;
+                float2 _1643;
+                for (int _1620 = -1; _1620 <= 1; _1622 = _1641, _1620++, _1632 = _1643)
+                {
+                    float2 _1043 = _786 + (float2(float(_1620), float(_1614)) * _61.inverseTargetSize);
+                    float4 _1048 = sceneDepth.sample(depthSampler, _1043);
+                    float _1049 = _1048.x;
+                    bool _1052 = _1049 < _1622;
+                    _1641 = _1052 ? _1049 : _1622;
+                    _1643 = select(_1632, _1043, bool2(_1052));
+                }
+            }
+            if (_61.objectMotionWritten > 0.0)
+            {
+                float4 _1073 = objectMotion.sample(objectMotionSampler, _1615);
+                if (_1073.w > 0.0)
+                {
+                    if (any(abs(_1073.xy) > float2(0.25)))
+                    {
+                        _1619 = float2(-1.0);
+                        break;
+                    }
+                    float2 _1089 = float2((_786.x * 2.0) - 1.0, 1.0 - (_786.y * 2.0)) + _1073.xy;
+                    _1619 = float2((_1089.x * 0.5) + 0.5, 0.5 - (_1089.y * 0.5));
+                    break;
+                }
+            }
+            float2 _1097 = float2((_1615.x * 2.0) - 1.0, 1.0 - (_1615.y * 2.0)) - _61.jitter;
+            float4 _1105 = _61.currentToPrevious * float4(_1097, _1618, 1.0);
+            if (_1105.w <= 9.9999997473787516355514526367188e-06)
+            {
+                _1619 = float2(-1.0);
+                break;
+            }
+            float2 _1122 = float2((_786.x * 2.0) - 1.0, 1.0 - (_786.y * 2.0)) + ((_1105.xy / float2(_1105.w)) - _1097);
+            _1619 = float2((_1122.x * 0.5) + 0.5, 0.5 - (_1122.y * 0.5));
+            break;
+        } while(false);
+        if (any(_1619 < float2(0.0)) || any(_1619 > float2(1.0)))
+        {
+            _1631 = _791;
+            break;
+        }
+        float2 _1199 = _1619 / _61.inverseTargetSize;
+        float2 _1203 = floor(_1199 - float2(0.5));
+        float2 _1205 = _1203 + float2(0.5);
+        float2 _1208 = _1199 - _1205;
+        float2 _1218 = _1208 * (float2(-0.5) + (_1208 * (float2(1.0) - (_1208 * 0.5))));
+        float2 _1238 = _1208 * (float2(0.5) + (_1208 * (float2(2.0) - (_1208 * 1.5))));
+        float2 _1246 = (_1208 * _1208) * (float2(-0.5) + (_1208 * 0.5));
+        float2 _1249 = (float2(1.0) + ((_1208 * _1208) * (float2(-2.5) + (_1208 * 1.5)))) + _1238;
+        float2 _1255 = (_1203 + float2(-0.5)) * _61.inverseTargetSize;
+        float2 _1263 = (_1205 + (_1238 / _1249)) * _61.inverseTargetSize;
+        float2 _1269 = (_1203 + float2(2.5)) * _61.inverseTargetSize;
+        float3 _1387 = fast::max((((((history.sample(historySampler, float2(_1263.x, _1255.y), level(0.0)).xyz * (_1249.x * _1218.y)) + (history.sample(historySampler, float2(_1255.x, _1263.y), level(0.0)).xyz * (_1218.x * _1249.y))) + (history.sample(historySampler, _1263, level(0.0)).xyz * (_1249.x * _1249.y))) + (history.sample(historySampler, float2(_1269.x, _1263.y), level(0.0)).xyz * (_1246.x * _1249.y))) + (history.sample(historySampler, float2(_1263.x, _1269.y), level(0.0)).xyz * (_1249.x * _1246.y))) / float3(((((_1249.x * _1218.y) + (_1218.x * _1249.y)) + (_1249.x * _1249.y)) + (_1246.x * _1249.y)) + (_1249.x * _1246.y)), float3(0.0));
+        float3 _1419 = float3(((0.25 * _1387.x) + (0.5 * _1387.y)) + (0.25 * _1387.z), (0.5 * _1387.x) - (0.5 * _1387.z), (((-0.25) * _1387.x) + (0.5 * _1387.y)) - (0.25 * _1387.z));
+        float3 _1432 = (_968 + _961) * 0.5;
+        float3 _1443 = _1419 - _1432;
+        float3 _1447 = abs(_1443 / (((_968 - _961) * 0.5) + float3(9.9999997473787516355514526367188e-05)));
+        float _1455 = fast::max(_1447.x, fast::max(_1447.y, _1447.z));
+        float3 _1466 = select(_1419, _1432 + (_1443 / float3(_1455)), bool3(_1455 > 1.0));
+        _1631 = float4(mix(_791.xyz, float3((_1466.x + _1466.y) - _1466.z, _1466.x + _1466.z, (_1466.x - _1466.y) - _1466.z), float3(_61.historyWeight)), _791.w);
+        break;
+    } while(false);
+    out._entryPointOutput = _1631;
+    return out;
+}
+

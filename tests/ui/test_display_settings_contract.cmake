@@ -213,14 +213,22 @@ foreach(forbidden_text IN ITEMS "ChooseEnhancedFeature(" "Save()" "SetLook(" "Se
 endforeach()
 
 # Anti-aliasing belongs to the Enhanced look: start-up and the preset switch it with the look,
-# and Classic renders one sample per pixel.
+# and Classic renders one sample per pixel without temporal anti-aliasing. Temporal anti-aliasing
+# renders with one sample.
 foreach(required_text IN ITEMS
         "MuSetAntialiasingActive(Render::Look::PresetFeatures(GameConfig::GetInstance().GetLook()).antialiasing)"
-        "mu::GetRenderer().SetAntialiasingSamples(active ? GameConfig::GetInstance().GetAntialiasing() : 0)")
+        "const bool temporal = g_antialiasingActive && config.GetAntialiasingType() == AntialiasingType::Temporal;"
+        "mu::GetRenderer().SetAntialiasingSamples(g_antialiasingActive && !temporal ? config.GetAntialiasing() : 0)"
+        "mu::GetRenderer().SetTemporalAntialiasing(temporal)")
     require_text(winmain_source "${required_text}" "Winmain.cpp must apply anti-aliasing with the look through")
 endforeach()
 
 require_text(console_source "MuSetAntialiasingPreference(*samples)" "muConsoleDebug.cpp must persist $msaa requests")
+foreach(required_text IN ITEMS
+        "MuSetTemporalAntialiasingPreference(true)"
+        "MuSetTemporalAntialiasingPreference(false)")
+    require_text(console_source "${required_text}" "muConsoleDebug.cpp must persist $taa requests")
+endforeach()
 
 foreach(required_text IN ITEMS
         SDL_GetFullscreenDisplayModes

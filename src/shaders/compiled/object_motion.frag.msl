@@ -1,0 +1,34 @@
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+struct main0_out
+{
+    float4 _entryPointOutput [[color(0)]];
+};
+
+struct main0_in
+{
+    float4 input_currentClip [[user(locn0)]];
+    float4 input_previousClip [[user(locn1)]];
+};
+
+fragment main0_out main0(main0_in in [[stage_in]])
+{
+    main0_out out = {};
+    float4 _143;
+    do
+    {
+        if ((in.input_currentClip.w <= 9.9999997473787516355514526367188e-06) || (in.input_previousClip.w <= 9.9999997473787516355514526367188e-06))
+        {
+            _143 = float4(10000.0, 10000.0, 0.0, 1.0);
+            break;
+        }
+        _143 = float4((in.input_previousClip.xy / float2(in.input_previousClip.w)) - (in.input_currentClip.xy / float2(in.input_currentClip.w)), 0.0, 1.0);
+        break;
+    } while(false);
+    out._entryPointOutput = _143;
+    return out;
+}
+

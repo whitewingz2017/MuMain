@@ -33,6 +33,9 @@ public:
     int mode = 0;
     float loaded[16] = {};
     int loads = 0;
+    // Views loaded when the scene camera was last marked, and how often it was.
+    int loadsAtCameraMark = 0;
+    int cameraMarks = 0;
 
     void RenderQuad2D(std::span<const mu::Vertex2D>, std::uint32_t) override {}
     void RenderTriangles(std::span<const mu::Vertex3D>, std::uint32_t) override {}
@@ -62,6 +65,11 @@ public:
             std::memcpy(loaded, m, sizeof(loaded));
             ++loads;
         }
+    }
+    void SetSceneCamera() override
+    {
+        loadsAtCameraMark = loads;
+        ++cameraMarks;
     }
 };
 
@@ -117,6 +125,20 @@ TEST_CASE("The draw loads the view the update built, unchanged [render]")
     REQUIRE(renderer.loads == 1);
     const glm::mat4 expected = StackView(state);
     CHECK(std::memcmp(renderer.loaded, &expected[0][0], sizeof(renderer.loaded)) == 0);
+}
+
+TEST_CASE("The draw makes the view it loads the scene camera [render]")
+{
+    CameraState state = Camera(-48.5f, 33.3f, false);
+    CameraProjection::UpdateView(state, 0, 0, 1280, 720);
+
+    ViewRenderer renderer;
+    mu::SetRendererOverride(&renderer);
+    CameraProjection::ApplyView(state, 1280, 720);
+    mu::SetRendererOverride(nullptr);
+
+    CHECK(renderer.cameraMarks == 1);
+    CHECK(renderer.loadsAtCameraMark == 1);
 }
 
 TEST_CASE("The view projects what is straight ahead to the viewport's centre [render]")

@@ -12,6 +12,13 @@ enum class LookPreset : std::uint8_t
     Enhanced,
 };
 
+// How the Enhanced look smooths edges ([Render] AntialiasingType).
+enum class AntialiasingType : std::uint8_t
+{
+    Multisample, // MSAA: [Render] Antialiasing samples per pixel
+    Temporal,    // TAA: the scene blended over frames drawn at sub-pixel offsets
+};
+
 namespace GameConfigValidation
 {
 int ValidateServerPort(int value, int defaultPort);
@@ -31,6 +38,12 @@ std::optional<LookPreset> ParseLook(std::wstring_view text);
 const wchar_t* FormatLook(LookPreset preset);
 // A [Render] Look value, or the default when it is missing or invalid.
 LookPreset ValidateLook(std::wstring_view text);
+// "MSAA" or "TAA" in any case, surrounding blanks ignored; nothing otherwise.
+std::optional<AntialiasingType> ParseAntialiasingType(std::wstring_view text);
+// The text ParseAntialiasingType reads back as `type`.
+const wchar_t* FormatAntialiasingType(AntialiasingType type);
+// A [Render] AntialiasingType value, or the default when it is missing or invalid.
+AntialiasingType ValidateAntialiasingType(std::wstring_view text);
 
 // Trims whitespace, lowercases, and expands the "d3d12" alias to "direct3d12". Does NOT reject
 // unrecognized values -- an unknown string is passed through as-is and left for

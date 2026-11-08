@@ -108,6 +108,8 @@ void GameConfig::Load()
         ReadInt(CfgSectionRender, CfgKeyMipSharpenPercent, CfgDefaultMipSharpenPercent));
     m_antialiasing = GameConfigValidation::ValidateAntialiasing(
         ReadInt(CfgSectionRender, CfgKeyAntialiasing, CfgDefaultAntialiasing));
+    m_antialiasingType = GameConfigValidation::ValidateAntialiasingType(
+        ReadString(CfgSectionRender, CfgKeyAntialiasingType, CfgDefaultAntialiasingType));
     m_enhancedLighting = ReadBool(CfgSectionRender, CfgKeyEnhancedLighting, CfgDefaultEnhancedLighting);
     m_dynamicLights = ReadBool(CfgSectionRender, CfgKeyDynamicLights, CfgDefaultDynamicLights);
     m_lightMood = ReadBool(CfgSectionRender, CfgKeyLightMood, CfgDefaultLightMood);
@@ -179,6 +181,8 @@ void GameConfig::Save()
     WriteInt(CfgSectionRender, CfgKeyAnisotropy, m_anisotropy);
     WriteInt(CfgSectionRender, CfgKeyMipSharpenPercent, m_mipSharpenPercent);
     WriteInt(CfgSectionRender, CfgKeyAntialiasing, m_antialiasing);
+    WriteString(CfgSectionRender, CfgKeyAntialiasingType,
+                GameConfigValidation::FormatAntialiasingType(m_antialiasingType));
     WriteBool(CfgSectionRender, CfgKeyEnhancedLighting, m_enhancedLighting);
     WriteBool(CfgSectionRender, CfgKeyDynamicLights, m_dynamicLights);
     WriteBool(CfgSectionRender, CfgKeyLightMood, m_lightMood);
@@ -284,6 +288,11 @@ void GameConfig::SetMipSharpenPercent(int percent)
 void GameConfig::SetAntialiasing(int samples)
 {
     m_antialiasing = GameConfigValidation::ValidateAntialiasing(samples);
+}
+
+void GameConfig::SetAntialiasingType(AntialiasingType type)
+{
+    m_antialiasingType = type;
 }
 
 void GameConfig::SetDisableEffects(bool disabled)

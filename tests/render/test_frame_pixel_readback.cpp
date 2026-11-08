@@ -268,16 +268,27 @@ TEST_CASE("multisampled colour target rejects one sample and invalid inputs [fra
 
 TEST_CASE("depth buffer carries the frame's sample count [frame readback][antialiasing]")
 {
-    const auto single = mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_1);
+    const auto single = mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_1, false);
     REQUIRE(single.has_value());
     CHECK(single->format == mu::SdlGpuDepthFormat);
     CHECK(single->usage == SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET);
     CHECK(single->sample_count == SDL_GPU_SAMPLECOUNT_1);
 
-    const auto multisampled = mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_8);
+    const auto multisampled = mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_8, false);
     REQUIRE(multisampled.has_value());
     CHECK(multisampled->sample_count == SDL_GPU_SAMPLECOUNT_8);
-    CHECK_FALSE(mu::GetSdlGpuDepthTextureInfo({1920u, 0u}, SDL_GPU_SAMPLECOUNT_1).has_value());
+    CHECK_FALSE(mu::GetSdlGpuDepthTextureInfo({1920u, 0u}, SDL_GPU_SAMPLECOUNT_1, false).has_value());
+}
+
+TEST_CASE("temporal anti-aliasing samples a one-sample depth buffer [frame readback][antialiasing]")
+{
+    const auto sampled = mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_1, true);
+    REQUIRE(sampled.has_value());
+    CHECK(sampled->usage == (SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER));
+    CHECK(sampled->sample_count == SDL_GPU_SAMPLECOUNT_1);
+
+    // A multisampled depth buffer is never sampled.
+    CHECK_FALSE(mu::GetSdlGpuDepthTextureInfo({1920u, 1080u}, SDL_GPU_SAMPLECOUNT_4, true).has_value());
 }
 
 TEST_CASE("one-sample frame renders straight into its destination [frame readback][antialiasing]")

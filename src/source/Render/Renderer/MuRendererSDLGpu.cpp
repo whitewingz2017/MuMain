@@ -47,6 +47,9 @@
 #include "Core/Utilities/Log/MuLogger.h"
 #include "Render/PostProcessing/BloomSource.h"
 #include "Render/PostProcessing/SceneBoundary.h"
+#include "Render/PostProcessing/SkinMotionHistory.h"
+#include "Render/PostProcessing/TemporalHistory.h"
+#include "Render/PostProcessing/TemporalJitter.h"
 #include "Render/Terrain/TerrainHeightGrid.h"
 #include "Render/Text/SdlTtfFontSet.h"
 #ifdef _EDITOR
@@ -62,6 +65,7 @@
 #include <filesystem>
 #include <fstream>
 #include <limits>
+#include <optional>
 #include <span>
 #include <string>
 #include <unordered_map>
@@ -127,6 +131,18 @@ static_assert(offsetof(SkinningVertexUniforms, eyePositionAndSpecular) == 192,
               "eyePositionAndSpecular must follow textureCoordinateParameters (HLSL cbuffer Skinning)");
 static_assert(offsetof(SkinningVertexUniforms, vertexToWorldRows) == 208,
               "vertexToWorldRows must follow eyePositionAndSpecular (HLSL cbuffer Skinning)");
+
+// Mirrors cbuffer Motion in skinned_motion.hlsli: a skinned draw's pose in the previous frame, for
+// temporal anti-aliasing to tell how far its surface moved.
+struct SkinMotionUniforms
+{
+    glm::mat4 currentTransform;  // the draw's mvp, without the jitter
+    glm::mat4 previousTransform; // its mvp in the previous frame
+    float previousBodyOriginAndScale[4]{};
+    float previousSkinningScales[4]{};
+    std::uint32_t previousPalette[4]{};
+};
+static_assert(sizeof(SkinMotionUniforms) == 176, "SkinMotionUniforms must match cbuffer Motion");
 
 // skinned_lit.frag's normal map (t1, s1 in space2): bound for every draw with that shader.
 constexpr Uint32 k_FragmentSamplerSlotNormalMap = 1u;
@@ -620,6 +636,15 @@ static mu::PostProcessingView s_postProcessingView = mu::PostProcessingView::Sce
 static Render::PostProcessing::SceneBoundary s_sceneBoundary;
 static int s_bloomExclusionDepth = 0;
 
+// Temporal anti-aliasing (SetTemporalAntialiasing): asked for, and used by post-processed frames
+// that render with one sample (UsesTemporalAntialiasing).
+static bool s_temporalAntialiasingRequested = false;
+// This frame's 3D scene camera, its view-projection (SetSceneCamera); none until the scene sets it.
+static std::optional<glm::mat4> s_sceneCamera;
+static Render::PostProcessing::TemporalHistory s_temporalHistory;
+// The poses skinned draws were drawn in, while frames record object motion (RecordsObjectMotion).
+static Render::PostProcessing::SkinMotionHistory s_skinMotionHistory;
+
 // Alpha-to-coverage variants of the depth-writing world pipelines (each world set's culled and
 // no-cull states), used while anti-aliasing is on by alpha-tested cutout draws (foliage, hair,
 // fences) instead of their alpha test with blending: see ChooseAlphaCoverage. Each variant
@@ -744,6 +769,15 @@ static std::uint32_t s_lastBonePaletteVersion = 0u;
 static Uint32 s_lastBonePaletteRowOffset = 0u;
 // Bones of the last palette uploaded; a draw indexing more uploads it again, longer.
 static Uint32 s_lastBonePaletteBones = 0u;
+
+// Where a palette's bones are in this frame's bone rows.
+struct BonePaletteSlot
+{
+    Uint32 rowOffset;
+    Uint32 bones;
+};
+// The previous frame's poses uploaded for the object motion pass this frame, by palette address.
+static std::unordered_map<const void*, BonePaletteSlot> s_previousPaletteSlots;
 // The skinned draw keys seen this frame, for the DistinctSkinnedDraws counter.
 static std::unordered_set<std::uint64_t> s_skinnedDrawKeys;
 
@@ -802,6 +836,7 @@ struct RenderCmd
     VertexUniforms vu;
     Uint32 skinningIndex = 0u; // into s_skinningUniforms, for DrawSkinnedTriangles
     Uint32 shadowIndex = ~0u;  // into s_shadowUniforms when a DrawSkinnedTriangles is a body shadow
+    Uint32 motionIndex = ~0u;  // into s_skinMotionUniforms when temporal anti-aliasing knows its motion
     FogUniform fogUniform;
     SDL_GPUViewport viewport; // for SetViewport only
     SDL_Rect scissor;         // for SetScissor only
@@ -821,6 +856,7 @@ static std::vector<RenderCmd> s_renderCmds;
 // Kept apart from RenderCmd: only skinned draws carry them, and they would nearly double every command.
 static std::vector<SkinningVertexUniforms> s_skinningUniforms;
 static std::vector<ShadowVertexUniforms> s_shadowUniforms;
+static std::vector<SkinMotionUniforms> s_skinMotionUniforms;
 static constexpr std::size_t kNoDrawCommand = std::numeric_limits<std::size_t>::max();
 static Render::DrawCommandHistory s_previousDrawCommands;
 
@@ -1070,6 +1106,43 @@ static bool s_singleSamplePass = false;
 // Whether the built pipelines are multisampled; set by CreatePipelinesForSampleCount.
 static bool s_pipelinesMultisampled = false;
 
+// The clip-space offset temporal anti-aliasing draws the scene at: set while the scene's passes
+// replay (ScopedSceneJitter), zero otherwise. Only perspective draws move; 2D draws stay put.
+static glm::vec2 s_sceneClipJitter{0.0f};
+
+namespace
+{
+class ScopedSceneJitter
+{
+public:
+    explicit ScopedSceneJitter(glm::vec2 clipOffset)
+    {
+        s_sceneClipJitter = clipOffset;
+    }
+    ~ScopedSceneJitter()
+    {
+        s_sceneClipJitter = glm::vec2(0.0f);
+    }
+    ScopedSceneJitter(const ScopedSceneJitter&) = delete;
+    ScopedSceneJitter& operator=(const ScopedSceneJitter&) = delete;
+};
+} // namespace
+
+// A draw's transform uniforms (VertexUniforms or SkinningVertexUniforms), moved by the scene's jitter
+// when it is set and the transform projects with perspective.
+template <typename TransformUniforms>
+static void PushReplayTransformUniforms(const TransformUniforms& uniforms, Render::SdlGpuReplayState& state)
+{
+    if (s_sceneClipJitter == glm::vec2(0.0f) || !Render::PostProcessing::IsPerspective(uniforms.mvp))
+    {
+        PushReplayVertexUniforms(0, &uniforms, sizeof(uniforms), state);
+        return;
+    }
+    TransformUniforms jittered = uniforms;
+    jittered.mvp = Render::PostProcessing::JitterTransform(uniforms.mvp, s_sceneClipJitter);
+    PushReplayVertexUniforms(0, &jittered, sizeof(jittered), state);
+}
+
 // Replays a recorded draw with `pipeline`: its own, or a variant of it for another pass.
 static void ReplayDrawCommand(const RenderCmd& command, SDL_GPUGraphicsPipeline* pipeline, bool boneDataReady,
                               const SDL_Rect& scissor, Render::SdlGpuReplayState& state)
@@ -1091,9 +1164,9 @@ static void ReplayDrawCommand(const RenderCmd& command, SDL_GPUGraphicsPipeline*
     }
 
     if (skinned)
-        PushReplayVertexUniforms(0, &s_skinningUniforms[command.skinningIndex], sizeof(SkinningVertexUniforms), state);
+        PushReplayTransformUniforms(s_skinningUniforms[command.skinningIndex], state);
     else
-        PushReplayVertexUniforms(0, &command.vu, sizeof(command.vu), state);
+        PushReplayTransformUniforms(command.vu, state);
     if (shadow)
         PushReplayVertexUniforms(1, &s_shadowUniforms[command.shadowIndex], sizeof(ShadowVertexUniforms), state);
 
@@ -1188,6 +1261,13 @@ static SDL_GPUShader* s_vertShaderPostFullscreen = nullptr; // post_fullscreen.v
 static SDL_GPUShader* s_fragShaderBloomDown = nullptr;      // post_bloom_down.frag
 static SDL_GPUShader* s_fragShaderBloomUp = nullptr;        // post_bloom_up.frag
 static SDL_GPUShader* s_fragShaderComposite = nullptr;      // post_composite.frag
+static SDL_GPUShader* s_fragShaderTemporal = nullptr;       // post_temporal.frag (optional: temporal AA)
+// Optional: without them temporal anti-aliasing follows the camera's movement alone.
+static SDL_GPUShader* s_vertShaderSkinnedMotion = nullptr;         // skinned_motion.vert
+static SDL_GPUShader* s_vertShaderSkinnedWeightedMotion = nullptr; // skinned_weighted_motion.vert
+static SDL_GPUShader* s_fragShaderObjectMotion = nullptr;          // object_motion.frag
+// The object motion pass's pipelines: BMD vertices, then weighted ones.
+static std::array<SDL_GPUGraphicsPipeline*, 2> s_objectMotionPipelines{};
 
 // Depth buffer texture for correct 3D depth testing.
 // Created in Init() at swapchain dimensions, recreated on window resize.
@@ -1195,6 +1275,10 @@ static SDL_GPUTexture* s_depthTexture = nullptr;
 static Uint32 s_depthW = 0u;
 static Uint32 s_depthH = 0u;
 static int s_depthSampleCount = Render::Antialiasing::OffSampleCount;
+// The depth buffer can also be sampled, by temporal anti-aliasing; only with one sample.
+static bool s_depthSampled = false;
+// Whether this GPU can sample the depth format at all; set at Init.
+static bool s_sampledDepthSupported = false;
 // Ordinary frames render here rather than into the swapchain: SDL creates swapchain textures
 // without SAMPLER usage, so they can't be a blit source, and the RmlUi backend reads the frame
 // back to composite over it. Blitted to the swapchain at the end of EndFrame().
@@ -1854,6 +1938,9 @@ public:
 
         // Anti-aliasing: the sample count the pipelines and frame targets start with.
         s_supportedSampleCounts = QuerySupportedSampleCounts();
+        s_sampledDepthSupported =
+            SDL_GPUTextureSupportsFormat(s_device, mu::SdlGpuDepthFormat, SDL_GPU_TEXTURETYPE_2D,
+                                         SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER);
         s_sampleCount = SelectFrameSampleCount();
         s_sampleCountChangePending = false;
         LogSampleCount("at start-up");
@@ -2175,8 +2262,15 @@ public:
         s_renderCmds.clear();
         s_skinningUniforms.clear();
         s_shadowUniforms.clear();
+        s_skinMotionUniforms.clear();
+        s_previousPaletteSlots.clear();
+        if (RecordsObjectMotion())
+            s_skinMotionHistory.BeginFrame();
+        else
+            s_skinMotionHistory.Reset();
         s_previousDrawCommands.fill(kNoDrawCommand);
         s_sceneBoundary.Reset();
+        s_sceneCamera.reset();
         if (s_bloomExclusionDepth != 0)
         {
             mu::log::Get("render")->warn("SDL_gpu -- {} bloom exclusion scope(s) left open; reset",
@@ -2312,6 +2406,24 @@ public:
     [[nodiscard]] static bool IsPostProcessingActive()
     {
         return s_postProcessingEnabled && s_postProcessing.IsAvailable();
+    }
+
+    // Temporal anti-aliasing reads the scene's depth, so it also needs a depth buffer it can sample.
+    [[nodiscard]] static bool UsesTemporalAntialiasing()
+    {
+        return s_temporalAntialiasingRequested && !IsMultisampled() && s_depthSampled && IsPostProcessingActive() &&
+               s_postProcessing.IsTemporalAvailable();
+    }
+
+    // This frame's temporal anti-aliasing, or nullopt (and the history forgotten) when it does not use it.
+    [[nodiscard]] static std::optional<Render::PostProcessing::TemporalFrame> BeginTemporalFrame()
+    {
+        if (!UsesTemporalAntialiasing() || !s_sceneCamera)
+        {
+            s_temporalHistory.Reset();
+            return std::nullopt;
+        }
+        return s_temporalHistory.BeginFrame(*s_sceneCamera, s_swapW, s_swapH);
     }
 
     // The pipeline a bloom source replays with into the bloom pass, or null for
@@ -2564,13 +2676,13 @@ public:
         s_postProcessing.RenderBloom(s_cmdBuf, s_postProcessingLook.bloomLevelFalloff);
     }
 
-    // The scene into the scene texture, its bloom, then the processed scene and
-    // the UI on top of it into `destination`.
-    [[nodiscard]] static bool ReplayPostProcessedFrame(SDL_GPUTexture* destination, std::size_t sceneEnd,
-                                                       bool boneDataReady)
+    // The scene into the scene texture, its temporal resolve and its bloom. With temporal
+    // anti-aliasing the scene's draws are jittered; the resolve reads the scene's depth.
+    [[nodiscard]] static bool ReplayProcessedScene(std::size_t sceneEnd, bool boneDataReady, ReplayView& view)
     {
+        const std::optional<Render::PostProcessing::TemporalFrame> temporal = BeginTemporalFrame();
+        const ScopedSceneJitter jitter(temporal ? temporal->jitterClip : glm::vec2(0.0f));
         SDL_GPUTexture* const multisampled = IsMultisampled() ? s_multisampleColorTexture : nullptr;
-        ReplayView view = FullFrameView();
 
         // Its depth stays for the bloom and UI passes, which test against it as
         // the UI did when it shared the scene's pass.
@@ -2583,9 +2695,99 @@ public:
         ReplayCommands(0u, sceneEnd, boneDataReady, ReplaySelection::AllCommands, view);
         EndReplayPass();
 
+        if (temporal)
+        {
+            const bool objectMotionWritten = ReplayObjectMotion(sceneEnd, boneDataReady);
+            if (!s_postProcessing.ResolveTemporal(s_cmdBuf, s_depthTexture, objectMotionWritten, *temporal))
+            {
+                s_temporalHistory.Reset();
+            }
+        }
         if (s_postProcessingLook.bloomStrength > 0.0f)
         {
             RenderBloomSources(sceneEnd, boneDataReady);
+        }
+        return true;
+    }
+
+    // The movement of this frame's skinned draws since the previous frame (object_motion.frag) into the
+    // object motion texture, where they show over the scene's depth; jittered as the scene. False when
+    // it was not written: the resolve then follows the camera's movement alone.
+    [[nodiscard]] static bool ReplayObjectMotion(std::size_t sceneEnd, bool boneDataReady)
+    {
+        if (!boneDataReady || !s_boneGpuBuf || !s_objectMotionPipelines[0] || !s_objectMotionPipelines[1] ||
+            !s_postProcessing.EnsureTemporalTargets() || !s_postProcessing.GetObjectMotionTexture())
+        {
+            return false;
+        }
+
+        SDL_GPUColorTargetInfo colorTarget{};
+        colorTarget.texture = s_postProcessing.GetObjectMotionTexture();
+        colorTarget.clear_color = {0.0f, 0.0f, 0.0f, 0.0f}; // alpha 0: no skinned draw there
+        colorTarget.load_op = SDL_GPU_LOADOP_CLEAR;
+        colorTarget.store_op = SDL_GPU_STOREOP_STORE;
+        colorTarget.cycle = true;
+        const SDL_GPUDepthStencilTargetInfo depthTarget = MakeDepthTarget(SDL_GPU_LOADOP_LOAD, SDL_GPU_STOREOP_STORE);
+        SDL_GPURenderPass* pass = SDL_BeginGPURenderPass(s_cmdBuf, &colorTarget, 1, &depthTarget);
+        if (!pass)
+        {
+            return false;
+        }
+        const SDL_GPUViewport viewport{0.0f, 0.0f, static_cast<float>(s_swapW), static_cast<float>(s_swapH),
+                                       0.0f, 1.0f};
+        const SDL_Rect scissor{0, 0, static_cast<int>(s_swapW), static_cast<int>(s_swapH)};
+        SDL_SetGPUViewport(pass, &viewport);
+        SDL_SetGPUScissor(pass, &scissor);
+        SDL_BindGPUVertexStorageBuffers(pass, 0, &s_boneGpuBuf, 1);
+        // A skinned draw's one colour is a per-instance attribute the motion shaders leave unread.
+        const SDL_GPUBufferBinding colorBinding{s_vtxGpuBuf, 0u};
+        SDL_BindGPUVertexBuffers(pass, 1, &colorBinding, 1);
+
+        SDL_GPUGraphicsPipeline* bound = nullptr;
+        for (std::size_t index = 0u; index < sceneEnd; ++index)
+        {
+            const RenderCmd& command = s_renderCmds[index];
+            // Only surfaces that wrote the scene's depth: what blends over them shows them through.
+            if (command.motionIndex == ~0u || !command.depthTestEnabled || !command.depthMaskEnabled ||
+                command.consumedByOffscreenCapture)
+            {
+                continue;
+            }
+            SDL_GPUGraphicsPipeline* const pipeline = command.vtxStride == sizeof(SkinnedWeightedVertex3D)
+                                                          ? s_objectMotionPipelines[1]
+                                                          : s_objectMotionPipelines[0];
+            if (pipeline != bound)
+            {
+                SDL_BindGPUGraphicsPipeline(pass, pipeline);
+                bound = pipeline;
+            }
+
+            SkinningVertexUniforms skinning = s_skinningUniforms[command.skinningIndex];
+            if (s_sceneClipJitter != glm::vec2(0.0f) && Render::PostProcessing::IsPerspective(skinning.mvp))
+            {
+                skinning.mvp = Render::PostProcessing::JitterTransform(skinning.mvp, s_sceneClipJitter);
+            }
+            SDL_PushGPUVertexUniformData(s_cmdBuf, 0, &skinning, sizeof(skinning));
+            SDL_PushGPUVertexUniformData(s_cmdBuf, 1, &s_skinMotionUniforms[command.motionIndex],
+                                         sizeof(SkinMotionUniforms));
+            const SDL_GPUBufferBinding vertexBinding{command.vtxBuffer ? command.vtxBuffer : s_vtxGpuBuf,
+                                                     command.vtxOffset};
+            SDL_BindGPUVertexBuffers(pass, 0, &vertexBinding, 1);
+            SDL_DrawGPUPrimitives(pass, command.vtxCount, 1, 0u, command.colorOffset / sizeof(Uint32));
+        }
+        SDL_EndGPURenderPass(pass);
+        return true;
+    }
+
+    // The scene (ReplayProcessedScene), then its composite and the UI on top of it into `destination`.
+    [[nodiscard]] static bool ReplayPostProcessedFrame(SDL_GPUTexture* destination, std::size_t sceneEnd,
+                                                       bool boneDataReady)
+    {
+        SDL_GPUTexture* const multisampled = IsMultisampled() ? s_multisampleColorTexture : nullptr;
+        ReplayView view = FullFrameView();
+        if (!ReplayProcessedScene(sceneEnd, boneDataReady, view))
+        {
+            return false;
         }
 
         // The composite covers every pixel: the target's old content is not loaded.
@@ -2985,6 +3187,7 @@ public:
         {
             // FlushRenderCommands already drew part of this frame into its target with one
             // sample: the rest follows the same way, without multisampling or post-processing.
+            s_temporalHistory.Reset();
             renderPassCompleted = ContinueFlushedFrame(frameColorTexture, boneDataReady);
         }
         else if (split.postProcessed && s_postProcessing.EnsureTargets({s_swapW, s_swapH}))
@@ -2993,6 +3196,7 @@ public:
         }
         else
         {
+            s_temporalHistory.Reset();
             renderPassCompleted = ReplayFrame(frameColorTexture, boneDataReady);
         }
 
@@ -3555,6 +3759,27 @@ public:
     [[nodiscard]] int GetAntialiasingSamples() const override
     {
         return s_sampleCount;
+    }
+
+    // The depth buffer becomes sampleable at the next BeginFrame (CreateOrResizeDepthTexture).
+    void SetTemporalAntialiasing(bool enabled) override
+    {
+        s_temporalAntialiasingRequested = enabled;
+        s_temporalHistory.Reset();
+    }
+
+    [[nodiscard]] bool IsTemporalAntialiasingActive() const override
+    {
+        return UsesTemporalAntialiasing();
+    }
+
+    void SetSceneCamera() override
+    {
+        if (!s_frameActive || s_sceneBoundary.IsMarked())
+        {
+            return;
+        }
+        s_sceneCamera = m_projMatrix * m_modelViewMatrix;
     }
 
     [[nodiscard]] std::size_t BeginReorderableDraws() override
@@ -5224,6 +5449,10 @@ private:
             skinningVu.eyePositionAndSpecular[3] = parameters.specularStrength;
             PackVertexToWorldRows(skinningVu);
         }
+        if (!shadow && RecordsObjectMotion())
+        {
+            cmd.motionIndex = RecordSkinMotion(parameters, *palette);
+        }
         if (shadow)
         {
             ShadowVertexUniforms& shadowVu = s_shadowUniforms.emplace_back();
@@ -5260,6 +5489,48 @@ private:
         FrameProfiler::Count(FrameProfiler::Counter::DrawCalls);
         FrameProfiler::Count(FrameProfiler::Counter::VertexBytes, byteSize);
         return true;
+    }
+
+    // The motion uniforms (s_skinMotionUniforms) of a skinned draw whose palette had one pose in the
+    // previous frame, which is uploaded with this frame's bones; ~0u for a draw without one.
+    [[nodiscard]] Uint32 RecordSkinMotion(const SkinningParameters& parameters, const BonePaletteSlot& palette) const
+    {
+        const Render::PostProcessing::SkinPlacement placement{
+            m_mvpMatrix,
+            glm::vec3(parameters.bodyOrigin[0], parameters.bodyOrigin[1], parameters.bodyOrigin[2]),
+            parameters.bodyScale,
+            parameters.boneScale,
+            parameters.restPoseScale,
+            parameters.translate};
+        const std::span<const float> bones =
+            parameters.boneMatrices.first(static_cast<std::size_t>(palette.bones) * 12u);
+        const std::optional<Render::PostProcessing::PreviousSkin> previous =
+            s_skinMotionHistory.Record(parameters.boneMatrices.data(), parameters.paletteVersion, bones, placement);
+        if (!previous)
+        {
+            return ~0u;
+        }
+        const std::optional<BonePaletteSlot> previousPalette =
+            RecordPreviousPalette(parameters.boneMatrices.data(), previous->bones);
+        if (!previousPalette)
+        {
+            return ~0u;
+        }
+
+        const Render::PostProcessing::SkinPlacement& before = previous->placement;
+        SkinMotionUniforms& motion = s_skinMotionUniforms.emplace_back();
+        motion.currentTransform = m_mvpMatrix;
+        motion.previousTransform = before.transform;
+        motion.previousBodyOriginAndScale[0] = before.bodyOrigin.x;
+        motion.previousBodyOriginAndScale[1] = before.bodyOrigin.y;
+        motion.previousBodyOriginAndScale[2] = before.bodyOrigin.z;
+        motion.previousBodyOriginAndScale[3] = before.bodyScale;
+        motion.previousSkinningScales[0] = before.boneScale;
+        motion.previousSkinningScales[1] = before.restPoseScale;
+        motion.previousPalette[0] = previousPalette->rowOffset;
+        motion.previousPalette[1] = previousPalette->bones;
+        motion.previousPalette[2] = before.translate ? 1u : 0u;
+        return static_cast<Uint32>(s_skinMotionUniforms.size() - 1u);
     }
 
     glm::mat4& ActiveMatrix()
@@ -5457,12 +5728,6 @@ private:
         return alignedOffset;
     }
 
-    struct BonePaletteSlot
-    {
-        Uint32 rowOffset;
-        Uint32 bones;
-    };
-
     // Uploads the bones the draw indexes (`bonesUsed`, 0 when unknown: all of them). Meshes of one
     // object share the upload while it holds every bone they index.
     [[nodiscard]] static std::optional<BonePaletteSlot> RecordBonePalette(const SkinningParameters& parameters,
@@ -5497,6 +5762,37 @@ private:
         s_lastBonePaletteRowOffset = static_cast<Uint32>(rowOffset);
         s_lastBonePaletteBones = bones;
         return BonePaletteSlot{s_lastBonePaletteRowOffset, bones};
+    }
+
+    // Whether skinned draws record the pose they are drawn in, for the object motion pass: while
+    // temporal anti-aliasing is asked for at one sample and the pass's pipelines exist.
+    [[nodiscard]] static bool RecordsObjectMotion()
+    {
+        return s_temporalAntialiasingRequested && !IsMultisampled() && s_objectMotionPipelines[0] &&
+               s_objectMotionPipelines[1];
+    }
+
+    // Uploads the previous frame's pose of the palette at `key` once a frame, for the object motion pass.
+    [[nodiscard]] static std::optional<BonePaletteSlot> RecordPreviousPalette(const void* key,
+                                                                              std::span<const float> bones)
+    {
+        if (const auto uploaded = s_previousPaletteSlots.find(key); uploaded != s_previousPaletteSlots.end())
+        {
+            return uploaded->second;
+        }
+        const std::size_t rowOffset = s_boneRowScratch.size() / 4;
+        if (bones.empty() || bones.size() % 12 != 0 || rowOffset > std::numeric_limits<Uint32>::max() ||
+            bones.size() > std::numeric_limits<Uint32>::max() / sizeof(float) - s_boneRowScratch.size())
+        {
+            return std::nullopt;
+        }
+
+        s_boneRowScratch.insert(s_boneRowScratch.end(), bones.begin(), bones.end());
+        FrameProfiler::Count(FrameProfiler::Counter::BonePaletteBytes,
+                             static_cast<std::uint32_t>(bones.size() * sizeof(float)));
+        const BonePaletteSlot slot{static_cast<Uint32>(rowOffset), static_cast<Uint32>(bones.size() / 12)};
+        s_previousPaletteSlots.emplace(key, slot);
+        return slot;
     }
 
     // -----------------------------------------------------------------------
@@ -5645,6 +5941,16 @@ private:
             createShader("post_bloom_up", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 1, 0, 1, /*fatal=*/false);
         s_fragShaderComposite =
             createShader("post_composite", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 3, 0, 1, /*fatal=*/false);
+        // Temporal anti-aliasing: scene, depth, object motion and history textures (t0-t3) and
+        // TemporalUniforms (b0); the object motion pass: bones (t0) and Skinning and Motion (b0, b1).
+        s_fragShaderTemporal =
+            createShader("post_temporal", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 4, 0, 1, /*fatal=*/false);
+        s_vertShaderSkinnedMotion =
+            createShader("skinned_motion", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 1, 2, /*fatal=*/false);
+        s_vertShaderSkinnedWeightedMotion =
+            createShader("skinned_weighted_motion", "vert", SDL_GPU_SHADERSTAGE_VERTEX, 0, 1, 2, /*fatal=*/false);
+        s_fragShaderObjectMotion =
+            createShader("object_motion", "frag", SDL_GPU_SHADERSTAGE_FRAGMENT, 0, 0, 0, /*fatal=*/false);
 
         mu::log::Get("render")->info("SDL_gpu -- shaders loaded for driver: {}", driverName ? driverName : "unknown");
         return true;
@@ -5711,8 +6017,9 @@ private:
             SDL_ReleaseGPUShader(s_device, s_fragShaderLit);
             s_fragShaderLit = nullptr;
         }
-        for (SDL_GPUShader** shader :
-             {&s_vertShaderPostFullscreen, &s_fragShaderBloomDown, &s_fragShaderBloomUp, &s_fragShaderComposite})
+        for (SDL_GPUShader** shader : {&s_vertShaderPostFullscreen, &s_fragShaderBloomDown, &s_fragShaderBloomUp,
+                                       &s_fragShaderComposite, &s_fragShaderTemporal, &s_vertShaderSkinnedMotion,
+                                       &s_vertShaderSkinnedWeightedMotion, &s_fragShaderObjectMotion})
         {
             if (*shader)
             {
@@ -5885,28 +6192,39 @@ private:
         return depthState;
     }
 
-    [[nodiscard]] static PipelineBuildResult BuildBlendPipeline(SDL_GPUColorTargetBlendState blendState,
-                                                                const PipelineBuildDescription& description)
+    // The vertex buffers and attributes a layout's pipelines read.
+    struct VertexInput
     {
-        PipelineBuildResult result{nullptr, description, {}};
+        SDL_GPUVertexAttribute attributes[9]{};
+        SDL_GPUVertexBufferDescription buffers[2]{};
+        Uint32 attributeCount = 0;
+        Uint32 bufferCount = 1;
 
-        // Get swapchain texture format for pipeline target.
-        const SDL_GPUTextureFormat swapchainFmt = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+        // Points into this VertexInput, which must outlive the pipeline creation that reads it.
+        [[nodiscard]] SDL_GPUVertexInputState State() const
+        {
+            SDL_GPUVertexInputState state{};
+            state.vertex_buffer_descriptions = buffers;
+            state.num_vertex_buffers = bufferCount;
+            state.vertex_attributes = attributes;
+            state.num_vertex_attributes = attributeCount;
+            return state;
+        }
+    };
 
-        SDL_GPUColorTargetDescription colorTargetDesc{};
-        colorTargetDesc.format = swapchainFmt;
-        colorTargetDesc.blend_state = blendState;
-
-        SDL_GPUVertexAttribute vertexAttribs[9];
-        Uint32 numAttribs = 0;
-        SDL_GPUVertexBufferDescription vtxBufDescs[2]{};
+    [[nodiscard]] static VertexInput MakeVertexInput(VertexLayout layout)
+    {
+        VertexInput input;
+        SDL_GPUVertexAttribute* const vertexAttribs = input.attributes;
+        SDL_GPUVertexBufferDescription* const vtxBufDescs = input.buffers;
         SDL_GPUVertexBufferDescription& vtxBufDesc = vtxBufDescs[0];
-        Uint32 numVtxBufs = 1;
+        Uint32& numVtxBufs = input.bufferCount;
+        Uint32& numAttribs = input.attributeCount;
         vtxBufDesc.slot = 0;
         vtxBufDesc.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
         vtxBufDesc.instance_step_rate = 0;
 
-        if (description.vertexLayout == VertexLayout::TwoDimensional)
+        if (layout == VertexLayout::TwoDimensional)
         {
             // Vertex2D: float2 pos (TEXCOORD0), float2 uv (TEXCOORD1), ubyte4_norm color (TEXCOORD2)
             vertexAttribs[0] = {};
@@ -5930,7 +6248,7 @@ private:
             vtxBufDesc.pitch = sizeof(Vertex2D);
             numAttribs = 3;
         }
-        else if (description.vertexLayout == VertexLayout::ThreeDimensional)
+        else if (layout == VertexLayout::ThreeDimensional)
         {
             // Vertex3D mapped to the 2D shader's input locations:
             //   location 0 (TEXCOORD0 → pos):   float3 pos  — shader reads float2 (x,y), z dropped
@@ -6006,8 +6324,7 @@ private:
             numAttribs = 6;
 
             // The weighted vertex starts with the same fields.
-            if (description.vertexLayout == VertexLayout::SkinnedWeighted ||
-                description.vertexLayout == VertexLayout::SkinnedWeightedShadow)
+            if (layout == VertexLayout::SkinnedWeighted || layout == VertexLayout::SkinnedWeightedShadow)
             {
                 vertexAttribs[6] = {};
                 vertexAttribs[6].location = 6;
@@ -6032,11 +6349,22 @@ private:
             }
         }
 
-        SDL_GPUVertexInputState vtxInputState{};
-        vtxInputState.vertex_buffer_descriptions = vtxBufDescs;
-        vtxInputState.num_vertex_buffers = numVtxBufs;
-        vtxInputState.vertex_attributes = vertexAttribs;
-        vtxInputState.num_vertex_attributes = numAttribs;
+        return input;
+    }
+
+    [[nodiscard]] static PipelineBuildResult BuildBlendPipeline(SDL_GPUColorTargetBlendState blendState,
+                                                                const PipelineBuildDescription& description)
+    {
+        PipelineBuildResult result{nullptr, description, {}};
+
+        // Get swapchain texture format for pipeline target.
+        const SDL_GPUTextureFormat swapchainFmt = SDL_GetGPUSwapchainTextureFormat(s_device, s_window);
+
+        SDL_GPUColorTargetDescription colorTargetDesc{};
+        colorTargetDesc.format = swapchainFmt;
+        colorTargetDesc.blend_state = blendState;
+
+        const VertexInput vertexInput = MakeVertexInput(description.vertexLayout);
 
         SDL_GPUGraphicsPipelineTargetInfo targetInfo{};
         targetInfo.color_target_descriptions = &colorTargetDesc;
@@ -6061,7 +6389,7 @@ private:
             : description.vertexLayout == VertexLayout::SkinnedWeightedShadow ? s_vertShaderSkinnedWeightedShadow
                                                                               : s_vertShader2D;
         pipelineInfo.fragment_shader = GetFragmentShader(description.fragmentShader);
-        pipelineInfo.vertex_input_state = vtxInputState;
+        pipelineInfo.vertex_input_state = vertexInput.State();
         pipelineInfo.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
         pipelineInfo.rasterizer_state = rasterState;
         pipelineInfo.depth_stencil_state = MakeDepthStencilState(description);
@@ -6329,6 +6657,7 @@ private:
             }
         }
         DestroyAlphaCoveragePipelines();
+        DestroyObjectMotionPipelines();
         s_postProcessing.DestroyPipelines();
     }
 
@@ -6344,9 +6673,12 @@ private:
             return false;
         }
 
-        // Skip if the existing depth texture already matches the requested size
-        // and the frame's sample count.
-        if (s_depthTexture && s_depthW == width && s_depthH == height && s_depthSampleCount == s_sampleCount)
+        // Skip if the existing depth texture already matches the requested size,
+        // the frame's sample count and whether temporal anti-aliasing samples it.
+        const bool sampled = s_temporalAntialiasingRequested && s_sampledDepthSupported &&
+                             s_sampleCount == Render::Antialiasing::OffSampleCount;
+        if (s_depthTexture && s_depthW == width && s_depthH == height && s_depthSampleCount == s_sampleCount &&
+            s_depthSampled == sampled)
         {
             return true;
         }
@@ -6359,7 +6691,7 @@ private:
         }
 
         const auto depthInfo = mu::GetSdlGpuDepthTextureInfo(
-            {width, height}, mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1));
+            {width, height}, mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1), sampled);
         s_depthTexture = depthInfo ? SDL_CreateGPUTexture(s_device, &*depthInfo) : nullptr;
         if (!s_depthTexture)
         {
@@ -6367,12 +6699,14 @@ private:
                                           SDL_GetError());
             s_depthW = 0u;
             s_depthH = 0u;
+            s_depthSampled = false;
             return false;
         }
 
         s_depthW = width;
         s_depthH = height;
         s_depthSampleCount = s_sampleCount;
+        s_depthSampled = sampled;
         return true;
     }
 
@@ -6573,12 +6907,78 @@ private:
     static void CreatePostProcessingPipelines()
     {
         const mu::SdlGpuPostShaders shaders{s_vertShaderPostFullscreen, s_fragShaderBloomDown, s_fragShaderBloomUp,
-                                            s_fragShaderComposite};
+                                            s_fragShaderComposite, s_fragShaderTemporal};
         const bool created =
             s_postProcessing.CreatePipelines(s_device, shaders, SDL_GetGPUSwapchainTextureFormat(s_device, s_window),
                                              mu::GetSdlGpuSampleCount(s_sampleCount).value_or(SDL_GPU_SAMPLECOUNT_1));
-        mu::log::Get("render")->info("SDL_gpu -- post-processing {} at {}x", created ? "available" : "unavailable",
-                                     s_sampleCount);
+        CreateObjectMotionPipelines();
+        const bool temporalAvailable = s_postProcessing.IsTemporalAvailable() && s_sampledDepthSupported;
+        const bool objectMotion = s_objectMotionPipelines[0] && s_objectMotionPipelines[1];
+        mu::log::Get("render")->info(
+            "SDL_gpu -- post-processing {} at {}x; temporal anti-aliasing {} (object motion: {})",
+            created ? "available" : "unavailable", s_sampleCount, temporalAvailable ? "available" : "unavailable",
+            objectMotion ? "yes" : "no");
+    }
+
+    // The object motion pass's pipeline for `layout`: `vertexShader` with object_motion.frag into
+    // `format`, over the scene's depth (tested, not written), at one sample.
+    [[nodiscard]] static SDL_GPUGraphicsPipeline*
+    BuildObjectMotionPipeline(VertexLayout layout, SDL_GPUShader* vertexShader, SDL_GPUTextureFormat format)
+    {
+        if (!vertexShader || !s_fragShaderObjectMotion || format == SDL_GPU_TEXTUREFORMAT_INVALID)
+        {
+            return nullptr;
+        }
+
+        const VertexInput vertexInput = MakeVertexInput(layout);
+        SDL_GPUColorTargetDescription colorTarget{};
+        colorTarget.format = format;
+
+        SDL_GPUGraphicsPipelineCreateInfo pipelineInfo{};
+        pipelineInfo.vertex_shader = vertexShader;
+        pipelineInfo.fragment_shader = s_fragShaderObjectMotion;
+        pipelineInfo.vertex_input_state = vertexInput.State();
+        pipelineInfo.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
+        pipelineInfo.rasterizer_state.fill_mode = SDL_GPU_FILLMODE_FILL;
+        // Back faces lie behind the front faces' depth: no culling needed, whatever the draw used.
+        pipelineInfo.rasterizer_state.cull_mode = SDL_GPU_CULLMODE_NONE;
+        pipelineInfo.rasterizer_state.front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE;
+        pipelineInfo.depth_stencil_state.enable_depth_test = true;
+        pipelineInfo.depth_stencil_state.enable_depth_write = false;
+        pipelineInfo.depth_stencil_state.compare_op = SDL_GPU_COMPAREOP_LESS_OR_EQUAL;
+        pipelineInfo.target_info.color_target_descriptions = &colorTarget;
+        pipelineInfo.target_info.num_color_targets = 1;
+        pipelineInfo.target_info.has_depth_stencil_target = true;
+        pipelineInfo.target_info.depth_stencil_format = mu::SdlGpuDepthFormat;
+        pipelineInfo.multisample_state.sample_count = SDL_GPU_SAMPLECOUNT_1;
+        return SDL_CreateGPUGraphicsPipeline(s_device, &pipelineInfo);
+    }
+
+    // Optional: without them temporal anti-aliasing follows the camera's movement alone.
+    static void CreateObjectMotionPipelines()
+    {
+        DestroyObjectMotionPipelines();
+        const SDL_GPUTextureFormat format = s_postProcessing.GetObjectMotionFormat();
+        s_objectMotionPipelines[0] =
+            BuildObjectMotionPipeline(VertexLayout::Skinned, s_vertShaderSkinnedMotion, format);
+        s_objectMotionPipelines[1] =
+            BuildObjectMotionPipeline(VertexLayout::SkinnedWeighted, s_vertShaderSkinnedWeightedMotion, format);
+        if (!s_objectMotionPipelines[0] || !s_objectMotionPipelines[1])
+        {
+            DestroyObjectMotionPipelines();
+        }
+    }
+
+    static void DestroyObjectMotionPipelines()
+    {
+        for (SDL_GPUGraphicsPipeline*& pipeline : s_objectMotionPipelines)
+        {
+            if (pipeline)
+            {
+                SDL_ReleaseGPUGraphicsPipeline(s_device, pipeline);
+                pipeline = nullptr;
+            }
+        }
     }
 
     // Alpha-to-coverage variants for s_sampleCount; none with one sample.

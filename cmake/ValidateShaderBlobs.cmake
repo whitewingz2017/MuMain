@@ -24,6 +24,10 @@ set(MU_SHADER_STAGE_NAMES
     post_bloom_down.frag
     post_bloom_up.frag
     post_composite.frag
+    post_temporal.frag
+    skinned_motion.vert
+    skinned_weighted_motion.vert
+    object_motion.frag
 )
 set(MU_SHADER_BLOB_FORMATS spv msl dxil)
 set(MU_SHADER_BLOB_NAMES)

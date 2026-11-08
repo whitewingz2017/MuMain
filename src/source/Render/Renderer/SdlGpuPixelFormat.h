@@ -33,9 +33,10 @@ struct SdlGpuTargetSize
 GetSdlGpuMultisampleColorTextureInfo(SDL_GPUTextureFormat format, SdlGpuTargetSize size,
                                      SDL_GPUSampleCount sampleCount);
 
-// The frame's depth buffer, with the frame's sample count.
-[[nodiscard]] std::optional<SDL_GPUTextureCreateInfo> GetSdlGpuDepthTextureInfo(SdlGpuTargetSize size,
-                                                                                SDL_GPUSampleCount sampleCount);
+// The frame's depth buffer, with the frame's sample count. `sampled`: a later
+// pass of the frame also reads it (temporal anti-aliasing), which needs one sample.
+[[nodiscard]] std::optional<SDL_GPUTextureCreateInfo>
+GetSdlGpuDepthTextureInfo(SdlGpuTargetSize size, SDL_GPUSampleCount sampleCount, bool sampled);
 
 struct SdlGpuFrameTargets
 {

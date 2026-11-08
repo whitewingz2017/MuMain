@@ -258,6 +258,7 @@ void AppendGraphicsSection(std::string& out, const EnvironmentInfo& env)
     AppendRow(out, "Enhanced features", env.enhancedFeatures);
     AppendRow(out, "Enhanced tuning", env.enhancedTuning.empty() ? "defaults" : env.enhancedTuning);
     AppendRow(out, "Anti-aliasing samples", std::to_string(env.antialiasingSamples));
+    AppendRow(out, "Temporal anti-aliasing", Yes(env.temporalAntialiasing));
     AppendRow(out, "Anisotropy", std::to_string(env.anisotropy));
     AppendRow(out, "Resolution", std::to_string(env.windowWidth) + "x" + std::to_string(env.windowHeight));
     AppendRow(out, "Vsync requested / effective", Yes(env.vsyncRequested) + " / " + Yes(env.vsyncEffective));
@@ -480,6 +481,7 @@ void AppendJsonEnvironment(std::string& out, const EnvironmentInfo& env)
     out += "    " + JsonString("enhancedFeatures", env.enhancedFeatures) + "\n";
     out += "    " + JsonString("enhancedTuning", env.enhancedTuning) + "\n";
     out += "    " + JsonInt("antialiasingSamples", env.antialiasingSamples) + "\n";
+    out += "    " + JsonBool("temporalAntialiasing", env.temporalAntialiasing) + "\n";
     out += "    " + JsonInt("anisotropy", env.anisotropy) + "\n";
     out += "    " + JsonString("buildConfig", env.buildConfig) + "\n";
     out += "    " + JsonString("buildEditor", env.buildEditor) + "\n";

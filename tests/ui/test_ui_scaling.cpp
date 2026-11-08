@@ -845,6 +845,24 @@ TEST_CASE("the look preset reads Classic or Enhanced and defaults to CfgDefaultL
     std::filesystem::remove(file);
 }
 
+TEST_CASE("the anti-aliasing type reads MSAA or TAA and defaults to MSAA [config][render][antialiasing]")
+{
+    CHECK(GameConfigValidation::ValidateAntialiasingType(CfgDefaults::CfgDefaultAntialiasingType) ==
+          AntialiasingType::Multisample);
+    CHECK(GameConfigValidation::ParseAntialiasingType(L"TAA") == AntialiasingType::Temporal);
+    CHECK(GameConfigValidation::ParseAntialiasingType(L" taa ") == AntialiasingType::Temporal);
+    CHECK(GameConfigValidation::ParseAntialiasingType(L"msaa") == AntialiasingType::Multisample);
+    CHECK_FALSE(GameConfigValidation::ParseAntialiasingType(L"FXAA").has_value());
+    CHECK_FALSE(GameConfigValidation::ParseAntialiasingType(L"").has_value());
+    // A missing or invalid value counts as the default.
+    CHECK(GameConfigValidation::ValidateAntialiasingType(L"") == AntialiasingType::Multisample);
+    CHECK(GameConfigValidation::ValidateAntialiasingType(L"Shiny") == AntialiasingType::Multisample);
+    for (const AntialiasingType type : {AntialiasingType::Multisample, AntialiasingType::Temporal})
+    {
+        CHECK(GameConfigValidation::ParseAntialiasingType(GameConfigValidation::FormatAntialiasingType(type)) == type);
+    }
+}
+
 TEST_CASE("anti-aliasing and anisotropy changes keep the look preset [config][render][look]")
 {
     auto& config = GameConfig::GetInstance();

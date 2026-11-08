@@ -1,0 +1,123 @@
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+struct Skinning
+{
+    float4x4 mvp;
+    float4 bodyOriginAndScale;
+    float4 boneScaleAndRestPoseScale;
+    uint4 palette;
+};
+
+struct Motion
+{
+    float4x4 currentTransform;
+    float4x4 previousTransform;
+    float4 previousBodyOriginAndScale;
+    float4 previousBoneScaleAndRestPoseScale;
+    uint4 previousPalette;
+};
+
+struct boneRows
+{
+    float4 _data[1];
+};
+
+struct main0_out
+{
+    float4 _entryPointOutput_currentClip [[user(locn0)]];
+    float4 _entryPointOutput_previousClip [[user(locn1)]];
+    float4 gl_Position [[position]];
+    float gl_ClipDistance [[clip_distance]] [1];
+    float gl_ClipDistance_0 [[user(clip0)]];
+};
+
+struct main0_in
+{
+    float3 input_pos [[attribute(0)]];
+    int input_positionBoneIndex [[attribute(4)]];
+};
+
+vertex main0_out main0(main0_in in [[stage_in]], constant Skinning& _54 [[buffer(0)]], constant Motion& _77 [[buffer(1)]], const device boneRows& boneRows_1 [[buffer(2)]])
+{
+    main0_out out = {};
+    float3 _870;
+    do
+    {
+        if ((in.input_positionBoneIndex < 0) || (in.input_positionBoneIndex >= int(_54.palette.y)))
+        {
+            _870 = in.input_pos;
+            break;
+        }
+        uint _430 = _54.palette.x + (uint(in.input_positionBoneIndex) * 3u);
+        uint _434 = _430 + 1u;
+        uint _437 = _430 + 2u;
+        float3 _868;
+        if (_54.boneScaleAndRestPoseScale.x == 1.0)
+        {
+            float4 _455 = float4(in.input_pos * ((_54.boneScaleAndRestPoseScale.y != 0.0) ? _54.boneScaleAndRestPoseScale.y : 1.0), 1.0);
+            _868 = float3(dot(boneRows_1._data[_430], _455), dot(boneRows_1._data[_434], _455), dot(boneRows_1._data[_437], _455));
+        }
+        else
+        {
+            _868 = (float3(dot(boneRows_1._data[_430].xyz, in.input_pos), dot(boneRows_1._data[_434].xyz, in.input_pos), dot(boneRows_1._data[_437].xyz, in.input_pos)) * _54.boneScaleAndRestPoseScale.x) + float3(boneRows_1._data[_430].w, boneRows_1._data[_434].w, boneRows_1._data[_437].w);
+        }
+        float3 _869;
+        if (_54.palette.z != 0u)
+        {
+            _869 = _54.bodyOriginAndScale.xyz + (_868 * _54.bodyOriginAndScale.w);
+        }
+        else
+        {
+            _869 = _868;
+        }
+        _870 = _869;
+        break;
+    } while(false);
+    float4 _338 = float4(_870, 1.0);
+    float3 _873;
+    do
+    {
+        if ((in.input_positionBoneIndex < 0) || (in.input_positionBoneIndex >= int(_77.previousPalette.y)))
+        {
+            _873 = in.input_pos;
+            break;
+        }
+        uint _586 = _77.previousPalette.x + (uint(in.input_positionBoneIndex) * 3u);
+        uint _590 = _586 + 1u;
+        uint _593 = _586 + 2u;
+        float3 _871;
+        if (_77.previousBoneScaleAndRestPoseScale.x == 1.0)
+        {
+            float4 _611 = float4(in.input_pos * ((_77.previousBoneScaleAndRestPoseScale.y != 0.0) ? _77.previousBoneScaleAndRestPoseScale.y : 1.0), 1.0);
+            _871 = float3(dot(boneRows_1._data[_586], _611), dot(boneRows_1._data[_590], _611), dot(boneRows_1._data[_593], _611));
+        }
+        else
+        {
+            _871 = (float3(dot(boneRows_1._data[_586].xyz, in.input_pos), dot(boneRows_1._data[_590].xyz, in.input_pos), dot(boneRows_1._data[_593].xyz, in.input_pos)) * _77.previousBoneScaleAndRestPoseScale.x) + float3(boneRows_1._data[_586].w, boneRows_1._data[_590].w, boneRows_1._data[_593].w);
+        }
+        float3 _872;
+        if (_77.previousPalette.z != 0u)
+        {
+            _872 = _77.previousBodyOriginAndScale.xyz + (_871 * _77.previousBodyOriginAndScale.w);
+        }
+        else
+        {
+            _872 = _871;
+        }
+        _873 = _872;
+        break;
+    } while(false);
+    float4 _349 = _54.mvp * _338;
+    float4 _866 = _349;
+    _866.z = _349.z - (1.9999999949504854157567024230957e-06 * _349.w);
+    out.gl_Position = _866;
+    out._entryPointOutput_currentClip = _77.currentTransform * _338;
+    out._entryPointOutput_previousClip = _77.previousTransform * float4(_873, 1.0);
+    out.gl_ClipDistance[0] = _349.w - 1.0;
+    out.gl_ClipDistance_0 = out.gl_ClipDistance[0];
+    return out;
+}
+

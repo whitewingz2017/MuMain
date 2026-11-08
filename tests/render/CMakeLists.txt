@@ -93,10 +93,15 @@ mu_add_test(
     SOURCES
         test_post_processing.cpp
         test_color_grading_table.cpp
+        test_temporal_antialiasing.cpp
+        test_skin_motion_history.cpp
         ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/BloomSource.cpp
         ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/ColorGradingTable.cpp
         ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/SceneBoundary.cpp
-    LINK_LIBS SDL3::SDL3
+        ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/SkinMotionHistory.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/TemporalHistory.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Render/PostProcessing/TemporalJitter.cpp
+    LINK_LIBS SDL3::SDL3 glm::glm
 )
 
 mu_add_test(
