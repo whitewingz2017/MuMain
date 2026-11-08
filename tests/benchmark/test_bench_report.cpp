@@ -142,13 +142,13 @@ TEST_CASE("the report renders every section and is byte-identical for identical 
     CHECK(first.find("Test Renderer") != std::string::npos);
 }
 
-TEST_CASE("benchmark exports retain nested renderer passes at the end of their storage")
+TEST_CASE("benchmark exports retain nested passes at the end of their storage")
 {
     RunData run = MakeRun();
     constexpr int LastPass = kMaxPasses - 1;
     run.passNames.resize(kMaxPasses, "Unused");
     run.passIsNested.resize(kMaxPasses, true);
-    run.passNames[LastPass] = "RmlGeom";
+    run.passNames[LastPass] = "EvtHandle";
     for (RepeatSamples& repeat : run.segments.front().repeats)
     {
         for (FrameSample& frame : repeat.frames)
@@ -159,10 +159,10 @@ TEST_CASE("benchmark exports retain nested renderer passes at the end of their s
     const auto stats = Stats::SummarizeRun(run);
     CHECK(stats.front().passCpuMs[LastPass] == doctest::Approx(2.0f));
     CHECK(stats.front().unattributedPercent == doctest::Approx(50.0f));
-    CHECK(Report::BuildFramesCsv(run).find("cpu_RmlGeom") != std::string::npos);
-    CHECK(Report::BuildPassesCsv(run).find(",RmlGeom,2.00,3.0") != std::string::npos);
-    CHECK(Report::BuildReportMarkdown(run, stats, {}).find("| RmlGeom | 2.00 | 3.0") != std::string::npos);
-    CHECK(Report::BuildRunJson(run, stats, {}).find("\"RmlGeom\"") != std::string::npos);
+    CHECK(Report::BuildFramesCsv(run).find("cpu_EvtHandle") != std::string::npos);
+    CHECK(Report::BuildPassesCsv(run).find(",EvtHandle,2.00,3.0") != std::string::npos);
+    CHECK(Report::BuildReportMarkdown(run, stats, {}).find("| EvtHandle | 2.00 | 3.0") != std::string::npos);
+    CHECK(Report::BuildRunJson(run, stats, {}).find("\"EvtHandle\"") != std::string::npos);
 }
 
 TEST_CASE("an aborted, dirty-tree run says so at the top of the report")

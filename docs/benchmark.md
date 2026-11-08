@@ -131,6 +131,10 @@ culling and the frame's lights), so little of a frame is left unattributed. `Upd
 `MoveWorld` are split further: `FxChars`, `FxObjects`, `FxMounts`, `FxModels` and `FxTerrain`
 for the effect spawns and poses, and `MvObjects`, `MvItems` and `MvAmbient` for the world's moves.
 
+`Events` is split into `EvtPoll` (SDL polling, including native window message processing) and
+`EvtHandle` (routing returned events to the game, UI and window handlers). Both are included
+in `Events`; do not add them to it. These rows distinguish a polling pause from a handler pause.
+
 For Enhanced frames, `EndReplay` is split into `EndScene` (scene drawing), `EndMotion`
 (skinned object motion), `EndTAA` (temporal resolve), `EndBloom` (bloom sources and filtering)
 and `EndCompUI` (composite and the recorded UI). These are CPU times already included in

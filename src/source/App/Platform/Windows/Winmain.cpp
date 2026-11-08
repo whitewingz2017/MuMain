@@ -1497,14 +1497,21 @@ bool RouteActionInput(SDL_Event& event, bool synthetic, bool& propagates)
     }
 }
 
+static bool PollProfiledEvent(SDL_Event& event)
+{
+    FRAME_PROFILE(EventPoll);
+    return SDL_PollEvent(&event);
+}
+
 // Routes the SDL events queued since the last loop: window, mouse, keyboard and text input, at
 // most g_MaxMessagePerCycle of them when that is set.
 static void PumpEvents()
 {
     SDL_Event event;
     int messageProcessed = 0;
-    while (SDL_PollEvent(&event))
+    while (PollProfiledEvent(event))
     {
+        FRAME_PROFILE(EventDispatch);
 #ifdef _EDITOR
         // Feed every event to the editor's ImGui SDL3 backend (issue #442).
         // Guard on an active context: editor init can fail or be shut down.
