@@ -222,10 +222,10 @@ namespace UI::RmlBridge
     {
     // Set on the document element of every main-scene document, see
     // SuspendMainSceneDocumentsOutsideMainScene().
-    constexpr const char* MainSceneDocumentAttribute = "data-main-scene-document";
+    const Rml::String MainSceneDocumentAttribute = "data-main-scene-document";
     // A DocumentScene::Every document's depths, in and outside the main scene.
-    constexpr const char* MainSceneDepthAttribute = "data-main-scene-depth";
-    constexpr const char* OtherSceneDepthAttribute = "data-other-scene-depth";
+    const Rml::String MainSceneDepthAttribute = "data-main-scene-depth";
+    const Rml::String OtherSceneDepthAttribute = "data-other-scene-depth";
     bool s_mainSceneDocumentsSuspended = false;
 
     template <typename Visit> void ForEachMainSceneDocument(Visit&& visit)
@@ -362,7 +362,7 @@ namespace UI::RmlBridge
 
     void ApplySceneStackingDepths()
     {
-        const char* attribute = SceneFlag == MAIN_SCENE ? MainSceneDepthAttribute : OtherSceneDepthAttribute;
+        const Rml::String& attribute = SceneFlag == MAIN_SCENE ? MainSceneDepthAttribute : OtherSceneDepthAttribute;
         for (int contextIndex = 0; contextIndex < Rml::GetNumContexts(); ++contextIndex)
         {
             Rml::Context* context = Rml::GetContext(contextIndex);
