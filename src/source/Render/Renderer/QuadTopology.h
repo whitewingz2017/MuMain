@@ -7,6 +7,9 @@
 namespace Render::Topology
 {
 
+// Capacity of the renderer's static quad index buffer.
+inline constexpr std::uint32_t MaxQuadsPerDraw = 4096;
+
 enum class QuadSpace
 {
     Screen,

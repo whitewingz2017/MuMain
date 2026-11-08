@@ -71,12 +71,13 @@
 
 ## Batching and profiling
 
-- Terrain draws its ground first and its blended overlays after, each in its
-  original order; do not sort either by texture. The split relies on the
+- Opaque ground quads cover separate tiles and may batch by texture, but flush
+  before cut-out tiles, which are blended and must keep their order. Blended
+  overlays and grass keep their original order; do not sort them by texture.
+  Editor and path-overlay terrain remains unbatched. The layer split relies on the
   overlays staying depth-tested with depth writes off (`LESS_OR_EQUAL` against
   their coplanar ground); an overlay drawn with the depth test off would paint
-  over nearer ground. `terrain_depth_state_contract` guards this. Only adjacent
-  compatible commands may merge.
+  over nearer ground. `terrain_depth_state_contract` guards this.
 - A merge key must include pipeline, texture, sampler, MVP, fog, and contiguous
   vertex storage. Omitting captured state can replay earlier geometry with a
   later draw's settings.

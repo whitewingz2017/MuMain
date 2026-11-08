@@ -91,7 +91,7 @@ namespace
 {
 
 // Maximum number of quads supported by the static quad index buffer.
-constexpr int k_MaxQuads = 4096;
+constexpr int k_MaxQuads = Render::Topology::MaxQuadsPerDraw;
 // Initial vertex capacity. CPU staging grows so stress frames keep late UI draws.
 constexpr Uint32 k_InitialVertexBufferSize = 64u * 1024u * 1024u;
 constexpr Uint32 k_InitialBoneBufferSize = 64u * 1024u;

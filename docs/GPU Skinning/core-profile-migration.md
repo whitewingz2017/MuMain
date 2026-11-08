@@ -56,11 +56,11 @@ wrapper.
 
 This preserves legacy ordering while avoiding per-call GPU uploads.
 
-The renderer does not copy upstream terrain texture-pair sorting. Terrain draws
-its ground first and its blended overlays after, each in order; the overlays are
-depth-tested without depth writes, so they still land on their own ground and
-behind nearer terrain. Adjacent compatible commands merge without changing
-order.
+Terrain draws opaque ground in texture batches, flushing before each cut-out
+tile so those blended tiles keep their order. Its blended overlays follow the
+whole ground pass in their original order; they are depth-tested without depth
+writes, so they still land on their own ground and behind nearer terrain. Grass
+and editor or path-overlay draws retain their original order.
 
 ## Textures and readback
 

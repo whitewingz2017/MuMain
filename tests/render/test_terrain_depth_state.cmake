@@ -39,7 +39,7 @@ if(layer_enable EQUAL -1)
 endif()
 
 string(FIND "${terrain_pass}" "EnableDepthTest();" pass_enable)
-string(FIND "${terrain_pass}" "RenderTerrainFrustrum(EditFlag);" ground_pass)
+string(FIND "${terrain_pass}" "RenderGroundTerrain(EditFlag);" ground_pass)
 string(FIND "${terrain_pass}" "RenderLayerFaces();" layer_pass)
 if(pass_enable EQUAL -1 OR ground_pass EQUAL -1 OR pass_enable GREATER ground_pass)
     message(FATAL_ERROR "RenderTerrain() must turn the depth test on before the ground pass")

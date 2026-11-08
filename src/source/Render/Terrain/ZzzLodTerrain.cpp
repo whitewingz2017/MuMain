@@ -28,6 +28,7 @@
 #include "Render/Renderer/MuRenderer.h"
 #include "Render/Renderer/RenderUtils.h"
 #include "Render/Terrain/TerrainHeightGrid.h"
+#include "Render/Terrain/TerrainQuadBatch.h"
 #include "Render/Lighting/DynamicLightHistory.h"
 #include "Render/Lighting/DynamicLightList.h"
 #include "Render/Lighting/DynamicLightsSetting.h"
@@ -39,6 +40,7 @@
 #include "I18N/All.h"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 
 #include "GameLogic/Events/CSChaosCastle.h"
@@ -1393,77 +1395,83 @@ inline void Interpolation(int mx, int my)
     }
 }
 
+static Render::TerrainQuadBatch s_groundFaces;
+static bool s_batchGroundFaces = false;
+
+static void RenderGroundFaces()
+{
+    const auto lastTexture = s_groundFaces.Flush(
+        [](std::uint32_t texture, std::span<const mu::Vertex3D> vertices)
+        {
+            DisableAlphaBlend();
+            BindTexture(static_cast<int>(texture));
+            mu::GetRenderer().RenderQuad3D(vertices, texture);
+        });
+    if (lastTexture)
+        BindTexture(static_cast<int>(*lastTexture));
+}
+
+static bool TerrainFaceUsesAlphaTest(int texture)
+{
+    constexpr int KanturuTexture = 3;
+    constexpr int CursedTempleTexture = 4;
+    constexpr int HomeTexture = 2;
+    constexpr int EmpireTexture = 10;
+    if (gMapManager.WorldActive == WD_39KANTURU_3RD)
+        return texture == KanturuTexture;
+    if (gMapManager.WorldActive >= WD_45CURSEDTEMPLE_LV1 && gMapManager.WorldActive <= WD_45CURSEDTEMPLE_LV6)
+        return texture == CursedTempleTexture;
+    if (gMapManager.WorldActive == WD_51HOME_6TH_CHAR)
+        return texture == HomeTexture;
+    if (gMapManager.WorldActive == WD_69EMPIREGUARDIAN1 || gMapManager.WorldActive == WD_70EMPIREGUARDIAN2 ||
+        gMapManager.WorldActive == WD_71EMPIREGUARDIAN3 || gMapManager.WorldActive == WD_72EMPIREGUARDIAN4 ||
+        gMapManager.WorldActive == WD_73NEW_LOGIN_SCENE || gMapManager.WorldActive == WD_74NEW_CHARACTER_SCENE)
+        return texture == EmpireTexture;
+#ifdef ASG_ADD_MAP_KARUTAN
+    constexpr int KarutanTexture = 12;
+    if (IsKarutanMap())
+        return texture == KarutanTexture;
+#endif
+    return false;
+}
+
+static std::array<mu::Vertex3D, 4> GroundFaceVertices()
+{
+    const auto makeVertex = [](int corner, int terrainIndex) -> mu::Vertex3D
+    {
+        const float* position = TerrainVertex[corner];
+        const float* uv = TerrainTextureCoord[corner];
+        const float* light = PrimaryTerrainLight[terrainIndex];
+        return {position[0], position[1], position[2],
+                0.f,         0.f,         1.f,
+                uv[0],       uv[1],       mu::PackABGR(light[0], light[1], light[2], 1.f)};
+    };
+    return {makeVertex(0, TerrainIndex1), makeVertex(1, TerrainIndex2), makeVertex(2, TerrainIndex3),
+            makeVertex(3, TerrainIndex4)};
+}
+
 void RenderFace(int Texture, int mx, int my)
 {
-    if (gMapManager.WorldActive == WD_39KANTURU_3RD)
+    constexpr int KanturuAfterTexture = 100;
+    if (gMapManager.WorldActive == WD_39KANTURU_3RD && Texture == KanturuAfterTexture)
+        return;
+
+    const bool alphaTest = TerrainFaceUsesAlphaTest(Texture);
+    if (alphaTest)
     {
-        if (Texture == 3)
-            EnableAlphaTest();
-        else if (Texture == 100)
-            return;
-        else
-            DisableAlphaBlend();
+        // Cut-out terrain is blended: it must keep its place between ground batches.
+        RenderGroundFaces();
+        EnableAlphaTest();
     }
-    else if (gMapManager.WorldActive >= WD_45CURSEDTEMPLE_LV1 && gMapManager.WorldActive <= WD_45CURSEDTEMPLE_LV6)
-    {
-        if (Texture == 4)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
-    }
-    else if (gMapManager.WorldActive == WD_51HOME_6TH_CHAR
-        )
-    {
-        if (Texture == 2)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
-    }
-    else if (gMapManager.WorldActive == WD_69EMPIREGUARDIAN1 || gMapManager.WorldActive == WD_70EMPIREGUARDIAN2 || gMapManager.WorldActive == WD_71EMPIREGUARDIAN3 || gMapManager.WorldActive == WD_72EMPIREGUARDIAN4
-        || gMapManager.WorldActive == WD_73NEW_LOGIN_SCENE || gMapManager.WorldActive == WD_74NEW_CHARACTER_SCENE
-        )
-    {
-        if (Texture == 10)
-        {
-            EnableAlphaTest();
-        }
-        else
-        {
-            DisableAlphaBlend();
-        }
-    }
-#ifdef ASG_ADD_MAP_KARUTAN
-    else if (IsKarutanMap())
-    {
-        if (Texture == 12)
-            EnableAlphaTest();
-        else
-            DisableAlphaBlend();
-    }
-#endif	// ASG_ADD_MAP_KARUTAN
     else
         DisableAlphaBlend();
-    BindTexture(BITMAP_MAPTILE + Texture);
-
-    auto MakeVert = [](const float* pos, const float* tc, const float* light) -> mu::Vertex3D
-    {
-        return {pos[0], pos[1], pos[2], 0.f, 0.f, 1.f, tc[0], tc[1],
-                mu::PackABGR(light[0], light[1], light[2], 1.f)};
-    };
-    const mu::Vertex3D v0 = MakeVert(TerrainVertex[0], TerrainTextureCoord[0], PrimaryTerrainLight[TerrainIndex1]);
-    const mu::Vertex3D v1 = MakeVert(TerrainVertex[1], TerrainTextureCoord[1], PrimaryTerrainLight[TerrainIndex2]);
-    const mu::Vertex3D v2 = MakeVert(TerrainVertex[2], TerrainTextureCoord[2], PrimaryTerrainLight[TerrainIndex3]);
-    const mu::Vertex3D v3 = MakeVert(TerrainVertex[3], TerrainTextureCoord[3], PrimaryTerrainLight[TerrainIndex4]);
-    const mu::Vertex3D vertices[4] = {v0, v1, v2, v3};
-    mu::GetRenderer().RenderQuad3D(vertices, 0u);
+    const auto vertices = GroundFaceVertices();
+    const auto texture = static_cast<std::uint32_t>(BITMAP_MAPTILE + Texture);
+    BindTexture(static_cast<int>(texture));
+    if (s_batchGroundFaces && !alphaTest)
+        s_groundFaces.Add(texture, vertices);
+    else
+        mu::GetRenderer().RenderQuad3D(vertices, 0u);
 }
 
 void RenderFace_After(int Texture, int mx, int my)
@@ -3268,6 +3276,23 @@ static void RenderBrushHighlight()
 // the entire map, not just the window around the camera.
 bool g_bMapEditorFullTerrain = false;
 
+static void RenderGroundTerrain(bool editFlag)
+{
+    TerrainFlag = TERRAIN_MAP_NORMAL;
+    s_batchGroundFaces = !editFlag;
+#ifdef SHOW_PATH_INFO
+    // Path overlays must follow each tile immediately.
+#ifdef CSK_DEBUG_MAP_PATHFINDING
+    s_batchGroundFaces = s_batchGroundFaces && !g_bShowPath;
+#else
+    s_batchGroundFaces = false;
+#endif
+#endif
+    RenderTerrainFrustrum(editFlag);
+    s_batchGroundFaces = false;
+    RenderGroundFaces();
+}
+
 void RenderTerrain(bool EditFlag)
 {
     if (g_bMapEditorFullTerrain)
@@ -3303,8 +3328,7 @@ void RenderTerrain(bool EditFlag)
         InitCollisionDetectLineToFace();
     }
 
-    TerrainFlag = TERRAIN_MAP_NORMAL;
-    RenderTerrainFrustrum(EditFlag);
+    RenderGroundTerrain(EditFlag);
     RenderLayerFaces();
     //
     if (EditFlag && SelectFlag)

@@ -67,6 +67,13 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME terrain_quad_batch_tests
+    SOURCES
+        test_terrain_quad_batch.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Render/Terrain/TerrainQuadBatch.cpp
+)
+
+mu_add_test(
     NAME mip_chain_tests
     SOURCES
         test_mip_chain.cpp
