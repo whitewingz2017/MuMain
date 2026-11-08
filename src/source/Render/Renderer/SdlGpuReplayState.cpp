@@ -34,10 +34,7 @@ bool SdlGpuReplayState::SelectPipeline(SDL_GPUGraphicsPipeline* pipeline)
 
     m_pipeline = pipeline;
     m_pipelineValid = true;
-    // SDL keeps pushed uniform data across pipeline changes until the slot is overwritten.
-    m_fragmentSamplerValid = false;
-    m_normalMapSamplerValid = false;
-    m_vertexStorageBufferValid = false;
+    // SDL retains resource slots and uniform data, handling pipeline-specific native rebinding itself.
     return true;
 }
 

@@ -36,7 +36,7 @@ TEST_CASE("identical replay state is skipped [render][sdl_gpu_replay_state]")
     CHECK_FALSE(state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 16, SDL_GPU_INDEXELEMENTSIZE_16BIT));
 }
 
-TEST_CASE("pipeline changes rebind resources and preserve uniform data [render][sdl_gpu_replay_state]")
+TEST_CASE("pipeline changes preserve resource slots and uniform data [render][sdl_gpu_replay_state]")
 {
     Render::SdlGpuReplayState state;
     const std::array<std::byte, 2> uniforms{std::byte{7}, std::byte{8}};
@@ -50,11 +50,49 @@ TEST_CASE("pipeline changes rebind resources and preserve uniform data [render][
     state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 0, SDL_GPU_INDEXELEMENTSIZE_16BIT);
 
     CHECK(state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(6)));
-    CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3)));
+    CHECK_FALSE(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3)));
     CHECK_FALSE(state.SelectVertexUniforms(0, uniforms));
     CHECK_FALSE(state.SelectFragmentUniforms(uniforms));
-    CHECK(state.SelectVertexStorageBuffers(bones));
+    CHECK_FALSE(state.SelectVertexStorageBuffers(bones));
     CHECK_FALSE(state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 0, SDL_GPU_INDEXELEMENTSIZE_16BIT));
+}
+
+TEST_CASE("resource changes still bind after pipeline switches and full resets [render][sdl_gpu_replay_state]")
+{
+    Render::SdlGpuReplayState state;
+    SDL_GPUBuffer* const bones[] = {Pointer<SDL_GPUBuffer>(5)};
+    SDL_GPUBuffer* const bonesAndTerrain[] = {Pointer<SDL_GPUBuffer>(5), Pointer<SDL_GPUBuffer>(6)};
+    SDL_GPUBuffer* const otherBonesAndTerrain[] = {Pointer<SDL_GPUBuffer>(13), Pointer<SDL_GPUBuffer>(6)};
+
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
+    state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3));
+    state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(8), Pointer<SDL_GPUSampler>(9));
+    state.SelectVertexStorageBuffers(bonesAndTerrain);
+
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(7));
+    CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(4), Pointer<SDL_GPUSampler>(3)));
+    CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(4), Pointer<SDL_GPUSampler>(10)));
+    CHECK_FALSE(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(4), Pointer<SDL_GPUSampler>(10)));
+    CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(11), Pointer<SDL_GPUSampler>(9)));
+    CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(11), Pointer<SDL_GPUSampler>(12)));
+    CHECK_FALSE(state.SelectVertexStorageBuffers(bonesAndTerrain));
+    CHECK(state.SelectVertexStorageBuffers(bones));
+
+    // Returning to an earlier pipeline keeps the current slots, not that pipeline's earlier resources.
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
+    CHECK_FALSE(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(4), Pointer<SDL_GPUSampler>(10)));
+    CHECK_FALSE(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(11), Pointer<SDL_GPUSampler>(12)));
+    CHECK_FALSE(state.SelectVertexStorageBuffers(bones));
+    CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3)));
+    CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(8), Pointer<SDL_GPUSampler>(9)));
+    CHECK(state.SelectVertexStorageBuffers(bonesAndTerrain));
+    CHECK(state.SelectVertexStorageBuffers(otherBonesAndTerrain));
+    CHECK_FALSE(state.SelectVertexStorageBuffers(otherBonesAndTerrain));
+
+    state.Invalidate();
+    CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3)));
+    CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(8), Pointer<SDL_GPUSampler>(9)));
+    CHECK(state.SelectVertexStorageBuffers(bonesAndTerrain));
 }
 
 TEST_CASE("changing textures and vertex buffers preserves cached camera uniforms [render][sdl_gpu_replay_state]")
@@ -142,7 +180,7 @@ TEST_CASE("viewport scissor and editor invalidation are explicit [render][sdl_gp
     CHECK(state.SelectScissor(scissor));
 }
 
-TEST_CASE("the normal map slot is cached like the texture and invalidated with the pipeline [render][sdl_gpu_replay_state]")
+TEST_CASE("the normal map slot stays cached across pipelines and resets with the pass [render][sdl_gpu_replay_state]")
 {
     Render::SdlGpuReplayState state;
     state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
@@ -153,7 +191,7 @@ TEST_CASE("the normal map slot is cached like the texture and invalidated with t
     CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(10), Pointer<SDL_GPUSampler>(9)));
 
     state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(2));
-    CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(10), Pointer<SDL_GPUSampler>(9)));
+    CHECK_FALSE(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(10), Pointer<SDL_GPUSampler>(9)));
     state.Invalidate();
     CHECK(state.SelectNormalMapSampler(Pointer<SDL_GPUTexture>(10), Pointer<SDL_GPUSampler>(9)));
 }
@@ -222,5 +260,5 @@ TEST_CASE("a shadow draw's second uniform slot and storage buffer are tracked [r
 
     state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(2));
     CHECK_FALSE(state.SelectVertexUniforms(1, skinning));
-    CHECK(state.SelectVertexStorageBuffers(bones));
+    CHECK_FALSE(state.SelectVertexStorageBuffers(bones));
 }
