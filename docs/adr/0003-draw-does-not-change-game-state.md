@@ -178,8 +178,10 @@ drawer, and the renderer applies the active look per draw.
   a draw pass on the drawing thread, the scene's or the offscreen one
   (`Diagnostics::DrawSpawnCheck`); every such call is a violation. Reading a
   sequence's state and the draws' own `DrawRand` / `DrawFpsCheck` report
-  nothing. Every build logs each offending caller once to the error log, with
-  or without the control socket. Tests read the count and the last caller.
+  nothing. Every build logs each offending caller's address once to the error
+  log, with or without the control socket. Tests read the count and the last
+  caller; explicit diagnostic queries resolve names so symbol loading does
+  not stall a draw.
 - **Every test run:** `draws_take_game_objects_read_only` reads the game's
   sources as the compiler does (comments, literals and preprocessor lines
   left out; declarations found across lines and attributes): a function

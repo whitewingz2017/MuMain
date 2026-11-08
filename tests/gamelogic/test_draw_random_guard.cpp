@@ -15,6 +15,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <dbghelp.h>
 #else
 #include <execinfo.h>
 #endif
@@ -143,10 +144,32 @@ TEST_CASE("The guard names each function that drew from a gameplay sequence whil
     };
     void* const legacySite = drawnFrom(DrawsFromTheUpdateSequence, "legacy random draw");
     void* const engineSite = drawnFrom(DrawsFromTheEngine, "random engine draw");
-    // Two sites, two callers: the log names each of them once.
+    // Two sites, two callers: the log records each of them once.
     CHECK(legacySite != engineSite);
     ResetViolations();
 }
+
+#ifdef _WIN32
+TEST_CASE("Automatic draw warnings leave Windows symbol loading to explicit queries [random]")
+{
+    const HANDLE process = GetCurrentProcess();
+    const DWORD64 module = reinterpret_cast<DWORD64>(GetModuleHandleW(nullptr));
+    const DWORD64 loadedBefore = SymGetModuleBase64(process, module);
+    ResetViolations();
+    void* here = nullptr;
+    {
+        const DrawScope drawing;
+        DrawsFromTheEngine(&here);
+    }
+    CHECK(Violations() == 1);
+    CHECK(SymGetModuleBase64(process, module) == loadedBefore);
+    const Violation violation = LastViolation();
+    CHECK(violation.kind == "random engine draw");
+    CHECK(violation.callerAddress != nullptr);
+    CHECK(!violation.caller.empty());
+    ResetViolations();
+}
+#endif
 
 TEST_CASE("A draw's own randomness and reading the sequences leave both gameplay sequences as they were [random]")
 {

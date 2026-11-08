@@ -78,8 +78,8 @@ void LogViolation(const char* kind, const Callers& callers)
     static std::set<void*> logged;
     if (!logged.insert(callers[0]).second)
         return;
-    g_ErrorReport.Write(L"[DrawSpawnCheck] the draw did a %hs from %hs; do it in the update\r\n", kind,
-                        FunctionAt(callers[0]).c_str());
+    // Resolve names only for explicit queries; loading symbols can stall the drawing thread.
+    g_ErrorReport.Write(L"[DrawSpawnCheck] the draw did a %hs from %p; do it in the update\r\n", kind, callers[0]);
 }
 } // namespace
 

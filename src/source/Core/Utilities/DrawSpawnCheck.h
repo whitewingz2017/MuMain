@@ -5,8 +5,8 @@
 
 // Keeps the draw from changing the game: while the frame draws, every spawn function, and every call that advances or
 // reseeds a gameplay random sequence, notes its call on the drawing thread, and each one is a violation. Every build
-// logs each violating caller once; tests read the count and the last caller; the control socket's "drawspawns" lists
-// every one with its callers.
+// logs each violating caller's address once; tests read the count and the last caller; the control socket's
+// "drawspawns" lists every one with its callers. Names are resolved only for these explicit queries.
 namespace Diagnostics::DrawSpawnCheck
 {
 // Marks the frame's draw for as long as it lives.
