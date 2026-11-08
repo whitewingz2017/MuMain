@@ -57,6 +57,48 @@ TEST_CASE("pipeline changes invalidate descriptor-backed state [render][sdl_gpu_
     CHECK_FALSE(state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 0, SDL_GPU_INDEXELEMENTSIZE_16BIT));
 }
 
+TEST_CASE("changing textures and vertex buffers preserves cached camera uniforms [render][sdl_gpu_replay_state]")
+{
+    Render::SdlGpuReplayState state;
+    std::array<std::byte, 64> camera{std::byte{1}};
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
+    state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3));
+    state.SelectVertexBuffer(Pointer<SDL_GPUBuffer>(4), 36, 0);
+    CHECK(state.SelectVertexUniforms(0, camera));
+
+    state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(5), Pointer<SDL_GPUSampler>(3));
+    state.SelectVertexBuffer(Pointer<SDL_GPUBuffer>(6), 36, 0);
+    CHECK_FALSE(state.SelectVertexUniforms(0, camera));
+
+    camera.back() = std::byte{2};
+    CHECK(state.SelectVertexUniforms(0, camera));
+    CHECK_FALSE(state.SelectVertexUniforms(0, camera));
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(7));
+    CHECK(state.SelectVertexUniforms(0, camera));
+}
+
+TEST_CASE("the full skinned uniform block is cached including its final fields [render][sdl_gpu_replay_state]")
+{
+    Render::SdlGpuReplayState state;
+    std::array<std::byte, 256> skinning{};
+    CHECK(state.SelectVertexUniforms(0, skinning));
+    CHECK_FALSE(state.SelectVertexUniforms(0, skinning));
+    skinning.back() = std::byte{1};
+    CHECK(state.SelectVertexUniforms(0, skinning));
+    CHECK_FALSE(state.SelectVertexUniforms(0, skinning));
+}
+
+TEST_CASE("oversized uniform blocks remain uncached [render][sdl_gpu_replay_state]")
+{
+    Render::SdlGpuReplayState state;
+    const std::array<std::byte, Render::SdlGpuReplayState::kVertexUniformCapacity + 1> oversized{};
+    CHECK(state.SelectVertexUniforms(0, oversized));
+    CHECK(state.SelectVertexUniforms(0, oversized));
+    const std::array<std::byte, 4> small{};
+    CHECK(state.SelectVertexUniforms(0, small));
+    CHECK_FALSE(state.SelectVertexUniforms(0, small));
+}
+
 TEST_CASE("viewport scissor and editor invalidation are explicit [render][sdl_gpu_replay_state]")
 {
     Render::SdlGpuReplayState state;

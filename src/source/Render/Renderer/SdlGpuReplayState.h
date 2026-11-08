@@ -11,6 +11,8 @@ namespace Render
 class SdlGpuReplayState final
 {
 public:
+    static constexpr std::size_t kVertexUniformCapacity = 256;
+
     bool SelectPipeline(SDL_GPUGraphicsPipeline* pipeline);
     bool SelectFragmentSampler(SDL_GPUTexture* texture, SDL_GPUSampler* sampler);
     // The second fragment texture slot (skinned_lit.frag's normal map).
@@ -33,7 +35,6 @@ public:
 
 private:
     static constexpr std::size_t kVertexUniformSlots = 2;
-    static constexpr std::size_t kVertexUniformCapacity = 192;
     static constexpr std::size_t kFragmentUniformCapacity = 48;
     static constexpr std::size_t kVertexStorageBufferCapacity = 2;
 

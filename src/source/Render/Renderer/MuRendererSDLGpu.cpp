@@ -127,6 +127,8 @@ struct SkinningVertexUniforms
     float vertexToWorldRows[3][4]{};
 };
 static_assert(sizeof(SkinningVertexUniforms) == 256, "SkinningVertexUniforms must be 256 bytes");
+static_assert(sizeof(SkinningVertexUniforms) <= Render::SdlGpuReplayState::kVertexUniformCapacity,
+              "The replay cache must hold the complete skinned uniform block");
 static_assert(offsetof(SkinningVertexUniforms, eyePositionAndSpecular) == 192,
               "eyePositionAndSpecular must follow textureCoordinateParameters (HLSL cbuffer Skinning)");
 static_assert(offsetof(SkinningVertexUniforms, vertexToWorldRows) == 208,
@@ -1038,14 +1040,19 @@ static bool BindReplayPipeline(SDL_GPUGraphicsPipeline* pipeline, Render::SdlGpu
     return true;
 }
 
+static void PushVertexUniformData(Uint32 slot, const void* data, std::size_t size)
+{
+    SDL_PushGPUVertexUniformData(s_cmdBuf, slot, data, static_cast<Uint32>(size));
+    ++s_dbgVertexUniformPushesThisFrame;
+}
+
 static void PushReplayVertexUniforms(Uint32 slot, const void* data, std::size_t size, Render::SdlGpuReplayState& state)
 {
     const auto* bytes = static_cast<const std::byte*>(data);
     if (!state.SelectVertexUniforms(slot, {bytes, size}))
         return;
 
-    SDL_PushGPUVertexUniformData(s_cmdBuf, slot, data, static_cast<Uint32>(size));
-    ++s_dbgVertexUniformPushesThisFrame;
+    PushVertexUniformData(slot, data, size);
 }
 
 static void PushReplayFragmentUniforms(const FogUniform& uniforms, Render::SdlGpuReplayState& state)
@@ -1133,14 +1140,18 @@ public:
 template <typename TransformUniforms>
 static void PushReplayTransformUniforms(const TransformUniforms& uniforms, Render::SdlGpuReplayState& state)
 {
+    // Jitter is fixed within a replay pass: cache the inputs before computing the shifted matrix.
+    if (!state.SelectVertexUniforms(0, std::as_bytes(std::span{&uniforms, 1u})))
+        return;
+
     if (s_sceneClipJitter == glm::vec2(0.0f) || !Render::PostProcessing::IsPerspective(uniforms.mvp))
     {
-        PushReplayVertexUniforms(0, &uniforms, sizeof(uniforms), state);
+        PushVertexUniformData(0, &uniforms, sizeof(uniforms));
         return;
     }
     TransformUniforms jittered = uniforms;
     jittered.mvp = Render::PostProcessing::JitterTransform(uniforms.mvp, s_sceneClipJitter);
-    PushReplayVertexUniforms(0, &jittered, sizeof(jittered), state);
+    PushVertexUniformData(0, &jittered, sizeof(jittered));
 }
 
 // Replays a recorded draw with `pipeline`: its own, or a variant of it for another pass.
