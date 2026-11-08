@@ -83,7 +83,7 @@ it found when it ends or is stopped.
 | `look.dynlights.off` | Dynamic model lights from candles, fires and spells. |
 | `look.mood.off` | The light mood: the map's baked light as Classic has it. |
 | `look.post.off` | Bloom and colour grading. |
-| `aa.off` | Multisample anti-aliasing; temporal anti-aliasing, when on, stays. |
+| `aa.off` | Both multisample and temporal anti-aliasing; the next segment and the end of the run restore the previous choice. |
 | `aniso.off` | Anisotropic filtering (1x); mipmaps stay. |
 | `render.sort.off` | Opaque map object draws submitted as recorded instead of first, grouped by pipeline and texture. |
 

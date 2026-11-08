@@ -23,12 +23,14 @@ The HUD, windows, text, the cursor and item previews in windows are never
 processed: they look exactly as without post-processing.
 
 Post-processing is part of the Enhanced look and off in Classic
-([enhanced-look.md](enhanced-look.md)). With it on, a bloom strength of 0, a
+([enhanced-look.md](enhanced-look.md)). With TAA off, a bloom strength of 0,
 sharpening of 0 and no grading table, the frame looks the same as with it off.
 
 ## Temporal anti-aliasing
 
-With `[Render] AntialiasingType=TAA` (or `$taa on` in the chat box) the
+New configurations use Enhanced with temporal anti-aliasing enabled. Select
+TAA in the options window's Anti-aliasing row, set `[Render] AntialiasingType=TAA`
+or use `$taa on` in the chat box. With TAA selected, the
 Enhanced look smooths edges over time instead of with multisampling: each
 frame draws the 3D scene shifted by a different fraction of a pixel (eight
 offsets in turn), and blends it with the result of the frames before, found
@@ -55,9 +57,9 @@ loading screen or switching the look. The interface is never jittered or
 blended.
 
 Temporal anti-aliasing needs post-processing on; without it (Classic, or
-`PostProcessing=0`) the scene renders without anti-aliasing. `$taa off`,
-`$msaa` or the options window's Anti-aliasing row switch back to
-multisampling. The benchmark report's Graphics table says whether frames used
+`PostProcessing=0`) the scene renders without anti-aliasing. `$taa off` restores
+the saved multisample count; `$msaa` or choosing Off, 2x, 4x or 8x in the options
+window's Anti-aliasing row selects multisampling. The benchmark report's Graphics table says whether frames used
 it ("Temporal anti-aliasing").
 
 ## Settings

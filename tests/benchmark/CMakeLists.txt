@@ -14,6 +14,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME test_bench_scene
+    SOURCES
+        test_bench_scene.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+    LINK_LIBS MuClient
+)
+
+mu_add_test(
     NAME test_bench_report
     SOURCES
         test_bench_report.cpp

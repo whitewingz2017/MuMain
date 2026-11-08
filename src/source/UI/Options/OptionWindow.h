@@ -200,7 +200,7 @@ namespace mu::ui::window
         bool TuningGroupUnlocked(int group) const;
         void FinishTuningInteraction();
         // Video tab's Anti-aliasing and Anisotropic filtering rows; their values are read live
-        // from GameConfig, since `$msaa` changes the first outside this window too.
+        // from GameConfig, since `$msaa` and `$taa` change the first outside this window too.
         void RmlAntialiasingChanged(int index);
         void RmlAnisotropyChanged(int index);
         // Interface/UI tab -- Show FPS Counter/Show Debug Info stay ephemeral (SceneManager.h
@@ -367,7 +367,7 @@ namespace mu::ui::window
             Rml::String tuningResetAllLabel;
             // Shown while the last save failed; empty otherwise.
             Rml::String tuningSaveMessage;
-            // [Render] Antialiasing (the Enhanced look's samples) and Anisotropy.
+            // [Render] AntialiasingType/Antialiasing and Anisotropy.
             std::vector<Rml::String> antialiasingLabels;
             int antialiasingIndex = 0;
             Rml::String antialiasingRowLabel;

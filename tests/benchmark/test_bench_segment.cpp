@@ -18,6 +18,15 @@ TEST_CASE("the baseline segment disables nothing")
     CHECK_FALSE(baseline->config.disableEffects);
     CHECK_FALSE(baseline->config.disableParticles);
     CHECK_FALSE(baseline->config.disableJoints);
+    CHECK_FALSE(baseline->config.temporalAntialiasingOff);
+}
+
+TEST_CASE("aa.off disables both multisample and temporal anti-aliasing")
+{
+    const Segment* off = Segments::Find("aa.off");
+    REQUIRE(off != nullptr);
+    CHECK(off->config.antialiasingSamples == 0);
+    CHECK(off->config.temporalAntialiasingOff);
 }
 
 TEST_CASE("every non-baseline segment actually disables something")

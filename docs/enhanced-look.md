@@ -1,8 +1,8 @@
 # Classic and Enhanced look
 
-The client has two looks. **Classic** (the default) draws the game as it
-always looked. **Enhanced** is a preset that switches on five rendering
-features and 4x multisample anti-aliasing together. The values of the Enhanced
+The client has two looks. **Classic** draws the game as it always looked.
+**Enhanced** (the default for new configurations) is a preset that switches on
+five rendering features and temporal anti-aliasing together. The values of the Enhanced
 preset ship with the client in two data files, and every piece of it can be
 tuned there, also per map, without touching the code (see "Tuning the Enhanced
 preset" below). Players can also tune its strengths for themselves in the
@@ -15,7 +15,7 @@ options window, without editing those files (see "Tuning it yourself").
 | Dynamic model lights | candles, fires and spells light characters, monsters and NPCs | — |
 | Light mood | darker baked map light, so the light sources stand out | [light-mood.md](light-mood.md) |
 | Post-processing | bloom around light effects, per-map colour grading and sharpening | [post-processing.md](post-processing.md) |
-| Anti-aliasing | multisampled edges (4 samples, or what `Antialiasing` asks for), alpha-to-coverage for cut-out foliage and fences; or temporal anti-aliasing instead (`AntialiasingType=TAA`) | [post-processing.md](post-processing.md) |
+| Anti-aliasing | temporal anti-aliasing by default; optionally multisampled edges with alpha-to-coverage for cut-out foliage and fences | [post-processing.md](post-processing.md) |
 
 ## Choosing the look
 
@@ -29,24 +29,23 @@ options window, without editing those files (see "Tuning it yourself").
 
   | Key | Values | Default |
   |---|---|---|
-  | `Look` | `Enhanced` or `Classic` | `Classic` |
-  | `Antialiasing` | samples of the Enhanced look: `0` (off), `2`, `4` or `8` | `4` |
-  | `AntialiasingType` | `MSAA` (the `Antialiasing` samples) or `TAA` (temporal, with one sample) | `MSAA` |
+  | `Look` | `Enhanced` or `Classic` | `Enhanced` |
+  | `Antialiasing` | samples of the Enhanced look when MSAA is selected: `0` (off), `2`, `4` or `8` | `4` |
+  | `AntialiasingType` | `MSAA` (the `Antialiasing` samples) or `TAA` (temporal, with one sample) | `TAA` |
   | `Anisotropy` | maximum anisotropic filtering, clamped to the GPU | `8` |
   | `MipSharpenPercent` | how much sharper world textures are sampled, in hundredths of a mip level: `0` (standard) to `100` | `50` |
   | `EnhancedLighting`, `DynamicLights`, `LightMood`, `PostProcessing` | `0` switches that feature of Enhanced off; Classic ignores them | `1` |
 
-  A missing or unknown `Look` counts as Classic, so the classic look stays
-  until a player ticks "Enhanced graphics". Classic renders without
-  anti-aliasing whatever `Antialiasing` says; Enhanced uses its count, lowered
-  to what the GPU supports. The options window's Anti-aliasing row, or
-  `$msaa off|2|4|8` in the chat box, changes and saves the count (on a slow GPU,
-  Off keeps Enhanced without anti-aliasing). The Anisotropic filtering row sets
-  `Anisotropy`.
-  `$taa on` switches Enhanced to temporal anti-aliasing (`AntialiasingType=TAA`)
-  and saves it; `$taa off`, `$msaa` or the Anti-aliasing row go back to
-  multisampling. Temporal anti-aliasing needs post-processing; with
-  `PostProcessing=0` the scene renders without anti-aliasing.
+  A missing or unknown `Look` counts as Enhanced; a missing or unknown
+  `AntialiasingType` counts as TAA. Explicit saved choices take precedence.
+  Classic renders without anti-aliasing. The options window's Anti-aliasing row
+  offers Off, 2x, 4x, 8x and TAA, applies the choice immediately and saves it.
+  The multisample count is lowered to what the GPU supports. Off keeps Enhanced
+  without anti-aliasing. The Anisotropic filtering row sets `Anisotropy`.
+  `$taa on` selects and saves temporal anti-aliasing (`AntialiasingType=TAA`);
+  `$taa off` restores the saved multisample count, and `$msaa off|2|4|8` selects
+  and saves multisampling. Temporal anti-aliasing needs post-processing; with
+  TAA selected and `PostProcessing=0` the scene renders without anti-aliasing.
   The anisotropy level applies to every texture with mip levels: world
   textures in Enhanced, and upscaled textures (an optional asset pack) in both
   looks, because they are always drawn smaller than they are stored.

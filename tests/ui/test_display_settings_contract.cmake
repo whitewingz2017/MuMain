@@ -158,9 +158,11 @@ require_text(winmain_source
     "g_ItemDataHandler.SetTranslateItemNames(GameConfig::GetInstance().GetTranslateItemNames());"
     "Winmain.cpp must apply translated item names at startup")
 
-# A missing or invalid Look counts as CfgDefaultLook, which is Classic: Enhanced is opt-in.
-require_text(config_constants "CfgDefaultLook[] = L\"Classic\""
-    "GameConfigConstants.h must default the look preset to Classic")
+# A missing or invalid Look and AntialiasingType use Enhanced with TAA.
+require_text(config_constants "CfgDefaultLook[] = L\"Enhanced\""
+    "GameConfigConstants.h must default the look preset to Enhanced")
+require_text(config_constants "CfgDefaultAntialiasingType[] = L\"TAA\""
+    "GameConfigConstants.h must default anti-aliasing to TAA")
 
 foreach(required_text IN ITEMS
         "m_look = ReadLookPreset(m_configPath);"

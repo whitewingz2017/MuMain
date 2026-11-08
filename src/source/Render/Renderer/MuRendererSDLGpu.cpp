@@ -3773,6 +3773,11 @@ public:
         return UsesTemporalAntialiasing();
     }
 
+    [[nodiscard]] bool IsTemporalAntialiasingRequested() const override
+    {
+        return s_temporalAntialiasingRequested;
+    }
+
     void SetSceneCamera() override
     {
         if (!s_frameActive || s_sceneBoundary.IsMarked())

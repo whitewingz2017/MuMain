@@ -308,6 +308,63 @@ TEST_CASE("options keep displayed theme identities and refresh only on open or s
     CHECK(document()->GetElementById("index")->GetInnerRML() == "1");
 }
 
+TEST_CASE("the anti-aliasing dropdown selects and reflects TAA, MSAA and Off [ui][rml-theme][antialiasing]")
+{
+    Fixture fixture;
+    fixture.Write(fixture.Theme("legacy") / "base.rcss", "body { color: white; }");
+    fixture.Write(fixture.root / "Data/Interface/RmlUi/option_window.rml",
+                  "<rml><head></head><body data-model='option_window'>"
+                  "<div id='panel' class='fullscreen'><span id='selected'>{{ antialiasing_value_label }}</span>"
+                  "<div id='choices'><span data-for='label : antialiasing_labels'>{{ label }}</span></div>"
+                  "<button id='taa' data-event-click='option_dropdown_option_click(6, 4)'>TAA</button>"
+                  "<button id='msaa' data-event-click='option_dropdown_option_click(6, 2)'>4x</button>"
+                  "<button id='off' data-event-click='option_dropdown_option_click(6, 0)'>Off</button>"
+                  "<button id='invalid' data-event-click='option_dropdown_option_click(6, 5)'>Invalid</button>"
+                  "</div></body></rml>");
+    fixture.ActivateRoot();
+    UI::RmlBridge::SetActiveThemeName("legacy");
+    GameConfig& config = GameConfig::GetInstance();
+    const AntialiasingType previousType = config.GetAntialiasingType();
+    const int previousSamples = config.GetAntialiasing();
+    config.SetAntialiasingType(AntialiasingType::Temporal);
+    mu::ui::window::CManager manager;
+    mu::ui::window::COptionWindow options;
+    REQUIRE(options.Create(&manager));
+    options.Show(true);
+    auto update = [&]
+    {
+        options.Update();
+        fixture.context->Update();
+    };
+    for (int frame = 0; frame < 5; ++frame)
+        update();
+    auto* document = fixture.context->GetDocument(0);
+    REQUIRE(document != nullptr);
+    CHECK(document->GetElementById("selected")->GetInnerRML() == "TAA");
+    CHECK(document->GetElementById("choices")->GetInnerRML().find("TAA") != std::string::npos);
+    document->GetElementById("msaa")->DispatchEvent(Rml::EventId::Click, {});
+    update();
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Multisample);
+    CHECK(config.GetAntialiasing() == 4);
+    CHECK(document->GetElementById("selected")->GetInnerRML() == "4x");
+    document->GetElementById("taa")->DispatchEvent(Rml::EventId::Click, {});
+    update();
+    config.Load();
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Temporal);
+    CHECK(config.GetAntialiasing() == 4);
+    CHECK(document->GetElementById("selected")->GetInnerRML() == "TAA");
+    document->GetElementById("invalid")->DispatchEvent(Rml::EventId::Click, {});
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Temporal);
+    document->GetElementById("off")->DispatchEvent(Rml::EventId::Click, {});
+    update();
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Multisample);
+    CHECK(config.GetAntialiasing() == 0);
+    options.Release();
+    config.SetAntialiasing(previousSamples);
+    config.SetAntialiasingType(previousType);
+    config.Save();
+}
+
 TEST_CASE("scene resizing preserves open creation and message actions [ui][scene-resize]")
 {
     // Avoid scene initialization: it needs live character models and native GPU textures.

@@ -24,9 +24,10 @@ UIScalePercent=100
 Zoom=1735
 [Render]
 VSync=1
-Look=Classic
+Look=Enhanced
 Anisotropy=8
 Antialiasing=4
+AntialiasingType=TAA
 EnhancedLighting=1
 DynamicLights=1
 LightMood=1

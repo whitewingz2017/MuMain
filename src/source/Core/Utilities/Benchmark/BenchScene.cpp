@@ -16,8 +16,21 @@ namespace
 // What the run found, which a segment's -1 levels and the restore go back to.
 Render::Look::FeatureOverrides s_overridesBeforeRun;
 int s_antialiasingBeforeRun = 0;
+bool s_temporalAntialiasingBeforeRun = false;
 int s_anisotropyBeforeRun = 0;
 int s_anisotropyApplied = 0;
+
+void ApplyAntialiasing(const SceneConfig& config)
+{
+    mu::IMuRenderer& renderer = mu::GetRenderer();
+    renderer.SetAntialiasingSamples(config.antialiasingSamples < 0 ? s_antialiasingBeforeRun
+                                                                   : config.antialiasingSamples);
+    const bool temporal = s_temporalAntialiasingBeforeRun && !config.temporalAntialiasingOff;
+    if (renderer.IsTemporalAntialiasingRequested() != temporal)
+    {
+        renderer.SetTemporalAntialiasing(temporal);
+    }
+}
 } // namespace
 
 SceneConfig CaptureCurrentConfig()
@@ -37,6 +50,7 @@ SceneConfig CaptureCurrentConfig()
 
     s_overridesBeforeRun = Render::Look::SessionOverrides();
     s_antialiasingBeforeRun = mu::GetRenderer().GetAntialiasingSamples();
+    s_temporalAntialiasingBeforeRun = mu::GetRenderer().IsTemporalAntialiasingRequested();
     s_anisotropyBeforeRun = Bitmaps.RequestedAnisotropy();
     s_anisotropyApplied = s_anisotropyBeforeRun;
     return config;
@@ -72,9 +86,7 @@ void ApplyConfig(const SceneConfig& config)
     if (!(overrides == Render::Look::SessionOverrides()))
         Render::Look::ReplaceSessionOverrides(overrides);
 
-    // The renderer rebuilds its targets only when the count changes, at the next BeginFrame.
-    mu::GetRenderer().SetAntialiasingSamples(config.antialiasingSamples < 0 ? s_antialiasingBeforeRun
-                                                                            : config.antialiasingSamples);
+    ApplyAntialiasing(config);
 
     // A changed level re-creates every mipmapped texture's sampler, so it is set only on a change.
     const int anisotropy = config.anisotropy < 0 ? s_anisotropyBeforeRun : config.anisotropy;

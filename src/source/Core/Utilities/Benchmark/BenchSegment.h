@@ -70,6 +70,7 @@ struct SceneConfig
     // -1 keeps what the run found.
     int antialiasingSamples = -1;
     int anisotropy = -1;
+    bool temporalAntialiasingOff = false;
 
     // Opaque map object draws in the order they were recorded, not sorted by state.
     bool disableDrawReordering = false;

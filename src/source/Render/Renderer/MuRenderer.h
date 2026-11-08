@@ -490,6 +490,11 @@ public:
     // offset and blends it with the previous frames' result. It applies to post-processed frames
     // that render with one sample; the caller turns multisampling off with it.
     virtual void SetTemporalAntialiasing(bool /*enabled*/) {}
+    // Whether temporal anti-aliasing was requested, including while post-processing is off.
+    [[nodiscard]] virtual bool IsTemporalAntialiasingRequested() const
+    {
+        return false;
+    }
     // Whether frames resolve with temporal anti-aliasing now.
     [[nodiscard]] virtual bool IsTemporalAntialiasingActive() const
     {

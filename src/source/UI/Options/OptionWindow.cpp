@@ -190,8 +190,9 @@ static const int s_FpsCapValues[] = { 24, 30, 60, 120, 144, -1 };
 static const int s_NumFpsCapValues = sizeof(s_FpsCapValues) / sizeof(s_FpsCapValues[0]);
 
 // The Video tab's Anti-aliasing and Anisotropic filtering rows, in the values config.ini holds
-// ([Render] Antialiasing, Anisotropy); the first entry of each is "Off".
+// ([Render] Antialiasing, Anisotropy); the first entry of each is "Off". TAA follows the MSAA entries.
 static constexpr int s_AntialiasingValues[] = {0, 2, 4, 8};
+static constexpr int kTemporalAntialiasingIndex = static_cast<int>(std::size(s_AntialiasingValues));
 static constexpr int s_AnisotropyValues[] = {1, 2, 4, 8, 16};
 
 namespace
@@ -216,6 +217,20 @@ template <std::size_t N> std::vector<Rml::String> MultiplierLabels(const int (&v
     for (std::size_t i = 1; i < N; ++i)
         labels.push_back(std::to_string(values[i]) + "x");
     return labels;
+}
+
+std::vector<Rml::String> AntialiasingLabels()
+{
+    auto labels = MultiplierLabels(s_AntialiasingValues);
+    labels.emplace_back("TAA");
+    return labels;
+}
+
+int AntialiasingIndex(const GameConfig& config)
+{
+    return config.GetAntialiasingType() == AntialiasingType::Temporal
+               ? kTemporalAntialiasingIndex
+               : FindValueIndex(s_AntialiasingValues, config.GetAntialiasing());
 }
 
 // A level no tuning track has (they start at 0), for ApplyLevelGaugeEvent's current level. The
@@ -1298,12 +1313,17 @@ void mu::ui::window::COptionWindow::SyncTuningModel(OptionRmlModel& model)
     }
 }
 
-// MuSetAntialiasingPreference saves the count and applies it while the Enhanced look is active.
+// Saves the selected anti-aliasing and applies it while the Enhanced look is active.
 void mu::ui::window::COptionWindow::RmlAntialiasingChanged(int index)
 {
     // See RmlResolutionChanged's own comment -- same settle-frame guard applies here.
     if (m_rmlSyncCount < kRmlSelectSettleFrames)
         return;
+    if (index == kTemporalAntialiasingIndex)
+    {
+        MuSetTemporalAntialiasingPreference(true);
+        return;
+    }
     if (index < 0 || index >= static_cast<int>(std::size(s_AntialiasingValues)))
         return;
     MuSetAntialiasingPreference(s_AntialiasingValues[index]);
@@ -1899,8 +1919,8 @@ void mu::ui::window::COptionWindow::SyncRmlModel()
         syncDropdownValue(valueLabel, valueName, labels, index);
     };
     syncMultiplierRow(model.antialiasingLabels, "antialiasing_labels", model.antialiasingIndex, "antialiasing_index",
-                      model.antialiasingValueLabel, "antialiasing_value_label", MultiplierLabels(s_AntialiasingValues),
-                      FindValueIndex(s_AntialiasingValues, GameConfig::GetInstance().GetAntialiasing()));
+                      model.antialiasingValueLabel, "antialiasing_value_label", AntialiasingLabels(),
+                      AntialiasingIndex(GameConfig::GetInstance()));
     syncMultiplierRow(model.anisotropyLabels, "anisotropy_labels", model.anisotropyIndex, "anisotropy_index",
                       model.anisotropyValueLabel, "anisotropy_value_label", MultiplierLabels(s_AnisotropyValues),
                       FindValueIndex(s_AnisotropyValues, GameConfig::GetInstance().GetAnisotropy()));

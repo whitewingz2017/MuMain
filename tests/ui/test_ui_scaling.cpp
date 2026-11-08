@@ -811,7 +811,7 @@ TEST_CASE("anisotropy defaults to 8x and reads its ini key [config][render][mipm
 TEST_CASE("the look preset reads Classic or Enhanced and defaults to CfgDefaultLook [config][render][look]")
 {
     const LookPreset defaultLook = *GameConfigValidation::ParseLook(CfgDefaults::CfgDefaultLook);
-    CHECK(defaultLook == LookPreset::Classic);
+    CHECK(defaultLook == LookPreset::Enhanced);
     CHECK(GameConfigValidation::ParseLook(L"Enhanced") == LookPreset::Enhanced);
     CHECK(GameConfigValidation::ParseLook(L" enhanced ") == LookPreset::Enhanced);
     CHECK(GameConfigValidation::ParseLook(L"CLASSIC") == LookPreset::Classic);
@@ -845,18 +845,18 @@ TEST_CASE("the look preset reads Classic or Enhanced and defaults to CfgDefaultL
     std::filesystem::remove(file);
 }
 
-TEST_CASE("the anti-aliasing type reads MSAA or TAA and defaults to MSAA [config][render][antialiasing]")
+TEST_CASE("the anti-aliasing type reads MSAA or TAA and defaults to TAA [config][render][antialiasing]")
 {
     CHECK(GameConfigValidation::ValidateAntialiasingType(CfgDefaults::CfgDefaultAntialiasingType) ==
-          AntialiasingType::Multisample);
+          AntialiasingType::Temporal);
     CHECK(GameConfigValidation::ParseAntialiasingType(L"TAA") == AntialiasingType::Temporal);
     CHECK(GameConfigValidation::ParseAntialiasingType(L" taa ") == AntialiasingType::Temporal);
     CHECK(GameConfigValidation::ParseAntialiasingType(L"msaa") == AntialiasingType::Multisample);
     CHECK_FALSE(GameConfigValidation::ParseAntialiasingType(L"FXAA").has_value());
     CHECK_FALSE(GameConfigValidation::ParseAntialiasingType(L"").has_value());
     // A missing or invalid value counts as the default.
-    CHECK(GameConfigValidation::ValidateAntialiasingType(L"") == AntialiasingType::Multisample);
-    CHECK(GameConfigValidation::ValidateAntialiasingType(L"Shiny") == AntialiasingType::Multisample);
+    CHECK(GameConfigValidation::ValidateAntialiasingType(L"") == AntialiasingType::Temporal);
+    CHECK(GameConfigValidation::ValidateAntialiasingType(L"Shiny") == AntialiasingType::Temporal);
     for (const AntialiasingType type : {AntialiasingType::Multisample, AntialiasingType::Temporal})
     {
         CHECK(GameConfigValidation::ParseAntialiasingType(GameConfigValidation::FormatAntialiasingType(type)) == type);
@@ -932,6 +932,28 @@ private:
     std::string m_content;
 };
 } // namespace
+
+TEST_CASE("new configs use Enhanced with TAA and keep explicit saved choices [config][render][antialiasing]")
+{
+    const ExecutableConfigFile file;
+    GameConfig& config = GameConfig::GetInstance();
+    file.Write("[Render]\nVSync=1\n");
+    config.Load();
+    CHECK(config.GetLook() == LookPreset::Enhanced);
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Temporal);
+    CHECK(config.GetPostProcessing());
+
+    file.Write("[Render]\nLook=Classic\nAntialiasingType=MSAA\nAntialiasing=2\n");
+    config.Load();
+    CHECK(config.GetLook() == LookPreset::Classic);
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Multisample);
+    CHECK(config.GetAntialiasing() == 2);
+    config.Save();
+    config.Load();
+    CHECK(config.GetLook() == LookPreset::Classic);
+    CHECK(config.GetAntialiasingType() == AntialiasingType::Multisample);
+    CHECK(config.GetAntialiasing() == 2);
+}
 
 TEST_CASE("each Enhanced feature switch loads and saves through its own config.ini key [config][render][look]")
 {

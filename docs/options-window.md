@@ -78,10 +78,14 @@ window writes to these sections:
   - `VSync`: `$vsync on` and `$vsync off` update it too; startup and
     fullscreen/resolution changes reapply it before the next frame begins.
   - `FpsCap`: the frame limit while VSync is off, `-1` for none.
-  - `Look` (default `Classic`): the "Enhanced graphics" checkbox, ticked for
+  - `Look` (default `Enhanced`): the "Enhanced graphics" checkbox, ticked for
     the Enhanced look; see [`enhanced-look.md`](enhanced-look.md).
-  - `Antialiasing` (`0`, `2`, `4`, `8`; default `4`): the Anti-aliasing row,
-    the samples of the Enhanced look. Classic always renders without it.
+  - `AntialiasingType` (`MSAA` or `TAA`; default `TAA`): the Anti-aliasing row
+    offers Off, 2x, 4x, 8x and TAA. TAA needs Enhanced and post-processing.
+  - `Antialiasing` (`0`, `2`, `4`, `8`; default `4`): the sample count saved
+    when Off, 2x, 4x or 8x is chosen. TAA retains it for switching back to MSAA.
+    Classic always renders without anti-aliasing. Explicit saved settings take
+    precedence over the defaults.
   - `Anisotropy` (`1` is off, up to `16`; default `8`): the Anisotropic
     filtering row, for every texture with mip levels: world textures in the
     Enhanced look, upscaled textures in both.

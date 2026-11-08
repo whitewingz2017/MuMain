@@ -147,11 +147,13 @@ const std::vector<Segment>& Catalog()
              return c;
          }()},
 
-        {"aa.off", "Multisample anti-aliasing off. Changes nothing while the look is Classic.", TagAntialiasing,
+        {"aa.off", "Multisample and temporal anti-aliasing off. Changes nothing while the look is Classic.",
+         TagAntialiasing,
          []
          {
              SceneConfig c;
              c.antialiasingSamples = 0;
+             c.temporalAntialiasingOff = true;
              return c;
          }()},
 

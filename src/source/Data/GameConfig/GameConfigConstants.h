@@ -153,7 +153,7 @@ namespace CfgDefaults
     inline constexpr bool CfgDefaultVSync = true;
 
     // The look a missing or invalid [Render] Look stands for.
-    inline constexpr wchar_t CfgDefaultLook[] = L"Classic";
+    inline constexpr wchar_t CfgDefaultLook[] = L"Enhanced";
     // 8x anisotropy on textures with mip levels.
     inline constexpr int CfgDefaultAnisotropy = 8;
     // Half a mip level sharper. Higher values show more texture detail at a distance but let
@@ -162,10 +162,10 @@ namespace CfgDefaults
     inline constexpr int CfgMinMipSharpenPercent = 0;
     inline constexpr int CfgMaxMipSharpenPercent = 100;
 
-    // The samples the Enhanced look renders with (Classic renders without); a
+    // The samples the Enhanced look renders with when MSAA is selected (Classic renders without); a
     // requested count is lowered to what the GPU supports.
     inline constexpr int CfgDefaultAntialiasing = 4;
-    inline constexpr wchar_t CfgDefaultAntialiasingType[] = L"MSAA";
+    inline constexpr wchar_t CfgDefaultAntialiasingType[] = L"TAA";
     inline constexpr bool CfgDefaultEnhancedLighting = true;
     inline constexpr bool CfgDefaultDynamicLights = true;
     inline constexpr bool CfgDefaultLightMood = true;
