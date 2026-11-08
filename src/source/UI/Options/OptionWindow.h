@@ -203,8 +203,7 @@ namespace mu::ui::window
         // from GameConfig, since `$msaa` and `$taa` change the first outside this window too.
         void RmlAntialiasingChanged(int index);
         void RmlAnisotropyChanged(int index);
-        // Interface/UI tab -- Show FPS Counter/Show Debug Info stay ephemeral (SceneManager.h
-        // globals, no GameConfig persistence), matching $fpscounter/$details today.
+        // Interface/UI tab -- FPS is saved; debug details stay a session-only choice.
         void RmlToggleShowFpsCounter();
         void RmlToggleShowDebugInfo();
         void RmlThemeChanged(int index);

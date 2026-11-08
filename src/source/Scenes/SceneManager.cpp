@@ -16,6 +16,7 @@
 #include <iterator>
 #include <thread>
 #include "SceneManager.h"
+#include "Data/GameConfig/GameConfig.h"
 #include "Core/Utilities/FrameProfiler.h"
 #include "UI/Diagnostics/DiagnosticsOverlay.h"
 #include "Core/Utilities/Log/MuLogger.h"
@@ -115,8 +116,6 @@ static bool g_bShowDebugInfo =
     false;
 #endif
 
-static bool g_bShowFpsCounter = false;
-
 void SetShowDebugInfo(bool enabled)
 {
     // The statistics only sample while the overlay draws: restart them, or the first frame
@@ -124,7 +123,8 @@ void SetShowDebugInfo(bool enabled)
     if (enabled && !g_bShowDebugInfo)
         ResetFrameStats();
     g_bShowDebugInfo = enabled;
-    if (enabled) g_bShowFpsCounter = false;
+    if (enabled)
+        SetShowFpsCounter(false);
 }
 
 bool GetShowDebugInfo()
@@ -134,13 +134,18 @@ bool GetShowDebugInfo()
 
 void SetShowFpsCounter(bool enabled)
 {
-    g_bShowFpsCounter = enabled;
+    GameConfig& config = GameConfig::GetInstance();
+    if (config.GetShowFpsCounter() != enabled)
+    {
+        config.SetShowFpsCounter(enabled);
+        config.Save();
+    }
     if (enabled) g_bShowDebugInfo = false;
 }
 
 bool GetShowFpsCounter()
 {
-    return g_bShowFpsCounter;
+    return GameConfig::GetInstance().GetShowFpsCounter();
 }
 
 // The overlay has its own flag: a benchmark run counts without drawing it into its own frames.
@@ -728,7 +733,6 @@ static void UpdateDiagnostics()
     UI::Diagnostics::FrameSummary summary;
     summary.details = g_bShowDebugInfo;
     summary.counters = g_bShowGLStatsOverlay;
-    summary.fpsOnly = g_bShowFpsCounter;
     summary.fps = FPS_AVG;
     summary.averageFps = s_avgFps;
     summary.lowFps = s_onePercentLow;

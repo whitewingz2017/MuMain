@@ -42,6 +42,11 @@ What was added on top of that:
 
 ## Layout
 
+"Show FPS Counter" (`[UI] ShowFpsCounter`, default `0`) is saved immediately and restored after restart. During
+gameplay it shows green text beside the helper's Start/Stop button, without
+a background. `$fpscounter on|off` saves the same choice. Turning on "Show
+Debug Info" turns the FPS counter off; debug details remain a session-only choice.
+
 The window has five tabs:
 
 | Tab | Settings |

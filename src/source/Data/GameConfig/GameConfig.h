@@ -84,6 +84,15 @@ public:
     }
     void SetTranslateItemNames(bool translate);
 
+    bool GetShowFpsCounter() const
+    {
+        return m_showFpsCounter;
+    }
+    void SetShowFpsCounter(bool enabled)
+    {
+        m_showFpsCounter = enabled;
+    }
+
     // UI font family name (GDI face name). Empty = platform default.
     std::wstring GetFontSelection() const { return m_fontSelection; }
     void SetFontSelection(const std::wstring& font);
@@ -241,6 +250,7 @@ private:
 
     std::wstring m_uiLocale;
     bool m_translateItemNames;
+    bool m_showFpsCounter;
     std::wstring m_fontSelection;
     std::wstring m_rmlTheme;
     int m_uiScalePercent;
@@ -271,6 +281,8 @@ private:
     std::wstring m_texturePack;
 
     int ReadInt(const wchar_t* section, const wchar_t* key, int defaultValue) const;
+    void LoadUISettings();
+    void SaveUISettings();
     void WriteInt(const wchar_t* section, const wchar_t* key, int value);
 
     bool ReadBool(const wchar_t* section, const wchar_t* key, bool defaultValue) const;

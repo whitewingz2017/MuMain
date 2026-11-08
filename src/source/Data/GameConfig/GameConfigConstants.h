@@ -39,6 +39,7 @@ namespace CfgKeys
     inline constexpr wchar_t CfgKeyFont[]     = L"Font";
     // Whether item names follow the UI language; off keeps them English.
     inline constexpr wchar_t CfgKeyTranslateItemNames[] = L"TranslateItemNames";
+    inline constexpr wchar_t CfgKeyShowFpsCounter[] = L"ShowFpsCounter";
     // Active RmlUi theme name ("legacy"/"modern"), Data/Interface/RmlUi/themes/<name>/. Not yet
     // a full runtime hot-swap -- read once at startup. See UI::RmlBridge::RmlTheme.
     inline constexpr wchar_t CfgKeyRmlTheme[] = L"RmlTheme";
@@ -122,6 +123,7 @@ namespace CfgDefaults
     // I18N locale code; "en" is the default the resx generator falls back to.
     inline constexpr wchar_t CfgDefaultUILocale[] = L"en";
     inline constexpr bool CfgDefaultTranslateItemNames = true;
+    inline constexpr bool CfgDefaultShowFpsCounter = false;
 
     // UI font family name. Empty = each platform's built-in default (Tahoma on
     // Windows, fontconfig "sans-serif" on Linux), so the look is unchanged until

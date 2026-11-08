@@ -6,7 +6,7 @@
 </head>
 <body data-model="diagnostics">
     <div id="panel">
-        <div id="summary" class="section" data-if="details || fps_only" data-class-fps-only="!details">
+        <div id="summary" class="section" data-if="details">
             <div class="section-back"></div>
             <div class="title">FPS {{fps | fixed}}</div>
             <div data-if="details">

@@ -44,7 +44,6 @@ void RegisterModel(Rml::DataModelConstructor& constructor, DiagnosticsModel& mod
     constructor.RegisterArray<Rml::Vector<Rml::String>>();
     constructor.Bind("details", &model.details);
     constructor.Bind("counters", &model.counters);
-    constructor.Bind("fps_only", &model.fpsOnly);
     constructor.Bind("fps", &model.fps);
     constructor.Bind("average_fps", &model.averageFps);
     constructor.Bind("low_fps", &model.lowFps);
@@ -168,6 +167,53 @@ void UpdateCounters(DiagnosticsModel& model)
     }
 }
 
+void MarkFieldsDirty()
+{
+    static constexpr const char* Fields[] = {"details",
+                                             "counters",
+                                             "fps",
+                                             "average_fps",
+                                             "low_fps",
+                                             "slowest_fps",
+                                             "frame_ms",
+                                             "cpu",
+                                             "vsync",
+                                             "driver",
+                                             "ui_update",
+                                             "ui_render",
+                                             "rml_update",
+                                             "rml_render",
+                                             "renderer_begin",
+                                             "renderer_end",
+                                             "submit",
+                                             "end_offscreen",
+                                             "end_stage",
+                                             "end_replay",
+                                             "end_post_ui",
+                                             "requested",
+                                             "submitted",
+                                             "commands",
+                                             "frame_vertex_kb",
+                                             "textures_uploaded",
+                                             "glyphs_uploaded",
+                                             "pipeline_binds",
+                                             "sampler_binds",
+                                             "vertex_uniforms",
+                                             "fragment_uniforms",
+                                             "merged_2d",
+                                             "skin_gpu",
+                                             "skin_cpu_ineligible",
+                                             "skin_failed",
+                                             "batch_draws",
+                                             "vertices_per_batch",
+                                             "passes_left",
+                                             "passes_right",
+                                             "history",
+                                             "info"};
+    for (const char* field : Fields)
+        g_view->MarkDirty(field);
+}
+
 void UpdateSummary(DiagnosticsModel& model, const FrameSummary& summary)
 {
     model.fps = summary.fps;
@@ -197,17 +243,15 @@ void Initialize()
 
 void Update(const FrameSummary& summary)
 {
-    const bool shown = summary.details || summary.counters || summary.fpsOnly;
+    const bool shown = summary.details || summary.counters;
     if (!shown && !g_view)
         return;
     if (!EnsureView())
         return;
     auto& model = g_view->GetModel();
-    const bool changed = model.details != summary.details || model.counters != summary.counters ||
-                         model.fpsOnly != summary.fpsOnly;
+    const bool changed = model.details != summary.details || model.counters != summary.counters;
     model.details = summary.details;
     model.counters = summary.counters;
-    model.fpsOnly = summary.fpsOnly;
     UI::RmlBridge::SyncDocumentVisibilityInFront(g_view->Document(), shown);
     const auto now = std::chrono::steady_clock::now();
     if (shown && (changed || now >= g_nextRefresh))
@@ -216,15 +260,7 @@ void Update(const FrameSummary& summary)
         UpdateTimings(model);
         if (summary.counters)
             UpdateCounters(model);
-        static constexpr const char* Fields[] = {
-            "details", "counters", "fps_only", "fps", "average_fps", "low_fps", "slowest_fps", "frame_ms", "cpu", "vsync",
-            "driver", "ui_update", "ui_render", "rml_update", "rml_render", "renderer_begin", "renderer_end",
-            "submit", "end_offscreen", "end_stage", "end_replay", "end_post_ui", "requested", "submitted",
-            "commands", "frame_vertex_kb", "textures_uploaded", "glyphs_uploaded", "pipeline_binds",
-            "sampler_binds", "vertex_uniforms", "fragment_uniforms", "merged_2d", "skin_gpu",
-            "skin_cpu_ineligible", "skin_failed", "batch_draws", "vertices_per_batch", "passes_left", "passes_right", "history", "info"};
-        for (const char* field : Fields)
-            g_view->MarkDirty(field);
+        MarkFieldsDirty();
         g_nextRefresh = now + RefreshInterval;
     }
     if (changed)

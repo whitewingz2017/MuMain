@@ -7,6 +7,7 @@
 #include "UI/Core/WindowSystem.h"
 #include "World/MapInfra/MapManager.h"
 #include "MUHelper/MuHelper.h"
+#include "Scenes/SceneManager.h"
 
 #include "Render/RmlUi/RmlUiRuntime.h"
 #include "UI/RmlBridge/RmlDocumentVisibility.h"
@@ -17,6 +18,7 @@
 #include "Core/Utilities/StringUtils.h"
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
+#include <cmath>
 
 using namespace SEASON3B;
 using namespace mu::ui::window;
@@ -61,6 +63,8 @@ void CMuHelperBar::BindRmlModel(Rml::DataModelConstructor& c, MuHelperBarRmlMode
 {
     c.Bind("position_text", &model.positionText);
     c.Bind("mu_helper_active", &model.muHelperActive);
+    c.Bind("show_fps_counter", &model.showFpsCounter);
+    c.Bind("fps", &model.fps);
     c.Bind("config_hint", &model.configHint);
     c.Bind("start_hint", &model.startHint);
     c.Bind("stop_hint", &model.stopHint);
@@ -145,6 +149,8 @@ void CMuHelperBar::SyncRmlModel()
     if (!m_RmlView.Document()) return;
 
     auto& model = m_RmlView.GetModel();
+    SyncField(m_RmlView.Binder(), &MuHelperBarRmlModel::showFpsCounter, "show_fps_counter", GetShowFpsCounter());
+    SyncField(m_RmlView.Binder(), &MuHelperBarRmlModel::fps, "fps", static_cast<int>(std::lround(FPS_AVG)));
 
     wchar_t szText[255] = {};
     mu_swprintf(szText, L"%ls (%d , %d)", gMapManager.GetMapName(gMapManager.WorldActive), m_CurHeroPosition.x, m_CurHeroPosition.y);

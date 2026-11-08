@@ -65,3 +65,16 @@
 #btn_config .dot { background-color: token(semantic-neutral); }
 #btn_start .dot  { background-color: token(semantic-success); }
 #btn_stop .dot   { background-color: token(semantic-danger); }
+
+/* Passive FPS text follows the bar's right edge, beside Start/Stop. */
+#fps_counter {
+	position: absolute;
+	left: 100%;
+	margin-left: 4dp;
+	top: 2dp;
+	line-height: 13dp;
+	white-space: nowrap;
+	color: #00ff00;
+	background-color: transparent;
+	pointer-events: none;
+}

@@ -58,6 +58,8 @@ namespace mu::ui::window
         {
             Rml::String positionText;   // "MapName (x, y)"
             bool muHelperActive = false; // drives which of Start/Stop is shown
+            bool showFpsCounter = false;
+            int fps = 0;
             Rml::String configHint;
             Rml::String startHint;
             Rml::String stopHint;

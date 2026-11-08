@@ -24,6 +24,7 @@
 		     data-attr-data-hint="stop_hint">
 			<div class="dot"></div>
 		</div>
+		<span id="fps_counter" data-class-hidden="!show_fps_counter">FPS {{fps}}</span>
 	</div>
 </body>
 </rml>

@@ -88,15 +88,7 @@ void GameConfig::Load()
     m_chatCommandFavourites = ReadStringList(L"ChatCommands", L"Favourite");
     m_chatCommandTemplates = ReadStringList(L"ChatCommands", L"Template");
 
-    SetChatTextScalePercent(ReadInt(CfgSectionUI, CfgKeyChatTextScalePercent, CfgDefaultChatTextScalePercent));
-    m_uiLocale = ReadString(CfgSectionUI, CfgKeyUILocale, CfgDefaultUILocale);
-    m_translateItemNames = ReadBool(CfgSectionUI, CfgKeyTranslateItemNames, CfgDefaultTranslateItemNames);
-    m_fontSelection = ReadString(CfgSectionUI, CfgKeyFont, CfgDefaultFont);
-    m_rmlTheme = ReadString(CfgSectionUI, CfgKeyRmlTheme, CfgDefaultRmlTheme);
-    m_uiScalePercent = std::clamp(ReadInt(CfgSectionUI, CfgKeyUIScalePercent, CfgDefaultUIScalePercent),
-                                  CfgDefaults::CfgMinUIScalePercent, CfgDefaults::CfgMaxUIScalePercent);
-    m_enableAnimationTaskPool =
-        ReadBool(CfgSectionUI, CfgKeyEnableAnimationTaskPool, CfgDefaultEnableAnimationTaskPool);
+    LoadUISettings();
 
     m_zoom = ReadInt(CfgSectionCamera, CfgKeyZoom, CfgDefaultZoom);
     m_sortParticleDraws = ReadBool(CfgSectionRender, CfgKeySortParticleDraws, CfgDefaultSortParticleDraws);
@@ -168,12 +160,7 @@ void GameConfig::Save()
     WriteStringList(L"ChatCommands", L"Favourite", m_chatCommandFavourites);
     WriteStringList(L"ChatCommands", L"Template", m_chatCommandTemplates);
 
-    WriteString(CfgSectionUI, CfgKeyUILocale, m_uiLocale);
-    WriteBool(CfgSectionUI, CfgKeyTranslateItemNames, m_translateItemNames);
-    WriteString(CfgSectionUI, CfgKeyFont, m_fontSelection);
-    WriteString(CfgSectionUI, CfgKeyRmlTheme, m_rmlTheme);
-    WriteInt(CfgSectionUI, CfgKeyUIScalePercent, m_uiScalePercent);
-    WriteInt(CfgSectionUI, CfgKeyChatTextScalePercent, m_chatTextScalePercent);
+    SaveUISettings();
 
     WriteInt(CfgSectionCamera, CfgKeyZoom, m_zoom);
     WriteBool(CfgSectionRender, CfgKeyVSync, m_vsyncEnabled);
@@ -196,6 +183,38 @@ void GameConfig::Save()
     WriteInt(CfgSectionRender, CfgKeyFpsCap, m_fpsCap);
     WriteString(CfgSectionRender, CfgKeyTexturePack, m_texturePack);
     WriteBool(CfgSectionRender, CfgKeyLowWorldTextures, m_lowWorldTextures);
+}
+
+void GameConfig::LoadUISettings()
+{
+    using namespace CfgSections;
+    using namespace CfgKeys;
+    using namespace CfgDefaults;
+
+    SetChatTextScalePercent(ReadInt(CfgSectionUI, CfgKeyChatTextScalePercent, CfgDefaultChatTextScalePercent));
+    m_uiLocale = ReadString(CfgSectionUI, CfgKeyUILocale, CfgDefaultUILocale);
+    m_translateItemNames = ReadBool(CfgSectionUI, CfgKeyTranslateItemNames, CfgDefaultTranslateItemNames);
+    m_showFpsCounter = ReadBool(CfgSectionUI, CfgKeyShowFpsCounter, CfgDefaultShowFpsCounter);
+    m_fontSelection = ReadString(CfgSectionUI, CfgKeyFont, CfgDefaultFont);
+    m_rmlTheme = ReadString(CfgSectionUI, CfgKeyRmlTheme, CfgDefaultRmlTheme);
+    m_uiScalePercent = std::clamp(ReadInt(CfgSectionUI, CfgKeyUIScalePercent, CfgDefaultUIScalePercent),
+                                  CfgMinUIScalePercent, CfgMaxUIScalePercent);
+    m_enableAnimationTaskPool =
+        ReadBool(CfgSectionUI, CfgKeyEnableAnimationTaskPool, CfgDefaultEnableAnimationTaskPool);
+}
+
+void GameConfig::SaveUISettings()
+{
+    using namespace CfgSections;
+    using namespace CfgKeys;
+
+    WriteString(CfgSectionUI, CfgKeyUILocale, m_uiLocale);
+    WriteBool(CfgSectionUI, CfgKeyTranslateItemNames, m_translateItemNames);
+    WriteBool(CfgSectionUI, CfgKeyShowFpsCounter, m_showFpsCounter);
+    WriteString(CfgSectionUI, CfgKeyFont, m_fontSelection);
+    WriteString(CfgSectionUI, CfgKeyRmlTheme, m_rmlTheme);
+    WriteInt(CfgSectionUI, CfgKeyUIScalePercent, m_uiScalePercent);
+    WriteInt(CfgSectionUI, CfgKeyChatTextScalePercent, m_chatTextScalePercent);
 }
 
 LookPreset ReadLookPreset(const std::filesystem::path& configFile)

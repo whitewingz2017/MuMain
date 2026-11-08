@@ -2035,6 +2035,16 @@ static void InitializeWorkingDirectoryAndLog()
     mu::log::Init();
 }
 
+static void ApplySavedInterfacePreferences()
+{
+    const GameConfig& config = GameConfig::GetInstance();
+    const std::wstring uiLocaleW = config.GetUILocale();
+    const std::string uiLocale(uiLocaleW.begin(), uiLocaleW.end());
+    I18N::SetLocale(uiLocale.c_str());
+    g_ItemDataHandler.SetTranslateItemNames(GameConfig::GetInstance().GetTranslateItemNames());
+    SetShowFpsCounter(config.GetShowFpsCounter());
+}
+
 #ifdef _WIN32
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow)
 #else
@@ -2354,12 +2364,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nC
     // Initialize translations with the saved UI locale (defaults to "en").
     // The editor still restores its own MuEditorConfig language preference
     // later in its init, which feeds through to I18N::SetLocale as well.
-    {
-        std::wstring uiLocaleW = GameConfig::GetInstance().GetUILocale();
-        std::string uiLocale(uiLocaleW.begin(), uiLocaleW.end());
-        I18N::SetLocale(uiLocale.c_str());
-    }
-    g_ItemDataHandler.SetTranslateItemNames(GameConfig::GetInstance().GetTranslateItemNames());
+    ApplySavedInterfacePreferences();
     g_MonsterDataHandler.SetNamesChangedCallback(&GameLogic::Monsters::Names::RefreshShownNames);
 
 #ifdef _EDITOR

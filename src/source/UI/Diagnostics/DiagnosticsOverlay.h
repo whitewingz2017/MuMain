@@ -10,7 +10,6 @@ struct FrameSummary
 {
     bool details = false;
     bool counters = false;
-    bool fpsOnly = false;
     double fps = 0;
     double averageFps = 0;
     double lowFps = 0;

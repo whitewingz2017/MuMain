@@ -19,6 +19,7 @@
 #include "Data/GameConfig/GameConfigValidation.h"
 #include "Core/Platform/WinIni.h"
 #include "Render/Look/LookPreset.h"
+#include "Scenes/SceneManager.h"
 #include "UI/Social/SocialWorkspace.h"
 #include "Engine/Object/ZzzInventory.h"
 #include "UI/Social/SocialWindowBase.h"
@@ -953,6 +954,32 @@ TEST_CASE("new configs use Enhanced with TAA and keep explicit saved choices [co
     CHECK(config.GetLook() == LookPreset::Classic);
     CHECK(config.GetAntialiasingType() == AntialiasingType::Multisample);
     CHECK(config.GetAntialiasing() == 2);
+}
+
+TEST_CASE("the FPS counter saves both on and off and stays exclusive with debug details [config][ui][fps]")
+{
+    const ExecutableConfigFile file;
+    const bool previousDetails = GetShowDebugInfo();
+    GameConfig& config = GameConfig::GetInstance();
+    file.Write("[UI]\nLocale=en\n");
+    config.Load();
+    CHECK_FALSE(GetShowFpsCounter());
+
+    SetShowFpsCounter(true);
+    config.Load();
+    CHECK(GetShowFpsCounter());
+    CHECK_FALSE(GetShowDebugInfo());
+
+    SetShowDebugInfo(true);
+    config.Load();
+    CHECK_FALSE(GetShowFpsCounter());
+    CHECK(GetShowDebugInfo());
+
+    SetShowFpsCounter(true);
+    SetShowFpsCounter(false);
+    config.Load();
+    CHECK_FALSE(GetShowFpsCounter());
+    SetShowDebugInfo(previousDetails);
 }
 
 TEST_CASE("each Enhanced feature switch loads and saves through its own config.ini key [config][render][look]")

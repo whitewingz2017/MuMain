@@ -125,6 +125,17 @@
 }
 
 /* --- Classic ---------------------------------------------------------------------------------- */
+#fps_counter {
+	position: absolute;
+	left: 100%;
+	margin-left: 4dp;
+	top: 2dp;
+	line-height: 13dp;
+	white-space: nowrap;
+	color: #00ff00;
+	background-color: transparent;
+	pointer-events: none;
+}
 #seg_a, #seg_b, #seg_c, #text { display: none; }
 #panel { width: 40dp; height: 15dp; }
 #btn_config { left: 2dp; top: 2dp; }

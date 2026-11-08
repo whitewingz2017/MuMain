@@ -146,6 +146,7 @@ Typed into the chat input, in any build:
 
 - `$fps <value>`, `$vsync on|off`, `$fpscounter on|off`, `$details on|off`, `$glstats on|off`:
   frame timing and rendering statistics.
+  `$fpscounter` saves the choice and shows green FPS text beside the helper buttons in gameplay.
 - `$effects on|off` and `$effects <system> on|off`, where `<system>` is `sprites`, `particles`,
   `skillmodels`, `boids`, `wingshadow`, `joints` or `wingextralayers`: turn rendering systems
   off to compare their cost.

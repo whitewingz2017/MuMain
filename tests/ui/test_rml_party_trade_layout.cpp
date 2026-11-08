@@ -11,6 +11,7 @@
 #include "UI/Scaling/UITransform.h"
 
 #include <RmlUi/Core.h>
+#include <RmlUi/Core/ComputedValues.h>
 
 #include <filesystem>
 #include <cmath>
@@ -192,4 +193,39 @@ TEST_CASE("legacy trade notice flows around confirmation without moving item gri
         CheckHelpExcludesConfirm(trade);
         fixture.context->UnloadDocument(trade);
     }
+}
+
+TEST_CASE("the green FPS counter stays beside the helper buttons without a background [ui][helper][fps]")
+{
+    LayoutFixture fixture;
+    constexpr float PixelTolerance = 1.f;
+    for (const std::string theme : {"legacy", "modern", "classic"})
+        for (const Rml::Vector2i viewport :
+             {Rml::Vector2i{640, 480}, Rml::Vector2i{1280, 720}, Rml::Vector2i{2560, 1080}})
+            for (const int percent : {75, 100, 150})
+            {
+                CAPTURE(theme);
+                CAPTURE(viewport.x);
+                CAPTURE(viewport.y);
+                CAPTURE(percent);
+                fixture.Configure(viewport, percent);
+                auto* document = fixture.Load(theme, "mu_helper_bar");
+                auto* counter = document->GetElementById("fps_counter");
+                REQUIRE(counter != nullptr);
+                counter->SetInnerRML("FPS 216");
+                fixture.Refresh();
+                Rml::Vector2f buttonOffset, buttonSize, counterOffset, counterSize;
+                Drawn(document->GetElementById("btn_start"), buttonOffset, buttonSize);
+                Drawn(counter, counterOffset, counterSize);
+                CHECK(counterOffset.x >= buttonOffset.x + buttonSize.x);
+                CHECK(counterOffset.y < buttonOffset.y + buttonSize.y);
+                CHECK(counterOffset.y + counterSize.y > buttonOffset.y);
+                CHECK(counterOffset.x + counterSize.x <= viewport.x + PixelTolerance);
+                const auto& style = counter->GetComputedValues();
+                CHECK(style.color().green > style.color().red);
+                CHECK(style.color().green > style.color().blue);
+                CHECK(style.background_color().alpha == 0);
+                CHECK_FALSE(style.has_decorator());
+                fixture.context->UnloadDocument(document);
+            }
 }
