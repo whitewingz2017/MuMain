@@ -5,6 +5,7 @@
 #include "Render/Sprites/GlobalBitmap.h"
 #include "Core/Globals/_TextureIndex.h"
 #include "Core/Utilities/StringUtils.h"
+#include "Core/Utilities/FrameProfiler.h"
 #include <algorithm>
 
 namespace
@@ -19,6 +20,13 @@ std::wstring BitmapPath(std::string path)
 RmlUiRenderInterface::RmlUiRenderInterface(SDL_GPUDevice* device, SDL_Window* window)
     : RenderInterface_SDL_GPU(device, window)
 {
+}
+
+Rml::CompiledGeometryHandle RmlUiRenderInterface::CompileGeometry(Rml::Span<const Rml::Vertex> vertices,
+                                                                  Rml::Span<const int> indices)
+{
+    FRAME_PROFILE(RmlUiCompileGeometry);
+    return RenderInterface_SDL_GPU::CompileGeometry(vertices, indices);
 }
 
 Rml::TextureHandle RmlUiRenderInterface::LoadTexture(Rml::Vector2i& texture_dimensions, const Rml::String& source)

@@ -7,9 +7,9 @@
 #include <unordered_set>
 
 // Rml::RenderInterface implementation for the SDL_GPU renderer. Subclasses RmlUi's own vendored
-// RenderInterface_SDL_GPU (ThirdParty/RmlUi/Backends/RmlUi_Renderer_SDL_GPU.cpp) and only
-// overrides the two methods that need to integrate with this engine's texture cache:
-// LoadTexture/ReleaseTexture. Everything else (CompileGeometry/RenderGeometry/ReleaseGeometry/
+// RenderInterface_SDL_GPU (ThirdParty/RmlUi/Backends/RmlUi_Renderer_SDL_GPU.cpp). Texture
+// ownership integrates with this engine's cache; geometry compilation is timed by the frame profiler.
+// Everything else (RenderGeometry/ReleaseGeometry/
 // GenerateTexture/scissor/SetTransform, including CSS `transform` support) delegates to the base
 // class's own tested pipeline/buffer-pooling code untouched.
 class RmlUiRenderInterface : public RenderInterface_SDL_GPU
@@ -17,6 +17,8 @@ class RmlUiRenderInterface : public RenderInterface_SDL_GPU
 public:
     RmlUiRenderInterface(SDL_GPUDevice* device, SDL_Window* window);
 
+    Rml::CompiledGeometryHandle CompileGeometry(Rml::Span<const Rml::Vertex> vertices,
+                                                Rml::Span<const int> indices) override;
     Rml::TextureHandle LoadTexture(Rml::Vector2i& texture_dimensions, const Rml::String& source) override;
     void ReleaseTexture(Rml::TextureHandle texture_handle) override;
 

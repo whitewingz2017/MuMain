@@ -436,8 +436,14 @@ void RmlUiRuntime::Render()
 
     {
         FRAME_PROFILE(RmlUiRender);
-        m_RenderInterface->BeginFrame(ctx.commandBuffer, ctx.swapchainTexture, ctx.width, ctx.height, ctx.drawable);
-        m_Context->Render();
+        {
+            FRAME_PROFILE(RmlUiRenderBegin);
+            m_RenderInterface->BeginFrame(ctx.commandBuffer, ctx.swapchainTexture, ctx.width, ctx.height, ctx.drawable);
+        }
+        {
+            FRAME_PROFILE(RmlUiContextRender);
+            m_Context->Render();
+        }
     }
     if (m_DebugContext)
     {
@@ -445,6 +451,7 @@ void RmlUiRuntime::Render()
         m_DebugContext->Render();
     }
     FRAME_PROFILE(RmlUiRender);
+    FRAME_PROFILE(RmlUiRenderEnd);
     m_RenderInterface->EndFrame();
 }
 

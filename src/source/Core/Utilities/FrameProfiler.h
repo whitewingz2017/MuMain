@@ -82,6 +82,11 @@ enum class Pass : int
     RmlUiTextFit,
     RmlUiMarquee,
     RmlUiChatLayout,
+    // UI frame setup, document rendering, frame completion, and geometry compilation.
+    RmlUiRenderBegin,
+    RmlUiContextRender,
+    RmlUiRenderEnd,
+    RmlUiCompileGeometry,
     Count_
 };
 
@@ -93,6 +98,7 @@ inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
     "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
     "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient", "EndScene", "EndMotion",
     "EndTAA",    "EndBloom", "EndCompUI", "RmlPrep",     "RmlCore",   "RmlFit",    "RmlMarq",  "RmlChat",
+    "RmlBegin",  "RmlDraw",  "RmlEnd",    "RmlGeom",
 };
 static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 

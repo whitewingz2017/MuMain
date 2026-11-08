@@ -142,6 +142,11 @@ and layout), `RmlFit` (text fitting), `RmlMarq` (scrolling labels) and `RmlChat`
 upkeep). They are already included in `RmlUpd` or `Overlay` for the debug context; do not add
 them to those totals.
 
+RmlUi rendering is split into `RmlBegin` (frame setup), `RmlDraw` (document drawing) and
+`RmlEnd` (frame completion and upload submission). These are included in `RmlRend`.
+`RmlGeom` times geometry compilation, already included in the update or rendering step
+that requested it. Use these rows to locate UI pauses; do not add them to their parent totals.
+
 ### Reading the summary
 
 Alongside the median it reports the **1% low** (the mean of the worst 1% of frames) and the
