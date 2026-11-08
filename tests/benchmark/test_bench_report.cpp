@@ -148,7 +148,7 @@ TEST_CASE("benchmark exports retain nested renderer passes at the end of their s
     constexpr int LastPass = kMaxPasses - 1;
     run.passNames.resize(kMaxPasses, "Unused");
     run.passIsNested.resize(kMaxPasses, true);
-    run.passNames[LastPass] = "EndCompUI";
+    run.passNames[LastPass] = "RmlChat";
     for (RepeatSamples& repeat : run.segments.front().repeats)
     {
         for (FrameSample& frame : repeat.frames)
@@ -159,10 +159,10 @@ TEST_CASE("benchmark exports retain nested renderer passes at the end of their s
     const auto stats = Stats::SummarizeRun(run);
     CHECK(stats.front().passCpuMs[LastPass] == doctest::Approx(2.0f));
     CHECK(stats.front().unattributedPercent == doctest::Approx(50.0f));
-    CHECK(Report::BuildFramesCsv(run).find("cpu_EndCompUI") != std::string::npos);
-    CHECK(Report::BuildPassesCsv(run).find(",EndCompUI,2.00,3.0") != std::string::npos);
-    CHECK(Report::BuildReportMarkdown(run, stats, {}).find("| EndCompUI | 2.00 | 3.0") != std::string::npos);
-    CHECK(Report::BuildRunJson(run, stats, {}).find("\"EndCompUI\"") != std::string::npos);
+    CHECK(Report::BuildFramesCsv(run).find("cpu_RmlChat") != std::string::npos);
+    CHECK(Report::BuildPassesCsv(run).find(",RmlChat,2.00,3.0") != std::string::npos);
+    CHECK(Report::BuildReportMarkdown(run, stats, {}).find("| RmlChat | 2.00 | 3.0") != std::string::npos);
+    CHECK(Report::BuildRunJson(run, stats, {}).find("\"RmlChat\"") != std::string::npos);
 }
 
 TEST_CASE("an aborted, dirty-tree run says so at the top of the report")

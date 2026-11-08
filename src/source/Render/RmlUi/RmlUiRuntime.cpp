@@ -252,16 +252,25 @@ void RmlUiRuntime::Update()
     if (!m_Context) return;
     {
         FRAME_PROFILE(RmlUiUpdate);
-        if (m_Hooks.beforeUpdate)
-            m_Hooks.beforeUpdate();
-        ReleaseStrandedFieldFocus();
-        m_Context->Update();
+        {
+            FRAME_PROFILE(RmlUiPrepare);
+            if (m_Hooks.beforeUpdate)
+                m_Hooks.beforeUpdate();
+            ReleaseStrandedFieldFocus();
+        }
+        {
+            FRAME_PROFILE(RmlUiContextUpdate);
+            m_Context->Update();
+        }
         AfterUpdate(m_Context);
     }
     if (m_DebugContext)
     {
         FRAME_PROFILE(Overlay);
-        m_DebugContext->Update();
+        {
+            FRAME_PROFILE(RmlUiContextUpdate);
+            m_DebugContext->Update();
+        }
         AfterUpdate(m_DebugContext);
     }
 }

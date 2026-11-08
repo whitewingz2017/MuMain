@@ -64,16 +64,19 @@ TEST_CASE("completed frame includes late RmlUi work and stays stable during the 
     FrameProfiler::AccumulatorMs(Pass::RmlUiUpdate) = 2.0f;
     CHECK(FrameProfiler::CompletedMs(Pass::RmlUiUpdate) == 0.0f);
     FrameProfiler::AccumulatorMs(Pass::RmlUiUpdate) += 3.0f;
+    FrameProfiler::AccumulatorMs(Pass::RmlUiChatLayout) = 0.5f;
     FrameProfiler::AccumulatorMs(Pass::Overlay) = 1.0f;
     FrameProfiler::CounterValue(Pass::RmlUiRender, Counter::DrawCalls) = 4;
     FrameProfiler::CounterValue(Counter::DrawCalls) = 4;
     FrameProfiler::CompleteFrame();
 
     CHECK(FrameProfiler::CompletedMs(Pass::RmlUiUpdate) == 5.0f);
+    CHECK(FrameProfiler::CompletedMs(Pass::RmlUiChatLayout) == 0.5f);
     CHECK(FrameProfiler::CompletedMs(Pass::Overlay) == 1.0f);
     CHECK(FrameProfiler::CompletedCounter(Pass::RmlUiRender, Counter::DrawCalls) == 4);
     CHECK(FrameProfiler::CompletedCounter(Counter::DrawCalls) == 4);
     CHECK(FrameProfiler::AccumulatorMs(Pass::RmlUiUpdate) == 0.0f);
+    CHECK(FrameProfiler::AccumulatorMs(Pass::RmlUiChatLayout) == 0.0f);
     CHECK(FrameProfiler::CounterValue(Counter::DrawCalls) == 0);
     CHECK(FrameProfiler::CounterValue(Pass::RmlUiRender, Counter::DrawCalls) == 0);
 
@@ -84,6 +87,7 @@ TEST_CASE("completed frame includes late RmlUi work and stays stable during the 
     CHECK(FrameProfiler::CompletedCounter(Counter::DrawCalls) == 4);
     FrameProfiler::CompleteFrame();
     CHECK(FrameProfiler::CompletedMs(Pass::RmlUiUpdate) == 7.0f);
+    CHECK(FrameProfiler::CompletedMs(Pass::RmlUiChatLayout) == 0.0f);
     CHECK(FrameProfiler::CompletedMs(Pass::Overlay) == 0.0f);
     CHECK(FrameProfiler::CompletedCounter(Counter::DrawCalls) == 9);
     CHECK(FrameProfiler::CompletedCounter(Pass::RmlUiRender, Counter::DrawCalls) == 0);

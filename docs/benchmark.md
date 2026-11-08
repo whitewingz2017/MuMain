@@ -137,6 +137,11 @@ and `EndCompUI` (composite and the recorded UI). These are CPU times already inc
 `EndReplay`; do not add them to it. RmlUi's later work appears in `RmlUpd` and `RmlRend`,
 and submission in `Submit`, all within `RenderEnd`.
 
+RmlUi's update steps appear as `RmlPrep` (scene, hint and focus upkeep), `RmlCore` (data models
+and layout), `RmlFit` (text fitting), `RmlMarq` (scrolling labels) and `RmlChat` (chat layout
+upkeep). They are already included in `RmlUpd` or `Overlay` for the debug context; do not add
+them to those totals.
+
 ### Reading the summary
 
 Alongside the median it reports the **1% low** (the mean of the worst 1% of frames) and the

@@ -2,6 +2,7 @@
 #include "UI/RmlBridge/RmlRuntimeHooks.h"
 
 #include "Core/Utilities/StringUtils.h"
+#include "Core/Utilities/FrameProfiler.h"
 #include "Data/GameConfig/GameConfig.h"
 #include "Render/RmlUi/RmlUiRuntime.h"
 #include "UI/Diagnostics/DiagnosticsOverlay.h"
@@ -22,6 +23,24 @@
 
 namespace UI::RmlBridge
 {
+namespace
+{
+void AfterContextUpdate(Rml::Context* context)
+{
+    {
+        FRAME_PROFILE(RmlUiTextFit);
+        FitNativeTextToBoxes(context);
+    }
+    {
+        FRAME_PROFILE(RmlUiMarquee);
+        UpdateMarquees(context);
+    }
+    FRAME_PROFILE(RmlUiChatLayout);
+    if (auto* chat = g_pChatListBox)
+        chat->AfterRmlLayout(context);
+}
+} // namespace
+
 void InstallRuntimeHooks()
 {
     RmlUiRuntimeHooks hooks;
@@ -53,13 +72,7 @@ void InstallRuntimeHooks()
         if (Rml::Context* context = RmlUiRuntime::Instance().GetContext())
             DocumentHints::Update(*context);
     };
-    hooks.afterUpdate = [](Rml::Context* context)
-    {
-        FitNativeTextToBoxes(context);
-        UpdateMarquees(context);
-        if (auto* chat = g_pChatListBox)
-            chat->AfterRmlLayout(context);
-    };
+    hooks.afterUpdate = AfterContextUpdate;
     hooks.resolveTextureFile = [](const Rml::String& source) { return ResolveThemeResource(source, true); };
     hooks.createFileInterface = [] { return std::make_unique<ThemeFileInterface>(); };
     hooks.resolveTexture = [](const Rml::String& source, void*& texture, int& width, int& height)

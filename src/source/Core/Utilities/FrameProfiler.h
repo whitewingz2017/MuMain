@@ -76,6 +76,12 @@ enum class Pass : int
     RendererTemporal,
     RendererBloom,
     RendererComposite,
+    // RmlUi's preparation, context update and post-layout upkeep inside RmlUiUpdate/Overlay.
+    RmlUiPrepare,
+    RmlUiContextUpdate,
+    RmlUiTextFit,
+    RmlUiMarquee,
+    RmlUiChatLayout,
     Count_
 };
 
@@ -86,7 +92,7 @@ inline constexpr const char* kPassNames[static_cast<int>(Pass::Count_)] = {
     "EndOffscr", "EndStage", "EndReplay", "EndPostUI",   "ObjAnim",   "ObjDraw",   "UpdateFx", "SwapWait",
     "Events",    "Packets",  "Picking",   "MoveWorld",   "MoveChars", "View",      "FxChars",  "FxObjects",
     "FxMounts",  "FxModels", "FxTerrain", "MvObjects",   "MvItems",   "MvAmbient", "EndScene", "EndMotion",
-    "EndTAA",    "EndBloom", "EndCompUI",
+    "EndTAA",    "EndBloom", "EndCompUI", "RmlPrep",     "RmlCore",   "RmlFit",    "RmlMarq",  "RmlChat",
 };
 static_assert(kPassNames[static_cast<int>(Pass::Count_) - 1] != nullptr, "a pass without a name");
 
