@@ -73,6 +73,7 @@
 
 #include "Render/Renderer/ReorderableDrawRuns.h"
 #include "Render/Renderer/SkinnedBonePalette.h"
+#include "Render/Renderer/SkinnedLightingTransform.h"
 #include <utility>
 #include <vector>
 
@@ -4812,17 +4813,14 @@ public:
         return s_screenSpaceSamplingDepth == 0 ? k_SkinningLightingEnhancedDynamic : k_SkinningLightingEnhanced;
     }
 
-    // World position and normal of Enhanced-lit skinned vertices, for the frame's point lights.
-    void PackVertexToWorldRows(SkinningVertexUniforms& uniforms) const
+    void PackSkinnedLightingUniforms(SkinningVertexUniforms& uniforms, float specularStrength)
     {
-        const glm::mat4 vertexToWorld = m_worldFromViewMatrix * m_modelViewMatrix;
-        for (int row = 0; row < 3; ++row)
-        {
-            for (int column = 0; column < 4; ++column)
-            {
-                uniforms.vertexToWorldRows[row][column] = vertexToWorld[column][row];
-            }
-        }
+        const auto& transform = m_skinnedLightingTransform.Get(m_modelViewMatrix, m_worldFromViewMatrix);
+        uniforms.eyePositionAndSpecular[0] = transform.eyePosition.x;
+        uniforms.eyePositionAndSpecular[1] = transform.eyePosition.y;
+        uniforms.eyePositionAndSpecular[2] = transform.eyePosition.z;
+        uniforms.eyePositionAndSpecular[3] = specularStrength;
+        std::memcpy(uniforms.vertexToWorldRows, transform.vertexToWorldRows, sizeof(uniforms.vertexToWorldRows));
     }
 
     // skinned_lit.frag's normal map for a draw: the draw's map with its scale, or the flat
@@ -5474,12 +5472,7 @@ private:
         if (enhancedLit)
         {
             BindNormalMap(cmd, skinningVu, parameters);
-            const glm::vec4 eyePosition = glm::inverse(m_modelViewMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            skinningVu.eyePositionAndSpecular[0] = eyePosition.x;
-            skinningVu.eyePositionAndSpecular[1] = eyePosition.y;
-            skinningVu.eyePositionAndSpecular[2] = eyePosition.z;
-            skinningVu.eyePositionAndSpecular[3] = parameters.specularStrength;
-            PackVertexToWorldRows(skinningVu);
+            PackSkinnedLightingUniforms(skinningVu, parameters.specularStrength);
         }
         if (!shadow && RecordsObjectMotion())
         {
@@ -5611,6 +5604,7 @@ private:
     glm::mat4 m_modelViewMatrix{1.0f};
     // Inverse of the scene's view matrix, captured by SetSceneLighting().
     glm::mat4 m_worldFromViewMatrix{1.0f};
+    Render::SkinnedLightingTransform m_skinnedLightingTransform;
     glm::mat4 m_projStack[k_MatrixStackDepth]{};
     glm::mat4 m_mvStack[k_MatrixStackDepth]{};
     int m_projStackTop = 0;

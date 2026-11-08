@@ -61,6 +61,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME skinned_lighting_transform_tests
+    SOURCES
+        test_skinned_lighting_transform.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Render/Renderer/SkinnedLightingTransform.cpp
+    LINK_LIBS glm::glm
+)
+
+mu_add_test(
     NAME quad_topology_tests
     SOURCES
         test_quad_topology.cpp
