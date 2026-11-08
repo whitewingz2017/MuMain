@@ -75,7 +75,10 @@ float4 main(FSInput input) : SV_Target
     }
 
     const float3 previous = YCoCgToRgb(ClipToBox(RgbToYCoCg(SampleHistory(historyUv)), box));
-    return float4(lerp(current.rgb, previous, historyWeight), current.a);
+    // Reprojected texture detail needs fresher samples while the surface moves across pixels.
+    const float motionPixels = length((historyUv - uv) / inverseTargetSize);
+    const float blendWeight = historyWeight / (1.0 + motionPixels);
+    return float4(lerp(current.rgb, previous, blendWeight), current.a);
 }
 
 ColorBox NeighbourhoodBox(float2 uv, float3 centre)

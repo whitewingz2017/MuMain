@@ -40,8 +40,10 @@ and fences and calms shimmering textures, at the cost of one sample per pixel
 instead of several. The sharpening above runs after it and restores the detail
 the blend softens.
 
-Each pixel keeps 90% of the frames before and takes 10% of the new one. The
-frames before are found where the surface was: characters, monsters, NPCs and
+Still pixels keep 90% of the frames before and take 10% of the new one. A
+surface moving one screen pixel per frame keeps 45%; faster movement keeps
+less history to limit texture blur while walking. The frames before are
+found where the surface was: characters, monsters, NPCs and
 the parts they carry (models skinned on the GPU, each in bones of its own) are
 drawn a second time after the scene, each vertex in this frame's pose and the
 previous frame's, which says how far each of their pixels moved; everything
