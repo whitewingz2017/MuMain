@@ -36,7 +36,7 @@ TEST_CASE("identical replay state is skipped [render][sdl_gpu_replay_state]")
     CHECK_FALSE(state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 16, SDL_GPU_INDEXELEMENTSIZE_16BIT));
 }
 
-TEST_CASE("pipeline changes invalidate descriptor-backed state [render][sdl_gpu_replay_state]")
+TEST_CASE("pipeline changes rebind resources and preserve uniform data [render][sdl_gpu_replay_state]")
 {
     Render::SdlGpuReplayState state;
     const std::array<std::byte, 2> uniforms{std::byte{7}, std::byte{8}};
@@ -51,8 +51,8 @@ TEST_CASE("pipeline changes invalidate descriptor-backed state [render][sdl_gpu_
 
     CHECK(state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(6)));
     CHECK(state.SelectFragmentSampler(Pointer<SDL_GPUTexture>(2), Pointer<SDL_GPUSampler>(3)));
-    CHECK(state.SelectVertexUniforms(0, uniforms));
-    CHECK(state.SelectFragmentUniforms(uniforms));
+    CHECK_FALSE(state.SelectVertexUniforms(0, uniforms));
+    CHECK_FALSE(state.SelectFragmentUniforms(uniforms));
     CHECK(state.SelectVertexStorageBuffers(bones));
     CHECK_FALSE(state.SelectIndexBuffer(Pointer<SDL_GPUBuffer>(5), 0, SDL_GPU_INDEXELEMENTSIZE_16BIT));
 }
@@ -74,7 +74,34 @@ TEST_CASE("changing textures and vertex buffers preserves cached camera uniforms
     CHECK(state.SelectVertexUniforms(0, camera));
     CHECK_FALSE(state.SelectVertexUniforms(0, camera));
     state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(7));
-    CHECK(state.SelectVertexUniforms(0, camera));
+    CHECK_FALSE(state.SelectVertexUniforms(0, camera));
+}
+
+TEST_CASE("uniform sizes and changed values still upload across pipeline switches [render][sdl_gpu_replay_state]")
+{
+    Render::SdlGpuReplayState state;
+    std::array<std::byte, 4> small{std::byte{1}};
+    std::array<std::byte, Render::SdlGpuReplayState::kVertexUniformCapacity> skinning{std::byte{1}};
+
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
+    CHECK(state.SelectVertexUniforms(0, small));
+    CHECK(state.SelectFragmentUniforms(small));
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(2));
+    // The prefix is identical, but the skinned shader consumes the full block.
+    CHECK(state.SelectVertexUniforms(0, skinning));
+    CHECK_FALSE(state.SelectFragmentUniforms(small));
+    skinning.back() = std::byte{2};
+    CHECK(state.SelectVertexUniforms(0, skinning));
+    CHECK_FALSE(state.SelectVertexUniforms(0, skinning));
+    small.back() = std::byte{3};
+    CHECK(state.SelectFragmentUniforms(small));
+
+    state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(1));
+    CHECK(state.SelectVertexUniforms(0, small));
+    CHECK_FALSE(state.SelectFragmentUniforms(small));
+    state.Invalidate();
+    CHECK(state.SelectVertexUniforms(0, small));
+    CHECK(state.SelectFragmentUniforms(small));
 }
 
 TEST_CASE("the full skinned uniform block is cached including its final fields [render][sdl_gpu_replay_state]")
@@ -194,6 +221,6 @@ TEST_CASE("a shadow draw's second uniform slot and storage buffer are tracked [r
     CHECK(state.SelectVertexStorageBuffers(bones));
 
     state.SelectPipeline(Pointer<SDL_GPUGraphicsPipeline>(2));
-    CHECK(state.SelectVertexUniforms(1, skinning));
+    CHECK_FALSE(state.SelectVertexUniforms(1, skinning));
     CHECK(state.SelectVertexStorageBuffers(bones));
 }
