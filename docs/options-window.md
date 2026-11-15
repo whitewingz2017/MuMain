@@ -82,7 +82,10 @@ window writes to these sections:
 - `[Render]` - set from the Display and Graphics tabs, each applied at once:
   - `VSync`: `$vsync on` and `$vsync off` update it too; startup and
     fullscreen/resolution changes reapply it before the next frame begins.
-  - `FpsCap`: the frame limit while VSync is off, `-1` for none.
+  - `FpsCap`: the frame limit while VSync is off, `-1` for none. Under a
+    limit or with VSync, frames are paced to an even schedule and the game
+    moves by the same amount every displayed frame, so motion looks smoother
+    than uncapped at the same average frame rate.
   - `Look` (default `Enhanced`): the "Enhanced graphics" checkbox, ticked for
     the Enhanced look; see [`enhanced-look.md`](enhanced-look.md).
   - `AntialiasingType` (`MSAA` or `TAA`; default `TAA`): the Anti-aliasing row

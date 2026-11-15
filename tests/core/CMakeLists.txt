@@ -47,6 +47,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME test_frame_pacing
+    SOURCES
+        test_frame_pacing.cpp
+    LINK_LIBS
+        MuClient
+)
+
+mu_add_test(
     NAME test_scene_names
     SOURCES
         test_scene_names.cpp

@@ -4,6 +4,8 @@
 
 **Date:** 2026-09-02
 
+**Amended:** 2026-11-15 (frame steps under a frame cap, hitch catch-up)
+
 ## Context
 
 MU animation speeds, movement offsets, and related effects were authored
@@ -17,8 +19,10 @@ correct.
 ## Decision
 
 - Keep `REFERENCE_FPS` at `25.0`.
-- Compute `FPS_ANIMATION_FACTOR` from elapsed wall-clock time as
-  `clamp(REFERENCE_FPS / FPS, 0, 1)`.
+- Compute `FPS_ANIMATION_FACTOR` from elapsed wall-clock time, at most `1`
+  (one reference frame) per rendered frame. See
+  [Frame steps](#frame-steps) for how a frame under an FPS limit and a hitch
+  are stepped.
 - Multiply additive per-frame animation, movement, physics, and effect changes
   by `FPS_ANIMATION_FACTOR`.
 - Apply exponential changes as `pow(base, FPS_ANIMATION_FACTOR)`.
@@ -69,6 +73,54 @@ Its recovery teleport places it 250 units above the owner regardless of frame ra
 The opening attack trail emits its ten-joint batches at the reference rate rather than on every rendered frame.
 Animation playback and attack timers retain their existing elapsed-time scaling.
 Players do not need to change VSync or their FPS limit for the intended flight and attack presentation.
+
+## Frame steps
+
+Each rendered frame advances the game by a step taken from a running balance of
+elapsed time not yet simulated:
+
+```text
+interval = the FPS limit's frame interval, or with VSync the display's
+           refresh interval; none when uncapped without VSync
+pending += elapsed                     (pending holds at most 200 ms)
+step     = pending
+if recent frames took whole intervals (their average offset from whole
+   intervals is at most 0.05), and pending is within a quarter interval
+   of n whole intervals (n >= 1):
+    step = n * interval + clamp(pending - n * interval, ±0.5% of interval)
+step     = min(step, 40 ms)            (one reference frame)
+pending -= step
+FPS_ANIMATION_FACTOR = step / 40 ms
+```
+
+- With an FPS limit, frames start on a fixed schedule of deadlines one interval
+  apart: the main loop sleeps, then spins the last 2 ms so a frame starts on
+  its deadline. A late frame shortens the next interval; more than a whole
+  interval late, the schedule restarts.
+- With VSync, the display shows every frame for a whole number of refresh
+  intervals, so the refresh interval is the grid instead.
+- A frame on the grid advances whole intervals, so every displayed frame
+  moves the game by exactly as much as it stays on screen. Timer and wake-up
+  jitter stays in `pending` and cancels out over the next frames instead of
+  making steps uneven. The ±0.5% correction lets the steps follow a display
+  whose real refresh differs slightly from the reported one (59.94 Hz
+  reported as 60), so over time the game still advances by wall-clock time.
+- Frames that keep landing between whole intervals (a variable refresh
+  display, a refresh rate other than the reported one) and frames that
+  missed their deadline advance their elapsed time. So does every frame when
+  uncapped without VSync, as before.
+- A frame longer than one reference frame (a hitch) advances 40 ms and leaves
+  the rest pending; the following frames advance up to 40 ms each until it is
+  repaid. Previously that time was lost, so characters fell behind the
+  positions the server reported and then snapped. Stalls beyond 200 ms
+  (loading, dragging the window) are still dropped rather than fast-forwarded.
+- The factor never exceeds `1`, so `REFERENCE_FRAME_STEP` stays 0 or 1. A
+  sustained rate below 25 FPS keeps `pending` at its bound and the simulation
+  slows, as before.
+
+The original S6 client capped rendering at 25 FPS and advanced one reference
+frame per rendered frame, so it had neither uneven steps nor lost time, only
+the low frame rate.
 
 ## Consequences
 

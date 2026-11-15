@@ -31,11 +31,13 @@
 #include "Engine/Pathing/ZzzPath.h"
 #include "Character/CharacterManager.h"
 #include "GameLogic/Skills/SkillManager.h"
+#include "Core/Time/FramePacing.h"
 
 namespace
 {
 constexpr double MIN_FRAME_TIME_MS = 0.001;
 constexpr double MILLISECONDS_IN_SECOND = 1000.0;
+constexpr double REFERENCE_FRAME_MS = MILLISECONDS_IN_SECOND / REFERENCE_FPS;
 constexpr float BoidNeighborRange = 400.f;
 constexpr float BoidSeparationRange = 80.f;
 } // namespace
@@ -658,7 +660,21 @@ bool rand_fps_check(int reference_frames)
     return Random::FpsCheck(reference_frames, static_cast<double>(FPS_ANIMATION_FACTOR));
 }
 
-void CalcFPS()
+namespace
+{
+// The share of a reference frame this frame advances the game by. The step never exceeds one
+// reference frame (animate with no less than REFERENCE_FPS, otherwise some animations don't work
+// correctly); time a hitch leaves over is advanced by the following frames instead of being lost.
+float TakeAnimationFactor(double elapsedMs, double frameIntervalMs)
+{
+    static Core::Time::FramePacing::SimulationClock clock;
+    const double stepMs =
+        Core::Time::FramePacing::TakeSimulationStepMs(clock, elapsedMs, frameIntervalMs, REFERENCE_FRAME_MS);
+    return static_cast<float>(stepMs / REFERENCE_FRAME_MS);
+}
+} // namespace
+
+void CalcFPS(double frameIntervalMs)
 {
     static int timeinit = 0;
     static double start, last;
@@ -675,9 +691,7 @@ void CalcFPS()
     const double differenceMs = std::max<double>(WorldTime - last, MIN_FRAME_TIME_MS);
     FPS = MILLISECONDS_IN_SECOND / differenceMs;
 
-    // animate with no less than REFERENCE_FPS, otherwise some animations don't work correctly
-    const double fpsRatio = (FPS <= 0.0) ? 0.0 : REFERENCE_FPS / FPS;
-    FPS_ANIMATION_FACTOR = std::clamp(static_cast<float>(fpsRatio), 0.f, 1.f);
+    FPS_ANIMATION_FACTOR = TakeAnimationFactor(differenceMs, frameIntervalMs);
     static float referenceFrames = 0.f;
     REFERENCE_FRAME_STEP = TakeReferenceFrameSteps(referenceFrames, FPS_ANIMATION_FACTOR);
     ++RENDERED_FRAME;

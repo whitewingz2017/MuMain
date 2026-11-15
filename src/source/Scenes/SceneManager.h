@@ -3,6 +3,7 @@
 // SceneManager.h - Top-level scene orchestration
 
 #include "Core/Platform/WinCompat.h"
+#include "Core/Time/FramePacing.h"
 
 #include <functional>
 #include <string>
@@ -16,6 +17,7 @@ private:
     double targetFps = -1.0;      // -1 = uncapped, >0 = specific FPS limit
     double msPerFrame = 0.0;      // 0 = no frame limiting (uncapped)
     double lastRenderTickCount = 0.0;
+    double nextFrameDeadline = 0.0; // When the next capped frame is due; 0 = start a new schedule
     double currentTickCount = 0.0;
     double lastWaterChange = 0.0;
 
@@ -31,18 +33,26 @@ public:
      *   SetTargetFps(-1)   -> Uncapped framerate (render as fast as possible)
      *   SetTargetFps(144)  -> Caps framerate at 144 FPS
      */
-    void SetTargetFps(double fps) {
-        if (fps < 0) {
+    void SetTargetFps(double fps)
+    {
+        if (fps == 0)
+        {
+            return; // Zero keeps the current settings
+        }
+
+        if (fps < 0)
+        {
             // Negative FPS means unlimited/uncapped framerate
             targetFps = -1;
-            msPerFrame = 0.0;  // Zero msPerFrame = no frame limiting
+            msPerFrame = 0.0; // Zero msPerFrame = no frame limiting
         }
-        else if (fps > 0) {
+        else
+        {
             // Positive FPS means cap at specific framerate
             targetFps = fps;
-            msPerFrame = 1000.0 / fps;  // Calculate milliseconds per frame
+            msPerFrame = 1000.0 / fps; // Calculate milliseconds per frame
         }
-        // If fps == 0, do nothing (keep current settings)
+        nextFrameDeadline = 0.0; // The next frame starts the schedule at the new rate
     }
 
     /**
@@ -67,13 +77,27 @@ public:
      *
      * Behavior:
      * - Uncapped mode (msPerFrame <= 0): Always returns true (render every frame)
-     * - Capped mode: Returns true only when enough time has elapsed for target FPS
+     * - Capped mode: Returns true once the next frame's deadline is reached. Deadlines are
+     *   msPerFrame apart, so a frame that started late does not delay every later frame.
      */
     bool ShouldRenderNextFrame() const {
         if (msPerFrame <= 0.0) {
             return true;  // Uncapped: always render
         }
-        return (currentTickCount - lastRenderTickCount) >= msPerFrame;
+        return currentTickCount >= nextFrameDeadline;
+    }
+
+    /**
+     * Get the time left until the next capped frame is due
+     * @return Milliseconds until the deadline; zero or negative when the frame is due or uncapped
+     */
+    double GetTimeUntilNextFrame() const
+    {
+        if (msPerFrame <= 0.0)
+        {
+            return 0.0;
+        }
+        return nextFrameDeadline - currentTickCount;
     }
 
     /**
@@ -88,16 +112,14 @@ public:
      * Mark that a frame was just rendered (updates lastRenderTickCount)
      * Call this after completing a frame render.
      */
-    void MarkFrameRendered() {
+    void MarkFrameRendered()
+    {
         lastRenderTickCount = currentTickCount;
-    }
-
-    /**
-     * Get the time elapsed since last frame was rendered
-     * @return Milliseconds since last frame
-     */
-    double GetCurrentFrameTime() const {
-        return currentTickCount - lastRenderTickCount;
+        if (msPerFrame > 0.0)
+        {
+            nextFrameDeadline =
+                Core::Time::FramePacing::NextFrameDeadline(nextFrameDeadline, currentTickCount, msPerFrame);
+        }
     }
 
     double GetLastRenderTickCount() const { return lastRenderTickCount; }

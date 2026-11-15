@@ -109,36 +109,63 @@ float g_Luminosity;
 
 extern int g_iNoMouseTime;
 
+namespace
+{
+// How a wait for the next capped frame sleeps. A sleep can wake up to a timer tick late: about 1 ms
+// with the 1 ms timer resolution (precise), the default 15.6 ms tick otherwise.
+struct FrameSleepTuning
+{
+    double wakeMarginMs; // the sleep ends this long before the frame's deadline
+    double minSleepMs;   // a shorter wait is yielded instead of slept
+};
+
+constexpr FrameSleepTuning PreciseFrameSleep{1.5, 1.0};
+constexpr FrameSleepTuning CoarseFrameSleep{4.0, 16.0};
+
+// Longest single sleep, so events and packets keep being polled while a frame waits.
+constexpr double MaxFrameSleepMs = 10.0;
+
+// The last stretch before a frame's deadline is spun instead of slept or spent on another pass of the
+// main loop, so the frame starts on its deadline. Longer than the precise wake margin, so a precise
+// sleep always ends in this spin.
+constexpr double FrameSpinWindowMs = 2.0;
+
+void SpinUntilFrameDeadline()
+{
+    do
+    {
+        g_frameTiming.UpdateCurrentTime(g_pTimer->GetTimeElapsed());
+    } while (!g_frameTiming.ShouldRenderNextFrame());
+}
+} // namespace
+
 void WaitForNextActivity(bool usePreciseSleep)
 {
-    // We only sleep when we have enough time to sleep and have some additional rest time.
-    const auto current_frame_time_ms = g_frameTiming.GetCurrentFrameTime();
-    const auto current_ms_per_frame = g_frameTiming.GetMsPerFrame();
-    if (current_ms_per_frame > 0 && current_frame_time_ms > 0 && current_frame_time_ms < current_ms_per_frame)
-    {
-        const auto sleep_threshold_ms = usePreciseSleep? 4.0 : 16.0;
-        const auto sleep_duration_offset_ms = usePreciseSleep? 1.0 : 4.0;
-        const auto max_sleep_ms = 10.0;
-        const auto rest_ms = current_ms_per_frame - current_frame_time_ms;
-
-        if (rest_ms - sleep_duration_offset_ms > sleep_threshold_ms)
-        {
-            const auto sleep_ms = std::min<double>(rest_ms - sleep_duration_offset_ms, max_sleep_ms);
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long>(sleep_ms)));
-        }
-        else
-        {
-            std::this_thread::yield();
-        }
-    }
-    else
+    const FrameSleepTuning& tuning = usePreciseSleep ? PreciseFrameSleep : CoarseFrameSleep;
+    const double sleepMs = g_frameTiming.GetTimeUntilNextFrame() - tuning.wakeMarginMs;
+    if (sleepMs < tuning.minSleepMs)
     {
         std::this_thread::yield();
+        return;
     }
+
+    const double cappedSleepMs = std::min(sleepMs, MaxFrameSleepMs);
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long>(cappedSleepMs)));
 }
 
 bool CheckRenderNextFrame()
 {
     g_frameTiming.UpdateCurrentTime(g_pTimer->GetTimeElapsed());
-    return g_frameTiming.ShouldRenderNextFrame();
+    if (g_frameTiming.ShouldRenderNextFrame())
+    {
+        return true;
+    }
+
+    if (g_frameTiming.GetTimeUntilNextFrame() > FrameSpinWindowMs)
+    {
+        return false;
+    }
+
+    SpinUntilFrameDeadline();
+    return true;
 }

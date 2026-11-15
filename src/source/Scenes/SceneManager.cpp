@@ -1253,9 +1253,32 @@ void MainScene(HDC hDC)
     }
 }
 
+/**
+ * @brief The interval frames reach the screen at, which each frame's game step snaps to.
+ *
+ * The frame cap's interval, or with VSync the display's refresh interval, since VSync shows every
+ * frame for whole refresh intervals. 0 when frames are shown as soon as they are ready.
+ */
+static double DisplayedFrameIntervalMs()
+{
+    constexpr double MillisecondsPerSecond = 1000.0;
+    const double capIntervalMs = g_frameTiming.GetMsPerFrame();
+    if (capIntervalMs > 0.0)
+    {
+        return capIntervalMs;
+    }
+
+    if (!IsVSyncEnabled())
+    {
+        return 0.0;
+    }
+
+    return MillisecondsPerSecond / GetFPSLimit();
+}
+
 void RenderScene(HDC hDC)
 {
-    CalcFPS();
+    CalcFPS(DisplayedFrameIntervalMs());
     UpdateSceneState();
 
     // Drive auto-reconnect after the scene loops have advanced this frame. It

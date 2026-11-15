@@ -154,7 +154,9 @@ float maxf(float a, float b);
 void InitCollisionDetectLineToFace();
 bool CollisionDetectLineToFace(vec3_t Position, vec3_t Target, int Polygon, float* v1, float* v2, float* v3, float* v4, vec3_t Normal, bool Collision = true);
 bool CollisionDetectLineToOBB(vec3_t p1, vec3_t p2, OBB_t obb);
-void CalcFPS();
+// Measures the frame and sets FPS_ANIMATION_FACTOR. frameIntervalMs is the interval frames reach the screen at
+// (the frame cap's, or the display refresh's with VSync), 0 when frames are shown as soon as they are ready.
+void CalcFPS(double frameIntervalMs);
 bool rand_fps_check(int reference_frames);
 
 // Camera zoom level (external, not part of CameraState yet)
